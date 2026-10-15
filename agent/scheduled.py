@@ -43,6 +43,9 @@ def execute(path=core.STATE, dashboard_path='docs/state.json', current=None, run
     state = (runner or core.run_cycle)(path=Path(path))
     state['execution'] = {
         'event': os.getenv('GITHUB_EVENT_NAME', 'local'),
+        'scheduler': os.getenv('PAPER_SCHEDULER'),
+        'scheduled_at': os.getenv('PAPER_SCHEDULED_AT'),
+        'trigger_uid': os.getenv('PAPER_TRIGGER_UID'),
         'run_id': os.getenv('GITHUB_RUN_ID'),
         'run_attempt': os.getenv('GITHUB_RUN_ATTEMPT'),
         'started_at': current.isoformat(timespec='seconds'),
