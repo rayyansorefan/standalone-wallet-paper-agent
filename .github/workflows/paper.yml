@@ -5,6 +5,8 @@ on:
     - cron: '2-57/5 * * * *'
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: standalone-wallet-paper-research
   cancel-in-progress: false
@@ -55,3 +57,21 @@ jobs:
             echo 'FAIL: state/state.json not generated'
             exit 2
           fi
+
+  dashboard:
+    needs: paper
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - name: Publish actual observation feed and dashboard
+        uses: actions/deploy-pages@v4
