@@ -236,7 +236,7 @@ def maintain_positions(state, prices, current):
 
 def run_cycle(fetch=api, path=STATE, screen_token=None):
     if screen_token is None:
-        from .safety import screen_token as screen_token
+        from .safety import inspect_token as screen_token
     state = load(path)
     current = dt.datetime.now(UTC)
     first = state['last_run'] is None
@@ -244,6 +244,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     screened_pools = 0
     sampled_feeds = 0
     skipped_risk = 0
+    unavailable_risk = 0
+    state["screening"] = []
     # Store recent IDs to avoid acting on the same on-chain trade multiple times.
     seen = set(state['seen_trades'])
     try:
@@ -267,9 +269,35 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     maintain_positions(state, prices, current)
     new_events = []
     for pool in candidate_pools:
-        if not screen_token(pool.get('mint', '')):
+        mint = pool.get('mint', '')
+        try:
+            assessment = screen_token(mint)
+            # Backwards compatibility for injected Boolean test screeners.
+            if isinstance(assessment, bool):
+                assessment = {'allowed': assessment,
+                              'status': 'PASS' if assessment else 'REJECTED',
+                              'reason': 'legacy or mock screening verdict'}
+            if not isinstance(assessment, dict):
+                raise ValueError('security checker returned invalid result')
+            status = assessment.get('status')
+            if (status not in ('PASS', 'REJECTED', 'UNAVAILABLE') or
+                    (status == 'PASS') != (assessment.get('allowed') is True)):
+                raise ValueError('security checker returned contradictory status')
+        except Exception:
+            assessment = {'allowed': False, 'status': 'UNAVAILABLE',
+                          'reason': 'security checker exception or malformed result'}
+        verdict = {k: assessment.get(k) for k in
+                   ('status', 'reason', 'score_normalised', 'http_status')}
+        verdict['mint'] = mint
+        state['screening'].append(verdict)
+        if assessment['status'] != 'PASS':
             skipped_risk += 1
-            errors.append('token safety unavailable or failed: '+str(pool.get('mint',''))[:44])
+            log_decision(state, 'SKIP_TOKEN', token=pool['pool'],
+                         reason='security '+assessment['status'].lower()+': '+str(assessment.get('reason','')))
+            if assessment['status'] == 'UNAVAILABLE':
+                unavailable_risk += 1
+                errors.append('token security provider unavailable for '+str(mint)[:44]
+                              +' ('+str(assessment.get('reason','unknown'))+')')
             continue
         screened_pools += 1
         try:
@@ -318,8 +346,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     state['errors'] = (state['errors'] + [{'at': now_iso(), 'error': x} for x in errors])[-80:]
     state['last_status'] = ('API_ERROR' if not candidate_pools and errors
                             else 'NO_ELIGIBLE_POOLS' if not candidate_pools
-                            else 'SCREENING_UNAVAILABLE' if candidate_pools and not screened_pools
-                            else 'TRADE_FEEDS_FAILED' if not sampled_feeds
+                            else 'SCREENING_UNAVAILABLE' if candidate_pools and unavailable_risk and not screened_pools
+                            else 'NO_SAFE_POOLS' if candidate_pools and not screened_pools and not errors
+                            else 'TRADE_FEEDS_FAILED' if screened_pools and not sampled_feeds
                             else 'DEGRADED' if errors
                             else 'BOOTSTRAPPED_NO_TRADES' if first else 'OK')
     state['snapshots'].append(dict(at=now_iso(), equity_gbp=equity(state, prices), cash_gbp=round(state['cash_gbp'], 2),

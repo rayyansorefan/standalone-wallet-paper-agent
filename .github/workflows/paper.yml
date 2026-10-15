@@ -49,7 +49,7 @@ jobs:
           status=s.get('last_status')
           print('Latest research status:', status)
           print('Wallet candidates:',len(s.get('observed',{})))
-          if status not in ('OK','BOOTSTRAPPED_NO_TRADES'):
+          if status not in ('OK','BOOTSTRAPPED_NO_TRADES','NO_SAFE_POOLS','NO_ELIGIBLE_POOLS'):
               print('WARNING: Research cycle was incomplete or degraded. Inspect audit data.')
               sys.exit(2)
           PYCODE
