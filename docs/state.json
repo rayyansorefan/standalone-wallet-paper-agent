@@ -1,1 +1,1371 @@
-{"schema":1,"paper_only":true,"starting_gbp":2000,"cash_gbp":2000,"last_run":null,"last_data_at":null,"last_status":"NOT_STARTED","completed_cycles":0,"stale_signals":0,"observed":{},"positions":[],"closed":[],"decisions":[],"snapshots":[],"errors":[],"pools":[]}
+{
+  "schema": 1,
+  "paper_only": true,
+  "initialized_at": "2026-10-15T22:18:05+00:00",
+  "last_run": "2026-10-15T22:18:14+00:00",
+  "cash_gbp": 2000.0,
+  "starting_gbp": 2000.0,
+  "last_status": "DEGRADED",
+  "last_data_at": "2026-10-15T22:18:14+00:00",
+  "completed_cycles": 1,
+  "stale_signals": 0,
+  "unattributed_events": 0,
+  "observed": {
+    "45dGJyrFnzsmkFJXdWFh2euKcttaYtW4Xn7wSCAyXBRP": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:50+00:00"
+    },
+    "B3hrQu8j4nfihNxjADcxY2K5hvomehj3T3MJkiMff387": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:44+00:00"
+    },
+    "3t9RWLuY4DD126C8SxGtCocteR9yH9L2j3pWWpn2wZ2x": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:24+00:00"
+    },
+    "HcoaUASUNLpRLpGBCa8yAvd16KqjjeRwjsoDxBsvk5Ju": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:15+00:00"
+    },
+    "35JUndNRKB7RasEPN81GXpyUChCgSwcmfhbJABn3bkb5": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:08+00:00"
+    },
+    "C1QkEkm9QYNEaQLCx3XKoXYhqys7TRfaXshbnZyopvm2": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:08+00:00"
+    },
+    "NALUxTJsozrScVNzRWy9LAg2xoC37RXNNZyyem76kmc": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:00+00:00"
+    },
+    "HULL9X9qMicq7hAYojLUJUXRfT94Z9PrRhPEFz4ewkcR": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:15:00+00:00"
+    },
+    "Ei3nwM3UgkHzXHYvBCAbhdci2e1kVefjE63pxCbiZqzs": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:14:49+00:00"
+    },
+    "FYU25JBC93vZFBYzfW1TGrvdTYt1NG87Q63mRkRmp29W": {
+      "count": 2,
+      "last_seen": "2026-10-15T22:14:09+00:00"
+    },
+    "AkPEbCYmA4A7ry45U4q3x8Yrn2pEqt4UrXSa1gs8i8jj": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:14:04+00:00"
+    },
+    "VFo5HsbGQTTJJ4ybeaXK9zmMif5T9Cf7MBEu7g7RX4N": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:13:38+00:00"
+    },
+    "CdeT4gc7dT5JVpVszWioFbugqS2E5SbmbZHDWiRjyvam": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:13:30+00:00"
+    },
+    "99JvdzJokxK6xrsXka4WY7MRseds8hAXkABniQBydQT4": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:13:30+00:00"
+    },
+    "EEsmkmT8ZX14WpA8vBMB6w2vCJLfhd4ZqkRM9xurp5kz": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:12:57+00:00"
+    },
+    "HQwrGmXb4VqggdtGZLaTbm4nLKy9RwBQcN875KrMJLaQ": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:12:57+00:00"
+    },
+    "DsbhbMXEQCfdrg7K6n7fA8VnvDWQfszYB3P1ikT7FXRD": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:12:49+00:00"
+    },
+    "8pccPc2AZu1KubtdULfjk13JPArk9kem1vfCfhnLXr5E": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:12:39+00:00"
+    },
+    "Anzu5Y34het9udSkFTRZdBBCEssH6hYZsMR2Ly3qsZfj": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:11:27+00:00"
+    },
+    "2kevZ7URWthCX9ERmde68oraLgoeeQw2Q4CptpS9xn3G": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:11:12+00:00"
+    },
+    "6BJ5DyQ4PDSL1yuaUsCQnZd9Wt3P7adF8G4JdGgRUjW3": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:10:56+00:00"
+    },
+    "6FuEk4ifK4hjUzvNBnXpZbiqQgbcvwTE4sfMKyrUC4cJ": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:10:54+00:00"
+    },
+    "839BoGvQtU2auYSX7aYq1ijQJvHEXy9NGJ9uvTL9x1zU": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:10:48+00:00"
+    },
+    "FbtVSE7gSDZVxxtk28jTKmtaH5Ss4EHVhQe3CaqeAibX": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:10:35+00:00"
+    },
+    "HAEbhJuCB8yVtevAKCYCNx47mWnMkgbBTjP9sTziVhMi": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:10:16+00:00"
+    },
+    "rLsi2DPwRLovHzLV5XYxa8B597bv8w8nX7fZHJJf8uy": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:08:38+00:00"
+    },
+    "GxDC9e7SP9mzhDo4re5HbpLa2RW7gB9DtmThx4i4pXSq": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:08:38+00:00"
+    },
+    "5rn277pwHQyYZYrXDjA3DD2bjBj5T3S7eLWzNv3xYrpu": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:08:38+00:00"
+    },
+    "3B1RvMHJRbx6WwWwkYaahbbxBZRwHZVgWviE6zhV7i9s": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:08:17+00:00"
+    },
+    "g3xXDG6Hia93PakGSL9hWJwrNEsUk6b5oxs8xm5xtTn": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:07:41+00:00"
+    },
+    "2rBoenQW4C7LmKcUHPMEnUaVBJ2Qe4QrfNGSQq6WhyG9": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:07:36+00:00"
+    },
+    "8BKWiAymDH2NC91cFsNShzT2ptZi9TjxZGepih4C2kYY": {
+      "count": 2,
+      "last_seen": "2026-10-15T22:06:55+00:00"
+    },
+    "AMdwx2cMUBWWK33namVNa6nSxPWYspazsvMAnYcbiJrL": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:06:50+00:00"
+    },
+    "DEQ6UBrvhRrYwniuPyuMzh9RAXXkx5LqPr78jcibFXX2": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:06:23+00:00"
+    },
+    "31NcA6dLcvS6enruEyysYJeerTct4C4CzvG4paqVXoTg": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:06:21+00:00"
+    },
+    "FeNpPxXWe3muGQn1oopwph6YKdqNhexCxyGq5PdHpwDR": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:06:08+00:00"
+    },
+    "FMVn8SQVkcB6LDV9jXTCfmBVvnPrCcXBmtdXJvVrjDYH": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:04:26+00:00"
+    },
+    "6sMYbJ5RgRgt17NXRTL7Ucev1qsgWmizaofBe2vNuigH": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:03:26+00:00"
+    },
+    "BPur9Jm4GSvU4zEN6ns6R1oco1RNeJC89NosK4fNYUhR": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:02:22+00:00"
+    },
+    "FauYyfveY7NhPs4v5aZ4jWbtLY1Z9xfgCc1Ht2gwxW35": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:01:48+00:00"
+    },
+    "9XpUGsQFuL125voGcSGdBMvDdN1HY5Gj5Ljy7yycFNCt": {
+      "count": 4,
+      "last_seen": "2026-10-15T22:01:26+00:00"
+    },
+    "DLMn1rxqaHw8guxTQE5dZ4M8mJNYvWDcKURfkxUvNdHm": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:00:58+00:00"
+    },
+    "3aCm6CXhARAaYjyu8UPb4yiYPCyuM4dC3SvvWBFjoyBh": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:00:45+00:00"
+    },
+    "4QxB2zrshEfAP2vyaSWWZCKAFxgWZQEUgzbu4ziPG3hv": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:00:44+00:00"
+    },
+    "4eJbBdr96Kkesi3N9ZiQ5X2w3DpA4xxXL1apZLApitkk": {
+      "count": 1,
+      "last_seen": "2026-10-15T22:00:44+00:00"
+    },
+    "4zNLWoZdT7Yf1nxTJcA3C3NokSM7vJBcDt1unPfpzFXN": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:59:26+00:00"
+    },
+    "HjtvPMuS7LKnzTRVpNj6WxACJ9xparZdYrp5PSRn6B6S": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:59:25+00:00"
+    },
+    "66wniJpXzCF3DT4R9nuHWpdwNwLNUeTN1jLJLNkzCFJf": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:58:57+00:00"
+    },
+    "2aKq9nf2N8mg9Ad9cSiKhMfy3ViiLB9qnZicgL1Ts8Ph": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:58:30+00:00"
+    },
+    "AyosUDBqYQRRSgVABpi7wc9EjBzy3uzGPXMjXGR89yMF": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:58:00+00:00"
+    },
+    "4xfVy4dVbGpo1eLcHSBjqjbRZZPFzMMJGYkPkutA6A9s": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:57:49+00:00"
+    },
+    "XKP5Yek3TCEEpHwRJFGKExVywVL7Qb6wtvz4nUpTDx6": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:56:13+00:00"
+    },
+    "6451zSoUiy4GZeq2vEUHb73LcDJ8eeCHXEaGSqL8K6Fj": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:54:30+00:00"
+    },
+    "3K5oKRPhEw2JLcspwRVJXYjBXeX46kAEThK39gfmrG5j": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:53:53+00:00"
+    },
+    "92eY1io9d3P9tHPeCrApdRNA2yUGJ4zrZG1nxqFUQ4sG": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:53:32+00:00"
+    },
+    "DhfGbY1o5V777o3tDeH2Yf5yrJjUKPcKAAB9ndqkinpi": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:53:26+00:00"
+    },
+    "5Y3gMSWQyWcBCx7TQTFiuqf3Sf77Sro1U7FhErGrUDDJ": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:53:00+00:00"
+    },
+    "F58gBDp8SEWUoipmsLnbNWfCd2uj2dmUztCHAGYrqh4w": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:53:00+00:00"
+    },
+    "freeupq4fM9nSdZ5Q52AjSUp5NQ1UXC3y3y9rZVEByC": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:53:00+00:00"
+    },
+    "9TciHajKjt8Y23gXBsYTjB4GBQF6Z5CMMAUZh51psesG": {
+      "count": 4,
+      "last_seen": "2026-10-15T21:52:39+00:00"
+    },
+    "4AFAUcHL7NoHKJkkRNc7j1jfyW83hPdGknXS7cZPcwFE": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:51:31+00:00"
+    },
+    "4efAf8xgNSAWFTZu4yB4SwjBWdVXYMwVqsZFEgcAvPjY": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:51:30+00:00"
+    },
+    "H5yCFHBPNycF7xqnHkHJUHvVbk2anz7MzXzRzSo8eaJZ": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:51:03+00:00"
+    },
+    "4A2GsbyNfQdqvf1Upz8GTXf6f3j5tcx8qko5yMbiFD8D": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:50:02+00:00"
+    },
+    "3yq7cXRK8cMESkzfeLZzC9yzgCMYmZhCG2fLpddKet5v": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:49:10+00:00"
+    },
+    "GK13DRL9AiRs7qG75mrRddRHNByC9Mgq7XmEzNrRvUEH": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:48:38+00:00"
+    },
+    "CCdEP5wH3FGpKg4mSJS8MzxEJnxMB8fhg9Su6YGXtqsF": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:47:39+00:00"
+    },
+    "3545JfHy6PNMHRsiBRqnpoHc8AgToy82KPTS3LsQR9LX": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:44:09+00:00"
+    },
+    "5YRgrP3mjGzrzirYYN5HAQH19cTYREYwGxW6XRJQUzij": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:43:30+00:00"
+    },
+    "bvJ95DRNTtELwgcDhJb4YYcjV2Sjwx72WAFTbZPBFgD": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:42:17+00:00"
+    },
+    "4B8srvotmWddTZuMt4RrBQrnx1sQj2Z7FaXgLbWvpVdd": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:41:47+00:00"
+    },
+    "F1cCYLp32KBdTYWb29ey2nvaSFy4dq37zcYyd4c8mP21": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:41:47+00:00"
+    },
+    "7Dcjixkey2XcdSt2TKzWVa9RHQpUevmnpn2bCkhsppNJ": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:41:22+00:00"
+    },
+    "HKqiR6SZTSGbPotawmozYzbNgndMhq8yKAnsWdzgwm66": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:41:15+00:00"
+    },
+    "5KuUB1BVeisbARE2GaPgwoeJgNwmQTMXEK5vdTjPUbmX": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:40:48+00:00"
+    },
+    "7rohdc3bTS7oLw3dttcKcAAXzoJGNg3ibcp5T11YLL8C": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:40:47+00:00"
+    },
+    "BjYoLPdybqNsottbRDKZebywWZr9VxSY2CWqc6cFkBg": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:40:13+00:00"
+    },
+    "DSgcjXTmgsKoJmZfMd8xHcw8MNK6qQnyDjEynw5mC8Ui": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:39:52+00:00"
+    },
+    "FoGAGvDtTAqdrMftfMEwgroXpZMaQQsYXAkndBBjg6m3": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:38:59+00:00"
+    },
+    "F4cUjuWkXP7ptAVg13EUeCNPgPQYeuiLSUYNdZgYtW5w": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:38:52+00:00"
+    },
+    "DwCFQLVYwGyV32K2rfkGQpkbUGjrptfWnQ5Ws5qYMPzm": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:38:34+00:00"
+    },
+    "3rGpYPUL3dgnaDXQjDSzqksipFg913EnLBT3ut447fEG": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:38:17+00:00"
+    },
+    "m1EbMov24CF7z2yLtdgzts1n2DT2gtY7PjyvtWMge1k": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:37:24+00:00"
+    },
+    "aU7qYW8xP5QoMw6CpWfQBSpFWYbfNFUYP1XYmYSFM9G": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:37:10+00:00"
+    },
+    "EF795yEKYcHGkJKkQVpGjB3kVMGbxSSejRZ9mQrDkn2w": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:37:09+00:00"
+    },
+    "Fqi7NhRd9BKKyL42fVbrXzVLevJcKxgrTAw7UqXLs7He": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:36:19+00:00"
+    },
+    "23jRn4tgAYpTY66yCcMYfpDkX4SdVavbTZbAFPaRiCrc": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:36:19+00:00"
+    },
+    "TVkcSUVWWwWFPUJk6DDsQ4gb82FgYMemaUQADW5fart": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:35:41+00:00"
+    },
+    "4kasDhrv7LHVuEyPzuxSf38obC2CRNTyf7ahFMwQmJhj": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:35:34+00:00"
+    },
+    "8L2y55D11k63CAftvW7uMM2mBhtMxLoLnivG9uY2bt8j": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:35:32+00:00"
+    },
+    "7cyB5WsoRJ9jCKhZtSyCZyUnT8sPDzmar2Jv6uQSaaxB": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:35:07+00:00"
+    },
+    "2trQZKSVfnQ88opcbptBTpntxoJ5ZtaCcj6rbmjoPrtw": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:35:05+00:00"
+    },
+    "74D8b1nct7y6v3DphSw1vepcTtVSg4x2xVfwRfUtwFRp": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:34:55+00:00"
+    },
+    "D62t9HbFEDxEAvB2YLLJzEd1CrrycHdHjZPHoZ6U2Hdh": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:34:39+00:00"
+    },
+    "FYa1vFHjC2PcEVLvamSPqpeuFhRLYQL9Gobf4xYiuYVy": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:34:37+00:00"
+    },
+    "48Yo5ixdUUpdRi44S9Rwajwk8txfbdxAjj3mHgE3WFak": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:34:27+00:00"
+    },
+    "GR9VeJdNYaYTVzTCVtZtUy3431wT3PtGbscyuXHu4xp9": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:34:19+00:00"
+    },
+    "2DmnrRDz43BP5XhNe3dUfJmTRGT3mCkG6JDBYQzJcPY9": {
+      "count": 4,
+      "last_seen": "2026-10-15T21:33:54+00:00"
+    },
+    "An1Uv2YzuFT24HPg23Eqy9P4XVpZ6i6vfHsp7bPgrTgw": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:33:34+00:00"
+    },
+    "67fnuqxkjDWACkXsakTMTzT8uR8AUfdR6XeBQ9U4Bt4L": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:33:06+00:00"
+    },
+    "GckXFS7B6zpdSDAvjmGjyUyoXkL2EN843CUmvdy4nwt3": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:32:48+00:00"
+    },
+    "2GHeHn9SMSNPgcyhEAStKVEsxuimr5zw83XegdwpyWSd": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:32:43+00:00"
+    },
+    "HpCYMMQjYQzKYCCwvbKgwx91oNAZJyNgidJXKcM3ha9i": {
+      "count": 5,
+      "last_seen": "2026-10-15T21:32:29+00:00"
+    },
+    "8uEh71FsAZDHfgn6GHWFg62GjsCQSs8TAUKvYDFWg8iR": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:31:51+00:00"
+    },
+    "9oj5bUZpgNHVbQjZvS5dy5Q4xj6Ht7fj2UxULQNMdcqn": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:31:47+00:00"
+    },
+    "AhU3xdbm6gR89EUqQPsXsTypqFkE9n3bjEePTUeRiAER": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:31:23+00:00"
+    },
+    "BXojjGYiEwSoUSzwVft1LZtuWuWuxm1GVvZXuP7NN2xh": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:29:46+00:00"
+    },
+    "7siDx9E4WFKq8UD5rxbWzqvjqGkpxPF6fjNCeKe9p6SG": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:29:35+00:00"
+    },
+    "69iBVxiARNrbm8QrCr81wvAESHfcMC4LkSAjTBp8f7LR": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:29:30+00:00"
+    },
+    "2ujVjaWcXSbwXr9czotiJhBx2MCBYB9JoykDLPdxpzkS": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:29:26+00:00"
+    },
+    "ApRmvLRFTYQChpS6crGfNp2Hn1uoQgzyKeYjmRXszSU8": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:29:16+00:00"
+    },
+    "GN6CViKt7nrZrFtNLREpereRcbqwv3SVJjo3Tse4ZUwP": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:28:57+00:00"
+    },
+    "7DA7jMWzxBTciN7xhXVPTecUzxxx6Z9LhiaupNwPcgjD": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:28:51+00:00"
+    },
+    "6KihTJro4Df98b8GG9RR4mhBFwQ7QC4MszRZutHzvezk": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:28:18+00:00"
+    },
+    "85WoKabkaTvJqUQaUKZ7e4TcLVKYWawZ2iVwaDA8HuL2": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:27:07+00:00"
+    },
+    "6EYvnXTGFj5HQzLAJMYs4EpYnzQ6A4gUVrG5vncP96h8": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:27:06+00:00"
+    },
+    "F73LAQ3x3dYETwQqFbKe3i1QHc9JLptAubAKAX9NVDsK": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:26:13+00:00"
+    },
+    "GL1NNcZNNyvoDfUdtBpwGfAU4oAMCK1voNmDJe3jEGhi": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:26:09+00:00"
+    },
+    "AVXmsYMfvxiosF21oPGaVWfcsjWH1daAi52LSe5mi3jp": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:25:48+00:00"
+    },
+    "6NusZoj7gZ2DGYCkjKgMRe9Y1skzTWih8RZqFdpDc1A9": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:25:08+00:00"
+    },
+    "9aPX5ems2wa6MFhexMygrkxpRuSyHSJmgVLRSJjKqaws": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:24:14+00:00"
+    },
+    "cA66pSgrQauBv4eSQXw9Pbdqd9QrzCxtHAX2wWoJ3Ld": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:24:10+00:00"
+    },
+    "EGicJhrGsDDR2C8SzoSjXCaXK9J5aYHbontsZLKsWbQn": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:23:51+00:00"
+    },
+    "9uCzUTBBcT2ejEtBvWK7vgY9u2eVJhdFsdHGZvfq2URP": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:23:25+00:00"
+    },
+    "6N4bYtjWXvqX932trzTJgb1imfgQw5AnKBbjdCdRG5Q5": {
+      "count": 7,
+      "last_seen": "2026-10-15T21:23:07+00:00"
+    },
+    "k8Xcsz12jwcaDHXYJZkJdS1uZLm126z7cPp6Ve2ydJ5": {
+      "count": 7,
+      "last_seen": "2026-10-15T21:22:31+00:00"
+    },
+    "GuUpYq7rqdBAdwfEEn3DUTUcEZRQdq5STVZv6zbwYJUw": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:22:28+00:00"
+    },
+    "8sWAwLqrqwa7G7h8vzcfG1pSDZVVNizNxWVzWPQLuUoi": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:21:41+00:00"
+    },
+    "FEDLjQiRRxsiuN9KKQFpztoCZ73bv3h3h3tXbGo5usk8": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:20:20+00:00"
+    },
+    "AgDLK5Hp1cvzQcV2uCrBLGuQnAbK4LHPM6DWQTbzbZvk": {
+      "count": 23,
+      "last_seen": "2026-10-15T21:19:59+00:00"
+    },
+    "CuTfHiNsiMroaAfDGciMVPBimKWKHcuFDhZQPxi6XfUQ": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:19:38+00:00"
+    },
+    "DY5qAVztKXXPMY9enjbgvJxn6wPPZ1Ek34Jp3xJm4Lct": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:19:30+00:00"
+    },
+    "ArbANvGveKVy3Q1b8mL33THv8MxJuFQVEFrrUDVLover": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:19:30+00:00"
+    },
+    "922M9fBTzwGfC4Gqu3WxB8S89WHaTfVAUZKwK5PNtZpk": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:19:30+00:00"
+    },
+    "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:19:30+00:00"
+    },
+    "7VyJemjniBr3A5yppUmz1CLFfbbLvVn8waNcc5cEwLnb": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:19:01+00:00"
+    },
+    "kDaHUDeKc1YkW2xzPcdMSuWd1bPQUmu9vGdo17HhkkH": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:18:09+00:00"
+    },
+    "cYfgYb3mmJLcGpBHm1nFYCz563gNRqY6nUTs4DgohJM": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:18:07+00:00"
+    },
+    "3q2eaCxT5TWdU8iUpYLEdTYLSUmRb6VkJ9nX6VSvnHQD": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:17:52+00:00"
+    },
+    "HvSuuetCn7xRkz8GEQXGF9YwjMAS6V8RfYsX8aTrB8bU": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:16:14+00:00"
+    },
+    "HLaDMNCC5aqJKvPVrwvqxSLaWENM5cnguYAmhi1PgDx2": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:16:11+00:00"
+    },
+    "BQYB2ZT6jTeiWv7yGH2uDLLr45Zf2wMzU9rB3ga65ikt": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:16:10+00:00"
+    },
+    "98Ku7DTjRju2p7wyoDMJ8oKUfjJmC5aok7myhe38umco": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:14:20+00:00"
+    },
+    "HueBQafHmmkr6PmcLUwP5wJj6Paoa5hJ3HtJ52fcRTwp": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:13:31+00:00"
+    },
+    "GLt3YCMP8vmE7V5kSWgwsVWWpiXMAroJi2HEnxZF5Vj7": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:12:34+00:00"
+    },
+    "Dy5nZQa4wNt3WtFyCTsvLR4hTKLHzYsxnTxDTaGunfLN": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:12:34+00:00"
+    },
+    "2ZidyPSRJnjiEp86DoPoFWGWFyzGkqoTKs2onthmvhCH": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:12:31+00:00"
+    },
+    "8yDbt2vzi28eEVKpfyGu4TnwRDqMkVTuNcrkxP8xu728": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:12:14+00:00"
+    },
+    "EkMvznJwwzz12kkG8ZoPsrpvUZ9pXWrqzaikFqSdsZwQ": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:11:37+00:00"
+    },
+    "Guejc6H87nDBQLuqZCebG5gWhSBDqaQCr1URJ1mqqUtK": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:10:01+00:00"
+    },
+    "7Gfgumw2ow4KjwF5ZWDobQsNMCkwKJtkS4aPtpSPBU9n": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:09:44+00:00"
+    },
+    "6xNvj6YP3Bsb2EWftvGS7Mwg92VXjmBoQjDaPWvkWrQD": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:09:29+00:00"
+    },
+    "3vA36QghCWs6jVoo3f2Yn3SzjuhNbhKBpNaeaGYrGh3B": {
+      "count": 3,
+      "last_seen": "2026-10-15T21:09:20+00:00"
+    },
+    "E3uT1ZiVNqwMRAjB2k8XWXbUJDyyG2g7Y4KEHkeNid1m": {
+      "count": 15,
+      "last_seen": "2026-10-15T21:09:08+00:00"
+    },
+    "42TVooCiu6ZWWa9zB4LmorujqUDqsAEStt54duLFKoE2": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:09:02+00:00"
+    },
+    "H3w6AC9xVGu1ugTi34xGhbjuk2NiFnamA55woT5Yazgs": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:08:33+00:00"
+    },
+    "GE4JFPxhSbrEWhnTaqakVdChernLenLyZLqmc17TUDZb": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:08:22+00:00"
+    },
+    "d1n4GK4J2uT6AxCNNY18ELCAbYCPiwczYazKLd4Gwkh": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:07:59+00:00"
+    },
+    "BLnXFRqLsEQ5PHKYWfMP11iDewC5dQDi5LE71L4GJnNv": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:07:26+00:00"
+    },
+    "BfBdRzvqRrvyMRbAhq7fyJDUCnvV5BWbVsEukQEui127": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:07:11+00:00"
+    },
+    "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:07:02+00:00"
+    },
+    "R32xAccFis3YzBzGwZ1C4QkGiehLxSao7gDmErA3kjk": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:06:55+00:00"
+    },
+    "4nwBhGYCB5HGHU6PtSzHbTZVVjiBe2ZWXWcy5ZqK7zLN": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:06:26+00:00"
+    },
+    "nbX5LmCyp8AKw2DYXYri8Sday8pYxQfwEhikMQ9YPLY": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:06:17+00:00"
+    },
+    "75ZGm6Q9tvqjHuAj1QNbtN1fUGoP6yGYLXoG8mCS4s9j": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:05:59+00:00"
+    },
+    "3jBs568k6AEWz14JwkAsbgcgJYuAhZPY8ywQCgKfEdoC": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:05:57+00:00"
+    },
+    "5JufervyjyQCQQVLBK1eUauDgk4MXktUouA29dmDywq7": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:05:47+00:00"
+    },
+    "7h5fVKYRrz5WJgX3mFkHfYqbNVqqtG69M1SzEV37QTtG": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:05:03+00:00"
+    },
+    "BaJVT9155nDKW71cBFpZSbSYNA4S1F7T1CrWAaAC99eS": {
+      "count": 6,
+      "last_seen": "2026-10-15T21:04:45+00:00"
+    },
+    "8og9cGUhGw7AaxfyJq2xY4691wDdvNTum2BSxJQivZa3": {
+      "count": 4,
+      "last_seen": "2026-10-15T21:04:38+00:00"
+    },
+    "59YHn2DGKP6GU1LCvNMTzUhxQw8v5GJktL7cjKxCef1B": {
+      "count": 4,
+      "last_seen": "2026-10-15T21:04:35+00:00"
+    },
+    "Em8J3gBWapfVBGVhVipwQnLrqCvnWBnLajw6XFsFECPF": {
+      "count": 8,
+      "last_seen": "2026-10-15T21:04:25+00:00"
+    },
+    "2J7wxpXRdNZdqWkaXQR8ZPWwSFJ8FxTigwMDEPQWEasC": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:04:23+00:00"
+    },
+    "BdXNJnMKAGMmZBuCXJGxzL5NuXr4rdE8R4m5wU1cJusC": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:04:17+00:00"
+    },
+    "2Ju1JhcvpaPDL8r7n7P1hdXM8n8sQGgKsybpUv4S8sEg": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:04:07+00:00"
+    },
+    "6XuMFyyQWrDFHtDRZmhuWGXngrZ8yUCS4Mzip9zJV7tA": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:04:03+00:00"
+    },
+    "8Yb3TrptKkrqf7Mp7sazs97d3zunqYotNypauPaGzw83": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:03:59+00:00"
+    },
+    "BSRaZboi1288e1SbwdwGLQUvDSWpd91GTTNpm2Jxkc7p": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:03:53+00:00"
+    },
+    "EM7S3LkhwZAxVVvS1w9g4qt8AecB6uT8vTHtGSWFhaNs": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:03:41+00:00"
+    },
+    "5EKr7rmm7myZq4kXr3tQ6P87MvNVc66tKbcYcskBrCkx": {
+      "count": 2,
+      "last_seen": "2026-10-15T21:03:03+00:00"
+    },
+    "mPdDc46GuvJhUUqCJVHN1X2ajKLLFjKwNJHKaZVz1ik": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:03:03+00:00"
+    },
+    "BYiChKYsrLsd4XNoTZ3nM8g37tCL27n37K89xSinU1dK": {
+      "count": 1,
+      "last_seen": "2026-10-15T21:02:53+00:00"
+    },
+    "HyHVvxtP2m8ueZdBuwsjXG9eWf9qvTRngPwGRmaqJC6N": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:58:13+00:00"
+    },
+    "22tM4DNoAoYXdczxHHMuzKp3GsLD52BsiRSCbehDhxuY": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:57:47+00:00"
+    },
+    "A9wV2xEao3z2txS3wT9sDwM2oQJZ8gDRtGz1y9BuJ7zi": {
+      "count": 3,
+      "last_seen": "2026-10-15T20:55:14+00:00"
+    },
+    "BcXPMgT96zGxN8b8M2wtZ9JDkzk24G2LWMhdASx7CDFQ": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:55:10+00:00"
+    },
+    "8dut5xTs5V7EG9ccek11xDG5eBHkfYc3NdqcxjtWNsbS": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:54:58+00:00"
+    },
+    "CfNF7Rs3Xo4TDXZQJAhmF6f4SqGSLWeauWR1HEVa43bi": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:53:16+00:00"
+    },
+    "CSfx5LruyZGts8S6n9pLc9JmYQGVK7nEwxx2cNbGFaP2": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:52:29+00:00"
+    },
+    "2hrMtZgPZSmYdmoSSWNjkoJLRYQ6BseZBQuTrLSMZioU": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:52:19+00:00"
+    },
+    "2dVjoEM5PhEEmSDEpcc8QH4Fbuom1s6DxfrbBya3GCic": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:50:34+00:00"
+    },
+    "9vuxPMtKL2GdtSHaV3YpbAcEjJf4bKrcJNNiZcG27cUQ": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:49:43+00:00"
+    },
+    "9aKjmZ6bC111wkExzkBniE8YLbsv5hM6BQbkHJJVLDWs": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:49:38+00:00"
+    },
+    "FmNmMDobSX2s8x9C6HwUN5AtbPvfUmFuqZnq8F56FKBK": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:48:52+00:00"
+    },
+    "91BzyKvkc6GQzFHXcNm1XifeGvfjfQUwEnKCCSs99MEh": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:47:04+00:00"
+    },
+    "2s8VPrEGzyxtmG7EMuDPeuxXCWk76ktJVgH8htehjprz": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:47:01+00:00"
+    },
+    "Bdrs3hKcEe4PpM91risoYm5YKceQ7tsaovs4otog6HBz": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:46:55+00:00"
+    },
+    "4LyXMrKitaMUWzGhvoCNMQwXXgdu1rpYLNccQ3DaYF6R": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:46:08+00:00"
+    },
+    "C7RcE7SWorDM5DRNdPUxBwCAE9z9p8JGjpkR16F9SYBa": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:44:40+00:00"
+    },
+    "2PEqhL1HsS3eGrJMsJiQbzKbarj5hFThbo3rYPSYB6N2": {
+      "count": 6,
+      "last_seen": "2026-10-15T20:44:13+00:00"
+    },
+    "4jf2ygog9SWzG99xJreWnaj6G7W8Z3Bv937YnAZH2cfz": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:43:07+00:00"
+    },
+    "Gm1XGzBcfQi6bwKxYRDdhwQhXMadoLrCpcZ4oVYS3DmL": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:41:40+00:00"
+    },
+    "EucSRkc9RqohCwdVXwNL8csKjh8az7gMC58W9TpJ6qr4": {
+      "count": 3,
+      "last_seen": "2026-10-15T20:35:41+00:00"
+    },
+    "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X": {
+      "count": 6,
+      "last_seen": "2026-10-15T20:32:20+00:00"
+    },
+    "H3MNBqAMcvpzjhbUJLnzW1YGMakHgaSDsMQxojAruvKk": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:32:20+00:00"
+    },
+    "DADDyLEuVJtPACD5LcVGY46BMUvTGVNAUoKHox7Je2Ev": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:27:41+00:00"
+    },
+    "7AH3vgkoQef3R8wdDf43meAYNHBpxQhPEZy2KSfjCWkn": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:26:00+00:00"
+    },
+    "4BC9wBXhiguZRmxU8D56NMgSBzJEZVu9VUEFAHt8rc8D": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:25:21+00:00"
+    },
+    "ZagQQcrzSwAApeTnGLWsNu3bsBh76xm8fD3nMZXob5r": {
+      "count": 3,
+      "last_seen": "2026-10-15T20:23:58+00:00"
+    },
+    "Hp7rYmw8w4SoBdsdg2T8a1H8q2bJfHphQVafuSFp1jK3": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:23:44+00:00"
+    },
+    "8m5RMpRmnFGu6gGxLiz1K6ERREsVnu29AL8mSRnhRavr": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:23:13+00:00"
+    },
+    "AY3xnye7qg13q8Wk5ESi6g1q2zXLwZTMoitsHcb5LZzq": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:20:56+00:00"
+    },
+    "8zWvfsq3z56uD1muzypdKHZJWv24nrPjvSPiV6KSLg13": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:20:01+00:00"
+    },
+    "7iVCXQn4u6tiTEfNVqbWSEsRdEi69E9oYsSMiepuECwi": {
+      "count": 6,
+      "last_seen": "2026-10-15T20:19:12+00:00"
+    },
+    "D8pBNrTqzgr6FNWg5umqXcG32UkiBYr5vR71GTRMfujZ": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:18:37+00:00"
+    },
+    "EGB6v3y5oS7Whv4KHYp8ksL2wRfqdfAF5Dbqq8kHXsZH": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:18:37+00:00"
+    },
+    "HFENsbf84SWJyj7vLRxRzyMu1uw1YvssnEcXL3hh7j9E": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:18:00+00:00"
+    },
+    "2SeHoXXuWsSj4GanNS5TJfpmKNUtTB9pmtkYQdbyqRQ9": {
+      "count": 3,
+      "last_seen": "2026-10-15T20:17:36+00:00"
+    },
+    "HGjHFvmoY1jM7eUabtS4GhTYqafSqvn96VRwo9HayJ9H": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:14:23+00:00"
+    },
+    "GN3WvJASNNR1ddVa68Cndi3triNg6XdTSkmaz8KDEq6h": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:13:39+00:00"
+    },
+    "FzsNabcUxH7GgSgbjg4tYexTsqA9w4RTv7S143EvSP8w": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:12:04+00:00"
+    },
+    "B6tWJgkrRLphJuNmfMYJqG2s8qFwVBLa1GEMU1GfPjXG": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:11:59+00:00"
+    },
+    "HsSJC6biYEoxonKjpARpL8seHb4dhs7Tfaeqv34RTRgy": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:11:52+00:00"
+    },
+    "8GvdMQAhqgar1zFZKXxB721VAbAcmb9HUwhtBvQ9Y44m": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:11:25+00:00"
+    },
+    "8qHhgJN87dKi4VsGRGfeUgpCL3arjEdZmszGRx39xDY2": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:11:21+00:00"
+    },
+    "8ALfpKanR87teH2gn9jtcEZFTVLrcwyvjmxE1PXTxn9j": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:11:09+00:00"
+    },
+    "8Zkp2rpcnTCwaLSuL8kbimHiJGKWoVXPp6ZBEN7eQnrr": {
+      "count": 7,
+      "last_seen": "2026-10-15T20:10:28+00:00"
+    },
+    "FSBNszd1QzYAz6aDEEfxW1HaHi3kbwHt4DmvX4Wt9rCC": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:10:04+00:00"
+    },
+    "BkShwFsFSBP8JJd36LayVJHeZ397Qn1jrxcss93L3sfh": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:08:39+00:00"
+    },
+    "CCTXqmvGCM25MZQ5GZef5fPSLEzsAoWyKWG9arWKsg3N": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:07:43+00:00"
+    },
+    "AwFXkRmv9TPi9PviRHRYbjv9LMspSz8TsmfVAoHdmeyR": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:07:21+00:00"
+    },
+    "59BgS9imqq6DLcGRb4T5znTePUWVxMdigeSd3tGadwUo": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:06:43+00:00"
+    },
+    "QSE8hogkGNmUuT2AE1ugbWvw5b68dbrmWtaCUgZTXCn": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:06:30+00:00"
+    },
+    "32y3dCLwxY1ifDU5ZmZSrs2Q3i4C5WuCJwaYraDyiphN": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:05:56+00:00"
+    },
+    "4zhVKNMDDwbwhBtxmhuwuEqN4NcYWnsinT111PEMYEWX": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:04:41+00:00"
+    },
+    "3TBLyZc7sdgSozZLyf3393uoS8dtgbujsXpRj6auoBLS": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:04:36+00:00"
+    },
+    "4iBbavcJ5jV3Z6BE6zfxzNQaT7fwZMpFwz21nxjtQAKH": {
+      "count": 2,
+      "last_seen": "2026-10-15T20:02:56+00:00"
+    },
+    "6z4TeRfb3PxJjgxEA7pUSjCB6PBWAZK6ETMeWxfzjrFE": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:02:19+00:00"
+    },
+    "8J29RkjjTNLvPNsvdWpnhijUXbu6iy1JFYoWCKszgBPw": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:01:27+00:00"
+    },
+    "9HN4pu5e8RkFoWBvE7BJYtij6yG8XPG69wUot4AUrmDn": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:01:09+00:00"
+    },
+    "FaS3FbvHCD25PmCJhLfyipnpgJV9QpYnRNLrXMJpv1ui": {
+      "count": 1,
+      "last_seen": "2026-10-15T20:01:05+00:00"
+    },
+    "EqqiGDdvKLpeLMhH2f9gYMdyqW6dnoYviHimS6JcF3Dq": {
+      "count": 5,
+      "last_seen": "2026-10-15T19:58:25+00:00"
+    },
+    "gy1mJNas5fLZyNpK3RP6dPpYFE3Z6kE9oxSX7ZvLVR1": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:57:57+00:00"
+    },
+    "Ed4oAq9KQKWNJGQD29VmZGB8u3PJnyy7G56xdraz2J8r": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:56:13+00:00"
+    },
+    "7jG9oTZx1dwHVY6Ki4euUs5J7pG9vghZUSEUYK87TXAM": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:56:13+00:00"
+    },
+    "D9JVA6oVxSvt6ZCbaueuUZeKSTckfNxgdX6Puo7B5SXX": {
+      "count": 2,
+      "last_seen": "2026-10-15T19:55:42+00:00"
+    },
+    "6dxbcVfPgMJnoGANzjsn2o5dWNSipuiKRX45aqB4brKH": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:55:18+00:00"
+    },
+    "8krovcgHurw2DK5SS1JvDWL9c6Gg2VHSPc9rDqpKf2up": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:50:36+00:00"
+    },
+    "95Yqh4aPgvuN7jWZFBas5kwy1enNwR7g4KxLsXbgive1": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:50:30+00:00"
+    },
+    "8CiqiR6DWjJ8gD2ipryS67kZttWe91bwLFL21cDb8MzN": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:49:29+00:00"
+    },
+    "BRuPRVFhuQcE7YPxbdR672XLpQ9cnXBBc8TU226ww1nT": {
+      "count": 2,
+      "last_seen": "2026-10-15T19:48:23+00:00"
+    },
+    "GH7TcuT3mMTSn7R6fCRhntoLVSy3kbxqB5wUCBx3XfcG": {
+      "count": 3,
+      "last_seen": "2026-10-15T19:48:13+00:00"
+    },
+    "Am7qrF1e6Av7qppo7cLKjwRTDGR69vwKp9MngV1TR4t2": {
+      "count": 3,
+      "last_seen": "2026-10-15T19:48:11+00:00"
+    },
+    "EfUYtUipyqEdRsbKbXRo2gZwGRyxcm8vKGJWWnsBxJEr": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:44:28+00:00"
+    },
+    "EHUDViiAUyiii4h5HXVAtuZsSLf5cJzs6uAj4E3q6cw9": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:44:25+00:00"
+    },
+    "ecd6JsnjLd3DbCR7BHPWgH75AGuBXW7AxXNEqMsXcTc": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:44:23+00:00"
+    },
+    "GocsRvL8NX1Bwyp7uAbXCstFFTgr5Wywv17DCRNstPGQ": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:44:23+00:00"
+    },
+    "D11ULxUgsnEazx39xVUcbqht4YFcgCxE2JJTnAryPGc6": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:42:52+00:00"
+    },
+    "DtvmxrTACskMG2W8a6KXgSemUfvyNVeQTgfpJoGvMVKx": {
+      "count": 6,
+      "last_seen": "2026-10-15T19:39:51+00:00"
+    },
+    "DD9yuMenLmUnKG4FU7GVJDeZQ7cNriUnk9S5dRn92gtD": {
+      "count": 8,
+      "last_seen": "2026-10-15T19:39:51+00:00"
+    },
+    "765awaA7tauSZunqrJS78ySbnvqvsKgpqpqu7UqV2czV": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:19:20+00:00"
+    },
+    "4RATHx9UEs8SjF1gZwR4LUNTjhhHUa1pmWTtuViD82De": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:18:38+00:00"
+    },
+    "5ABcQDPvMARMW1dGqe2hambeYP7e832DaLEfvH7TfM9V": {
+      "count": 2,
+      "last_seen": "2026-10-15T19:15:23+00:00"
+    },
+    "HViSJJoM6rSqSQazX2BW1TgFtxJGhKfYUMftmv6Xn7N4": {
+      "count": 2,
+      "last_seen": "2026-10-15T19:12:17+00:00"
+    },
+    "ZxUsPByDhuNY4MeetDuu7gmqxqr5cQeP9d5iLoayN2k": {
+      "count": 1,
+      "last_seen": "2026-10-15T19:12:06+00:00"
+    },
+    "AtrztwEWoKS1kZjiFw5YSs9tP3bWft9a6aHjTNBBLmLE": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:58:31+00:00"
+    },
+    "75tAJqez5fs4MrTuhgvqGeqjHfLqeE7daMmfvJ591Xyj": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:58:00+00:00"
+    },
+    "5eoZdSmoxQMM2KpA2mg8vR4SJhLzctLrKWXbVmuHuxSV": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:57:46+00:00"
+    },
+    "BboTccXvJW5D9PnCMkURJLa34DtbUvkg4HK9MGuCzNG2": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:54:51+00:00"
+    },
+    "D9xU9VRoBqsZ1hs4MiTfYACxmuUipdBidygTL8NV2dEg": {
+      "count": 3,
+      "last_seen": "2026-10-15T18:54:47+00:00"
+    },
+    "8eeCSVUfWqggCpnieLNoi8ZCait5yDSy9JgJfcmhwkaw": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:53:08+00:00"
+    },
+    "FmVPp72qV2MF4qUYiWksrEeWDF6Kie1T2B52P4TnPR4q": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:45:23+00:00"
+    },
+    "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:45:21+00:00"
+    },
+    "4Ep9WdEnyEnnH5c1UjHJ6mAJaD2tQAT3T15sMo4a2RLe": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:45:21+00:00"
+    },
+    "6hAj7ZcyadhZVb8qNgWUac8ZZu5G25dAQ8ZPvFvbkVVm": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:44:55+00:00"
+    },
+    "9EwQoN74Hzw747EM7wB3WtvgAdRGH1czaPtbqZj1qDj4": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:44:55+00:00"
+    },
+    "8tL1MRcaK61UQ9f8kgSmGBJuTjQUwqJXT7fHdfAWGEkf": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:44:52+00:00"
+    },
+    "94wzkshHyEivmQXp7iZqeKWt2RqUq6z4qXQv2DwVvTdq": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:44:29+00:00"
+    },
+    "41xqFcw6vXW4wfoFNVWASmAaYkHejyKfUPCyu2xAojXc": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:43:40+00:00"
+    },
+    "8RfjpEDBtaAjAiryzebu1wMqpqUxTSpuhpBxkpGDx4vB": {
+      "count": 3,
+      "last_seen": "2026-10-15T18:41:54+00:00"
+    },
+    "7GWFHX3BTMXhZjXdDoxUCEJKXFaYRuhwwgfPQc4ZWRkd": {
+      "count": 3,
+      "last_seen": "2026-10-15T18:38:29+00:00"
+    },
+    "D8cJRpXaCWVK8c3doDq7Ymoz2XE4WyhFhbgNytWwqptA": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:36:20+00:00"
+    },
+    "H2kEvCevReYbiJ8U6G9cFiua7iAQykwuLtT8mzK8sHw1": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:36:08+00:00"
+    },
+    "F2qG43R8TWiMkSYrr6nGHYjQi4NyF8XedngCE4B5EqvX": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:34:26+00:00"
+    },
+    "HHYHb3GX8HeuuGZLChqSJ8SxtVdYm3jJP4CKuGQv1jeT": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:31:24+00:00"
+    },
+    "D81j2fQhDXNEzQ6Sw2yJqgDUQustSK35jhZL6fnewZWT": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:31:18+00:00"
+    },
+    "6irZJ2uPPtFq25ii2sYGWJ2eK8iG43CSEhyzrNdCBUHo": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:31:12+00:00"
+    },
+    "DsQhTbiVqdWksoGNrNiDApLhHkJPnudFG4Nie2PsoBJ2": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:30:50+00:00"
+    },
+    "2fqRDhMnHe9mvj5TuRBzKFV493pdc12LuQPETEtwmsDP": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:30:40+00:00"
+    },
+    "7sYBNZW3z5U3TxUnMF9v66TXnMixAx8e4m8TAmUYum8T": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:29:19+00:00"
+    },
+    "9pRyxJYQCrVQR4M77uc8hy8dbLPrzTV41KkW6qpTyfYg": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:24:53+00:00"
+    },
+    "8GnRjB9NCwEvJbuTBD9aSDTnyWPQxzXuGP4JPZXFgHs5": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:24:24+00:00"
+    },
+    "3gJkXpH8qsPWYu3ATErenSrwmMB5NDCC9Kq7T9UUEM2g": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:16:39+00:00"
+    },
+    "HgeBEas7EkHEPrnmXfsm6DWE7QEPpJYjsfjhnnJ9t75o": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:16:28+00:00"
+    },
+    "HxcdEi6CWzQtPCmM8E2maEZ3oYVGZxESqCWU1iPzmhVW": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:15:49+00:00"
+    },
+    "cb8SQAuKj9K11wd7AvJWcHYsQ6g2XF7HiqG21XEqWAp": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:14:49+00:00"
+    },
+    "3tbfXjufPL3GzRrr9vueipwcrsDqRpDrHB3YDyqHtjkV": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:11:31+00:00"
+    },
+    "E1GsuRNs6B3iePHpMVrTS5wDJYnwTk1zqeYwSRTSbpRJ": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:10:41+00:00"
+    },
+    "3AoQmpHaVTV3tcZqWAFrYgtCPqkMkdgxib9MjtvDRsom": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:09:28+00:00"
+    },
+    "9Adjpxvv7mhpSdFxPHURLqfJnhnvMDFWfbRikge6F4LX": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:09:23+00:00"
+    },
+    "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT": {
+      "count": 12,
+      "last_seen": "2026-10-15T18:08:23+00:00"
+    },
+    "8JTV7HFsAbHU6f6rz4ZF4cyUKyygBP2L2cCNLvLCHo25": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:08:10+00:00"
+    },
+    "7JCe3GHwkEr3feHgtLXnmuJ1yB3A7coSeyynxTBgdG8k": {
+      "count": 6,
+      "last_seen": "2026-10-15T18:08:03+00:00"
+    },
+    "DBWwpeP5giJ93ENFAS33WZQcsPb9fnarxHEpwKrbKN7J": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:07:06+00:00"
+    },
+    "4x5Uti74CuwoM1wRq3gmuMJ3p5qmGNMEbP428Rgb7zTJ": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:06:56+00:00"
+    },
+    "5xoQ3xNqvyaB995HK8ktiGFRbCj6wk9Y9iZAGL4tQWCT": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:06:56+00:00"
+    },
+    "WG5BkoVeKJ6wRbtUvHfEhiNCaEgBRXnKTiaASbvsfbT": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:06:56+00:00"
+    },
+    "2No5257RfUnbh99m9xHV8Gv3QRWYC5TtNhdA1HDVZUd1": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:06:52+00:00"
+    },
+    "4GE5AQFL2AuFyFQ9wPSovxHcUtXe6MBQJ777qb5U3aka": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:05:15+00:00"
+    },
+    "7tsFkP44KfSjJduKx6BWpxLZJRnhDNfvcLZerjNeso7L": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:05:09+00:00"
+    },
+    "Gts4x6Z7L47z5BKZzbPivd6iS8jn1y7o9RMALDFesrFg": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:02:43+00:00"
+    },
+    "7tY9Azuh3Ut5JDUyQysLescGmNVVQHGgXQ4i2fUZtkmK": {
+      "count": 2,
+      "last_seen": "2026-10-15T18:02:23+00:00"
+    },
+    "4KXuMu3iUMtXNkPvPof9YAEn2jRkzz1ewqfvHT3djKqs": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:00:49+00:00"
+    },
+    "dmuXAmcXJcdNuK264vsJQNBpVBPAx4JLujBzBMahJ6C": {
+      "count": 5,
+      "last_seen": "2026-10-15T18:00:40+00:00"
+    },
+    "9Wo1fYFPXtxDQ1dwKXEMtMJ3yBvVvG4gnTZ29NXmvqqs": {
+      "count": 1,
+      "last_seen": "2026-10-15T18:00:36+00:00"
+    },
+    "3qyi4ieCPgpTipuvGMad6AGQj8hWinTGf698KoSjG5s3": {
+      "count": 1,
+      "last_seen": "2026-10-15T17:59:57+00:00"
+    },
+    "38zWEJMZgvhKYLk7m49wd148hLARPTa6pp9r5rvz6whX": {
+      "count": 1,
+      "last_seen": "2026-10-15T17:59:04+00:00"
+    },
+    "AgmLJBMDCqWynYnQiPCuj9ewsNNsBJXyzoUhD9LJzN51": {
+      "count": 58,
+      "last_seen": "2026-10-15T17:57:57+00:00"
+    },
+    "CJ88Pf7X3GA3Xy5dq2Ubmfq7SLRrZwr6VrmEYTzYi9S6": {
+      "count": 1,
+      "last_seen": "2026-10-15T17:57:53+00:00"
+    },
+    "HC3wexpLkQU4ACFjdcNAuNBGT6QgfmRAnJ7MEbi6UJuF": {
+      "count": 1,
+      "last_seen": "2026-10-15T17:56:26+00:00"
+    },
+    "DD661byzFWoidY2HLdVmDAfdg6ujRNzjy2rXFCRTw1NE": {
+      "count": 1,
+      "last_seen": "2026-10-15T17:56:09+00:00"
+    }
+  },
+  "positions": [],
+  "closed": [],
+  "decisions": [],
+  "snapshots": [
+    {
+      "at": "2026-10-15T22:18:14+00:00",
+      "equity_gbp": 2000.0,
+      "cash_gbp": 2000.0,
+      "open_positions": 0,
+      "closed_trades": 0,
+      "watched_pools": 4,
+      "sampled_feeds": 2,
+      "screened_pools": 2,
+      "status": "DEGRADED"
+    }
+  ],
+  "watched_pools": [
+    {
+      "id": "solana_D9NCkN3unPTVLtA56Y68J2cXisje9yyYe61gMM2HCHwJ",
+      "name": "STREAM / SOL",
+      "mint": "9a98oQHtxfqmr4EyzsP6wfw69uYAK3JbUeVEuNW1pump",
+      "pool": "D9NCkN3unPTVLtA56Y68J2cXisje9yyYe61gMM2HCHwJ",
+      "liquidity_usd": 449387.0404,
+      "volume_24h_usd": 7766832.85421327,
+      "price_usd": 0.021663036358402617,
+      "change_24h_pct": 8888.1,
+      "age_hours": 26.993460371666664
+    },
+    {
+      "id": "solana_6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "name": "DOPE / SOL",
+      "mint": "33jENUQnjoitkMFpvNJcSHyLAHFWJuHwT6E3E8CNpump",
+      "pool": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "liquidity_usd": 301956.3875,
+      "volume_24h_usd": 5711160.34118723,
+      "price_usd": 0.005841871088955122,
+      "change_24h_pct": 99.025,
+      "age_hours": 104.7492937075
+    },
+    {
+      "id": "solana_4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E",
+      "name": "VEIL / SOL",
+      "mint": "HgTGdc29D5bDMrDvsCLnorxz899VyDj7ZN7FPa6vpump",
+      "pool": "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E",
+      "liquidity_usd": 199143.8159,
+      "volume_24h_usd": 1027299.85891391,
+      "price_usd": 0.004281652780316067,
+      "change_24h_pct": -17.261,
+      "age_hours": 75.27901593166666
+    },
+    {
+      "id": "solana_3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp",
+      "name": "ZEREBRO / SOL",
+      "mint": "8x5VqbHA8D7NkD52uNuS5nnt3PwA8pLD34ymskeSo2Wn",
+      "pool": "3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp",
+      "liquidity_usd": 3894709.7938,
+      "volume_24h_usd": 16299615.8208835,
+      "price_usd": 0.049934813559049614,
+      "change_24h_pct": 9.055,
+      "age_hours": 17211.160404821945
+    }
+  ],
+  "errors": [
+    {
+      "at": "2026-10-15T22:18:14+00:00",
+      "error": "token safety unavailable or failed: 9a98oQHtxfqmr4EyzsP6wfw69uYAK3JbUeVEuNW1pump"
+    },
+    {
+      "at": "2026-10-15T22:18:14+00:00",
+      "error": "token safety unavailable or failed: 8x5VqbHA8D7NkD52uNuS5nnt3PwA8pLD34ymskeSo2Wn"
+    }
+  ]
+}
