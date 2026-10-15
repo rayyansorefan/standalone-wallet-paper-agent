@@ -1,6 +1,20 @@
 name: Standalone wallet PAPER research
 on:
   workflow_dispatch:
+    inputs:
+      scheduler:
+        description: External scheduler identifier
+        required: false
+        default: manual
+        type: string
+      scheduled_at:
+        description: External scheduler UTC timestamp
+        required: false
+        type: string
+      trigger_uid:
+        description: External scheduler trigger identifier
+        required: false
+        type: string
   schedule:
     - cron: '1-56/5 * * * *'
 permissions:
@@ -27,6 +41,10 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run read-only paper research
         id: scan
+        env:
+          PAPER_SCHEDULER: ${{ github.event_name == 'schedule' && 'github-cron' || inputs.scheduler }}
+          PAPER_SCHEDULED_AT: ${{ inputs.scheduled_at }}
+          PAPER_TRIGGER_UID: ${{ inputs.trigger_uid }}
         run: python -m agent.scheduled
       - name: Save cycle state and updated visualiser feed
         if: always() && steps.scan.outputs.executed == 'true'
