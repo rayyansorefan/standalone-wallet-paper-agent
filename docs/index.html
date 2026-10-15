@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0e1422"><title>Standalone Wallet Agent | Paper Trading</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#eaf1fc;background:#0d1421;line-height:1.48;font-size:14px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#173252 0%,#0d1421 42%);min-height:100vh}.container{max-width:1240px;margin:auto;padding:28px 24px 80px}
+a{color:#77c8ff;text-decoration:none}a:hover{text-decoration:underline}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:25px;border-bottom:1px solid #26364b;padding-bottom:22px}
+.brand{display:flex;gap:14px;align-items:center}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#315afa,#27c6a8);display:grid;place-items:center;color:#fff;font-size:24px;font-weight:700}
+.title{font-weight:800;font-size:21px;letter-spacing:-.6px}.subtitle{font-size:12px;color:#9db0ce}.headRight{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid #394a61;border-radius:999px;padding:5px 12px;font-weight:700;font-size:11px;letter-spacing:.6px}
+.badge::before{content:"";width:7px;height:7px;background:#8da3c2;border-radius:50%}
+.badge.ok{color:#6be8bd;background:#102a27;border-color:#20674e}.badge.ok::before{background:#3fe0b0}.badge.warn{color:#ffd18a;background:#332718;border-color:#654a22}.badge.warn::before{background:#ffd18a}
+.badge.bad{color:#ff9da9;background:#3a2029;border-color:#824352}.badge.bad::before{background:#ff889a}
+.topnote{padding:14px 18px;border-radius:12px;border:1px solid #344259;background:#192438;margin-bottom:22px;color:#d4e3fa;display:flex;gap:12px;align-items:flex-start}
+.topnote strong{color:#fff}.topnote small{display:block;color:#a8b9d3;font-size:12px;margin-top:3px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}.metric{border:1px solid #293a51;background:#172339;padding:18px;border-radius:15px;min-height:116px}
+.label{color:#adbed6;font-weight:600;font-size:12px}.value{font-size:30px;font-weight:800;letter-spacing:-1.1px;margin:8px 0 0;line-height:1.2;font-variant-numeric:tabular-nums}.meta{font-size:11px;color:#8fa3bf;margin-top:10px}.positive{color:#6ce3b2!important}.negative{color:#ff9ba7!important}.quiet{color:#a6b8d3}
+.layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:18px}.panel{border:1px solid #293a51;background:#172339;border-radius:15px;padding:18px;min-width:0;margin-bottom:18px}
+.panel h2{font-size:16px;margin:0;letter-spacing:-.2px}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.segment{display:inline-flex;gap:3px;border:1px solid #39475d;background:#101b2d;padding:3px;border-radius:9px}.segment button{border:0;background:transparent;color:#a5b8d2;padding:7px 11px;border-radius:6px;cursor:pointer;font-weight:700;font-size:11px}.segment button.sel{background:#314663;color:#f1f6ff}
+#chart{height:242px;width:100%;display:block;overflow:visible}.axis{fill:#849bbd;font-size:11px}.gridline{stroke:#304159;stroke-dasharray:3 5}.line{stroke:#68ddae;stroke-width:3;fill:none;stroke-linejoin:round;stroke-linecap:round}.fill{fill:url(#fillgreen)}.markerline{stroke:#5e7290;stroke-dasharray:4 3}.dot{fill:#8ef2c8;stroke:#0d1421;stroke-width:2}
+.legend{color:#93a7c2;font-size:11px}.empty{padding:35px 10px;text-align:center;color:#96abc8}.actions{display:flex;gap:6px;flex-wrap:wrap}
+.tablewrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;border-bottom:1px solid #2a3b52;padding:11px 10px;white-space:nowrap}th{color:#91a7c5;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px}td{color:#dce7f8}tr:last-child td{border-bottom:0}
+.small{font-size:11px;color:#99adc8}.truncate{max-width:320px;overflow:hidden;text-overflow:ellipsis}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#9acbff}
+.insight{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid #2a3a50}.insight:last-child{border:0}.insight strong{font-size:18px;display:block;line-height:1.1;margin-top:2px}.circle{height:35px;width:35px;display:grid;place-items:center;border-radius:10px;background:#263955;font-size:15px}
+.pill{font-size:10px;font-weight:800;letter-spacing:.5px;border:1px solid #41516a;border-radius:5px;padding:3px 6px;color:#d0dceb}.footer{margin-top:25px;color:#879bb8;font-size:11px;line-height:1.8}.footer strong{color:#c0d2ec}
+#hover{position:absolute;pointer-events:none;display:none;padding:8px 11px;background:#0b1523;border:1px solid #40536f;border-radius:8px;color:white;font-size:12px;box-shadow:0 9px 30px #050b1499;z-index:20}
+#chartHolder{position:relative}
+@media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}header{align-items:flex-start}.headRight{justify-content:flex-start}}
+@media(max-width:520px){.container{padding:18px 13px 55px}.metrics{gap:8px}.metric{padding:13px;min-height:100px}.value{font-size:24px}.title{font-size:17px}.brand{align-items:flex-start}.logo{height:38px;width:38px}.panel{padding:14px}.headRight{gap:7px}header{flex-direction:column}.label{font-size:11px}}
+</style>
+</head>
+<body><main class="container">
+<header>
+<div class="brand"><div class="logo">◇</div><div><div class="title">Wallet Intelligence <span style="color:#74d9b7">/ PAPER</span></div><div class="subtitle">Independent Solana wallet-observation experiment · No live capital</div></div></div>
+<div class="headRight"><span class="badge" id="freshness">AWAITING FIRST CYCLE</span><span class="badge">PAPER ONLY · £2,000</span><a class="small" href="https://github.com/rayyansorefan/standalone-wallet-paper-agent" target="_blank" rel="noopener">View source ↗</a></div>
+</header>
+<div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
+<div class="metrics">
+<div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
+<div class="metric"><div class="label">Total simulated P&amp;L</div><div class="value" id="totalPnl">—</div><div class="meta" id="return">Versus £2,000 initial capital</div></div>
+<div class="metric"><div class="label">Realised paper P&amp;L</div><div class="value" id="realized">£0.00</div><div class="meta">After 1% modeled costs per side</div></div>
+<div class="metric"><div class="label">Open positions</div><div class="value" id="open">0</div><div class="meta" id="closed">0 closed · 0 wins</div></div>
+</div>
+<div class="layout">
+<div>
+<section class="panel"><div class="panelhead"><div><h2>Portfolio progression</h2><div class="small">Paper equity across successfully priced research snapshots</div></div><div class="segment" aria-label="Chart timeframe"><button class="sel" data-span="all">ALL</button><button data-span="7d">7D</button><button data-span="1d">24H</button></div></div><div id="chartHolder"><svg id="chart" role="img" aria-label="Simulated equity over time"></svg><div id="hover"></div></div><div id="chartNote" class="legend">Chart will appear after two priced observations.</div></section>
+<section class="panel"><div class="panelhead"><h2>Current paper positions</h2><span class="pill" id="positionCount">0 POSITIONS</span></div><div class="tablewrap"><table><thead><tr><th>Pool / Token</th><th>Signal sender</th><th>Amount</th><th>Latest marked P&amp;L*</th><th>Age</th></tr></thead><tbody id="positions"><tr><td colspan="5" class="quiet">No paper positions opened.</td></tr></tbody></table></div></section>
+<section class="panel"><div class="panelhead"><h2>Decision audit trail</h2><span class="pill">EXPLAINABLE</span></div><div class="tablewrap"><table><thead><tr><th>Time (UK)</th><th>Action</th><th>Wallet</th><th>Reason / rule</th></tr></thead><tbody id="decisions"><tr><td colspan="4" class="quiet">No real observations or decisions yet.</td></tr></tbody></table></div></section>
+</div>
+<aside>
+<section class="panel"><div class="panelhead"><h2>Research health</h2><span class="pill">DATA INTEGRITY</span></div>
+<div class="insight"><div class="circle">↻</div><div><div class="small">Completed research cycles</div><strong id="cycles">0</strong></div></div>
+<div class="insight"><div class="circle">◎</div><div><div class="small">Tracked candidate senders</div><strong id="walletCount">0</strong></div></div>
+<div class="insight"><div class="circle">◴</div><div><div class="small">Stale / missed signals</div><strong id="stale">0</strong></div></div>
+<div class="insight"><div class="circle">▣</div><div><div class="small">Priced snapshots</div><strong id="priced">0</strong></div></div>
+<div class="insight"><div class="circle">⚑</div><div><div class="small">Market-data / screening issues</div><strong id="errors">0</strong></div></div>
+</section>
+<section class="panel"><div class="panelhead"><h2>Observed wallet candidates</h2><span class="pill">NOT VERIFIED</span></div><div class="tablewrap"><table><thead><tr><th>Sender</th><th>Observed</th><th>Copies</th><th>Copy P&amp;L</th></tr></thead><tbody id="wallets"><tr><td colspan="4" class="quiet">No candidate observations yet.</td></tr></tbody></table></div><div class="small" style="padding-top:12px">These are transaction-origin addresses, not established beneficial traders or proven profitable wallets. Rankings are exploratory and shrink small samples.</div></section>
+<section class="panel"><h2>Execution assumptions</h2><div class="small" style="margin-top:12px;line-height:1.9">Market scan target: <b>5 minutes</b><br>Browser display refresh: <b>60 seconds</b><br>Mode: <b>Paper only</b><br>Assumed adverse costs: <b>1% each side</b><br>Maximum open positions: <b>5</b><br>Per-position allocation: <b>0.5–1.5%</b><br>Risk screen: <b>Fail closed</b><br>Profitable strategy verified: <b>No</b></div></section>
+</aside></div>
+<footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id), money=(n,sign=false)=>Number.isFinite(Number(n))?'£'+(sign&&Number(n)>0?'+':'')+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+const num=n=>(n===null||n===undefined||n==='')?null:(Number.isFinite(Number(n))?Number(n):null);
+const pct=(n)=>n===null?'—':(n>0?'+':'')+n.toFixed(2)+'%';
+const uk=(v)=>{if(!v)return '—';const d=new Date(v);return isNaN(d)?'—':new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London',timeZoneName:'short'}).format(d)};
+const short=(s)=>s?(String(s).slice(0,5)+'…'+String(s).slice(-4)):'—';
+const safe=(s)=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let state=null, span='all', points=[];
+function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_data_at):null,age=last?(Date.now()-last.getTime())/60000:null,run=s?.last_run?new Date(s.last_run):null;
+let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
+el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
+$('statusMessage').textContent=!run?'No market observations have been completed. There are no trading results yet.':age===null?'No verified trade-feed data is available yet; portfolio values may not be current.':age>15?'The underlying market feed is more than 15 minutes old. Data is not current.':'The research process has checked market data. Values are snapshots, not live quotes.';
+$('updated').textContent='Most recent cycle: '+uk(s?.last_run)+' · Last successful trade-feed fetch: '+uk(s?.last_data_at)+' · Dashboard checks every 60 seconds.';}
+function table(id,rows,cols,empty){$(id).innerHTML=rows.length?rows.map(r=>'<tr>'+cols.map(fn=>'<td>'+fn(r)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+safe(empty)+'</td></tr>';}
+function color(n){return n===null?'':n<0?'negative':n>0?'positive':'';}
+function draw(){const svg=$('chart'),s=state;while(svg.firstChild)svg.removeChild(svg.firstChild);points=[];
+const data=(s?.snapshots||[]).filter(x=>num(x.equity_gbp)!==null&&!isNaN(new Date(x.at)));let cut=span==='1d'?Date.now()-86400000:span==='7d'?Date.now()-604800000:0;const history=data.filter(x=>new Date(x.at).getTime()>=cut).slice(-400);const hint=$('chartNote');
+svg.setAttribute('viewBox','0 0 850 260');const ns='http://www.w3.org/2000/svg';const el=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.appendChild(n);return n};
+if(history.length<2){hint.textContent='Awaiting at least two successfully priced observations in this period.';el('text',{x:425,y:125,fill:'#95a9c6','text-anchor':'middle','font-size':14},'No verified progression data yet');return;}
+let values=history.map(x=>Number(x.equity_gbp)),lo=Math.min(...values),hi=Math.max(...values),pad=Math.max(1,(hi-lo)*.2);lo-=pad;hi+=pad;
+let left=72,right=836,top=16,bottom=224;for(let i=0;i<4;i++){let y=top+(bottom-top)*i/3,v=hi-(hi-lo)*i/3;el('line',{x1:left,y1:y,x2:right,y2:y,class:'gridline'});el('text',{x:60,y:y+4,class:'axis','text-anchor':'end'},'£'+v.toFixed(0));}
+let t0=new Date(history[0].at).getTime(),t1=new Date(history.at(-1).at).getTime();if(t0===t1)t1=t0+1000;
+points=history.map(x=>({x:left+(new Date(x.at).getTime()-t0)/(t1-t0)*(right-left),y:top+(hi-x.equity_gbp)/(hi-lo)*(bottom-top),raw:x}));
+const poly=points.map(x=>x.x.toFixed(1)+','+x.y.toFixed(1)).join(' ');
+el('line',{x1:left,y1:bottom,x2:right,y2:bottom,stroke:'#35455c'});
+el('polyline',{points:poly,fill:'none',stroke:'#65dab0','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});
+el('circle',{cx:points.at(-1).x,cy:points.at(-1).y,r:5,fill:'#68e6b8',stroke:'#0d1421','stroke-width':2});
+el('text',{x:left,y:248,class:'axis'},uk(history[0].at));el('text',{x:right,y:248,class:'axis','text-anchor':'end'},uk(history.at(-1).at));
+hint.textContent=history.length+' priced snapshots · Last recorded equity '+money(history.at(-1).equity_gbp)+'. Gaps reflect unavailable pricing or missed cycles.';}
+$('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
+$('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
+document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
+function render(s){state=s;health(s);let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
+$('equity').textContent=eq===null?'UNAVAILABLE':money(eq);$('totalPnl').textContent=gross===null?'—':money(gross,true);$('totalPnl').className='value '+color(gross);$('return').textContent=gross===null?'No complete portfolio valuation':pct(gross/(num(s.starting_gbp)||2000)*100)+' versus starting capital';$('realized').textContent=money(realized,true);$('realized').className='value '+color(realized);$('open').textContent=(s.positions||[]).length;$('closed').textContent=(s.closed||[]).length+' closed · '+wins+' wins';$('positionCount').textContent=(s.positions||[]).length+' POSITIONS';
+$('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCount').textContent=Object.keys(s.observed||{}).length;$('stale').textContent=s.stale_signals||0;$('priced').textContent=(s.snapshots||[]).filter(x=>num(x.equity_gbp)!==null).length;$('errors').textContent=(s.errors||[]).length;
+table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
+table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
+const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();}
+async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
+})();
+</script>
+</body></html>

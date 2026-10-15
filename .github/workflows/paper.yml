@@ -1,0 +1,57 @@
+name: Standalone wallet PAPER research
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '2-57/5 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: standalone-wallet-paper-research
+  cancel-in-progress: false
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test engine and parsing
+        run: python -m unittest discover -s tests -v
+      - name: Run read-only paper research
+        id: scan
+        run: python -m agent.cli once
+      - name: Save cycle state and updated visualiser feed
+        if: always()
+        run: |
+          if [ -f state/state.json ] && [ -f docs/state.json ]; then
+            git config user.name 'standalone-wallet-paper[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -f state/state.json docs/state.json
+            if ! git diff --cached --quiet; then
+              git commit -m "paper research $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              git pull --rebase
+              git push
+            fi
+          else
+            echo 'No completed paper observation state to publish.'
+          fi
+      - name: Fail visibly if key market feeds were unavailable
+        if: always()
+        run: |
+          if [ -f state/state.json ]; then
+            python - <<'PYCODE'
+          import json,sys
+          s=json.load(open('state/state.json'))
+          status=s.get('last_status')
+          print('Latest research status:', status)
+          print('Wallet candidates:',len(s.get('observed',{})))
+          if status not in ('OK','BOOTSTRAPPED_NO_TRADES'):
+              print('WARNING: Research cycle was incomplete or degraded. Inspect audit data.')
+              sys.exit(2)
+          PYCODE
+          else
+            echo 'FAIL: state/state.json not generated'
+            exit 2
+          fi
