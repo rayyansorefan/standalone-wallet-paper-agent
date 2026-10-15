@@ -2,7 +2,7 @@ name: Standalone wallet PAPER research
 on:
   workflow_dispatch:
   schedule:
-    - cron: '2-57/5 * * * *'
+    - cron: '1-56/5 * * * *'
 permissions:
   contents: write
   pages: write
@@ -12,10 +12,14 @@ concurrency:
   cancel-in-progress: false
 jobs:
   paper:
+    outputs:
+      executed: ${{ steps.scan.outputs.executed }}
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -23,9 +27,9 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run read-only paper research
         id: scan
-        run: python -m agent.cli once
+        run: python -m agent.scheduled
       - name: Save cycle state and updated visualiser feed
-        if: always()
+        if: always() && steps.scan.outputs.executed == 'true'
         run: |
           if [ -f state/state.json ] && [ -f docs/state.json ]; then
             git config user.name 'standalone-wallet-paper[bot]'
@@ -40,7 +44,7 @@ jobs:
             echo 'No completed paper observation state to publish.'
           fi
       - name: Fail visibly if key market feeds were unavailable
-        if: always()
+        if: always() && steps.scan.outputs.executed == 'true'
         run: |
           if [ -f state/state.json ]; then
             python - <<'PYCODE'
@@ -60,7 +64,7 @@ jobs:
 
   dashboard:
     needs: paper
-    if: always()
+    if: always() && needs.paper.outputs.executed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     environment:
