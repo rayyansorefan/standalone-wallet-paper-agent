@@ -464,7 +464,12 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
         except Exception as exc:
             record_issue(r,'extra quotes: '+str(exc))
     for pool in watch:
-        if pool['pool'] not in meta:
+        # A persisted pool may still have eligible *historical* metadata.
+        # Only the current scan's accepted supplemental quote proves that it
+        # remains observable. Prioritise genuinely untried pools next cycle
+        # instead of repeatedly burning a slot on an unquoted pool.
+        if pool['pool'] not in r['last_quotes']:
+            r.setdefault('pool_last_scanned',{})[pool['pool']]=now.isoformat(timespec='seconds')
             record_issue(r,'fresh supplemental quote missing for '+pool['pool'][:44])
     # Mark older whale shadow positions (possibly no longer on the supplemental watchlist).
     missing=[p['token'] for p in r['shadow_positions'] if p['token'] not in prices]
@@ -480,7 +485,7 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     for pool in watch:
         if time.monotonic()-budget_started >= RESEARCH_TIME_BUDGET_SECONDS:
             record_issue(r,'V3 research time budget reached before extra swap scan');break
-        if pool['pool'] not in meta:continue  # fail closed if fresh quote missing
+        if pool['pool'] not in r['last_quotes']:continue  # no unpriced/stale supplemental trades
         try:
             r.setdefault('pool_last_scanned',{})[pool['pool']]=now.isoformat(timespec='seconds')
             path='/networks/solana/pools/'+urllib.parse.quote(pool['pool'],safe='')+'/trades'
