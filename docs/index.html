@@ -32,6 +32,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 @media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}header{align-items:flex-start}.headRight{justify-content:flex-start}}
 @media(max-width:520px){.container{padding:18px 13px 55px}.metrics{gap:8px}.metric{padding:13px;min-height:100px}.value{font-size:24px}.title{font-size:17px}.brand{align-items:flex-start}.logo{height:38px;width:38px}.panel{padding:14px}.headRight{gap:7px}header{flex-direction:column}.label{font-size:11px}}
 
+.layout>div,.layout>aside{min-width:0}
 /* Unified Adaptive V2 dashboard: all selectors scoped so the original charts remain intact. */
 .v2-nav{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:0 0 22px;padding:9px;background:#132237;border:1px solid #2d445d;border-radius:12px;position:sticky;top:8px;z-index:9;box-shadow:0 6px 22px #06101c77}
 .v2-nav a{display:inline-flex;align-items:center;padding:8px 12px;color:#c0d3ed;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap}
