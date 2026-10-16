@@ -197,3 +197,25 @@ class EvaluationFailureIsolation(unittest.TestCase):
         self.assertEqual(r['status'],'DEGRADED');self.assertEqual(r['reports'],{})
         self.assertFalse(evaluation.certified(s,'wallet:test'))
         for key in ['cash_gbp','positions','closed']:self.assertEqual(s[key],before[key])
+
+class ProviderWindow(unittest.TestCase):
+    def test_primary_window_delay_is_bounded_and_not_a_retry(self):
+        self.assertEqual(research_feed.primary_window_delay(NOW,NOW),60)
+        self.assertEqual(research_feed.primary_window_delay(NOW,NOW+dt.timedelta(seconds=10)),55)
+        self.assertEqual(research_feed.primary_window_delay(NOW,NOW+dt.timedelta(seconds=70)),0)
+
+    def test_injected_transport_never_sleeps_primary_window(self):
+        clock=Clock();r={'scan_metrics':{}}
+        with patch.dict('os.environ',{'GITHUB_ACTIONS':'true'}):
+            research_feed.ResearchFeed(r,NOW,transport=lambda *a:{'data':[]},clock=clock,sleep=clock.sleep)
+        self.assertEqual(clock.value,0)
+        self.assertEqual(r['scan_metrics']['primary_window_wait_seconds'],0)
+
+    def test_research_deadline_starts_after_primary_window(self):
+        clock=Clock();r={'scan_metrics':{}}
+        with patch.dict('os.environ',{'GITHUB_ACTIONS':'true'}), patch.object(research_feed,'primary_window_delay',return_value=55), patch.object(whales,'fast_fetch',return_value={'data':[]}):
+            f=research_feed.ResearchFeed(r,NOW,clock=clock,sleep=clock.sleep)
+            self.assertEqual(f('/pool/trades'),{'data':[]})
+        self.assertEqual(clock.value,55)
+        self.assertEqual(r['scan_metrics']['primary_window_wait_seconds'],55)
+        self.assertEqual(f.requests,1)

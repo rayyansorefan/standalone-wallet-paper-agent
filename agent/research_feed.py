@@ -6,6 +6,7 @@ Cooldowns survive ephemeral Actions runners; no retry loop consumes a cycle.
 import datetime as dt
 import email.utils
 import json
+import os
 import time
 import urllib.error
 import urllib.parse
@@ -41,24 +42,38 @@ def public_json(url, timeout=5):
         return json.loads(raw)
 
 
+def primary_window_delay(started, current):
+    # Leave the primary engine's first provider window before supplemental work.
+    # At most 60s, once per GitHub cycle; never sleep inside retry/backoff loops.
+    return min(60.,max(0.,65.-(current-started).total_seconds()))
+
+
 class ResearchFeed:
     def __init__(self, research, now, transport=None, clock=time.monotonic, sleep=time.sleep):
         from .whales import fast_fetch
         self.r, self.now = research, now
+        self.production = transport is None
         self.transport = transport or (lambda path,params:fast_fetch(path,params,timeout=REQUEST_TIMEOUT))
         self.clock, self.sleep = clock, sleep
+        quiet = primary_window_delay(now,dt.datetime.now(UTC)) if transport is None and os.getenv('GITHUB_ACTIONS')=='true' else 0
+        if quiet:
+            sleep(quiet)
+        if self.production:
+            self.now = dt.datetime.now(UTC)
         self.started = clock()
         self.last_request = None
         self.requests = 0
         self.health = research.setdefault('provider_health', {})
         self.cache = research.setdefault('discovery_cache', {})
         self.metrics = research['scan_metrics']
-        self.metrics.update(requests=0, cache_hits=0, deferred=0, quote_provider='geckoterminal')
+        self.metrics.update(requests=0, cache_hits=0, deferred=0, quote_provider='geckoterminal',
+                            primary_window_wait_seconds=round(quiet,3))
 
     def _reserve(self, group):
         health = self.health.setdefault(group, {})
         until = stamp(health.get('retry_at'))
-        if until and self.now < until:
+        current=dt.datetime.now(UTC) if self.production else self.now
+        if until and current < until:
             self.metrics['deferred'] += 1
             raise Deferred(group + ' cooling down until ' + health['retry_at'])
         wait = max(0, MIN_SPACING - (self.clock()-self.last_request)) if self.last_request is not None else 0
@@ -89,7 +104,7 @@ class ResearchFeed:
         delay = max(delay, min(86400, retry or 0))
         health.update(consecutive_failures=count, last_error=str(exc)[:180],
             http_status=getattr(exc, 'code', None),
-            retry_at=(self.now+dt.timedelta(seconds=delay)).isoformat(timespec='seconds'))
+            retry_at=((dt.datetime.now(UTC) if self.production else self.now)+dt.timedelta(seconds=delay)).isoformat(timespec='seconds'))
 
     def _call(self, group, operation):
         health = self._reserve(group)
