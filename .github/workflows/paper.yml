@@ -71,6 +71,12 @@ jobs:
           status=s.get('last_status')
           print('Latest research status:', status)
           print('Wallet candidates:',len(s.get('observed',{})))
+          w=(s.get('research') or {}).get('whale_v3') or {}
+          print('Whale research status:',w.get('status'),'metrics:',w.get('scan_metrics'))
+          if w.get('status') != 'OK':
+              print('::warning::Whale research incomplete; inspect persisted V3 errors and provider cooldowns.')
+          e=(s.get('research') or {}).get('evaluation_v1') or {}
+          print('Forward evaluation:',e.get('status'),'validated cohorts:',e.get('validated_reports',0))
           if status not in ('OK','BOOTSTRAPPED_NO_TRADES','NO_SAFE_POOLS','NO_ELIGIBLE_POOLS'):
               print('WARNING: Research cycle was incomplete or degraded. Inspect audit data.')
               sys.exit(2)
@@ -96,4 +102,12 @@ jobs:
         with:
           path: docs
       - name: Publish actual observation feed and dashboard
+        id: publish
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Allow transient Pages API recovery
+        if: steps.publish.outcome == 'failure'
+        run: sleep 10
+      - name: Retry transient Pages publication once
+        if: steps.publish.outcome == 'failure'
         uses: actions/deploy-pages@v4

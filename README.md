@@ -2,7 +2,7 @@
 
 **PAPER TRADING ONLY · £2,000 simulated opening balance · zero real orders · no Floot, Bee Bots, wallet private keys, paid AI models, or exchange credentials.**
 
-> **Not live or profitable by assertion.** This code has passed local, mocked regression tests, but the authoring environment does not permit outgoing market-data requests, and the connected GitHub integration lacked `Contents: write` permission. The live GeckoTerminal and Rugcheck APIs, actual scheduled execution, and browser-hosted dashboard have **not** yet been verified. There must be no performance claims until forward observations accumulate.
+> **Current status and evidence:** the original GBP2,000 paper account is persistent and the Google Apps Script five-minute fallback has recorded genuine unattended executions. GitHub native cron remains best effort. V3 public-data availability is provider-dependent and must be assessed from current saved diagnostics. Zero verified whale owners and no demonstrated profitability or causal reinforcement improvement are asserted. See the forward evaluation and provider-health sections of the canonical dashboard.
 
 ## First deployment to the supplied repository
 
@@ -59,3 +59,16 @@ At least 4–8 weeks of forward paper observations, a sufficient sample of **ind
 ## Important public repository privacy note
 
 This project intentionally publishes observed on-chain wallet addresses and simulated trade data. Do not store personal information or API credentials in GitHub's source tree. GitHub Actions writes `state/state.json` and `docs/state.json` to Git history. If privacy is important, use a different hosting design; switching to a private repo can affect billed Actions minutes.
+
+
+## Research recovery and forward validation (16 October 2026)
+
+V3 reuses the complete primary pool-discovery response, rotates a maximum 64-pool inventory and scans at most two supplemental pools per cycle. Its transport permits four public requests per cycle with a 25-second budget, 2.1-second minimum spacing, bounded eight-second requests, 15-minute discovery caching and persisted exponential cooldowns (5, 10, 20, 40, 60 minutes). Retry-After can extend a cooldown. No stale quote is used as a fresh entry mark. Primary account/V2 requests have priority and remain unchanged. DEX Screener is a free quote-only fallback; aggregate counts never manufacture wallet transactions. Market data attribution: GeckoTerminal and DEX Screener.
+
+Large historical transactions can inform discovery, but cannot create backfilled entries or profits. Fresh observed flows receive later 5/30/60-minute sampled quote returns when prices are available. Transaction-origin addresses remain unverified; multi-pool activity can indicate routing and is not proof of beneficial ownership. Research and shadows never change original account P&L.
+
+Positive wallet/feature sizing now requires both the existing safety gates and registered forward validation. Registration excludes pre-existing trades and entries. A fixed chronological training prefix needs at least 40 closures over 14 days; the next 20 entries must begin after the training exits and span at least seven days. Pool/wallet diversity, positive daily-cluster lower bounds (z=4.2 across at most 256 reports), profit excluding the best win and positive 2%-per-side cost stress are additional requirements. This is an approximate conservative research gate, not a guarantee or evidence of causal improvement. Frozen cohort/outcome changes invalidate certification. Negative/suspension controls retain priority; maximum exposure stays 1.5%. No shadow strategy is automatically promoted.
+
+Exit diagnostics and sampled adverse/favourable price paths are descriptive; missed intracycle extremes, actual owner profits and no-stop counterfactuals remain unknown. A research evaluation failure revokes positive certificates and preserves the paper account. Pages publishes in a separate downstream job; a transient publication failure gets one retry after 10 seconds and can never undo the already saved engine state. The next unattended cycle also republishes.
+
+Validation commands: `python -m unittest discover -s tests -v` and `node infra/google_apps_script/test.mjs`. Never reset state files during deployment or rollback. Revert code only and keep the latest rolling state/history. Current run provenance and health, rather than a successful test alone, determine operational status.
