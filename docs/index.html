@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0e1422"><title>Standalone Wallet Agent | Paper Trading</title>
+<meta name="theme-color" content="#0e1422"><title>Wallet Intelligence · Unified Adaptive V2 | Paper Trading</title>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#eaf1fc;background:#0d1421;line-height:1.48;font-size:14px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#173252 0%,#0d1421 42%);min-height:100vh}.container{max-width:1240px;margin:auto;padding:28px 24px 80px}
@@ -31,6 +31,39 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 #chartHolder{position:relative}
 @media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}header{align-items:flex-start}.headRight{justify-content:flex-start}}
 @media(max-width:520px){.container{padding:18px 13px 55px}.metrics{gap:8px}.metric{padding:13px;min-height:100px}.value{font-size:24px}.title{font-size:17px}.brand{align-items:flex-start}.logo{height:38px;width:38px}.panel{padding:14px}.headRight{gap:7px}header{flex-direction:column}.label{font-size:11px}}
+
+.layout>div,.layout>aside{min-width:0}
+/* Unified Adaptive V2 dashboard: all selectors scoped so the original charts remain intact. */
+.v2-nav{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:0 0 22px;padding:9px;background:#132237;border:1px solid #2d445d;border-radius:12px;position:sticky;top:8px;z-index:9;box-shadow:0 6px 22px #06101c77}
+.v2-nav a{display:inline-flex;align-items:center;padding:8px 12px;color:#c0d3ed;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap}
+.v2-nav a:hover,.v2-nav a:focus-visible{background:#254564;color:#f1fbff;text-decoration:none;outline:1px solid #65d4c3}
+.v2-nav .v2-mark{color:#63e0ba;font-size:11px;font-weight:800;letter-spacing:.05em;margin:0 6px 0 4px}
+.v2-section{margin-top:28px;scroll-margin-top:85px}.v2-head{margin:0 0 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.v2-head h2{font-size:19px;line-height:1.2;margin:0 0 5px;letter-spacing:-.45px;color:#f3f8ff}
+.v2-head p{font-size:12px;color:#a0b4d0;max-width:790px;margin:0}
+.v2-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.v2-panel{background:#172339;border:1px solid #2b3e56;padding:19px;border-radius:15px;min-width:0;margin-bottom:14px}
+.v2-panel h3{font-size:14px;color:#ebf4ff;margin:0 0 12px;letter-spacing:-.1px}
+.v2-panel p{font-size:12px;color:#a9bdd7;line-height:1.6;margin:8px 0 0}
+.v2-kpi{background:#172339;border:1px solid #2b3e56;border-radius:13px;padding:15px;min-width:0}
+.v2-kpi-label{font-size:11px;color:#a1b8d3;font-weight:700}
+.v2-kpi-value{font-variant-numeric:tabular-nums;color:#f1f7ff;font-weight:850;font-size:27px;letter-spacing:-.7px;margin:5px 0}
+.v2-kpi-detail{font-size:11px;color:#a1b8d3}
+.v2-duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.v2-table-wrap{max-width:100%;overflow-x:auto}table.v2-table{border-collapse:collapse;width:100%;font-size:12px}
+.v2-table td,.v2-table th{white-space:normal;overflow-wrap:anywhere;padding:10px 9px;border-bottom:1px solid #2b3f56;text-align:left}
+.v2-table th{font-size:10px;color:#96abc6;letter-spacing:.3px;text-transform:uppercase}
+.v2-table td{color:#dbe8f8}.v2-table tr:last-child td{border-bottom:0}
+.v2-wallet{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#95cef6;font-size:11px}
+.v2-status{display:inline-flex;border:1px solid #4b627b;border-radius:6px;padding:3px 6px;font-size:10px;font-weight:750;color:#c0d4eb}
+.v2-status.good{border-color:#27654f;color:#68e3b8}.v2-status.warn{border-color:#896b36;color:#f4ca7f}.v2-status.bad{border-color:#94515b;color:#ffa7b1}
+.v2-positive{color:#67e2b4!important}.v2-negative{color:#ff9ca7!important}
+.v2-alert{border:1px solid #345c63;background:#112d36;border-radius:12px;padding:12px 16px;font-size:12px;color:#c8eae7;margin-bottom:15px}
+.v2-small{font-size:11px;color:#97afce;margin-top:9px}.v2-max-events{max-height:330px;overflow:auto}
+.v2-link{color:#7ed7f5;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:900px){.v2-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v2-duo{grid-template-columns:1fr}}
+@media(max-width:500px){.v2-nav{top:0;gap:1px}.v2-nav a{padding:8px 8px;font-size:11px}.v2-nav .v2-mark{display:none}.v2-panel{padding:13px}.v2-grid{gap:8px}.v2-kpi{padding:12px}.v2-kpi-value{font-size:23px}}
+
 </style>
 </head>
 <body><main class="container">
@@ -38,9 +71,11 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <div class="brand"><div class="logo">◇</div><div><div class="title">Wallet Intelligence <span style="color:#74d9b7">/ PAPER</span></div><div class="subtitle">Independent Solana wallet-observation experiment · No live capital</div></div></div>
 <div class="headRight"><span class="badge" id="freshness">AWAITING FIRST CYCLE</span><span class="badge">PAPER ONLY · £2,000</span><a class="small" href="https://github.com/rayyansorefan/standalone-wallet-paper-agent" target="_blank" rel="noopener">View source ↗</a></div>
 </header>
-<div style="margin:0 0 16px"><a href="./adaptive.html">↗ Open Advanced Research Lab</a></div>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
-<div class="metrics">
+<!-- UNIFIED_V2_NAV -->
+<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#experiments">Experiments</a><a href="#system">System health</a></nav>
+
+<div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
 <div class="metric"><div class="label">Total simulated P&amp;L</div><div class="value" id="totalPnl">—</div><div class="meta" id="return">Versus £2,000 initial capital</div></div>
 <div class="metric"><div class="label">Realised paper P&amp;L</div><div class="value" id="realized">£0.00</div><div class="meta">After 1% modeled costs per side</div></div>
@@ -63,6 +98,39 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <section class="panel"><div class="panelhead"><h2>Observed wallet candidates</h2><span class="pill">NOT VERIFIED</span></div><div class="tablewrap"><table><thead><tr><th>Sender</th><th>Observed</th><th>Copies</th><th>Copy P&amp;L</th></tr></thead><tbody id="wallets"><tr><td colspan="4" class="quiet">No candidate observations yet.</td></tr></tbody></table></div><div class="small" style="padding-top:12px">These are transaction-origin addresses, not established beneficial traders or proven profitable wallets. Rankings are exploratory and shrink small samples.</div></section>
 <section class="panel"><h2>Execution assumptions</h2><div class="small" style="margin-top:12px;line-height:1.9">Market scan target: <b>5 minutes</b><br>Browser display refresh: <b>60 seconds</b><br>Mode: <b>Paper only</b><br>Assumed adverse costs: <b>1% each side</b><br>Maximum open positions: <b>5</b><br>Per-position allocation: <b>0.5–1.5%</b><br>Risk screen: <b>Fail closed</b><br>Profitable strategy verified: <b>No</b></div></section>
 </aside></div>
+<!-- UNIFIED_V2_START: All adaptive research is in the canonical trading dashboard. -->
+<section class="v2-section" id="intelligence" aria-labelledby="v2-intelligence-title">
+  <div class="v2-head"><div><h2 id="v2-intelligence-title">Wallet intelligence</h2><p>Independent sender-level evidence. Transaction-origin addresses are not verified profitable traders; rankings reflect only this paper engine's recorded outcomes.</p></div></div>
+  <div class="v2-grid">
+    <div class="v2-kpi"><div class="v2-kpi-label">Forward signals stored</div><div class="v2-kpi-value" id="v2-signals">—</div><div class="v2-kpi-detail">Rolling bounded history</div></div>
+    <div class="v2-kpi"><div class="v2-kpi-label">Pool observations stored</div><div class="v2-kpi-value" id="v2-observations">—</div><div class="v2-kpi-detail">Actual market-feed samples</div></div>
+    <div class="v2-kpi"><div class="v2-kpi-label">Unique closed-trade senders</div><div class="v2-kpi-value" id="v2-closed-wallets">—</div><div class="v2-kpi-detail">Observed, not identity verified</div></div>
+    <div class="v2-kpi"><div class="v2-kpi-label">Reinforced wallets</div><div class="v2-kpi-value" id="v2-reinforced">—</div><div class="v2-kpi-detail">Evidence-gated sizing increases</div></div>
+  </div>
+  <div class="v2-panel"><h3>Evidence-based wallet ranking</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Sender</th><th>Closed</th><th>Net P&amp;L</th><th>Win-rate lower bound</th><th>Sizing tier</th></tr></thead><tbody id="v2-wallets"><tr><td colspan="5">Waiting for validated research state</td></tr></tbody></table></div><div class="v2-small">A profitable trade alone does not demonstrate wallet skill. No sender is represented as a verified beneficial owner.</div></div>
+</section>
+<section class="v2-section" id="learning" aria-labelledby="v2-learning-title">
+  <div class="v2-head"><div><h2 id="v2-learning-title">Learning and risk reinforcement</h2><p>Only actual completed paper trades qualify for adaptive position sizing. Shadow outcomes are excluded from account equity and reinforcement eligibility.</p></div></div>
+  <div class="v2-alert" id="v2-learning-verdict" role="status">Awaiting evidence report; no improvement in profitability is assumed.</div>
+  <div class="v2-duo">
+    <div class="v2-panel"><h3>Trade outcome evidence</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-actual-metrics"><tr><td>Waiting for saved data</td></tr></tbody></table></div></div>
+    <div class="v2-panel"><h3>Reinforcement milestones</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-thresholds"><tr><td>Awaiting saved data</td></tr></tbody></table></div><div class="v2-small">Maximum position allocation remains 1.5% of paper equity; suspension controls always take priority.</div></div>
+  </div>
+  <div class="v2-panel"><h3>Forward-trained entry feature cohorts</h3><p>Evidence requires at least 40 eligible closed outcomes, 14 distinct exit days and a positive conservative mean, alongside sample diversity.</p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Feature group</th><th>Closures</th><th>Net P&amp;L</th><th>Conservative mean ROI</th><th>Evidence</th></tr></thead><tbody id="v2-features"><tr><td colspan="5">Collecting forward outcomes</td></tr></tbody></table></div></div>
+</section>
+<section class="v2-section" id="experiments" aria-labelledby="v2-experiments-title">
+  <div class="v2-head"><div><h2 id="v2-experiments-title">Shadow strategy laboratory</h2><p>Parallel experiments, not actual holdings. Their simulated results do not alter the original £2,000 account or trigger automatic strategy promotion.</p></div></div>
+  <div class="v2-panel"><h3>Independent forward experiments</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Strategy</th><th>Closed</th><th>Open</th><th>Net P&amp;L</th><th>Profit factor</th><th>Evidence status</th></tr></thead><tbody id="v2-shadow"><tr><td colspan="6">Awaiting forward observations</td></tr></tbody></table></div><div class="v2-small">Shadow strategies need at least 40 closed trades over 14 distinct days, 8 senders and 5 pools before becoming candidates for review.</div></div>
+  <div class="v2-panel"><h3>Research and reinforcement audit events</h3><div class="v2-max-events v2-table-wrap"><table class="v2-table"><thead><tr><th>UK time</th><th>Event</th><th>Strategy / sender</th><th>Evidence or reason</th></tr></thead><tbody id="v2-events"><tr><td colspan="4">No reported research events</td></tr></tbody></table></div></div>
+</section>
+<section class="v2-section" id="system" aria-labelledby="v2-system-title">
+  <div class="v2-head"><div><h2 id="v2-system-title">System health and execution proof</h2><p>Research and execution are independently labelled. Google Apps Script API dispatches are unattended when scheduler provenance is recorded, even if GitHub reports workflow_dispatch.</p></div></div>
+  <div class="v2-alert" id="v2-execution-status" role="status">Waiting for scheduler provenance and market-feed timestamps.</div>
+  <div class="v2-duo"><div class="v2-panel"><h3>Latest execution</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-provenance"></tbody></table></div><div class="v2-small" id="v2-run-link-wrap"></div><div class="v2-small">A recorded run ID is a pointer to a GitHub workflow, not independently sufficient proof that every earlier interval ran.</div></div>
+  <div class="v2-panel"><h3>Research integrity</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-research-health"></tbody></table></div><div class="v2-small" id="v2-checked">Both original trading and V2 research sections use the same state feed and 60-second browser refresh.</div></div></div>
+</section>
+<!-- UNIFIED_V2_END -->
+
 <footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
 </main>
 <script>
@@ -104,9 +172,165 @@ $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCoun
 table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
 table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
-table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();}
-async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);}
+async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
 poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
 })();
+</script>
+
+<!-- UNIFIED_V2_JS -->
+<script>
+/* Unified V2: renders from the canonical dashboard's existing state.json fetch. */
+(function () {
+  'use strict';
+  const by = id => document.getElementById(id);
+  const numeric = v => v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v);
+  const number = v => numeric(v) === null ? '—' : Number(v).toLocaleString('en-GB');
+  const gbp = v => numeric(v) === null ? '—' : (Number(v) < 0 ? '−£' : '£') + Math.abs(Number(v)).toLocaleString('en-GB', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const pct = v => numeric(v) === null ? '—' : Number(v).toFixed(2) + '%';
+  const short = v => v ? String(v).slice(0, 6) + '…' + String(v).slice(-4) : '—';
+  const uk = v => {
+    if (!v) return '—';
+    const d = new Date(v);
+    return Number.isFinite(d.valueOf()) ? d.toLocaleString('en-GB', {timeZone: 'Europe/London', dateStyle: 'medium', timeStyle: 'medium'}) : '—';
+  };
+  const td = (text, row, className) => {
+    const node = document.createElement('td');
+    node.textContent = text === null || text === undefined ? '—' : String(text);
+    if (className) node.className = className;
+    row.appendChild(node);
+    return node;
+  };
+  const rows = (id, values, empty, cols) => {
+    const target = by(id);
+    if (!target) return;
+    target.replaceChildren();
+    if (!values.length) {
+      const tr = document.createElement('tr');
+      const cell = td(empty, tr);
+      cell.colSpan = cols;
+      target.appendChild(tr);
+      return;
+    }
+    values.forEach(arr => {
+      const tr = document.createElement('tr');
+      arr.forEach(v => td(v, tr));
+      target.appendChild(tr);
+    });
+  };
+  const value = (id, v) => {const node = by(id); if (node) node.textContent = String(v);};
+  const ratio = (n, total) => !total ? '0%' : Math.round(n * 100 / total) + '%';
+
+  function render(s) {
+    // The public state is not a live broker account. Reject incompatible data.
+    if (!s || s.paper_only !== true || Number(s.starting_gbp) !== 2000) {
+      value('v2-execution-status', 'Account integrity warning: unexpected paper-state schema or starting capital.');
+      return;
+    }
+    const r = s.research || {};
+    const actual = r.actual_report || {};
+    const walletRank = Array.isArray(r.wallet_rankings) ? r.wallet_rankings : [];
+    const reinforced = walletRank.filter(x => String(x.reinforcement_tier || '').startsWith('reinforced'));
+    const closed = Array.isArray(s.closed) ? s.closed : [];
+    const wallets = new Set(closed.map(x => x.wallet).filter(Boolean));
+    const signals = Array.isArray(r.signals) ? r.signals : [];
+    const observations = Array.isArray(r.pool_observations) ? r.pool_observations : [];
+    const shadow = r.shadow_reports || {};
+    const features = r.feature_reports || {};
+    const execution = s.execution || {};
+
+    value('v2-signals', number(signals.length));
+    value('v2-observations', number(observations.length));
+    value('v2-closed-wallets', number(wallets.size));
+    value('v2-reinforced', number(reinforced.length));
+    rows('v2-wallets', walletRank.slice(0, 20).map(x => [short(x.wallet), x.closed ?? 0, gbp(x.net_gbp), pct(x.win_rate_wilson_lower_pct), x.reinforcement_tier || 'exploration']), 'No closed-trade wallet scores have been recorded.', 5);
+
+    const winners = closed.filter(x => numeric(x.net_pnl_gbp) !== null && x.net_pnl_gbp > 0).length;
+    const realized = closed.reduce((sum, x) => sum + (numeric(x.net_pnl_gbp) || 0), 0);
+    rows('v2-actual-metrics', [
+      ['Completed paper trades', number(closed.length)],
+      ['Winning paper trades', number(winners) + ' (' + ratio(winners, closed.length) + ')'],
+      ['Realised net P&L (cost-adjusted)', gbp(realized)],
+      ['Profit factor', numeric(actual.profit_factor) === null ? '—' : Number(actual.profit_factor).toFixed(2)],
+      ['Worst realised drawdown in trade sequence', gbp(actual.max_drawdown_gbp)],
+      ['Conservative mean trade ROI', pct(actual.conservative_mean_roi_95_pct)],
+      ['Distinct exit days', number(actual.distinct_exit_days)]
+    ], 'Waiting for completed trades.', 2);
+    const best = walletRank.reduce((m, x) => Math.max(m, numeric(x.closed) || 0), 0);
+    rows('v2-thresholds', [
+      ['Most closures from one sender', String(best)],
+      ['First wallet sizing tier', '8+ closures / 2+ days, plus quality gates'],
+      ['Second wallet sizing tier', '15+ closures / 4+ days, stronger quality gates'],
+      ['Feature reinforcement', '40+ qualified closes / 14+ days, diversity gates'],
+      ['Current reinforced wallets', number(reinforced.length)],
+      ['Upper allocation cap', '1.5% paper equity']
+    ], 'Waiting for reinforcement evidence.', 2);
+    value('v2-learning-verdict', reinforced.length ?
+      (reinforced.length + ' wallet(s) currently satisfy reinforcement rules; this does not establish that profit improvement is causal.') :
+      ('No wallet has qualified for higher allocation. Evidence is still being collected across independent closed paper trades.'));
+    rows('v2-features', Object.entries(features).map(([k, x]) => [k, number(x.closed), gbp(x.net_gbp), pct(x.conservative_mean_roi_95_pct), x.status || 'COLLECTING_EVIDENCE']), 'Not enough instrumented closed trades for feature scoring.', 5);
+
+    rows('v2-shadow', Object.entries(shadow).map(([name, x]) => [name, number(x.closed), number(x.open_positions), gbp(x.net_gbp), numeric(x.profit_factor) === null ? '—' : Number(x.profit_factor).toFixed(2), x.status || 'COLLECTING_EVIDENCE']), 'Shadow experiments have not recorded any results.', 6);
+    const events = [
+      ...(Array.isArray(r.reinforcement_events) ? r.reinforcement_events : []).map(x => ({...x, action: 'REINFORCEMENT', details: (x.from_tier || 'exploration') + ' → ' + (x.to_tier || 'unknown') + ' · ' + (x.evidence || '')})),
+      ...(Array.isArray(r.events) ? r.events : []).map(x => ({...x, details: x.reason || (numeric(x.net_pnl_gbp) !== null ? gbp(x.net_pnl_gbp) : 'signal lag ' + (x.signal_lag_seconds ?? '—') + 's')}))
+    ].sort((a, b) => (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0)).slice(0, 65);
+    rows('v2-events', events.map(x => [uk(x.at), x.action || '—', x.strategy || short(x.wallet) || short(x.token), x.details || '—']), 'No research or reinforcement events recorded.', 4);
+
+    const validRun = /^\d{8,15}$/.test(String(execution.run_id || ''));
+    const external = execution.event === 'workflow_dispatch' && execution.scheduler === 'google-apps-script';
+    const google = external && !!execution.trigger_uid && !!execution.scheduled_at && validRun;
+    const native = execution.event === 'schedule';
+    const schedulerLabel = google ? 'Google Apps Script · unattended API dispatch' : native ? 'GitHub native scheduled trigger' : external ? 'Google fallback · incomplete execution provenance' : (execution.scheduler || 'Not independently identified');
+    const age = s.last_data_at ? (Date.now() - new Date(s.last_data_at).getTime()) / 60000 : Infinity;
+    const fresh = age >= 0 && age <= 20 && s.last_status === 'OK';
+    value('v2-execution-status', fresh ?
+      ('Market feed OK · ' + schedulerLabel + ' · observation ' + uk(s.last_data_at)) :
+      ('FEED / SCHEDULER NEEDS CHECK · latest data ' + uk(s.last_data_at) + ' · engine state ' + (s.last_status || 'UNKNOWN')));
+    const statusNode = by('v2-execution-status');
+    statusNode.className = 'v2-alert' + (fresh ? '' : ' v2-negative');
+    rows('v2-provenance', [
+      ['Paper account initialised', uk(s.initialized_at)],
+      ['Starting balance', gbp(s.starting_gbp)],
+      ['Completed main cycles', number(s.completed_cycles)],
+      ['Latest run (UK)', uk(s.last_run)],
+      ['Scheduler provenance', schedulerLabel],
+      ['GitHub event', execution.event || '—'],
+      ['Trigger UID', execution.trigger_uid || '—'],
+      ['Scheduled UTC', execution.scheduled_at || '—'],
+      ['GitHub run ID', validRun ? execution.run_id : 'Unverified']
+    ], 'No scheduler metadata.', 2);
+    const runNode = by('v2-run-link');
+    if (runNode) runNode.remove();
+    if (validRun) {
+      const link = document.createElement('a');
+      link.id = 'v2-run-link';
+      link.className = 'v2-link';
+      link.href = 'https://github.com/rayyansorefan/standalone-wallet-paper-agent/actions/runs/' + execution.run_id;
+      link.rel = 'noopener noreferrer';
+      link.target = '_blank';
+      link.textContent = 'View latest GitHub execution ↗';
+      by('v2-run-link-wrap').appendChild(link);
+    }
+    rows('v2-research-health', [
+      ['Research module', r.version ? 'Adaptive v' + r.version : 'Not yet present'],
+      ['Research status', r.last_status || 'NOT AVAILABLE'],
+      ['Market-feed status', s.last_status || 'UNKNOWN'],
+      ['Last research update (UK)', uk(r.last_run)],
+      ['Shadow open positions', number((r.shadow_positions || []).length)],
+      ['Recorded research errors this cycle', number((r.cycle_errors || []).length)],
+      ['Actual positions', number((s.positions || []).length)],
+      ['Actual completed trades', number(closed.length)]
+    ], 'No research telemetry.', 2);
+    value('v2-checked', 'One JSON source for both views · Browser rendered ' + uk(new Date().toISOString()) + ' · Refresh every 60 seconds.');
+  }
+  window.unifiedResearchRender = render;
+  window.unifiedResearchFailure = function (error) {
+    value('v2-execution-status', 'DATA FETCH FAILED · ' + String(error?.message || error).slice(0, 140));
+    const el = by('v2-execution-status');
+    if (el) el.className = 'v2-alert v2-negative';
+  };
+}());
+
 </script>
 </body></html>
