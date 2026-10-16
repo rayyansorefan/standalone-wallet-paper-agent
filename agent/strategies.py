@@ -161,7 +161,8 @@ def setups(f):
 
 def feedback(book, setup, symbol, now):
     rows = [t for t in book['closed'] if t['setup']==setup and stamp(t['exit_at']) <= now]
-    same = [t for t in rows if t['symbol']==symbol]
+    # An asset's loss cooldown survives a change of strategy label.
+    same = [t for t in book['closed'] if t['symbol']==symbol and stamp(t['exit_at']) <= now]
     cooldown = any(0 <= (now-stamp(t['exit_at'])).total_seconds() <
                    (7200 if t['net_usd']<0 else 1800) for t in same)
     recent = [t for t in rows if 0 <= (now-stamp(t['exit_at'])).total_seconds() < 86400]
