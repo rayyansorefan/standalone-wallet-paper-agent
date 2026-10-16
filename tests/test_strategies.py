@@ -97,6 +97,12 @@ class Strategies(unittest.TestCase):
         self.assertTrue(s.feedback(b,'momentum_long','X',NOW)['paused'])
         self.assertIsNone(step(state,q,f)['position'])
 
+    def test_loss_cooldown_cannot_be_bypassed_by_another_setup(self):
+        state,_,_=fixture();b=s.initialize(state,NOW)
+        b['closed']=[dict(setup='momentum_long',symbol='X',exit_at=(NOW-dt.timedelta(minutes=20)).isoformat(),net_usd=-1,risk_usd=5,stress_net_usd=-2)]
+        self.assertFalse(s.feedback(b,'pump_fade','X',NOW)['allowed'])
+        self.assertTrue(s.feedback(b,'pump_fade','X',NOW+dt.timedelta(hours=3))['allowed'])
+
     def test_reinforcement_needs_separate_future_validation_and_time(self):
         state,_,_=fixture();b=s.initialize(state,NOW-dt.timedelta(days=20))
         rows=[dict(setup='momentum_long',symbol=str(i%3),exit_at=(NOW-dt.timedelta(hours=40-i)).isoformat(),net_usd=2,risk_usd=5,stress_net_usd=1) for i in range(30)]
