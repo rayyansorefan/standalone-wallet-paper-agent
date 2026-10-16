@@ -34,6 +34,8 @@ class EvidenceGates(unittest.TestCase):
 
     def test_repeated_winners_on_multiple_days_reinforce_within_legacy_cap(self):
         s=state();s['closed']=[paper_trade(1,i) for i in range(8)]
+        self.assertEqual(adaptive.wallet_report(s,W)['risk_fraction'],0.005)
+        s['research']={'evaluation_v1':{'version':1,'reports':{'wallet:'+W:{'status':'VALIDATED_OOS'}}}}
         rep=adaptive.wallet_report(s,W)
         self.assertEqual(rep['reinforcement_tier'],'reinforced_1')
         self.assertEqual(rep['risk_fraction'],0.010)
@@ -120,6 +122,8 @@ class EvidenceGates(unittest.TestCase):
                           exit_at=(T+dt.timedelta(days=i//2)).isoformat()) for i in range(42)]
         r['feature_reports']=adaptive.feature_reports(s)
         self.assertEqual(r['feature_reports']['liq:250k+']['status'],'POSITIVE_EVIDENCE')
+        self.assertEqual(adaptive.feature_risk_multiplier(s,dict(id='sig1'))[0],1.0)
+        r['evaluation_v1']={'version':1,'reports':{'feature:liq:250k+':{'status':'VALIDATED_OOS'}}}
         self.assertEqual(adaptive.feature_risk_multiplier(s,dict(id='sig1'))[0],1.25)
         self.assertEqual(s['cash_gbp'],1989.9)
 

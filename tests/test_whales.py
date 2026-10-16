@@ -171,6 +171,9 @@ class WhaleResearch(unittest.TestCase):
             'wallet':f'w{i%15}','token':f'pool{i%5}','signal_features':{'mint':f'mint{i%5}'},'signal_id':f'signal{i}',
             'exit_at':(NOW+dt.timedelta(days=i%15)).isoformat()} for i in range(45)]
         whales._update_reports(r,NOW+dt.timedelta(days=16))
+        self.assertEqual(r['shadow_reports']['very_large']['status'],'COLLECTING_EVIDENCE')
+        r['oos_validation']={'very_large':True}
+        whales._update_reports(r,NOW+dt.timedelta(days=16))
         self.assertEqual(r['shadow_reports']['very_large']['status'],'SHADOW_REINFORCED')
         self.assertEqual(r['shadow_sizing']['very_large'],.0075)
         self.assertFalse(r['shadow_reports']['very_large']['paper_account_promoted'])
