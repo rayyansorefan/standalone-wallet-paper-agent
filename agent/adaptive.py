@@ -226,10 +226,6 @@ def feature_buckets(features):
         result.append('trend:positive' if momentum>=5 else 'trend:flat_or_negative')
     if latency is not None:
         result.append('lag:fast' if latency<=90 else 'lag:slow')
-    m5=numeric(features.get('change_5m_pct'))
-    h1=numeric(features.get('change_1h_pct'))
-    if m5 is not None and h1 is not None:
-        result.append('technical:aligned' if m5>0 and h1>0 else 'technical:unaligned')
     return result
 
 
