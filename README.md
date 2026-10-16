@@ -114,3 +114,11 @@ There are no extra market-data requests or backfilled wins. This comparison is
 not a portfolio backtest or causal proof; no shadow strategy promotes automatically.
 Fewer entries, including periods with none, are expected when evidence is weak.
 Rollback code only; never restore an old account snapshot.
+
+Primary GeckoTerminal requests are now spaced at least 2.1 seconds apart, within
+a 70-second cycle budget and the original three-attempt ceiling. HTTP 429 is never
+retried immediately: a persisted provider-wide cooldown honours Retry-After
+(default 60 seconds, maximum one day), also suppressing supplemental Gecko reads
+while active. Independent quote-only fallback remains observational. Rate limiting
+still reports degraded health; no error is relabelled as a successful market read.
+The account and exits remain persistent when a provider cannot supply fresh data.

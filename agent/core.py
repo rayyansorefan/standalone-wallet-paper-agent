@@ -30,6 +30,7 @@ MAX_HOLD_HOURS = 6.0
 MIN_WALLET_SEEN = 3
 MIN_TRADE_USD = 100.0
 UTC = dt.timezone.utc
+_PRIMARY_FEED = None
 
 
 def now_iso():
@@ -54,14 +55,15 @@ def safe_float(v):
 def api(path, params=None):
     uri = BASE + path + ('?' + urllib.parse.urlencode(params) if params else '')
     req = urllib.request.Request(uri, headers=HEADERS)
+    from .primary_feed import PrimaryFeed
+    feed = _PRIMARY_FEED or PrimaryFeed({})
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=18) as r:
-                payload = json.load(r)
-            if not isinstance(payload, dict) or 'errors' in payload:
-                raise RuntimeError(f'API response error: {str(payload.get("errors"))[:300]}')
-            return payload
+            return feed.read(req)
         except (urllib.error.URLError, TimeoutError, RuntimeError, ValueError) as exc:
+            if getattr(exc,'code',None)==429 or feed.health.get('retry_at'):
+                raise RuntimeError(f'Primary rate limit for {path}: {exc}; retry at {feed.health.get("retry_at")}') from exc
+            if 'budget exhausted' in str(exc):raise
             if attempt == 2: raise RuntimeError(f'API unavailable for {path}: {exc}') from exc
             time.sleep(2 ** attempt)
 
@@ -244,6 +246,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     if screen_token is None:
         from .safety import inspect_token as screen_token
     state = load(path)
+    if fetch is api:
+        from .primary_feed import PrimaryFeed
+        global _PRIMARY_FEED
+        _PRIMARY_FEED = PrimaryFeed(state.setdefault('research',{}).setdefault('primary_provider_v1',{}))
     whale_previous_run = state.get('last_run')
     current = dt.datetime.now(UTC)
     first = state['last_run'] is None
@@ -418,6 +424,16 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # Never permit a new research-provider failure to block V2 or account persistence.
     try:
         from .whales import whale_cycle
+        # A primary 429 applies to this provider, including supplemental Gecko reads.
+        primary_health=(state.get('research') or {}).get('primary_provider_v1') or {}
+        retry=parse_time(primary_health.get('retry_at'))
+        if retry and retry>dt.datetime.now(UTC):
+            health=state['research'].setdefault('whale_v3',{}).setdefault('provider_health',{})
+            for group in ('gecko_quotes','gecko_trades'):
+                existing=health.setdefault(group,{})
+                prior=parse_time(existing.get('retry_at'))
+                if not prior or prior<retry:
+                    existing.update(retry_at=retry.isoformat(),http_status=429,last_error='Primary provider rate-limit backoff')
         whale_cycle(state, candidate_pools, new_events, dict(prices), current,
                     fetch=fetch, screener=screen_token, previous_run=whale_previous_run, discovered=pools)
     except Exception as v3_exc:
