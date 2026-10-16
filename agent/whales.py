@@ -425,6 +425,10 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     if production:
         from .research_feed import ResearchFeed
         fetch=ResearchFeed(r,now)
+        # The optional primary-window pause precedes the 25s research budget.
+        # Freshness is evaluated at actual research observation time.
+        now=dt.datetime.now(UTC)
+        budget_started=time.monotonic()
     if screener is None:
         from .safety import inspect_token
         screener=inspect_token
