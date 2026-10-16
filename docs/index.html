@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0e1422"><title>Wallet Intelligence · Unified Adaptive V2 | Paper Trading</title>
+<meta name="theme-color" content="#0e1422"><title>Wallet Intelligence · Adaptive Research V3 | Paper Trading</title>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#eaf1fc;background:#0d1421;line-height:1.48;font-size:14px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#173252 0%,#0d1421 42%);min-height:100vh}.container{max-width:1240px;margin:auto;padding:28px 24px 80px}
@@ -119,6 +119,8 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
     <div class="v2-panel"><h3>Trade outcome evidence</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-actual-metrics"><tr><td>Waiting for saved data</td></tr></tbody></table></div></div>
     <div class="v2-panel"><h3>Reinforcement milestones</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-thresholds"><tr><td>Awaiting saved data</td></tr></tbody></table></div><div class="v2-small">Maximum position allocation remains 1.5% of paper equity; suspension controls always take priority.</div></div>
   </div>
+  <div class="v2-panel"><h3>Forward validation · evidence, not profitability claims</h3><p class="v2-small" id="evaluation-status">UNPROVEN · waiting for registered forward evidence</p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Cohort</th><th>Training closes / days</th><th>Validation closes / days</th><th>Validation lower ROI</th><th>2% cost ROI</th><th>Status</th></tr></thead><tbody id="evaluation-reports"></tbody></table></div><p class="v2-small">Fixed 40+ training closes over 14+ days, then 20 future non-overlapping entries over 7+ days. Daily clustered uncertainty uses a conservative family-wide margin. Approximate evidence does not prove causation. No automatic strategy promotion. Old trades are descriptive only.</p></div>
+  <div class="v2-panel"><h3>Observed exit outcomes</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Exit reason</th><th>Closed</th><th>Net P&amp;L</th><th>Mean ROI at 2% costs</th></tr></thead><tbody id="evaluation-exits"></tbody></table></div><p class="v2-small">Recorded outcomes after modeled costs; stop-loss effectiveness versus a no-stop strategy is unproven. Intra-cycle extremes can be missed.</p></div>
   <div class="v2-panel"><h3>Forward-trained entry feature cohorts</h3><p>Evidence requires at least 40 eligible closed outcomes, 14 distinct exit days and a positive conservative mean, alongside sample diversity.</p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Feature group</th><th>Closures</th><th>Net P&amp;L</th><th>Conservative mean ROI</th><th>Evidence</th></tr></thead><tbody id="v2-features"><tr><td colspan="5">Collecting forward outcomes</td></tr></tbody></table></div></div>
 </section>
 <section class="v2-section" id="experiments" aria-labelledby="v2-experiments-title">
@@ -148,7 +150,8 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   </div>
   <div class="v2-panel"><h3>Recent whale-sized on-chain flows</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Observed time (UK)</th><th>Sender</th><th>Pool</th><th>Side</th><th>Trade size USD</th><th>Attribution</th></tr></thead><tbody id="v3-flows"><tr><td colspan="6">No large swap transactions detected yet</td></tr></tbody></table></div></div>
   <div class="v2-panel"><h3>Recent whale shadow closures</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Exit time (UK)</th><th>Strategy</th><th>Pool</th><th>Net P&amp;L</th><th>Exit reason</th></tr></thead><tbody id="v3-exits"><tr><td colspan="5">No forward whale shadow outcomes yet</td></tr></tbody></table></div></div>
-  <div class="v2-panel"><h3>Scanner integrity</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v3-health"><tr><td>V3 has not been initialized</td></tr></tbody></table></div><div class="v2-small">Whale V3 uses the existing pool feed plus a small extra publicly accessible Solana-pool sample. Free market data can be cached, incomplete or unavailable. No wallet ownership or insider status is asserted.</div></div>
+  <div class="v2-panel"><h3>Later observed large-flow prices</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Sender</th><th>Pool</th><th>5m quote return</th><th>30m quote return</th><th>60m quote return</th></tr></thead><tbody id="v3-followups"></tbody></table></div><p class="v2-small">Returns begin at our first fresh observation, not the chain transaction price. They are not wallet profits or trading fills; missing later prices stay unavailable.</p></div>
+  <div class="v2-panel"><h3>Scanner integrity</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v3-health"><tr><td>V3 has not been initialized</td></tr></tbody></table></div><div class="v2-small">Whale V3 reuses primary discovery and rotates a bounded additional Solana-pool inventory. GeckoTerminal supplies swaps; DEX Screener is a quote-only fallback. Free market data can be cached, incomplete or unavailable. No wallet ownership or insider status is asserted.</div></div>
 </section>
 <!-- /WHALE_V3_SECTION -->
 
@@ -288,8 +291,8 @@ poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
     const best = walletRank.reduce((m, x) => Math.max(m, numeric(x.closed) || 0), 0);
     rows('v2-thresholds', [
       ['Most closures from one sender', String(best)],
-      ['First wallet sizing tier', '8+ closures / 2+ days, plus quality gates'],
-      ['Second wallet sizing tier', '15+ closures / 4+ days, stronger quality gates'],
+      ['First wallet sizing tier', 'Legacy quality gates + registered forward validation'],
+      ['Second wallet sizing tier', 'Stronger legacy gates + registered forward validation'],
       ['Feature reinforcement', '40+ qualified closes / 14+ days, diversity gates'],
       ['Current reinforced wallets', number(reinforced.length)],
       ['Upper allocation cap', '1.5% paper equity']
@@ -304,6 +307,10 @@ poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
       ...(Array.isArray(r.reinforcement_events) ? r.reinforcement_events : []).map(x => ({...x, action: 'REINFORCEMENT', details: (x.from_tier || 'exploration') + ' → ' + (x.to_tier || 'unknown') + ' · ' + (x.evidence || '')})),
       ...(Array.isArray(r.events) ? r.events : []).map(x => ({...x, details: x.reason || (numeric(x.net_pnl_gbp) !== null ? gbp(x.net_pnl_gbp) : 'signal lag ' + (x.signal_lag_seconds ?? '—') + 's')}))
     ].sort((a, b) => (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0)).slice(0, 65);
+    const evaluation = r.evaluation_v1 || {};
+    value('evaluation-status', 'Profitability UNPROVEN · Evaluation '+(evaluation.status||'UNPROVEN')+(evaluation.last_error?' · '+evaluation.last_error:'')+' · Registered ' + uk(evaluation.registered_at) + ' · ' + number(evaluation.validated_reports || 0) + ' validated cohorts · ' + number(evaluation.positive_reinforcement_events || 0) + ' positive sizing events · ' + number(evaluation.sampled_adverse_selection?.tracked_entries || 0) + ' entries with subsequent sampled quotes');
+    rows('evaluation-reports', Object.entries(evaluation.reports || {}).filter(([key]) => !key.startsWith('wallet:')).slice(0,20).map(([key,x])=>[key, (x.training?.closed||0)+' / '+(x.training?.days||0), (x.validation?.closed||0)+' / '+(x.validation?.days||0), pct(x.validation?.daily_cluster_lower_pct), pct(x.validation?.cost_stress?.['2pct_each_side_mean_roi_pct']), x.status||'UNPROVEN']), 'No registered forward outcomes yet.', 6);
+    rows('evaluation-exits', Object.entries(evaluation.exit_diagnostics || {}).map(([key,x])=>[key,x.closed||0,gbp(x.net_gbp),pct(x.cost_stress?.['2pct_each_side_mean_roi_pct'])]), 'No exit diagnostic data.', 4);
     rows('v2-events', events.map(x => [uk(x.at), x.action || '—', x.strategy || short(x.wallet) || short(x.token), x.details || '—']), 'No research or reinforcement events recorded.', 4);
 
     const validRun = /^\d{8,15}$/.test(String(execution.run_id || ''));
@@ -409,9 +416,19 @@ poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
       rowTable('v3-exits',(w.shadow_closed||[]).slice(-12).reverse(),[
         x=>esc(uk(x.exit_at)),x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),
         x=>'<span class="'+amountColor(x.net_pnl_gbp)+'">'+esc(money(x.net_pnl_gbp))+'</span>',x=>esc(x.exit_reason)], 'No forward whale exits yet');
+      rowTable('v3-followups',[...(w.flow_outcomes||[]),...(w.flow_followups||[])].slice(-12).reverse(),[x=>esc(short(x.wallet)),x=>esc(short(x.token)),...['5m','30m','60m'].map(k=>x=>x.marks?.[k]?esc(Number(x.marks[k].quote_return_pct).toFixed(2)+'%'):'UNAVAILABLE')],'No later forward observations yet');
       rowTable('v3-health',[
         ['V3 research last run',uk(w.last_run)],['V3 status',w.status||'UNKNOWN'],
         ['Supplemental Solana pools',sc.additional_pools??0],
+        ['Rotating pool inventory',sc.inventory_pools??0],
+        ['Sampled transaction-origin addresses',Object.keys(w.sampled_activity||{}).length],
+        ['Multi-pool origins · owner unresolved',Object.values(w.sampled_activity||{}).filter(x=>x.attribution==='MULTI_POOL_OR_ROUTER_POSSIBLE').length],
+        ['Research requests / cycle cap',(w.scan_metrics?.requests??0)+' / 4'],
+        ['Discovery cache hits',w.scan_metrics?.cache_hits??0],
+        ['Deferred research requests',w.scan_metrics?.deferred??0],
+        ['Supplemental quote source',w.scan_metrics?.quote_provider||'geckoterminal'],
+        ['Provider circuits',Object.entries(w.provider_health||{}).map(([k,v])=>k+': '+(v.retry_at?'cooldown until '+v.retry_at:'available')).join('; ')||'Not sampled'],
+        ['Observed flow follow-ups',(w.flow_followups||[]).length+' pending / '+(w.flow_outcomes||[]).length+' completed; quote returns, not wallet profit'],
         ['Fresh supplemental quote pools',w.scan_metrics?.quote_pools??0],
         ['Supplemental trade feeds read',w.scan_metrics?.trade_feeds??0],
         ['Last supplemental market data',uk(w.last_market_data_at)],
