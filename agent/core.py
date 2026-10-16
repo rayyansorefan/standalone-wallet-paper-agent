@@ -230,6 +230,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     if screen_token is None:
         from .safety import inspect_token as screen_token
     state = load(path)
+    whale_previous_run = state.get('last_run')
     current = dt.datetime.now(UTC)
     first = state['last_run'] is None
     errors = []
@@ -370,6 +371,17 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                             else 'BOOTSTRAPPED_NO_TRADES' if first else 'OK')
     from .adaptive import finalize
     finalize(state, current)
+    # V3 is observational: independent flow and shadow state only.
+    # Never permit a new research-provider failure to block V2 or account persistence.
+    try:
+        from .whales import whale_cycle
+        whale_cycle(state, candidate_pools, new_events, dict(prices), current,
+                    fetch=fetch, screener=screen_token, previous_run=whale_previous_run)
+    except Exception as v3_exc:
+        from .whales import initialize, record_issue
+        whale_research = initialize(state)
+        record_issue(whale_research, 'V3 isolated research failure: '+str(v3_exc)[:145])
+        whale_research['status'] = 'DEGRADED'
     state['snapshots'].append(dict(at=now_iso(), equity_gbp=equity(state, prices), cash_gbp=round(state['cash_gbp'], 2),
                                    open_positions=len(state['positions']), closed_trades=len(state['closed']),
                                    watched_pools=len(candidate_pools), sampled_feeds=sampled_feeds, screened_pools=screened_pools, status=state['last_status']))

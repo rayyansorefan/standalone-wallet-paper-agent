@@ -64,6 +64,9 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 @media(max-width:900px){.v2-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v2-duo{grid-template-columns:1fr}}
 @media(max-width:500px){.v2-nav{top:0;gap:1px}.v2-nav a{padding:8px 8px;font-size:11px}.v2-nav .v2-mark{display:none}.v2-panel{padding:13px}.v2-grid{gap:8px}.v2-kpi{padding:12px}.v2-kpi-value{font-size:23px}}
 
+
+/* Whale tables scroll inside their panel on phones rather than crushing columns. */
+#whales table:has(thead){min-width:640px}
 </style>
 </head>
 <body><main class="container">
@@ -73,7 +76,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 <!-- UNIFIED_V2_NAV -->
-<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#experiments">Experiments</a><a href="#system">System health</a></nav>
+<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#experiments">Experiments</a><a href="#whales">Whales</a><a href="#system">System health</a></nav>
 
 <div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
@@ -123,6 +126,32 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   <div class="v2-panel"><h3>Independent forward experiments</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Strategy</th><th>Closed</th><th>Open</th><th>Net P&amp;L</th><th>Profit factor</th><th>Evidence status</th></tr></thead><tbody id="v2-shadow"><tr><td colspan="6">Awaiting forward observations</td></tr></tbody></table></div><div class="v2-small">Shadow strategies need at least 40 closed trades over 14 distinct days, 8 senders and 5 pools before becoming candidates for review.</div></div>
   <div class="v2-panel"><h3>Research and reinforcement audit events</h3><div class="v2-max-events v2-table-wrap"><table class="v2-table"><thead><tr><th>UK time</th><th>Event</th><th>Strategy / sender</th><th>Evidence or reason</th></tr></thead><tbody id="v2-events"><tr><td colspan="4">No reported research events</td></tr></tbody></table></div></div>
 </section>
+<!-- WHALE_V3_SECTION: strictly forward, shadow-only. -->
+<section class="v2-section" id="whales" aria-labelledby="v3-whales-title">
+  <div class="v2-head">
+    <div>
+      <h2 id="v3-whales-title">V3 · Smart-money &amp; whale-sized flow intelligence</h2>
+      <p>Discovery of large on-chain transactions and repeated buying. Observed transaction senders are <strong>not verified whales, beneficial owners, or profitable investors</strong>. Performance is evaluated only from later paper shadow exits.</p>
+    </div>
+  </div>
+  <div class="v2-alert" id="v3-status" role="status">V3 has not produced a verified observation yet.</div>
+  <div class="v2-grid">
+    <div class="v2-kpi"><div class="v2-kpi-label">Large swap flows · $10k+</div><div class="v2-kpi-value" id="v3-large">—</div><div class="v2-kpi-detail">Deduplicated transactions since V3 began</div></div>
+    <div class="v2-kpi"><div class="v2-kpi-label">Very large flows · $50k+</div><div class="v2-kpi-value" id="v3-very-large">—</div><div class="v2-kpi-detail">Not proof of wallet net worth</div></div>
+    <div class="v2-kpi"><div class="v2-kpi-label">Candidate senders</div><div class="v2-kpi-value" id="v3-senders">—</div><div class="v2-kpi-detail">Identity &amp; owner unverified</div></div>
+    <div class="v2-kpi"><div class="v2-kpi-label">Whale shadow closures</div><div class="v2-kpi-value" id="v3-closed">—</div><div class="v2-kpi-detail">Not included in original account equity</div></div>
+  </div>
+  <div class="v2-panel"><h3>Independent whale-shadow strategies</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Strategy</th><th>Closed</th><th>Open</th><th>Net P&amp;L (1% costs)</th><th>2% costs</th><th>5% costs</th><th>Shadow allocation</th><th>Evidence status</th></tr></thead><tbody id="v3-strategies"><tr><td colspan="8">Collecting the first forward results</td></tr></tbody></table></div><div class="v2-small">Positive whale-shadow reinforcement requires at least 40 independent closures across 14 days, 10 sender addresses and 5 pools, plus statistically positive net returns. No whale research automatically promotes a strategy into actual paper trades.</div></div>
+  <div class="v2-duo">
+    <div class="v2-panel"><h3>Candidate large-flow senders</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Sender</th><th>Large buys</th><th>Large sells</th><th>Observed USD buys</th><th>Shadow closures</th><th>Shadow net P&amp;L</th></tr></thead><tbody id="v3-wallets"><tr><td colspan="6">Awaiting on-chain observations</td></tr></tbody></table></div><div class="v2-small">Transaction-origin activity is only a partial view of transactions in sampled Solana pools; it does not establish overall wallet balances or historical profit.</div></div>
+    <div class="v2-panel"><h3>Open whale shadow positions</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Strategy</th><th>Pool</th><th>Notional</th><th>Latest mark</th></tr></thead><tbody id="v3-open"><tr><td colspan="4">No whale shadow positions yet</td></tr></tbody></table></div><div class="v2-small">An unavailable fresh quote is shown as unpriced; missing values are never assumed profitable.</div></div>
+  </div>
+  <div class="v2-panel"><h3>Recent whale-sized on-chain flows</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Observed time (UK)</th><th>Sender</th><th>Pool</th><th>Side</th><th>Trade size USD</th><th>Attribution</th></tr></thead><tbody id="v3-flows"><tr><td colspan="6">No large swap transactions detected yet</td></tr></tbody></table></div></div>
+  <div class="v2-panel"><h3>Recent whale shadow closures</h3><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Exit time (UK)</th><th>Strategy</th><th>Pool</th><th>Net P&amp;L</th><th>Exit reason</th></tr></thead><tbody id="v3-exits"><tr><td colspan="5">No forward whale shadow outcomes yet</td></tr></tbody></table></div></div>
+  <div class="v2-panel"><h3>Scanner integrity</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v3-health"><tr><td>V3 has not been initialized</td></tr></tbody></table></div><div class="v2-small">Whale V3 uses the existing pool feed plus a small extra publicly accessible Solana-pool sample. Free market data can be cached, incomplete or unavailable. No wallet ownership or insider status is asserted.</div></div>
+</section>
+<!-- /WHALE_V3_SECTION -->
+
 <section class="v2-section" id="system" aria-labelledby="v2-system-title">
   <div class="v2-head"><div><h2 id="v2-system-title">System health and execution proof</h2><p>Research and execution are independently labelled. Google Apps Script API dispatches are unattended when scheduler provenance is recorded, even if GitHub reports workflow_dispatch.</p></div></div>
   <div class="v2-alert" id="v2-execution-status" role="status">Waiting for scheduler provenance and market-feed timestamps.</div>
@@ -172,8 +201,8 @@ $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCoun
 table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
 table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
-table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);}
-async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
 poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
 })();
 </script>
@@ -331,6 +360,71 @@ poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
     if (el) el.className = 'v2-alert v2-negative';
   };
 }());
+
+</script>
+
+<!-- WHALE_V3_JS -->
+<script>
+/* WHALE_V3_RENDER: shares the existing state.json fetch and refresh. */
+(()=>{'use strict';
+  const byId=id=>document.getElementById(id);
+  const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=(value,sign='£')=>Number.isFinite(Number(value))&&value!==null ? sign+Number(value).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  const uk=value=>{if(!value)return '—';let d=new Date(value);return Number.isFinite(d.valueOf())?new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d):'—';};
+  const short=value=>value?String(value).slice(0,5)+'…'+String(value).slice(-4):'—';
+  const rowTable=(id,rows,cols,empty)=>{const target=byId(id);if(!target)return;target.innerHTML=rows.length?rows.map(record=>'<tr>'+cols.map(f=>'<td>'+f(record)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+esc(empty)+'</td></tr>';};
+  const metric=(id,value)=>{const el=byId(id);if(el)el.textContent=String(value);};
+  const amountColor=num=>Number(num)>0?'positive':Number(num)<0?'negative':'';
+  window.unifiedWhaleFailure=function(error){const el=byId('v3-status');if(el){el.textContent='DATA FETCH FAILED · '+String(error?.message||error).slice(0,140);el.className='v2-alert v2-negative';}};
+  window.unifiedWhaleRender=function(s){
+    try{
+      const w=s?.research?.whale_v3;
+      const banner=byId('v3-status');
+      if(!w){if(banner){banner.textContent='Whale Intelligence has not yet been deployed or has not completed its first cycle. The original V2 trading engine remains separate.';banner.className='v2-alert';}return;}
+      const sc=w.scanner||{}, reports=w.shadow_reports||{},flows=w.recent_flows||[], profiles=w.sender_profiles||{},senderReports=w.sender_shadow_reports||{};
+      const recentRun=w.last_run?new Date(w.last_run):null;
+      const minutes=recentRun?((Date.now()-recentRun.valueOf())/60000):Infinity;
+      const stale=!Number.isFinite(minutes)||minutes<0||minutes>20;
+      if(banner){banner.className='v2-alert';banner.textContent='V3 '+(w.status||'UNKNOWN')+(stale?' · STALE research':' · latest research '+uk(w.last_run))+' · Transaction senders are unverified. No automatic promotion into the £2,000 account.';}
+      metric('v3-large',sc.large_flows??0);
+      metric('v3-very-large',sc.very_large_flows??0);
+      metric('v3-senders',Object.keys(profiles).length);
+      metric('v3-closed',(w.shadow_closed||[]).length);
+      rowTable('v3-strategies',Object.entries(reports).map(([strategy,data])=>({strategy,...data})),[
+        x=>esc(x.strategy.replaceAll('_',' ')),x=>esc(x.closed??0),x=>esc(x.open_positions??0),
+        x=>'<span class="'+amountColor(x.net_gbp)+'">'+esc(money(x.net_gbp))+'</span>',
+        x=>esc(money(x.net_gbp_at_2pct_each_side)),x=>esc(money(x.net_gbp_at_5pct_each_side)),
+        x=>esc(((Number(x.allocation_fraction_of_original_equity)||0)*100).toFixed(2)+'%'),
+        x=>esc(x.status||'COLLECTING_EVIDENCE')], 'Research collecting its first closed outcomes');
+      const ranked=Object.entries(profiles).map(([wallet,x])=>({wallet,...x})).sort((a,b)=>(Number(b.buy_volume_usd)||0)-(Number(a.buy_volume_usd)||0)).slice(0,15);
+      rowTable('v3-wallets',ranked,[x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',x=>esc(x.buys||0),x=>esc(x.sells||0),x=>esc(money(x.buy_volume_usd,'$')),
+        x=>esc(senderReports[x.wallet]?.closed??0),
+        x=>'<span class="'+amountColor(senderReports[x.wallet]?.net_gbp||0)+'">'+esc(money(senderReports[x.wallet]?.net_gbp??0))+'</span>'], 'No candidate senders sampled yet');
+      rowTable('v3-open',(w.shadow_positions||[]).slice(0,10),[
+        x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),x=>esc(money(x.notional_gbp)),
+        x=>x.last_mark_price_usd?esc(Number(x.last_mark_price_usd).toPrecision(6)):'UNPRICED'], 'No whale shadow positions yet');
+      rowTable('v3-flows',flows.slice(-18).reverse(),[
+        x=>esc(uk(x.at)),x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',
+        x=>esc(x.pool_name||short(x.token)),x=>esc(x.kind),x=>esc(money(x.usd,'$')),x=>esc(x.sender_identity||'UNVERIFIED')], 'No qualifying whale-sized transactions sampled yet');
+      rowTable('v3-exits',(w.shadow_closed||[]).slice(-12).reverse(),[
+        x=>esc(uk(x.exit_at)),x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),
+        x=>'<span class="'+amountColor(x.net_pnl_gbp)+'">'+esc(money(x.net_pnl_gbp))+'</span>',x=>esc(x.exit_reason)], 'No forward whale exits yet');
+      rowTable('v3-health',[
+        ['V3 research last run',uk(w.last_run)],['V3 status',w.status||'UNKNOWN'],
+        ['Supplemental Solana pools',sc.additional_pools??0],
+        ['Fresh supplemental quote pools',w.scan_metrics?.quote_pools??0],
+        ['Supplemental trade feeds read',w.scan_metrics?.trade_feeds??0],
+        ['Last supplemental market data',uk(w.last_market_data_at)],
+        ['Research elapsed seconds',w.scan_metrics?.elapsed_seconds??'—'],
+        ['Shadow strategies','large_repeat, very_large, accumulation'],
+        ['Fresh large-flow observations',sc.fresh_signals??0],
+        ['Current scan errors',(w.last_scan_errors||[]).slice(-2).join('; ')||'None'],
+        ['Verified whale owners','None — attribution not established'],
+        ['Actual paper account changed by V3','No — research and shadow simulations only']
+      ].map(([name,value])=>({name,value})),[x=>esc(x.name),x=>esc(x.value)],'No V3 health evidence');
+    }catch(error){const banner=byId('v3-status');if(banner)banner.textContent='Whale V3 dashboard rendering unavailable: '+String(error.message).slice(0,100);}
+  };
+})();
 
 </script>
 </body></html>
