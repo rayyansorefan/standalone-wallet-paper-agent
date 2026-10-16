@@ -76,7 +76,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 <!-- UNIFIED_V2_NAV -->
-<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#experiments">Experiments</a><a href="#whales">Whales</a><a href="#system">System health</a></nav>
+<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#decisions-v1">Decision evidence</a><a href="#experiments">Experiments</a><a href="#whales">Whales</a><a href="#system">System health</a></nav>
 
 <div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
@@ -204,12 +204,30 @@ $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCoun
 table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
 table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
-table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
 async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
 poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
 })();
 </script>
 
+<section id="decisions-v1" class="v2-section"><div class="v2-head"><div><h2>History-aware decisions</h2><p>Losses change entry eligibility across wallets. Positive history changes selection priority; larger allocations still require independent forward validation.</p></div></div>
+<div class="v2-panel"><h3 id="policy-status">Awaiting first policy cycle</h3><p id="policy-news"></p><p id="policy-scope"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Pool</th><th>24h net / closes</th><th>Entry decision</th><th>Technical context</th></tr></thead><tbody id="policy-pools"></tbody></table></div></div>
+<div class="v2-panel"><h3>Forward accepted versus blocked signals</h3><p id="policy-forward"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Cohort</th><th>Horizon</th><th>Priced / missing</th><th>Mean net quote return</th></tr></thead><tbody id="policy-outcomes"></tbody></table></div><p id="policy-headlines"></p></div></section>
+<script>
+window.unifiedDecisionRender=function(s){
+ const d=s.research?.decision_v1,n=s.research?.news_v1||{},get=id=>document.getElementById(id);
+ if(!d)return;
+ get('policy-status').textContent='Active entry policy · registered '+new Date(d.registered_at).toLocaleString('en-GB',{timeZone:'Europe/London'})+' · improvement UNPROVEN';
+ get('policy-news').textContent='News: '+(n.status||'UNAVAILABLE')+' · checked '+(n.checked_at||'never')+' · '+Object.entries(n.sources||{}).map(([k,v])=>k+': '+v.status).join(' · ');
+ get('policy-scope').textContent=n.scope||'No verified news context';
+ const write=(id,rows)=>{const body=get(id);body.replaceChildren();rows.forEach(values=>{const tr=document.createElement('tr');values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});body.appendChild(tr)})};
+ const num=v=>typeof v==='number'?v.toFixed(2):'unavailable';
+ write('policy-pools',Object.entries(d.assessments||{}).map(([pool,a])=>[(s.watched_pools||[]).find(p=>p.pool===pool)?.name||pool,'£'+num(a.history.net_gbp)+' / '+a.history.closed,a.allowed?'Eligible · priority '+num(a.selection_score):a.reasons.join('; '),'5m '+num(a.technical.change_5m_pct)+'% · 1h '+num(a.technical.change_1h_pct)+'% · volume pace '+num(a.technical.volume_pace_ratio)+'x']));
+ get('policy-forward').textContent=(d.forward_description||'')+' Pending: '+(d.forward_pending||[]).length+'. Mature: '+(d.forward_outcomes||[]).length+'.';
+ write('policy-outcomes',Object.entries(d.forward_summary||{}).flatMap(([cohort,values])=>Object.entries(values).map(([h,v])=>[cohort,h,v.priced+' / '+v.missing,num(v.mean_net_quote_roi_pct)+'%'])));
+ get('policy-headlines').textContent=(n.items||[]).map(x=>x.source+': '+x.title+' ('+x.published_at+')').join(' · ')||'No recent relevant headlines in the available sources. Unavailable sources provide no evidence.';
+};
+</script>
 <!-- UNIFIED_V2_JS -->
 <script>
 /* Unified V2: renders from the canonical dashboard's existing state.json fetch. */

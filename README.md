@@ -72,3 +72,45 @@ Positive wallet/feature sizing now requires both the existing safety gates and r
 Exit diagnostics and sampled adverse/favourable price paths are descriptive; missed intracycle extremes, actual owner profits and no-stop counterfactuals remain unknown. A research evaluation failure revokes positive certificates and preserves the paper account. Pages publishes in a separate downstream job; a transient publication failure gets one retry after 10 seconds and can never undo the already saved engine state. The next unattended cycle also republishes.
 
 Validation commands: `python -m unittest discover -s tests -v` and `node infra/google_apps_script/test.mjs`. Never reset state files during deployment or rollback. Revert code only and keep the latest rolling state/history. Current run provenance and health, rather than a successful test alone, determine operational status.
+
+## History-aware entry policy v1 (16 October 2026)
+
+The five-minute scheduler, original account and exits remain in place. A versioned
+entry policy now consumes actual net closed outcomes across wallet addresses,
+keyed by pool and known base-token mint aliases. All re-entries wait 30 minutes;
+a loss waits two hours; three losses with negative daily net, or three consecutive
+losses, suspend new entries for that token until 24 hours after its latest loss.
+Existing positions retain their exits and are not liquidated merely for being in
+a losing historical cohort. Alias coverage is limited to observed pool metadata.
+
+Entries require positive 5m/1h changes, no greater than 12%/40%, at least half the
+24h average hourly volume, and at least half hourly trades being buys. These are
+predeclared defensive hypotheses, not optimised or proven indicators. Counts are
+not buy/sell dollar volumes. Missing technical fields block entries. No fabricated
+RSI, MACD, candles or verified whale ownership is used. Signal AND quote ages are
+checked again immediately before entry; slow provider work cannot permit stale buys.
+Sells run before buys, so same-cycle closures update cooldowns before allocation.
+
+Bounded free public RSS checks use Solana Status and CoinDesk (two requests, four
+seconds each, 256KB limit, once per 15 minutes). Source status, publication dates
+and recent relevant headlines are saved. A six-hour relevant adverse headline
+blocks new entries; resolved incidents do not trigger that keyword flag. This is
+conservative headline classification, not verified event analysis or individual
+meme-token news coverage. Both feeds unavailable or context older than 30 minutes
+blocks new entries. Partial coverage halves entry sizing and is displayed. Feed
+failures never prevent existing position management. No external AI is required.
+
+Positive net token histories earn selection priority using mean net ROI shrunk by
+10 pseudo-observations; they do not alone increase exposure. Wallet and feature
+reinforcement still require the existing frozen forward OOS evaluation and remain
+capped at 1.5%. A new predeclared aligned-technical feature cohort participates in
+that evaluation. Sparse winners cannot bypass negative controls or certification.
+
+The dashboard exposes each pool's policy decision and net history, news coverage,
+and forward accepted/blocked quote cohorts. Forward cohorts register before the
+entry, use at most one observation per pool/hour, and measure 5/30/60-minute later
+sampled returns net of 1% each side. Quotes more than ten minutes late stay missing.
+There are no extra market-data requests or backfilled wins. This comparison is
+not a portfolio backtest or causal proof; no shadow strategy promotes automatically.
+Fewer entries, including periods with none, are expected when evidence is weak.
+Rollback code only; never restore an old account snapshot.
