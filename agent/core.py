@@ -94,24 +94,13 @@ def log_decision(state, action, wallet=None, token=None, reason='', **extra):
 
 
 def wallet_stats(state, wallet):
-    trades = [x for x in state['closed'] if x['wallet'] == wallet]
-    n = len(trades)
-    wins = sum(1 for x in trades if x['net_pnl_gbp'] > 0)
-    net = sum(x['net_pnl_gbp'] for x in trades)
-    mean = sum(x['roi_pct'] for x in trades) / n if n else 0.0
-    # Shrink estimates toward zero; no illusion of certainty with small N.
-    shrunk = mean * n / (n + 10)
-    observed = state['observed'].get(wallet, {})
-    return dict(closed=n, win_rate=round(100*wins/n, 2) if n else None,
-                net_gbp=round(net, 2), shrunk_roi_pct=round(shrunk, 3), seen=observed.get('count', 0))
+    from .adaptive import wallet_report
+    return wallet_report(state, wallet)
 
 
 def wallet_risk_fraction(stats):
-    if stats['closed'] >= 5 and stats['shrunk_roi_pct'] > 0 and (stats['win_rate'] or 0) >= 50:
-        return 0.015
-    if stats['closed'] >= 3 and stats['shrunk_roi_pct'] < -1:
-        return 0.0
-    return 0.005  # maximum £10 exploration at starting equity
+    from .adaptive import wallet_risk_fraction as adaptive_risk_fraction
+    return adaptive_risk_fraction(stats)
 
 
 def pool_meta(p):
@@ -197,6 +186,9 @@ def maybe_open(state, ev, price, current, prices):
              (current-(parse_time(x['exit_at']) or current)).total_seconds() < 1800 for x in state['closed'][-50:]):
         reason = '30-minute cooldown'
     alloc_fraction = wallet_risk_fraction(ws)
+    from .adaptive import feature_risk_multiplier
+    feature_weight, feature_reason = feature_risk_multiplier(state, ev)
+    alloc_fraction = min(0.015, alloc_fraction * feature_weight)
     if alloc_fraction == 0: reason = 'risk-adjusted trader score below threshold'
     eq = equity(state, prices)
     if eq is None:
@@ -217,7 +209,7 @@ def maybe_open(state, ev, price, current, prices):
     state['cash_gbp'] = round(state['cash_gbp'] - entry_cost, 6)
     state['positions'].append(pos)
     log_decision(state, 'PAPER_BUY', wallet, token, 'qualified copied signal at current pool quote',
-                 notional_gbp=alloc, score=ws, signal_age_seconds=round((current-ev['timestamp']).total_seconds(),1))
+                 notional_gbp=alloc, score=ws, feature_weight=feature_weight, feature_reason=feature_reason, signal_age_seconds=round((current-ev['timestamp']).total_seconds(),1))
 
 
 def maintain_positions(state, prices, current):
@@ -250,7 +242,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     seen = set(state['seen_trades'])
     try:
         payload = fetch('/networks/solana/trending_pools', {'page': 1, 'include':'base_token'})
-        pools = [pool_meta(x) for x in payload.get('data', [])]
+        from .adaptive import enrich_meta
+        pools = [enrich_meta(x, pool_meta(x)) for x in payload.get('data', [])]
         candidate_pools = [m for m in pools if eligible(m)][:4]
     except Exception as e:
         candidate_pools = []
@@ -266,6 +259,21 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             m = pool_meta(detail.get('data') or {})
             if m['price_usd'] and m['price_usd'] > 0: prices[pos['token']] = m['price_usd']
         except Exception as e: errors.append('mark '+pos['token']+': '+str(e)[:160])
+    from .adaptive import ensure, shadow_tokens
+    ensure(state)['cycle_errors'] = []
+    for research_token in shadow_tokens(state):
+        if research_token in prices: continue
+        try:
+            from .adaptive import fast_shadow_pool
+            detail = (fast_shadow_pool(research_token) if fetch is api else
+                      fetch(f"/networks/solana/pools/{urllib.parse.quote(research_token, safe='')}", {'include':'base_token'}))
+            meta = pool_meta(detail.get('data') or {})
+            if meta['price_usd'] and meta['price_usd'] > 0:
+                prices[research_token] = meta['price_usd']
+            else:
+                raise ValueError('Shadow pool has no valid current price')
+        except Exception as exc:
+            ensure(state)['cycle_errors'].append('shadow mark '+str(research_token)[:48]+': '+str(exc)[:120])
     maintain_positions(state, prices, current)
     new_events = []
     for pool in candidate_pools:
@@ -316,6 +324,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 observed = state['observed'].setdefault(ev['wallet'], {'count': 0, 'last_seen': None})
                 observed['count'] += 1
                 observed['last_seen'] = ev['timestamp'].isoformat()
+                from .adaptive import observe_event
+                observe_event(state, ev, current, pool)
                 age = (current-ev['timestamp']).total_seconds()
                 if (not first and 0 <= age <= MAX_TRADE_AGE_SECONDS
                         and ev['timestamp'] > (parse_time(state['last_run']) or current)):
@@ -326,7 +336,14 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             errors.append('trades '+pool['pool']+': '+str(e)[:180])
     # On the first run, deliberately record trades for discovery only and never copy them.
     # No stale purchases from before the previous scan if a schedule is delayed.
+    from .adaptive import research_cycle, conflicting_keys
+    research_cycle(state, candidate_pools, prices, new_events, current)
+    sells_in_cycle = conflicting_keys(new_events)
     for ev in sorted(new_events, key=lambda x: x['timestamp']):
+        if ev['kind'] == 'buy' and (ev['wallet'], ev['token']) in sells_in_cycle:
+            log_decision(state, 'SKIP', ev['wallet'], ev['token'],
+                         'Conflicting buy/sell signals observed in one scan; avoid immediate churn')
+            continue
         if ev['kind'] == 'sell':
             for pos in list(state['positions']):
                 if pos['wallet'] == ev['wallet'] and pos['token'] == ev['token']:
@@ -351,6 +368,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                             else 'TRADE_FEEDS_FAILED' if screened_pools and not sampled_feeds
                             else 'DEGRADED' if errors
                             else 'BOOTSTRAPPED_NO_TRADES' if first else 'OK')
+    from .adaptive import finalize
+    finalize(state, current)
     state['snapshots'].append(dict(at=now_iso(), equity_gbp=equity(state, prices), cash_gbp=round(state['cash_gbp'], 2),
                                    open_positions=len(state['positions']), closed_trades=len(state['closed']),
                                    watched_pools=len(candidate_pools), sampled_feeds=sampled_feeds, screened_pools=screened_pools, status=state['last_status']))
