@@ -23,6 +23,24 @@ class Deferred(RuntimeError):
     pass
 
 
+def trade_pool_scope(path):
+    """Only a well-formed pool trade URL gets a pool-local timeout circuit."""
+    parts = path.strip('/').split('/')
+    if (len(parts) == 5 and parts[:3] == ['networks', 'solana', 'pools']
+            and parts[3] and parts[4] == 'trades'):
+        return 'gecko_trade_pool:' + parts[3]
+    return None
+
+
+def is_timeout(exc):
+    """Unwrap urllib timeout errors; never downgrade an HTTP 429 to local."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return False
+    if isinstance(exc, TimeoutError):
+        return True
+    return isinstance(exc, urllib.error.URLError) and isinstance(exc.reason, TimeoutError)
+
+
 def stamp(value):
     try:
         t = dt.datetime.fromisoformat(str(value).replace('Z', '+00:00'))
@@ -66,16 +84,23 @@ class ResearchFeed:
         self.health = research.setdefault('provider_health', {})
         self.cache = research.setdefault('discovery_cache', {})
         self.metrics = research['scan_metrics']
-        self.metrics.update(requests=0, cache_hits=0, deferred=0, quote_provider='geckoterminal',
+        self.metrics.update(requests=0, cache_hits=0, deferred=0, isolated_timeouts=0,
+                            quote_provider='geckoterminal',
                             primary_window_wait_seconds=round(quiet,3))
 
-    def _reserve(self, group):
+    def _reserve(self, group, scope=None):
         health = self.health.setdefault(group, {})
-        until = stamp(health.get('retry_at'))
         current=dt.datetime.now(UTC) if self.production else self.now
-        if until and current < until:
-            self.metrics['deferred'] += 1
-            raise Deferred(group + ' cooling down until ' + health['retry_at'])
+        # Provider-wide HTTP 429/5xx is checked first. A different pool's read
+        # timeout must not silence every supplemental swap feed for five minutes.
+        for key in (group, scope):
+            if not key:
+                continue
+            circuit = self.health.get(key, {})
+            until = stamp(circuit.get('retry_at'))
+            if until and current < until:
+                self.metrics['deferred'] += 1
+                raise Deferred(key + ' cooling down until ' + circuit['retry_at'])
         wait = max(0, MIN_SPACING - (self.clock()-self.last_request)) if self.last_request is not None else 0
         if self.requests >= MAX_REQUESTS or self.clock()-self.started+wait+REQUEST_TIMEOUT > TIME_BUDGET:
             self.metrics['deferred'] += 1
@@ -106,19 +131,32 @@ class ResearchFeed:
             http_status=getattr(exc, 'code', None),
             retry_at=((dt.datetime.now(UTC) if self.production else self.now)+dt.timedelta(seconds=delay)).isoformat(timespec='seconds'))
 
-    def _call(self, group, operation):
-        health = self._reserve(group)
+    def _call(self, group, operation, scope=None):
+        health = self._reserve(group, scope)
         try:
             result = operation()
         except Exception as exc:
-            self._failure(health, exc)
+            if scope and is_timeout(exc):
+                # Persist a pool-local circuit across Actions runners; a shared
+                # 429/5xx or unknown failure still retains provider-wide backoff.
+                self._failure(self.health.setdefault(scope, {}), exc)
+                self.metrics['isolated_timeouts'] += 1
+                pool_circuits = [k for k in self.health if k.startswith('gecko_trade_pool:')]
+                for key in pool_circuits[:-64]:
+                    self.health.pop(key, None)
+            else:
+                self._failure(health, exc)
             raise
         health.update(consecutive_failures=0, last_error=None, http_status=200,
                       retry_at=None, last_success=self.now.isoformat(timespec='seconds'))
+        if scope:
+            # A successful quote from this pool retires its expired circuit.
+            self.health.pop(scope, None)
         return result
 
     def __call__(self, path, params=None):
         group = 'gecko_trades' if path.endswith('/trades') else 'gecko_quotes'
+        scope = trade_pool_scope(path) if group == 'gecko_trades' else None
         key = path+'?'+urllib.parse.urlencode(params or {})
         is_discovery = 'trending_pools' in path
         cached = self.cache.get(key, {})
@@ -134,7 +172,7 @@ class ResearchFeed:
                 if not isinstance(result['data'], list):
                     raise ValueError('Research list response missing')
             return result
-        payload = self._call(group, retrieve)
+        payload = self._call(group, retrieve, scope=scope)
         if is_discovery:
             self.cache[key] = {'at': self.now.isoformat(timespec='seconds'), 'payload': payload}
             self.r['discovery_cache'] = dict(list(self.cache.items())[-4:])
