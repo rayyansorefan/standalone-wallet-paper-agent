@@ -2,20 +2,464 @@
   "schema": 1,
   "paper_only": true,
   "initialized_at": "2026-10-15T22:18:05+00:00",
-  "last_run": "2026-10-16T06:18:59+00:00",
+  "last_run": "2026-10-16T06:24:00+00:00",
   "cash_gbp": 1972.951012,
   "starting_gbp": 2000.0,
   "last_status": "OK",
-  "last_data_at": "2026-10-16T06:18:59+00:00",
-  "completed_cycles": 88,
-  "stale_signals": 3154,
+  "last_data_at": "2026-10-16T06:24:00+00:00",
+  "completed_cycles": 89,
+  "stale_signals": 3204,
   "unattributed_events": 0,
   "observed": {
+    "8aJSY8a3YkstiuENp9D7YU8DKGns26TMRHXVtj1XFSk9": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:23:31+00:00"
+    },
+    "CCz2QTonzuhqEiC4U32zydaFnLieQkHdJFZJ5Jp21PSa": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:23:29+00:00"
+    },
+    "5yKbGvyo4peaAfeEV9sMFy7GDDVYb9Scd4HG8bBKx2Xa": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:23:27+00:00"
+    },
+    "B5f52c4BgTFaonN6J4VPv61VdBsyWWppvzQJmqb3Psox": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:23:16+00:00"
+    },
+    "DtvmxrTACskMG2W8a6KXgSemUfvyNVeQTgfpJoGvMVKx": {
+      "count": 49,
+      "last_seen": "2026-10-16T06:23:16+00:00"
+    },
+    "GZmrUMdAnEQrzNaPBGVAECouhrZq9pbfgCz884VAhqDs": {
+      "count": 5,
+      "last_seen": "2026-10-16T06:23:04+00:00"
+    },
+    "kv2Aj1cTbiTNGxkERw5Rm41obTWe1QANV4XXR5KeohH": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:23:02+00:00"
+    },
+    "DtNXeGEmeWX1Ry4nMAboZPRUGH4uFh9mu19SxMQ7ojaD": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:22:52+00:00"
+    },
+    "HxjwdF326ZunmUwC1iXhfgL3ku78YsksN6n7Rfxzwr6b": {
+      "count": 14,
+      "last_seen": "2026-10-16T06:22:46+00:00"
+    },
+    "3K7XMbqvFTKT211Dqu8tXC1iK5vmQQ2MZp5mxSdEzWvx": {
+      "count": 20,
+      "last_seen": "2026-10-16T06:22:43+00:00"
+    },
+    "5rmpW6ruWXYa3nZqC3SreNmzpu3EDjnLikGbbG67fdLz": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:22:38+00:00"
+    },
+    "53zwCj2omUXjxeHAJjUitDtjZXruktiGfow7SCihHRop": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:22:35+00:00"
+    },
+    "71UrRWESLNXMrV812TKUw5Gk1dhbiznAb55jDJvgKwXH": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:22:27+00:00"
+    },
+    "8BKWiAymDH2NC91cFsNShzT2ptZi9TjxZGepih4C2kYY": {
+      "count": 23,
+      "last_seen": "2026-10-16T06:22:23+00:00"
+    },
+    "CCrg99e9X8QfN3K25ZLfzGBSgBr3u2gVZcqWDe4t3kPi": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:22:23+00:00"
+    },
+    "9EwQoN74Hzw747EM7wB3WtvgAdRGH1czaPtbqZj1qDj4": {
+      "count": 74,
+      "last_seen": "2026-10-16T06:22:22+00:00"
+    },
+    "6tFkybc9Kzif44ZfXLkoQofHXsuAp5utPP8g3orYyUTn": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:22:22+00:00"
+    },
+    "STrkPe33To24Pxk6eDVJovNM7yrzt15tu7HrEVy96X6": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:22:17+00:00"
+    },
+    "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X": {
+      "count": 328,
+      "last_seen": "2026-10-16T06:22:12+00:00"
+    },
+    "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP": {
+      "count": 56,
+      "last_seen": "2026-10-16T06:22:06+00:00"
+    },
+    "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu": {
+      "count": 87,
+      "last_seen": "2026-10-16T06:22:04+00:00"
+    },
+    "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB": {
+      "count": 37,
+      "last_seen": "2026-10-16T06:22:04+00:00"
+    },
+    "CzYQ2kFnBxsNEt9Zy34vQ3n5fSDhvA4o4XaTnq1rLvyr": {
+      "count": 86,
+      "last_seen": "2026-10-16T06:22:03+00:00"
+    },
+    "HvFdDWS3RqymRAVx1ZdoL2RjiC38r5dtt19Z8op5jqDK": {
+      "count": 23,
+      "last_seen": "2026-10-16T06:22:01+00:00"
+    },
+    "GMemcMZmtctmAkNcB7Vxw1XP9zR7eB7fwxx9ojtQWrM6": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:51+00:00"
+    },
+    "64i8GbQ8Fh7ZPjPrBo7MpKPvQVStuCHF5izWSnr48MLb": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:21:46+00:00"
+    },
+    "J4S3hB647noGtGE71a8RKseJdFaYrymVd4b8X3pYK369": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:45+00:00"
+    },
+    "DcPsNLv4UQqo58nTxBJNXaivSEZmqMgXvA1yLve8WuVs": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:42+00:00"
+    },
+    "2g4rbhcxK48fNcmvQPizijUw8VDgSLis5kagFQ87oNXv": {
+      "count": 4,
+      "last_seen": "2026-10-16T06:21:38+00:00"
+    },
+    "APeMMxB7iXd62uKGRe1AXUBhLb5ssq2wfpgzTUhdBrQ6": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:36+00:00"
+    },
+    "9t1ptEHDeZi929Mx1D8ui8Nfd2puzjjNBiydahPojwy2": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:32+00:00"
+    },
+    "E5VKnso2svYmax9unt9urdeMsN3rfiXp1FamKCFDdoZM": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:32+00:00"
+    },
+    "2tLaVvpw6mBPEZsZYzjAkE8gwE2E8Vw7yihjYTeDYhKY": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:21:29+00:00"
+    },
+    "FGmkAeGHqDnJ9PMvvcC7LDQZhZbwurR5y9r9emBDbYVS": {
+      "count": 15,
+      "last_seen": "2026-10-16T06:21:27+00:00"
+    },
+    "J738yEBQqaoRWXamj238H63Dyo9RoDyELgprxQCY2oj7": {
+      "count": 6,
+      "last_seen": "2026-10-16T06:21:27+00:00"
+    },
+    "4VFwcQY7BB9P9wpSKL4FncmsPdp1TfKTyvZVQMXouV3M": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:21:10+00:00"
+    },
+    "2QfBNK2WDwSLoUQRb1zAnp3KM12N9hQ8q6ApwUMnWW2T": {
+      "count": 14,
+      "last_seen": "2026-10-16T06:21:07+00:00"
+    },
+    "DADDyLEuVJtPACD5LcVGY46BMUvTGVNAUoKHox7Je2Ev": {
+      "count": 34,
+      "last_seen": "2026-10-16T06:21:07+00:00"
+    },
+    "ApRmvLRFTYQChpS6crGfNp2Hn1uoQgzyKeYjmRXszSU8": {
+      "count": 4,
+      "last_seen": "2026-10-16T06:21:06+00:00"
+    },
+    "CS3EREmMkPMsCswoxjt2oYE41SYhg4t1L6A1TahRRBTy": {
+      "count": 9,
+      "last_seen": "2026-10-16T06:21:00+00:00"
+    },
+    "6gHWm4xAywaK9faNdH3v71SMTaXZkGXbPWA4T3TNy6yc": {
+      "count": 17,
+      "last_seen": "2026-10-16T06:20:58+00:00"
+    },
+    "6YjzEA9DxQWSBqsSNPCeJohYMYwqDmT8QMBgz7EeJ2rw": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:53+00:00"
+    },
+    "HcDXmBnQpZvJ6P2YMDkvYqbGejn1fegPBxiEvAw3JyK4": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:53+00:00"
+    },
+    "4sk6kvz6LBRV5pYMK42V3YpgLgUJjAhXsJQtGkJSqTug": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:20:50+00:00"
+    },
+    "B3EiKmf4DQBUwWuDvWc7bTztVNL98kngHJ9ZLme5JbCf": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:50+00:00"
+    },
+    "3MUF4EiJ5wiHnF6Ph4n6akEq89QAtw1TxmfTAGhYjaS2": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:47+00:00"
+    },
+    "J7GdFq9sm2t4rRtWRQ1476U2LPPn96jJvrwH5Lne6pp6": {
+      "count": 5,
+      "last_seen": "2026-10-16T06:20:44+00:00"
+    },
+    "e6aczgVKEUErTn9bUWcdohYtQWBr2fVeVRBgZiK41VT": {
+      "count": 6,
+      "last_seen": "2026-10-16T06:20:44+00:00"
+    },
+    "FXK8KaWHenqnGycWBeK9P3xZmaX7WjBM1y7RbJ7bqGLK": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:20:44+00:00"
+    },
+    "u1c81PopHeXKz9ojFRMpj9PEPWDLBZXUZhP5G5pmvKn": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:20:41+00:00"
+    },
+    "F8rnXPFkFB6UqkZehqCactRzVSGHtsEeacm7kEQ7D6ZR": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:41+00:00"
+    },
+    "BM6y2ajVVj3BKHa38ntTC1LqytLR94rLZzxKYMt6q2A2": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:40+00:00"
+    },
+    "8J5gVENw9nQyNdYBHgVfM4JF8uQxMZJqoZ4ybRbuPA7r": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:40+00:00"
+    },
+    "AgaRoXCyhRLgY3Z3dC3vY3pjhuWfpJWKLcKajaZpAhge": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:38+00:00"
+    },
+    "7QJvtWxe8AkYFVH292zKh7y6cPPFtt3ihuoJAm6qith": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:37+00:00"
+    },
+    "2woUZT5iViQwZE6Jkp1F6YapMKhRkuLazha1WzboCy4u": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:36+00:00"
+    },
+    "5Viz92BgnPs3AzeLKQcV1kQP6KwwtDmhfSHKM2HRbscY": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:36+00:00"
+    },
+    "4xGr2HUmsPF5SZk2fxDXLWXp5GMbUNQ1vDG7pgkb71nh": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:35+00:00"
+    },
+    "AbFisqfZzbe7Xm96Eiw6qSR4JEsoQWyVm995avrL4pyK": {
+      "count": 4,
+      "last_seen": "2026-10-16T06:20:33+00:00"
+    },
+    "9r2EXYCsLZuQcHgyrvqTAAeupxEW8CLxzENKhowcpbEY": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:20:27+00:00"
+    },
+    "Dk1B7mfPcVShVxtsz1eYTM3jKz3aGGDrAVtF3fmpxXoW": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:25+00:00"
+    },
+    "44X13eVHfLcZM6aAyPizxK6tePgwVQcUgxPZMQX4fsHF": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:20:21+00:00"
+    },
+    "3eHUuSJLa5xhHSsR9rTdFdCmcjRW5dWdhKGLr4LT1x2L": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:21+00:00"
+    },
+    "8krJMuxz4GUh6yYL5jwtoBbAtW8SJbbpbuVGiz234CPV": {
+      "count": 6,
+      "last_seen": "2026-10-16T06:20:17+00:00"
+    },
+    "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT": {
+      "count": 529,
+      "last_seen": "2026-10-16T06:20:17+00:00"
+    },
+    "AQ3MK4mf4i4r3G9rkbAvfoxGP6eZ7yscuiy5Syyuq27U": {
+      "count": 10,
+      "last_seen": "2026-10-16T06:20:17+00:00"
+    },
+    "BtoAbArhmzwSesTeP9VuqM5AQL57vnNKoLWuXesdBJC1": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:16+00:00"
+    },
+    "CDpVXNdiPQrPm6NvztSSyrFJTimMBjiaNYPfE7GmbKPc": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:16+00:00"
+    },
+    "2q5aRxR7TNMPVC1s9afCYVVuD5e1oftnWLa6yoYEsoJQ": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:13+00:00"
+    },
+    "AuEh8wut7JZ869NyLUzoo7vJUFdTuotE4xJupCnKdjwE": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:09+00:00"
+    },
+    "GRpDryP4MYgcR54UwGTy9A9BQCEyhqxkxWXXskxXT2zR": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:08+00:00"
+    },
+    "8PiXt2id4tAYDdU1mNvFhwbWHykVeijz157Gv6mEZ1Nt": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:20:06+00:00"
+    },
+    "BtL1nWpDaSiLcjW8iTbE9dYXVGM2tbWcEt1C2zDGDiPX": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:20:04+00:00"
+    },
+    "BLJVBSMMDpQJnEUoBjiBcLEtukiz9te4Mv6V4GNm5sVD": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:59+00:00"
+    },
+    "2PfQUjeDoQCqQW7s2iSa5S25dwDQXYn8XeKETj9yvHfo": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:19:55+00:00"
+    },
+    "7Cz3TgrrngGyBJHGjCPTYZyySqP7G3q9auG9ERBY9W6b": {
+      "count": 5,
+      "last_seen": "2026-10-16T06:19:50+00:00"
+    },
+    "AgmLJBMDCqWynYnQiPCuj9ewsNNsBJXyzoUhD9LJzN51": {
+      "count": 427,
+      "last_seen": "2026-10-16T06:19:49+00:00"
+    },
+    "4MaTdwALW1PrEm12fszMmPem6Lbbwi6ArcACUkvk42RQ": {
+      "count": 4,
+      "last_seen": "2026-10-16T06:19:45+00:00"
+    },
+    "2LMFk9fnWuB4YJcxyf8nzQw6KqwiaNdVfjSCfQphiWc9": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:44+00:00"
+    },
+    "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf": {
+      "count": 84,
+      "last_seen": "2026-10-16T06:19:43+00:00"
+    },
+    "BQYB2ZT6jTeiWv7yGH2uDLLr45Zf2wMzU9rB3ga65ikt": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:43+00:00"
+    },
+    "Bgokg3jutarxEMWQVospwUucSQfpG6Jw27jRbMxcvU2q": {
+      "count": 8,
+      "last_seen": "2026-10-16T06:19:28+00:00"
+    },
+    "mBQ57b2LDthWrHpZa5cewif7KnT8r5jjLAa8NHcrUTg": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:24+00:00"
+    },
+    "7sZtPSeKENmWG8YREniiDiyfLRM2QcD7ufLJWA5nT5nd": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:19:23+00:00"
+    },
+    "4YP7YJFDpjJ9DePSH64ouj8cs52CZip7UfCbGBK98Nyg": {
+      "count": 9,
+      "last_seen": "2026-10-16T06:19:23+00:00"
+    },
+    "J7ZL5jvSU2owsBaSGSmGPLR28ZxeEAP4sxUhe7sWy38Q": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:23+00:00"
+    },
+    "Gu7rHYx7PuMhm1caHLnPexDZWCBXnhgGnEx7riZ9gVio": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:23+00:00"
+    },
+    "8NQ32SyFKD1d5kenq4oM8Da6C6J9TQSMW1uAgFRveEQr": {
+      "count": 29,
+      "last_seen": "2026-10-16T06:19:22+00:00"
+    },
+    "3xAEngeSgUQHREqtr68VzHXp5cWL1UWVWwH5g7LwLMoR": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:22+00:00"
+    },
+    "4u5cCwTS4ZuXeZpoT9PvP2V5Gs5dy5f6e3RydkC6G3tN": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:22+00:00"
+    },
+    "HXuuXP9ZNn7WGaKKqiAcX5473TeyXb91afB7mKkRvCF8": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:22+00:00"
+    },
+    "AHjQMx83hqHRBNN6gmSoyHToWUBokDDqmWNwKVqzpmxT": {
+      "count": 13,
+      "last_seen": "2026-10-16T06:19:20+00:00"
+    },
+    "D88KBYEZZb9m9uRwXetVfhUGoxCTfKxsrnSZPKoa78o9": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:20+00:00"
+    },
+    "HTVdvzBBMQhmqBT351FFtLtUprFQwdELyZPjMgeNfQEd": {
+      "count": 5,
+      "last_seen": "2026-10-16T06:19:17+00:00"
+    },
+    "7wShLXQm7AUHuF29Ymfu2cUxi3KJjm7okPd5kBDCtQ2E": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:15+00:00"
+    },
+    "GZC75fHrVnQnJ8nFHhtxZPUCp1fqhcdYgtgUTJ97tAZr": {
+      "count": 4,
+      "last_seen": "2026-10-16T06:19:15+00:00"
+    },
+    "AgQf99iFCRsNUL7En5sDm47r1B5C5Ug3tAi116ZLAqPy": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:19:14+00:00"
+    },
+    "PrEytJ4nKqKcLwzHrxLZT3JcZHfr2NnMGMDcQWkj8dS": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:19:12+00:00"
+    },
+    "4u6Mw95CuEmQvayvojnKSDsTLQnns5YQSovpWZQVUoMZ": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:06+00:00"
+    },
+    "HM3PVKTBNyrSZsF3K9oFgcVkTqa99up6oitf8JZjZwuc": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:06+00:00"
+    },
+    "9SvzWMz87oFvADwB93RtZj8Ec2e13FQJt62Lp5Giu4EX": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:19:05+00:00"
+    },
+    "BUqZAHj5qvPrHi6XS3MCJiB5RVq23azB27LNG1WDWFVx": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:03+00:00"
+    },
+    "E7Mn5EamiPmx9v5cgoWUu38m8aybjTRFfDdCMDME8PUa": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:19:00+00:00"
+    },
+    "87finGAbgkWMmjPbp72ajGBitLVi9ufj6jXSykF5CGoy": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:19:00+00:00"
+    },
+    "DzA4orejQPTyjW2ZECpZBhPP3kxnUs7CmfEMZJpUJF6g": {
+      "count": 10,
+      "last_seen": "2026-10-16T06:18:59+00:00"
+    },
+    "HEHExXMxWiF43EwfXjQV89safgNcj7Y3ujQo8E1QrmrV": {
+      "count": 5,
+      "last_seen": "2026-10-16T06:18:59+00:00"
+    },
+    "CSyGKAqw6bi2tXa2tU3t5NmDfeK5Z7F4iLtVEwXaafHG": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:18:55+00:00"
+    },
+    "7ALdyKpFkAMhGHStNUa4KLqjE1THbPF2X84nYMk6kSLW": {
+      "count": 5,
+      "last_seen": "2026-10-16T06:18:54+00:00"
+    },
+    "2qVqccpFKaCRC59haejiKQBT6R9MYyhb3CLChQDmne3m": {
+      "count": 3,
+      "last_seen": "2026-10-16T06:18:53+00:00"
+    },
+    "2x8HinKtiynaDmZVYe4r4c5fYbx7TPPn1A8LDJe2xpaB": {
+      "count": 2,
+      "last_seen": "2026-10-16T06:18:51+00:00"
+    },
     "94BBbhvr3mNTtVEB3D4RMKXDq1mhurkqBZMeSQwWBRm1": {
       "count": 2,
       "last_seen": "2026-10-16T06:18:46+00:00"
     },
     "GYnue8v6Yq2LHATkatvaN1RKazFLe6KYHAaCacmpXvbJ": {
+      "count": 1,
+      "last_seen": "2026-10-16T06:18:45+00:00"
+    },
+    "649ot18fccD6Mc9V4aHWTdoSVCuqAEtg9aWuxBA9cRoU": {
       "count": 1,
       "last_seen": "2026-10-16T06:18:45+00:00"
     },
@@ -30,14 +474,6 @@
     "BoyLcEmBmAb82tnrGsbkFPsyrh51CtgV1tPZ9zCt1Z5U": {
       "count": 15,
       "last_seen": "2026-10-16T06:18:27+00:00"
-    },
-    "2tLaVvpw6mBPEZsZYzjAkE8gwE2E8Vw7yihjYTeDYhKY": {
-      "count": 1,
-      "last_seen": "2026-10-16T06:18:26+00:00"
-    },
-    "CSyGKAqw6bi2tXa2tU3t5NmDfeK5Z7F4iLtVEwXaafHG": {
-      "count": 2,
-      "last_seen": "2026-10-16T06:18:24+00:00"
     },
     "4q5A5VPm18ggh3iay9gyAgsLRQua5dW6B5YJvvAomxna": {
       "count": 3,
@@ -67,25 +503,13 @@
       "count": 2,
       "last_seen": "2026-10-16T06:17:47+00:00"
     },
-    "Dk1B7mfPcVShVxtsz1eYTM3jKz3aGGDrAVtF3fmpxXoW": {
-      "count": 1,
-      "last_seen": "2026-10-16T06:17:35+00:00"
-    },
     "HPtcboDZFUgDCDVwa1JsdaA2R6j8xToQamfN99BLq2pS": {
       "count": 1,
       "last_seen": "2026-10-16T06:17:35+00:00"
     },
-    "8krJMuxz4GUh6yYL5jwtoBbAtW8SJbbpbuVGiz234CPV": {
-      "count": 5,
-      "last_seen": "2026-10-16T06:17:30+00:00"
-    },
     "5nJhj8bg9uXhaftTjKsARfktVAgXLbi67LfEAF5AKJuF": {
       "count": 1,
       "last_seen": "2026-10-16T06:17:29+00:00"
-    },
-    "8PiXt2id4tAYDdU1mNvFhwbWHykVeijz157Gv6mEZ1Nt": {
-      "count": 2,
-      "last_seen": "2026-10-16T06:17:20+00:00"
     },
     "2t5mDavTU7BHKYBJ6s4UBoCQ9iKtekdvdifTPtkcXxjj": {
       "count": 4,
@@ -98,14 +522,6 @@
     "4QzotzYxeB3nb5jRn3msjbFMpnnKT4nxpaDGoVaew4Qe": {
       "count": 2,
       "last_seen": "2026-10-16T06:17:17+00:00"
-    },
-    "9SvzWMz87oFvADwB93RtZj8Ec2e13FQJt62Lp5Giu4EX": {
-      "count": 1,
-      "last_seen": "2026-10-16T06:17:16+00:00"
-    },
-    "DzA4orejQPTyjW2ZECpZBhPP3kxnUs7CmfEMZJpUJF6g": {
-      "count": 9,
-      "last_seen": "2026-10-16T06:17:14+00:00"
     },
     "9oa4NpCaHsZxQ7W1xgZtUpMjr3GjH6se1ZFe4xLqmGzc": {
       "count": 2,
@@ -207,20 +623,12 @@
       "count": 1,
       "last_seen": "2026-10-16T06:16:20+00:00"
     },
-    "FGmkAeGHqDnJ9PMvvcC7LDQZhZbwurR5y9r9emBDbYVS": {
-      "count": 10,
-      "last_seen": "2026-10-16T06:16:14+00:00"
-    },
     "DJrzikQQJyHzNVvFMLfkELhUW6hq8w7ttrLiBc5KVwbU": {
       "count": 1,
       "last_seen": "2026-10-16T06:16:08+00:00"
     },
     "24MtLSikFDFKFd9jNQtWDBPmYeuEitPScJQhD3T2PBT5": {
       "count": 3,
-      "last_seen": "2026-10-16T06:16:07+00:00"
-    },
-    "HxjwdF326ZunmUwC1iXhfgL3ku78YsksN6n7Rfxzwr6b": {
-      "count": 13,
       "last_seen": "2026-10-16T06:16:07+00:00"
     },
     "3RP3qRHBSdCXKWpoYo61Lo5uU5wj4Qig3su6wuW6egA7": {
@@ -250,10 +658,6 @@
     "69UyYR17eWHSzQL8bo9CoCwxhuEgNDPBLUF72Qn7cwz6": {
       "count": 1,
       "last_seen": "2026-10-16T06:15:59+00:00"
-    },
-    "HEHExXMxWiF43EwfXjQV89safgNcj7Y3ujQo8E1QrmrV": {
-      "count": 4,
-      "last_seen": "2026-10-16T06:15:57+00:00"
     },
     "76sDMhvADSVwzfcTdkuj1sM5AYb1ZeWKYZkedNX8tmTK": {
       "count": 1,
@@ -299,10 +703,6 @@
       "count": 2,
       "last_seen": "2026-10-16T06:15:36+00:00"
     },
-    "HTVdvzBBMQhmqBT351FFtLtUprFQwdELyZPjMgeNfQEd": {
-      "count": 4,
-      "last_seen": "2026-10-16T06:15:34+00:00"
-    },
     "14Zk4ZtHaFajCCf8NkFyPu5rrMYgZE4HG3sUj1BrXi4K": {
       "count": 1,
       "last_seen": "2026-10-16T06:15:34+00:00"
@@ -318,10 +718,6 @@
     "E12wbjwE8yvKAtntWGewzoDwKWfZBJuv1GkD1sf51yPe": {
       "count": 7,
       "last_seen": "2026-10-16T06:15:28+00:00"
-    },
-    "HvFdDWS3RqymRAVx1ZdoL2RjiC38r5dtt19Z8op5jqDK": {
-      "count": 22,
-      "last_seen": "2026-10-16T06:15:24+00:00"
     },
     "2k5hrzuykwyTbUe8L7UriYAQhr5hijNLgBvEB4B9pP5y": {
       "count": 11,
@@ -379,10 +775,6 @@
       "count": 12,
       "last_seen": "2026-10-16T06:14:56+00:00"
     },
-    "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT": {
-      "count": 509,
-      "last_seen": "2026-10-16T06:14:56+00:00"
-    },
     "HL2kH8yaDDQZxA35uc6TFTBoLpes731WKoPZUM2wUWVA": {
       "count": 10,
       "last_seen": "2026-10-16T06:14:56+00:00"
@@ -414,10 +806,6 @@
     "HxcdEi6CWzQtPCmM8E2maEZ3oYVGZxESqCWU1iPzmhVW": {
       "count": 12,
       "last_seen": "2026-10-16T06:14:37+00:00"
-    },
-    "CzYQ2kFnBxsNEt9Zy34vQ3n5fSDhvA4o4XaTnq1rLvyr": {
-      "count": 85,
-      "last_seen": "2026-10-16T06:14:35+00:00"
     },
     "ESjk4zQw1W94ULdLaMGaM7si5YXTp1PofpBuyeZa5FiH": {
       "count": 1,
@@ -455,10 +843,6 @@
       "count": 1,
       "last_seen": "2026-10-16T06:14:20+00:00"
     },
-    "9r2EXYCsLZuQcHgyrvqTAAeupxEW8CLxzENKhowcpbEY": {
-      "count": 2,
-      "last_seen": "2026-10-16T06:14:18+00:00"
-    },
     "82gAaGBgbFsAmk2HXnE3354CAkwxShfpMuHvCCfhf8m3": {
       "count": 6,
       "last_seen": "2026-10-16T06:14:17+00:00"
@@ -477,10 +861,6 @@
     },
     "6KP9EmghZXT5M7Z3Huecw4gFW3PYQYsopa4hRf7K7WK": {
       "count": 2,
-      "last_seen": "2026-10-16T06:13:53+00:00"
-    },
-    "2QfBNK2WDwSLoUQRb1zAnp3KM12N9hQ8q6ApwUMnWW2T": {
-      "count": 13,
       "last_seen": "2026-10-16T06:13:53+00:00"
     },
     "A9pQ1QsvGXJbQfvi1h9ZbSPNJ5hLTN2xMtWqjxjEU65Z": {
@@ -519,14 +899,6 @@
       "count": 1,
       "last_seen": "2026-10-16T06:13:47+00:00"
     },
-    "DADDyLEuVJtPACD5LcVGY46BMUvTGVNAUoKHox7Je2Ev": {
-      "count": 33,
-      "last_seen": "2026-10-16T06:13:43+00:00"
-    },
-    "8NQ32SyFKD1d5kenq4oM8Da6C6J9TQSMW1uAgFRveEQr": {
-      "count": 27,
-      "last_seen": "2026-10-16T06:13:43+00:00"
-    },
     "GxiW55SwRPJjViR2CKZwegvanNhohn1ZpmoBHocVkiLy": {
       "count": 2,
       "last_seen": "2026-10-16T06:13:43+00:00"
@@ -554,10 +926,6 @@
     "7Js5gmq57y9jG2sseKrAeJt3vbncSWSFFHDEsyJDnyVm": {
       "count": 22,
       "last_seen": "2026-10-16T06:13:40+00:00"
-    },
-    "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf": {
-      "count": 82,
-      "last_seen": "2026-10-16T06:13:39+00:00"
     },
     "SHARKdrwEJCe5hLNNLMNkkxn7aV8sTnURUV4TWtNUZS": {
       "count": 11,
@@ -591,10 +959,6 @@
       "count": 2,
       "last_seen": "2026-10-16T06:13:35+00:00"
     },
-    "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X": {
-      "count": 318,
-      "last_seen": "2026-10-16T06:13:33+00:00"
-    },
     "5aLY85pyxiuX3fd4RgM3Yc1e3MAL6b7UgaZz6MS3JUfG": {
       "count": 1,
       "last_seen": "2026-10-16T06:13:33+00:00"
@@ -611,21 +975,9 @@
       "count": 2,
       "last_seen": "2026-10-16T06:13:28+00:00"
     },
-    "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu": {
-      "count": 86,
-      "last_seen": "2026-10-16T06:13:26+00:00"
-    },
-    "9EwQoN74Hzw747EM7wB3WtvgAdRGH1czaPtbqZj1qDj4": {
-      "count": 72,
-      "last_seen": "2026-10-16T06:13:26+00:00"
-    },
     "CKQKvzAJV2b19SHPQsjpCRa7hm4R2syrnnYpZiPovQjB": {
       "count": 2,
       "last_seen": "2026-10-16T06:13:26+00:00"
-    },
-    "AgmLJBMDCqWynYnQiPCuj9ewsNNsBJXyzoUhD9LJzN51": {
-      "count": 424,
-      "last_seen": "2026-10-16T06:13:23+00:00"
     },
     "9zmevp6trLWLdAGEJaerny5ZwUL6yEQmFgbie9Gg5QJS": {
       "count": 10,
@@ -638,18 +990,6 @@
     "53WFD2QNH27ukiSABZywudHQr26t7Du8jE7nNjS42tGy": {
       "count": 5,
       "last_seen": "2026-10-16T06:13:18+00:00"
-    },
-    "3K7XMbqvFTKT211Dqu8tXC1iK5vmQQ2MZp5mxSdEzWvx": {
-      "count": 19,
-      "last_seen": "2026-10-16T06:13:15+00:00"
-    },
-    "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP": {
-      "count": 54,
-      "last_seen": "2026-10-16T06:13:14+00:00"
-    },
-    "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB": {
-      "count": 36,
-      "last_seen": "2026-10-16T06:13:14+00:00"
     },
     "6kzsXq32zgmW1cEw9xKn9HyfE72oUX9b8PiPBZ8fWn9S": {
       "count": 2,
@@ -711,10 +1051,6 @@
       "count": 3,
       "last_seen": "2026-10-16T06:12:37+00:00"
     },
-    "7wShLXQm7AUHuF29Ymfu2cUxi3KJjm7okPd5kBDCtQ2E": {
-      "count": 1,
-      "last_seen": "2026-10-16T06:12:37+00:00"
-    },
     "GVPbr1KFDQJc5QDXXrMxKEK9SkAtPAcMWJSzx4fPSgRu": {
       "count": 2,
       "last_seen": "2026-10-16T06:12:34+00:00"
@@ -759,10 +1095,6 @@
       "count": 4,
       "last_seen": "2026-10-16T06:12:14+00:00"
     },
-    "GZmrUMdAnEQrzNaPBGVAECouhrZq9pbfgCz884VAhqDs": {
-      "count": 4,
-      "last_seen": "2026-10-16T06:12:05+00:00"
-    },
     "8ioLnKTnADUKsPjFchpTk31FAWCccMDy39kyU3aWTUQM": {
       "count": 2,
       "last_seen": "2026-10-16T06:12:03+00:00"
@@ -793,10 +1125,6 @@
     },
     "EEvYBzAQyG7q6t6exLqHTK7HDoeSPJjaCChRggofKx1y": {
       "count": 12,
-      "last_seen": "2026-10-16T06:11:38+00:00"
-    },
-    "STrkPe33To24Pxk6eDVJovNM7yrzt15tu7HrEVy96X6": {
-      "count": 1,
       "last_seen": "2026-10-16T06:11:38+00:00"
     },
     "BYbUsgfFBxWJsMbiHZWv7XJcBMA8oz4V3QTyTtBj56gG": {
@@ -1027,10 +1355,6 @@
       "count": 2,
       "last_seen": "2026-10-16T06:08:21+00:00"
     },
-    "B5f52c4BgTFaonN6J4VPv61VdBsyWWppvzQJmqb3Psox": {
-      "count": 1,
-      "last_seen": "2026-10-16T06:08:20+00:00"
-    },
     "GS2zGbCTN3TXLbh7bVbCDd1cedh3e585N3pRnpMcwQ64": {
       "count": 1,
       "last_seen": "2026-10-16T06:08:15+00:00"
@@ -1087,14 +1411,6 @@
       "count": 2,
       "last_seen": "2026-10-16T06:07:56+00:00"
     },
-    "Bgokg3jutarxEMWQVospwUucSQfpG6Jw27jRbMxcvU2q": {
-      "count": 7,
-      "last_seen": "2026-10-16T06:07:55+00:00"
-    },
-    "DtvmxrTACskMG2W8a6KXgSemUfvyNVeQTgfpJoGvMVKx": {
-      "count": 48,
-      "last_seen": "2026-10-16T06:07:54+00:00"
-    },
     "2XkRdEZ7LNACBukhf3cSDnxHaAuH6cLNE4qjHYzsPs9s": {
       "count": 48,
       "last_seen": "2026-10-16T06:07:53+00:00"
@@ -1122,10 +1438,6 @@
     "EheF9iB1v4itunBCgQk4TDboq8x1aVgP3JkaAnDGZERM": {
       "count": 25,
       "last_seen": "2026-10-16T06:07:34+00:00"
-    },
-    "7Cz3TgrrngGyBJHGjCPTYZyySqP7G3q9auG9ERBY9W6b": {
-      "count": 3,
-      "last_seen": "2026-10-16T06:07:30+00:00"
     },
     "97C1WcuAQcMDEnycaBxWcCYiLCUMXwRGUSxtbedJe3yK": {
       "count": 1,
@@ -1211,10 +1523,6 @@
       "count": 6,
       "last_seen": "2026-10-16T06:06:44+00:00"
     },
-    "2LMFk9fnWuB4YJcxyf8nzQw6KqwiaNdVfjSCfQphiWc9": {
-      "count": 1,
-      "last_seen": "2026-10-16T06:06:44+00:00"
-    },
     "6UcanEPgy9t6aJxpvaU62CmmXpnAp5ny5e8XeoFr1q9b": {
       "count": 2,
       "last_seen": "2026-10-16T06:06:37+00:00"
@@ -1271,10 +1579,6 @@
       "count": 1,
       "last_seen": "2026-10-16T06:05:56+00:00"
     },
-    "4MaTdwALW1PrEm12fszMmPem6Lbbwi6ArcACUkvk42RQ": {
-      "count": 2,
-      "last_seen": "2026-10-16T06:05:55+00:00"
-    },
     "GaVktALJb4dreYBJq9zByJYKLhrL3uXa9SdirQNfsxqo": {
       "count": 1,
       "last_seen": "2026-10-16T06:05:54+00:00"
@@ -1323,10 +1627,6 @@
       "count": 3,
       "last_seen": "2026-10-16T06:05:19+00:00"
     },
-    "AHjQMx83hqHRBNN6gmSoyHToWUBokDDqmWNwKVqzpmxT": {
-      "count": 7,
-      "last_seen": "2026-10-16T06:05:19+00:00"
-    },
     "8yAt48DBEgf67XtjWj6BYeD5qHUNsu5ZqecyLFHkACRW": {
       "count": 1,
       "last_seen": "2026-10-16T06:05:18+00:00"
@@ -1354,10 +1654,6 @@
     "BHCLVM439dDsCgD3yvLY5qcHe7DTe2iMjRLAneEtxEMd": {
       "count": 1,
       "last_seen": "2026-10-16T06:05:00+00:00"
-    },
-    "6gHWm4xAywaK9faNdH3v71SMTaXZkGXbPWA4T3TNy6yc": {
-      "count": 16,
-      "last_seen": "2026-10-16T06:04:58+00:00"
     },
     "4h4jrGAe8C4tPMZZGVvgb2wep79dSJwWumS39afUvvno": {
       "count": 1,
@@ -1579,10 +1875,6 @@
       "count": 2,
       "last_seen": "2026-10-16T06:02:06+00:00"
     },
-    "ApRmvLRFTYQChpS6crGfNp2Hn1uoQgzyKeYjmRXszSU8": {
-      "count": 3,
-      "last_seen": "2026-10-16T06:02:04+00:00"
-    },
     "69aiAKU3uJMxMLRkUEGFNt6nQ43PiVimE4ZbErJ7VSM1": {
       "count": 3,
       "last_seen": "2026-10-16T06:02:04+00:00"
@@ -1691,10 +1983,6 @@
       "count": 18,
       "last_seen": "2026-10-16T06:00:49+00:00"
     },
-    "AQ3MK4mf4i4r3G9rkbAvfoxGP6eZ7yscuiy5Syyuq27U": {
-      "count": 9,
-      "last_seen": "2026-10-16T06:00:47+00:00"
-    },
     "6END8c4Xk81hHnwGT331W9bszBiEPBHkm4hWnZLNDfmp": {
       "count": 50,
       "last_seen": "2026-10-16T06:00:45+00:00"
@@ -1774,10 +2062,6 @@
     "DDwwV7VsG1b5YNewdCBXYyuPSchtpekvwdzF3rtUsWkw": {
       "count": 1,
       "last_seen": "2026-10-16T06:00:03+00:00"
-    },
-    "8BKWiAymDH2NC91cFsNShzT2ptZi9TjxZGepih4C2kYY": {
-      "count": 22,
-      "last_seen": "2026-10-16T06:00:01+00:00"
     },
     "HBqyubp8VsbM64HAZFMaQZd8fMA7PnL1ZomKh7d6ZcY7": {
       "count": 5,
@@ -1991,10 +2275,6 @@
       "count": 5,
       "last_seen": "2026-10-16T05:57:46+00:00"
     },
-    "2g4rbhcxK48fNcmvQPizijUw8VDgSLis5kagFQ87oNXv": {
-      "count": 3,
-      "last_seen": "2026-10-16T05:57:44+00:00"
-    },
     "9vJuEAznCbaoTj5DoGq49o8GJ7pD6JGSKPLDt21dHiFa": {
       "count": 1,
       "last_seen": "2026-10-16T05:57:43+00:00"
@@ -2151,10 +2431,6 @@
       "count": 1,
       "last_seen": "2026-10-16T05:55:42+00:00"
     },
-    "44X13eVHfLcZM6aAyPizxK6tePgwVQcUgxPZMQX4fsHF": {
-      "count": 1,
-      "last_seen": "2026-10-16T05:55:41+00:00"
-    },
     "Hna2i6Q9RzBmuHqAydfdxDnaoVuKtDc4D7RbyMN8paiF": {
       "count": 5,
       "last_seen": "2026-10-16T05:55:39+00:00"
@@ -2279,10 +2555,6 @@
       "count": 2,
       "last_seen": "2026-10-16T05:54:30+00:00"
     },
-    "7ALdyKpFkAMhGHStNUa4KLqjE1THbPF2X84nYMk6kSLW": {
-      "count": 4,
-      "last_seen": "2026-10-16T05:54:20+00:00"
-    },
     "9WAYUb6tW7aTjmzGkLTeycDZwnz2HnnM9QUV6C7vbqMh": {
       "count": 2,
       "last_seen": "2026-10-16T05:54:18+00:00"
@@ -2370,14 +2642,6 @@
     "E3KvYNiXVNdp8vamoRsYnNKKJd46kWZyCk58oA5gvpJ9": {
       "count": 1,
       "last_seen": "2026-10-16T05:53:41+00:00"
-    },
-    "7sZtPSeKENmWG8YREniiDiyfLRM2QcD7ufLJWA5nT5nd": {
-      "count": 2,
-      "last_seen": "2026-10-16T05:53:40+00:00"
-    },
-    "BM6y2ajVVj3BKHa38ntTC1LqytLR94rLZzxKYMt6q2A2": {
-      "count": 1,
-      "last_seen": "2026-10-16T05:53:40+00:00"
     },
     "2juwCNoua3Yi36hXUVPL5mf95BaMLqnGBZk5UThjvtDh": {
       "count": 1,
@@ -2809,10 +3073,6 @@
     },
     "3c97eorX4sctDHrMqNhcutg5iSsyRwThKiRfV5j9nP9A": {
       "count": 2,
-      "last_seen": "2026-10-16T05:50:31+00:00"
-    },
-    "71UrRWESLNXMrV812TKUw5Gk1dhbiznAb55jDJvgKwXH": {
-      "count": 1,
       "last_seen": "2026-10-16T05:50:31+00:00"
     },
     "8rgvyN1f9BRoYSrWVkCkoBaogJAs57rBkJZTXVRGBrCk": {
@@ -4223,14 +4483,6 @@
       "count": 1,
       "last_seen": "2026-10-16T05:35:41+00:00"
     },
-    "2x8HinKtiynaDmZVYe4r4c5fYbx7TPPn1A8LDJe2xpaB": {
-      "count": 1,
-      "last_seen": "2026-10-16T05:35:40+00:00"
-    },
-    "J738yEBQqaoRWXamj238H63Dyo9RoDyELgprxQCY2oj7": {
-      "count": 5,
-      "last_seen": "2026-10-16T05:35:39+00:00"
-    },
     "AMKBB4cxnEEUSv2jzipP7MwANbC7in5s3PqAxgL4TjFH": {
       "count": 1,
       "last_seen": "2026-10-16T05:35:39+00:00"
@@ -4463,10 +4715,6 @@
       "count": 1,
       "last_seen": "2026-10-16T05:33:16+00:00"
     },
-    "6YjzEA9DxQWSBqsSNPCeJohYMYwqDmT8QMBgz7EeJ2rw": {
-      "count": 1,
-      "last_seen": "2026-10-16T05:33:13+00:00"
-    },
     "ATTNSrCvEZ9sSb1gvSeKSECA1kE6P96rfssQaQaVCXxK": {
       "count": 2,
       "last_seen": "2026-10-16T05:33:11+00:00"
@@ -4631,10 +4879,6 @@
       "count": 1,
       "last_seen": "2026-10-16T05:31:42+00:00"
     },
-    "u1c81PopHeXKz9ojFRMpj9PEPWDLBZXUZhP5G5pmvKn": {
-      "count": 2,
-      "last_seen": "2026-10-16T05:31:41+00:00"
-    },
     "J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB": {
       "count": 4,
       "last_seen": "2026-10-16T05:31:40+00:00"
@@ -4743,10 +4987,6 @@
       "count": 1,
       "last_seen": "2026-10-16T05:31:18+00:00"
     },
-    "CS3EREmMkPMsCswoxjt2oYE41SYhg4t1L6A1TahRRBTy": {
-      "count": 7,
-      "last_seen": "2026-10-16T05:31:14+00:00"
-    },
     "GnerdBd2rfLDznkin9dqXEbQxWp2ELVBLWVM9iPHk5j": {
       "count": 3,
       "last_seen": "2026-10-16T05:31:10+00:00"
@@ -4822,10 +5062,6 @@
     "2kmY7vhz11cKfpiURVS8fYJ8WeQZMkYEAGaf3rRqipA5": {
       "count": 2,
       "last_seen": "2026-10-16T05:28:46+00:00"
-    },
-    "4YP7YJFDpjJ9DePSH64ouj8cs52CZip7UfCbGBK98Nyg": {
-      "count": 8,
-      "last_seen": "2026-10-16T05:28:43+00:00"
     },
     "FUJKrQhxWYu4z59G6JGVfZstjQKi1fY1BZNwoekgs9vL": {
       "count": 6,
@@ -6427,10 +6663,6 @@
       "count": 1,
       "last_seen": "2026-10-16T05:07:02+00:00"
     },
-    "3MUF4EiJ5wiHnF6Ph4n6akEq89QAtw1TxmfTAGhYjaS2": {
-      "count": 1,
-      "last_seen": "2026-10-16T05:07:01+00:00"
-    },
     "4GE5AQFL2AuFyFQ9wPSovxHcUtXe6MBQJ777qb5U3aka": {
       "count": 8,
       "last_seen": "2026-10-16T05:06:52+00:00"
@@ -6594,10 +6826,6 @@
     "7nW67YpWyTD4YfoXe6j1oD5QRkocPpMVzCqq5bHTryg9": {
       "count": 2,
       "last_seen": "2026-10-16T05:04:51+00:00"
-    },
-    "J7GdFq9sm2t4rRtWRQ1476U2LPPn96jJvrwH5Lne6pp6": {
-      "count": 4,
-      "last_seen": "2026-10-16T05:04:41+00:00"
     },
     "97fnh5cGYofcS3PFS8PHi3xgoFtkZM6WY4yiesoommJ": {
       "count": 10,
@@ -6858,14 +7086,6 @@
     "3BLjRcxWGtR7WRshJ3hL25U3RjWr5Ud98wMcczQqk4Ei": {
       "count": 2,
       "last_seen": "2026-10-16T05:02:45+00:00"
-    },
-    "e6aczgVKEUErTn9bUWcdohYtQWBr2fVeVRBgZiK41VT": {
-      "count": 4,
-      "last_seen": "2026-10-16T05:02:43+00:00"
-    },
-    "FXK8KaWHenqnGycWBeK9P3xZmaX7WjBM1y7RbJ7bqGLK": {
-      "count": 2,
-      "last_seen": "2026-10-16T05:02:43+00:00"
     },
     "Fzitp2tNhsT6rE6NhELoeXRUA4qCrWNC2mQXWvs42j6B": {
       "count": 1,
@@ -7894,10 +8114,6 @@
     "GG5RyhCVtMFRVt9cqRwbEyx8p9cJ9cYwSgb9bswpmZK": {
       "count": 4,
       "last_seen": "2026-10-16T04:39:13+00:00"
-    },
-    "PrEytJ4nKqKcLwzHrxLZT3JcZHfr2NnMGMDcQWkj8dS": {
-      "count": 2,
-      "last_seen": "2026-10-16T04:39:08+00:00"
     },
     "4D5QciDj33s2fDkHjhumBFQEt6oH1DF3qBQrcBURbWeU": {
       "count": 1,
@@ -9423,10 +9639,6 @@
       "count": 5,
       "last_seen": "2026-10-16T04:12:03+00:00"
     },
-    "8aJSY8a3YkstiuENp9D7YU8DKGns26TMRHXVtj1XFSk9": {
-      "count": 1,
-      "last_seen": "2026-10-16T04:11:55+00:00"
-    },
     "Hw5UKBU5k3YudnGwaykj5E8cYUidNMPuEewRRar5Xoc7": {
       "count": 4,
       "last_seen": "2026-10-16T04:11:46+00:00"
@@ -9490,10 +9702,6 @@
     "AMKw31qEV8sgAvdaHCEkDtJMADQ9tN1qavjwhkEuYeQJ": {
       "count": 1,
       "last_seen": "2026-10-16T04:10:59+00:00"
-    },
-    "E7Mn5EamiPmx9v5cgoWUu38m8aybjTRFfDdCMDME8PUa": {
-      "count": 1,
-      "last_seen": "2026-10-16T04:10:56+00:00"
     },
     "CMdQBK9PN23nS4QNRSNGoqNRxDu5SZw9WDM6GUu6B4br": {
       "count": 3,
@@ -10275,10 +10483,6 @@
       "count": 1,
       "last_seen": "2026-10-16T03:58:27+00:00"
     },
-    "CCrg99e9X8QfN3K25ZLfzGBSgBr3u2gVZcqWDe4t3kPi": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:58:27+00:00"
-    },
     "BYGaWBYhk7Ht1vJqoMBgqgMsrhefa9hhQNjL39SLK8yN": {
       "count": 4,
       "last_seen": "2026-10-16T03:58:20+00:00"
@@ -10430,10 +10634,6 @@
     "w49pEgjS8G4FxSzcb6ckAxNAPN4GbN7WwTjVQs7B8Fg": {
       "count": 1,
       "last_seen": "2026-10-16T03:55:38+00:00"
-    },
-    "AbFisqfZzbe7Xm96Eiw6qSR4JEsoQWyVm995avrL4pyK": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:55:32+00:00"
     },
     "F8o8CXofqy1gDedxS5zxSRg7orfjhvarMskXGPQf1orD": {
       "count": 1,
@@ -10711,10 +10911,6 @@
       "count": 1,
       "last_seen": "2026-10-16T03:50:31+00:00"
     },
-    "J7ZL5jvSU2owsBaSGSmGPLR28ZxeEAP4sxUhe7sWy38Q": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:50:30+00:00"
-    },
     "3muXPnnDLxL1m4fXyKJCx9tA1W1RaqVERsgcxKHVWvbH": {
       "count": 1,
       "last_seen": "2026-10-16T03:50:21+00:00"
@@ -10866,10 +11062,6 @@
     "EiBrFXCuY44gCcEZRQiG9b5Qf2exRFmaeWxZPVkmHA8c": {
       "count": 1,
       "last_seen": "2026-10-16T03:47:45+00:00"
-    },
-    "2PfQUjeDoQCqQW7s2iSa5S25dwDQXYn8XeKETj9yvHfo": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:47:42+00:00"
     },
     "4StWrPhUubAs6s1US1VqkPF8KG5rBniKJ53encBrbUio": {
       "count": 1,
@@ -11818,198 +12010,6 @@
     "go2pN4s9EovNYgaYLWNFBTkGPGkkGw1raHP7YG6huFN": {
       "count": 1,
       "last_seen": "2026-10-16T03:33:41+00:00"
-    },
-    "D8YohmUWpZRX8LGxoBEX8SVEq4tvpJiSaT1GUU1RP2YR": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:33:33+00:00"
-    },
-    "ETCKR8Bvz9mifSBxZMAX2oy1Z9QwWSbyTJRy82Kb6t1Y": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:33:15+00:00"
-    },
-    "2HBKXEvsKmUtif5gsTchW5ZbFWkDnZsiHS3XMEdiXKy3": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:33:03+00:00"
-    },
-    "2rT3tD6NxZDM79fXZbrK6oTsabuBiwppF5hqh8s2Znty": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:33:02+00:00"
-    },
-    "97JV39crTPBb7MeFpxR3rrbUVXVJ7RNqN2YagJU1zZnh": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:32:53+00:00"
-    },
-    "4xKeWEFc2AKVLCzXbtZ5fACX4JKAxRfzt9JFicx8uQd1": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:32:50+00:00"
-    },
-    "HKageR4XPWrRMHtB8pMwKJk1LKraWVojqEYjiesbvjAM": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:32:38+00:00"
-    },
-    "3ricXXziD22sZFyecy12L3dbYLH5Dep6scaHVdL8JdFz": {
-      "count": 13,
-      "last_seen": "2026-10-16T03:32:37+00:00"
-    },
-    "B2izh6adTioi4K6tVdehQ6R4GhdvRPymiLvqAhedqpuu": {
-      "count": 3,
-      "last_seen": "2026-10-16T03:32:31+00:00"
-    },
-    "Dfj59WcwnAqe3EzggydgPViqjNbSwd3i7ftHwDk5CppS": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:32:29+00:00"
-    },
-    "6p3QYy2ANpHWiaoWm7rwzgqsAJg84djD3Vg6QVP7htpm": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:32:20+00:00"
-    },
-    "7rxeVYtRUmwAXCECX6AV4aQ4m2Dkv9x5LEiCe5C3ABuo": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:32:18+00:00"
-    },
-    "2dLWWUDzDvmF89TVe6P5AFBWuapdjfApko8HWpPZq676": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:32:17+00:00"
-    },
-    "AvCHd3NaUpaNWxgJnCsNdiZKVbdiq7YQ4J7uoRHFUpKS": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:32:04+00:00"
-    },
-    "H5n4ZgHqJ1mC2FhY9anqt9TtAVye4sfBTKBKQyeMo4br": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:31:57+00:00"
-    },
-    "9ufLvmU21hr3rQf9cqE8JhW2JfoDobRx2Uy3w6Vo1Ujb": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:31:48+00:00"
-    },
-    "253QRHai76p9rJmwcVcHwnRYi5dERE8TtmYukXz5zasD": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:31:46+00:00"
-    },
-    "CQtDy2RPAfHGGpDsiD8u2qfTxuBRayHjT9QDSkmA6ypd": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:31:46+00:00"
-    },
-    "Ams4duhwwiB4CwYkSoLFkysNMPNggyTqwJxinb64xjVx": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:31:31+00:00"
-    },
-    "5t4Tz7qewAHSpDC1YADAmogtiE3Cwud4juNjjVXaDs1p": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:31:17+00:00"
-    },
-    "D1yH1qugiyJ4D12sTF4XFJHGdMk6xME2tg4qtprMEaLK": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:31:03+00:00"
-    },
-    "9A8WS59c3xYGEcePw8erAMwr4iABgPVvtXswk1UNMaYr": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:59+00:00"
-    },
-    "AxukfF5fQJgvPAKmmgfZ581cbeGa2ZPzP9UrUm7bKa66": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:56+00:00"
-    },
-    "BmBpkdYtqADEo9SdEyMg7riQQvV3DiF7aeniv7t6zKG3": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:54+00:00"
-    },
-    "8QC1GicBjuL4hZ3NbV7HxEzBnfoqh13Zdo3DS6KAbJeA": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:43+00:00"
-    },
-    "23m3VbqWirVMNxoZHfWiJ6qCqGM84g5k95SKaVMGMgtp": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:40+00:00"
-    },
-    "EDDSjA7HZbbCKcrzzaitNFmq7CEq7foqU9pLRKC95mVS": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:36+00:00"
-    },
-    "Hd4Q7oYMtdQi6FGJ1ixGbovCmz9SKSHJ5XsYEJW4dxks": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:36+00:00"
-    },
-    "5VUZ5TVrssDJXiezk7esSRHdpAjGFg5Ca6qj3ozvqZRj": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:36+00:00"
-    },
-    "4qaCoLx69UJsT3do6wZcGiCzUSK7mM8cJgGjoWckxfTK": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:34+00:00"
-    },
-    "pVeKbMcyYohEWBdkZSjMM8cV8UWcNPttnrDceAxoCiC": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:32+00:00"
-    },
-    "3Ys2ryFZvzMRVXrQetcgr9nq3ncKs5Hypvix6D3gazU2": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:28+00:00"
-    },
-    "CShkuh9PvQXMjcURJfse9eEmeTaM9fSod6dLbJtQUXM1": {
-      "count": 5,
-      "last_seen": "2026-10-16T03:30:26+00:00"
-    },
-    "DGCUY4G9DixJT2AgHAp79sr2Mcjz8ybrix5PYe1bonac": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:25+00:00"
-    },
-    "CiQaHbQCLSz2fiPc3efMW6XMwdkuRugWQZzdwLv1Ajpv": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:25+00:00"
-    },
-    "5w1y4tWBaMn97sa4NFJoyVq9AYPu4Qxs6QakBAJgKTDS": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:25+00:00"
-    },
-    "6x5MhXt2sew9ooYVehnHjJJbv8h4Y4FNVCHonZF6Z3C3": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:24+00:00"
-    },
-    "EL5kK94PvVdB1MENeGVALbZc1bSnjko4Te4Y85cqutT8": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:24+00:00"
-    },
-    "BYgympcTz3RgFYiedYwW1TAigeXz6Jf9A7PxsntZmcex": {
-      "count": 5,
-      "last_seen": "2026-10-16T03:30:22+00:00"
-    },
-    "CAsMnsrjN68t8F6Pver5suALfS9dqn7EdTL2sFyyNi92": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:17+00:00"
-    },
-    "AMfmShdB2vGd7KooZywy2AGn6eYA4FC5zC665WPPeYky": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:17+00:00"
-    },
-    "GgeHhRpzkHeXVCJhUqKaKcFspMtXybGgPHPXJrG3xnbu": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:13+00:00"
-    },
-    "6zhGQhPdBGW7QorH8DARtcVrnoeAx49Xmf5AgmdJ6qGB": {
-      "count": 2,
-      "last_seen": "2026-10-16T03:30:13+00:00"
-    },
-    "GMp5tRPtc9kEJTf7if2uSXiyYH28iqLyKChFqJB8Dgk7": {
-      "count": 6,
-      "last_seen": "2026-10-16T03:30:09+00:00"
-    },
-    "EzvsrUExuBN4YtG27zZ9zTmGv7oR2SfuSR1haxB8Wm2V": {
-      "count": 14,
-      "last_seen": "2026-10-16T03:30:09+00:00"
-    },
-    "DBme7JjQVT7XfUat5ALFPGNVSa42LvWz632m2xicxHxB": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:06+00:00"
-    },
-    "6GrJ3qG7utaT9nYwq5inmz1n249Hoj6Kd5bC2VurbtVP": {
-      "count": 1,
-      "last_seen": "2026-10-16T03:30:04+00:00"
-    },
-    "B6f55KyfEBmbc8PwV7M6oWSp3Z6A1WB5yLuJxSzZZsKR": {
-      "count": 4,
-      "last_seen": "2026-10-16T03:30:03+00:00"
     }
   },
   "positions": [
@@ -12019,7 +12019,7 @@
       "pool_name": "DOPE / SOL",
       "opened_at": "2026-10-16T04:33:59+00:00",
       "entry_price_usd": 0.004643627915180964,
-      "last_mark_price_usd": 0.004601759491828309,
+      "last_mark_price_usd": 0.004514453519078033,
       "signal_at": "2026-10-16T04:33:11+00:00",
       "notional_gbp": 9.99,
       "cost_gbp": 10.0899,
@@ -12031,7 +12031,7 @@
       "pool_name": "SI276 / SOL",
       "opened_at": "2026-10-16T04:58:58+00:00",
       "entry_price_usd": 0.0013746612546384797,
-      "last_mark_price_usd": 0.0013156253010995359,
+      "last_mark_price_usd": 0.001322473761528349,
       "signal_at": "2026-10-16T04:57:38+00:00",
       "notional_gbp": 10.0,
       "cost_gbp": 10.1,
@@ -12043,7 +12043,7 @@
       "pool_name": "FTR / SOL",
       "opened_at": "2026-10-16T06:14:00+00:00",
       "entry_price_usd": 0.006131351785162872,
-      "last_mark_price_usd": 0.0060449937282908255,
+      "last_mark_price_usd": 0.00606036324368104,
       "signal_at": "2026-10-16T06:09:58+00:00",
       "notional_gbp": 10.01,
       "cost_gbp": 10.1101,
@@ -12377,951 +12377,6 @@
     }
   ],
   "decisions": [
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "HvFdDWS3RqymRAVx1ZdoL2RjiC38r5dtt19Z8op5jqDK",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 20
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "BkXwnagEUdXdRRoD8jqSk3edijc2a6KiS2zj57bR18Pw",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "GohNTRbbzXwE3rpn8PK1B32SbNaz6WU447LPvTwxxSXY",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "956FRuaThUmyA2t4o9X2etiGvUSSUvJktpMYgMLT7rW5",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 27
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "4MaTdwALW1PrEm12fszMmPem6Lbbwi6ArcACUkvk42RQ",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "3MLLagHnA1VRvvVGaJiUhR4JFAoiRNvAhFYxTKHEgFF1",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "4rfD2uRKTrXRiNjaJuwVkCDDQ41vZ3h3C337R2hRytNy",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "DHo1ECUjYNF65jWV6D4wLxzSSEUFmw95j6yob9WtKjXX",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "GRtXavccBMj6GcQFhDK1eesEJuWoKrh5Y2EsvSuXFcFR",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "AYLRcxzu2mkUWTgJa3brUiBJVXmkEYF9EprmGBp1uSn8",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "eigP4u2V3oA8kCbMcL5f1Nr1mMjTSxadM7qBEYBDyYb",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "5pihSM6Zpbe6hh8DX2hEvmK7pi8mRU9nxh9hqvjJy6BX",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 15
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "CNCaRrvFoFiJMVKeV4PmpqCe269vYQNgzqtUrKLMUrHp",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 5
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "9mMBo2tDwy5TuhMZirwFWyZx1GdKmAkYPHSFWZ5ChmB5",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "C3iTnhjEwaJpM9V57bnssU5uvpShdc53uTRddz7y7SFN",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 4
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 15
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "HL2kH8yaDDQZxA35uc6TFTBoLpes731WKoPZUM2wUWVA",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 8
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "FUEL3Te8gvaohxwQMapfMTeJVHh2z1BL9fvTCcHZeYEh",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 4
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "FUEL3Te8gvaohxwQMapfMTeJVHh2z1BL9fvTCcHZeYEh",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 4
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "43CPLPYdj3jWXoGBF1ejojBE6Dwhe5obkbK9C2XPMkpq",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "84DGahaskmMozaS7shG6nNnZEV1uqwpaSLWo3VuumPJJ",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "9vJuEAznCbaoTj5DoGq49o8GJ7pD6JGSKPLDt21dHiFa",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "CKR8ifU4GMrhbcguWB7GBTbsmMMgK5FGi3AVYhQYdqBT",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 5
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 1,
-        "win_rate": 0.0,
-        "net_gbp": -0.2,
-        "shrunk_roi_pct": -0.18,
-        "seen": 81
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "6RzRh9MWFX3eEtFKuD3F4Tu1dzWvU4HwZkziN1zZPanE",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 5
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 34
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "7pDhG6NqfzQzw5KvtGXJbVRUh4iTBgYAn68BSKjdMNC1",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 8
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "2qJTrHC4EoxunSHkZQ2dn9m2S4ybnWm4qEATfaxWPnma",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 6
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 15
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "9ZCjFk6L1wX63vsa68zK7wwN7RcGwBkr5tDoBqmbFJc4",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "3GmTZgC5aT1TDc2NiiM2Dmfdf7QH69SR2QxFUnwpJEkS",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 6
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "G93FC1mK5k7hXspUCZRRDydJK38xMEHxYPYY2dtnv4h",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "c6HZS8vVJCfCAjHp9brT6NQLJo4qygf4zXmdXB8wbzt",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "BifnsfduLvjEfQXJssiDZMuT5TW8jFiDyrD1jmnY7LZe",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "7Q8x74hyRFMoUYtJc42qAKs2t7xZ6MwfJAvFKc78kNEN",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "F2CpQV2RsMMXL1sRqy2ewq3vLuSyvvQT29kt5tYd8G6t",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "5zAHa1VH7evQA38frXHx2judP8LTmrdvhttakcAMWhyk",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 14
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "AxE65mBo5x7c6oh6tgECLdbzcjPCYZ9XqwGeXXcaNKr8",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "H4oySi4mXDRMLrr98ge4M4hM1C62SHPFAubvRmqS7tKa",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "FwbTfiH99wvRk6NYyaBBLuVBE7B8pf5DVshrrEKUMaPG",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "AxE65mBo5x7c6oh6tgECLdbzcjPCYZ9XqwGeXXcaNKr8",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "F9MdRwcqjckXnDkp4M7etzQTE2bYuUqb5CkDW1unxCCo",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "DJRhLMcpicUbpKhSk7Lc8XPkY6ygASFmCAfebPAuqUY2",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 7
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "5kZUg1MrPstht5N9xcAoouMtTaETxSDSpY2zbpvUQmaF",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "AzLZyNrw129wkUvNM8D2dQSAcaFqZBBoTckD16aBmSHm",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "GoFUZwh1eJjC7iN7xNb4ks5pjQijhGxN2JhztT5wNPEb",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 4
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "89rGiHAU3UdzwxNyAdVcwiAEYwdd8Dg58h38fgGEQBym",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "53EdD72Qipbn1iFJhz3othrzDfEvnQUZ6PeaS1jiJ6BC",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "2g4rbhcxK48fNcmvQPizijUw8VDgSLis5kagFQ87oNXv",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T05:58:59+00:00",
-      "action": "SKIP",
-      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per wallet",
-      "wallet_stats": {
-        "closed": 1,
-        "win_rate": 0.0,
-        "net_gbp": -0.04,
-        "shrunk_roi_pct": -0.034,
-        "seen": 484
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:56+00:00",
-      "action": "SKIP_TOKEN",
-      "wallet": null,
-      "token": "D9NCkN3unPTVLtA56Y68J2cXisje9yyYe61gMM2HCHwJ",
-      "reason": "security rejected: normalized risk score above 25"
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "4QzotzYxeB3nb5jRn3msjbFMpnnKT4nxpaDGoVaew4Qe",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "DDwwV7VsG1b5YNewdCBXYyuPSchtpekvwdzF3rtUsWkw",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
-      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
-      "reason": "one position per wallet",
-      "wallet_stats": {
-        "closed": 1,
-        "win_rate": 0.0,
-        "net_gbp": -0.04,
-        "shrunk_roi_pct": -0.034,
-        "seen": 489
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "CYVvL65FVKqE74MKjbcbGgVGyTzWY9v2VX9mfjY6GB84",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "5kQ7HBs8FrT8d3zgBuJveC5bSPcUtCVyFaZkZnETvXzH",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "4XBqViD1XYF1qHrErrsXBzDrCapvP9fEFX4LPjXZi9YU",
-      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 8
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "GxDC9e7SP9mzhDo4re5HbpLa2RW7gB9DtmThx4i4pXSq",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 17
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "39jao9wmk84NgzWTiZrBHuYgzkGJc4d3EPVFuBevfapk",
-      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 3
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 28
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "5ePZ8ZSVwJCyHJWsat4XQ5Ub784jUdRZAj1Q44LTgaVw",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "59q4fPLeXyr2J895pkLoVzSygkL2eiEpXaouGvYStBe1",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 1
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 1,
-        "win_rate": 0.0,
-        "net_gbp": -1.24,
-        "shrunk_roi_pct": -1.112,
-        "seen": 301
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 1,
-        "win_rate": 0.0,
-        "net_gbp": -1.24,
-        "shrunk_roi_pct": -1.112,
-        "seen": 301
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "AxE65mBo5x7c6oh6tgECLdbzcjPCYZ9XqwGeXXcaNKr8",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 4
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "956FRuaThUmyA2t4o9X2etiGvUSSUvJktpMYgMLT7rW5",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 30
-      }
-    },
-    {
-      "at": "2026-10-16T06:03:59+00:00",
-      "action": "SKIP",
-      "wallet": "EWwrocNrY6ZUn1hvYRm3EU5WbihdXTDmmzneLbLnxgdD",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "wallet has fewer than 3 observed qualifying trades",
-      "wallet_stats": {
-        "closed": 0,
-        "win_rate": null,
-        "net_gbp": 0,
-        "shrunk_roi_pct": 0.0,
-        "seen": 2
-      }
-    },
     {
       "at": "2026-10-16T06:03:59+00:00",
       "action": "SKIP",
@@ -17944,6 +16999,951 @@
         "shrunk_roi_pct": 0.0,
         "seen": 2
       }
+    },
+    {
+      "at": "2026-10-16T06:23:57+00:00",
+      "action": "SKIP_TOKEN",
+      "wallet": null,
+      "token": "D9NCkN3unPTVLtA56Y68J2cXisje9yyYe61gMM2HCHwJ",
+      "reason": "security rejected: normalized risk score above 25"
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "2PfQUjeDoQCqQW7s2iSa5S25dwDQXYn8XeKETj9yvHfo",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 3
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "GZC75fHrVnQnJ8nFHhtxZPUCp1fqhcdYgtgUTJ97tAZr",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 4
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "BtL1nWpDaSiLcjW8iTbE9dYXVGM2tbWcEt1C2zDGDiPX",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "8PiXt2id4tAYDdU1mNvFhwbWHykVeijz157Gv6mEZ1Nt",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 3
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "AuEh8wut7JZ869NyLUzoo7vJUFdTuotE4xJupCnKdjwE",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "CDpVXNdiPQrPm6NvztSSyrFJTimMBjiaNYPfE7GmbKPc",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "BQYB2ZT6jTeiWv7yGH2uDLLr45Zf2wMzU9rB3ga65ikt",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "3eHUuSJLa5xhHSsR9rTdFdCmcjRW5dWdhKGLr4LT1x2L",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "44X13eVHfLcZM6aAyPizxK6tePgwVQcUgxPZMQX4fsHF",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "9r2EXYCsLZuQcHgyrvqTAAeupxEW8CLxzENKhowcpbEY",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 3
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per wallet",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -0.04,
+        "shrunk_roi_pct": -0.034,
+        "seen": 529
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "4xGr2HUmsPF5SZk2fxDXLWXp5GMbUNQ1vDG7pgkb71nh",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "5Viz92BgnPs3AzeLKQcV1kQP6KwwtDmhfSHKM2HRbscY",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "2woUZT5iViQwZE6Jkp1F6YapMKhRkuLazha1WzboCy4u",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "7QJvtWxe8AkYFVH292zKh7y6cPPFtt3ihuoJAm6qith",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "BM6y2ajVVj3BKHa38ntTC1LqytLR94rLZzxKYMt6q2A2",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "FXK8KaWHenqnGycWBeK9P3xZmaX7WjBM1y7RbJ7bqGLK",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 3
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "e6aczgVKEUErTn9bUWcdohYtQWBr2fVeVRBgZiK41VT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 6
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "J7GdFq9sm2t4rRtWRQ1476U2LPPn96jJvrwH5Lne6pp6",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 5
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "3MUF4EiJ5wiHnF6Ph4n6akEq89QAtw1TxmfTAGhYjaS2",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "B3EiKmf4DQBUwWuDvWc7bTztVNL98kngHJ9ZLme5JbCf",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "kEFiAX3jo5NmemysQov342TZ9mGh6yp92GDRjhA8XDf",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 84
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "6YjzEA9DxQWSBqsSNPCeJohYMYwqDmT8QMBgz7EeJ2rw",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "HcDXmBnQpZvJ6P2YMDkvYqbGejn1fegPBxiEvAw3JyK4",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "CS3EREmMkPMsCswoxjt2oYE41SYhg4t1L6A1TahRRBTy",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 9
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "2QfBNK2WDwSLoUQRb1zAnp3KM12N9hQ8q6ApwUMnWW2T",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 14
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "DADDyLEuVJtPACD5LcVGY46BMUvTGVNAUoKHox7Je2Ev",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 34
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per wallet",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -0.04,
+        "shrunk_roi_pct": -0.034,
+        "seen": 529
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "AgQf99iFCRsNUL7En5sDm47r1B5C5Ug3tAi116ZLAqPy",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 3
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "J738yEBQqaoRWXamj238H63Dyo9RoDyELgprxQCY2oj7",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 6
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per wallet",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -0.04,
+        "shrunk_roi_pct": -0.034,
+        "seen": 529
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "2tLaVvpw6mBPEZsZYzjAkE8gwE2E8Vw7yihjYTeDYhKY",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "E5VKnso2svYmax9unt9urdeMsN3rfiXp1FamKCFDdoZM",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "APeMMxB7iXd62uKGRe1AXUBhLb5ssq2wfpgzTUhdBrQ6",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per wallet",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -0.04,
+        "shrunk_roi_pct": -0.034,
+        "seen": 529
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "2g4rbhcxK48fNcmvQPizijUw8VDgSLis5kagFQ87oNXv",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 4
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "DcPsNLv4UQqo58nTxBJNXaivSEZmqMgXvA1yLve8WuVs",
+      "token": "12jc1DzJpzbCDaKuM4brAKh9jcFry2TLG1FfGsL4ftCG",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "64i8GbQ8Fh7ZPjPrBo7MpKPvQVStuCHF5izWSnr48MLb",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per wallet",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -0.04,
+        "shrunk_roi_pct": -0.034,
+        "seen": 529
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "HvFdDWS3RqymRAVx1ZdoL2RjiC38r5dtt19Z8op5jqDK",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 23
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "CzYQ2kFnBxsNEt9Zy34vQ3n5fSDhvA4o4XaTnq1rLvyr",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 86
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 37
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -0.2,
+        "shrunk_roi_pct": -0.18,
+        "seen": 87
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 56
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "STrkPe33To24Pxk6eDVJovNM7yrzt15tu7HrEVy96X6",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "9EwQoN74Hzw747EM7wB3WtvgAdRGH1czaPtbqZj1qDj4",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 74
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "6tFkybc9Kzif44ZfXLkoQofHXsuAp5utPP8g3orYyUTn",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "CCrg99e9X8QfN3K25ZLfzGBSgBr3u2gVZcqWDe4t3kPi",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 3
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "8BKWiAymDH2NC91cFsNShzT2ptZi9TjxZGepih4C2kYY",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 23
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "9EwQoN74Hzw747EM7wB3WtvgAdRGH1czaPtbqZj1qDj4",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 74
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "53zwCj2omUXjxeHAJjUitDtjZXruktiGfow7SCihHRop",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "5rmpW6ruWXYa3nZqC3SreNmzpu3EDjnLikGbbG67fdLz",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "64i8GbQ8Fh7ZPjPrBo7MpKPvQVStuCHF5izWSnr48MLb",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 2
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "HxjwdF326ZunmUwC1iXhfgL3ku78YsksN6n7Rfxzwr6b",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 14
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "DtNXeGEmeWX1Ry4nMAboZPRUGH4uFh9mu19SxMQ7ojaD",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "6VA5H6jBEX8gFE6PcZRAASzuhxfvFw6LAPDWWgVhJCoP",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 56
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "kv2Aj1cTbiTNGxkERw5Rm41obTWe1QANV4XXR5KeohH",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "wallet has fewer than 3 observed qualifying trades",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 1
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "AbFisqfZzbe7Xm96Eiw6qSR4JEsoQWyVm995avrL4pyK",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 4
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "AHjQMx83hqHRBNN6gmSoyHToWUBokDDqmWNwKVqzpmxT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 13
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "AHjQMx83hqHRBNN6gmSoyHToWUBokDDqmWNwKVqzpmxT",
+      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 0,
+        "win_rate": null,
+        "net_gbp": 0,
+        "shrunk_roi_pct": 0.0,
+        "seen": 13
+      }
+    },
+    {
+      "at": "2026-10-16T06:23:58+00:00",
+      "action": "SKIP",
+      "wallet": "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X",
+      "token": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
+      "reason": "one position per pool",
+      "wallet_stats": {
+        "closed": 1,
+        "win_rate": 0.0,
+        "net_gbp": -1.24,
+        "shrunk_roi_pct": -1.112,
+        "seen": 328
+      }
     }
   ],
   "snapshots": [
@@ -18914,6 +18914,17 @@
       "sampled_feeds": 3,
       "screened_pools": 3,
       "status": "OK"
+    },
+    {
+      "at": "2026-10-16T06:24:00+00:00",
+      "equity_gbp": 2001.89,
+      "cash_gbp": 1972.95,
+      "open_positions": 3,
+      "closed_trades": 18,
+      "watched_pools": 4,
+      "sampled_feeds": 3,
+      "screened_pools": 3,
+      "status": "OK"
     }
   ],
   "watched_pools": [
@@ -18922,44 +18933,44 @@
       "name": "SI276 / SOL",
       "mint": "HMYd9tosnUXuNHmq7pXmoePRVBLBBjA3JBfydq6upump",
       "pool": "12jc1DzJpzbCDaKuM4brAKh9jcFry2TLG1FfGsL4ftCG",
-      "liquidity_usd": 114340.4561,
-      "volume_24h_usd": 615753.318230669,
-      "price_usd": 0.0013156253010995359,
-      "change_24h_pct": 4.771,
-      "age_hours": 226.889761245
+      "liquidity_usd": 115278.1595,
+      "volume_24h_usd": 615687.630249029,
+      "price_usd": 0.001322473761528349,
+      "change_24h_pct": 4.343,
+      "age_hours": 226.9732425875
     },
     {
       "id": "solana_Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
       "name": "FTR / SOL",
       "mint": "DFMt2FyLpB6ekPNAzVErLXgpSnJ9CRf1VnxBAkTLpump",
       "pool": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "liquidity_usd": 285687.0027,
-      "volume_24h_usd": 22667321.9479794,
-      "price_usd": 0.0060449937282908255,
-      "change_24h_pct": 2436.945,
-      "age_hours": 28.172816805833335
+      "liquidity_usd": 301518.9603,
+      "volume_24h_usd": 22723707.2733919,
+      "price_usd": 0.00606036324368104,
+      "change_24h_pct": 2286.887,
+      "age_hours": 28.25629814777778
     },
     {
       "id": "solana_D9NCkN3unPTVLtA56Y68J2cXisje9yyYe61gMM2HCHwJ",
       "name": "STREAM / SOL",
       "mint": "9a98oQHtxfqmr4EyzsP6wfw69uYAK3JbUeVEuNW1pump",
       "pool": "D9NCkN3unPTVLtA56Y68J2cXisje9yyYe61gMM2HCHwJ",
-      "liquidity_usd": 484225.3145,
-      "volume_24h_usd": 7700104.63970137,
-      "price_usd": 0.024840494335878434,
-      "change_24h_pct": 489.697,
-      "age_hours": 35.00698347388889
+      "liquidity_usd": 492071.1731,
+      "volume_24h_usd": 7704829.49744431,
+      "price_usd": 0.02527348192291801,
+      "change_24h_pct": 543.572,
+      "age_hours": 35.09046481611111
     },
     {
       "id": "solana_6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
       "name": "DOPE / SOL",
       "mint": "33jENUQnjoitkMFpvNJcSHyLAHFWJuHwT6E3E8CNpump",
       "pool": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
-      "liquidity_usd": 267944.4842,
-      "volume_24h_usd": 3575507.61943716,
-      "price_usd": 0.004601759491828309,
-      "change_24h_pct": 28.014,
-      "age_hours": 112.76281680805555
+      "liquidity_usd": 268395.3007,
+      "volume_24h_usd": 3573529.31848465,
+      "price_usd": 0.004514453519078033,
+      "change_24h_pct": 27.304,
+      "age_hours": 112.84629815083333
     }
   ],
   "errors": [
@@ -19013,11 +19024,11 @@
   "execution": {
     "event": "workflow_dispatch",
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-16T06:18:46.085Z",
+    "scheduled_at": "2026-10-16T06:23:47.037Z",
     "trigger_uid": "3977529251376136192",
-    "run_id": "38860492651",
+    "run_id": "38860962001",
     "run_attempt": "1",
-    "started_at": "2026-10-16T06:18:53+00:00",
-    "slot": 5973771
+    "started_at": "2026-10-16T06:23:54+00:00",
+    "slot": 5973772
   }
 }
