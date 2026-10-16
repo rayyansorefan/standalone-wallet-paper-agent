@@ -118,6 +118,9 @@ def wallet_report(state, wallet, trades=None):
                    win_rate=profile['win_rate_pct'], net_gbp=round(profile['net_gbp'], 2),
                    excluding_best_gbp=round(excluding_best, 4))
     fraction, tier, reason = reinforcement_decision(profile)
+    from .evaluation import certified
+    if tier.startswith('reinforced') and not certified(state,'wallet:'+wallet):
+        fraction,tier,reason=0.005,'exploration','Positive legacy evidence lacks registered out-of-sample validation'
     profile.update(risk_fraction=fraction, reinforcement_tier=tier,
                    reinforcement_reason=reason, identity_verified=False)
     return profile
@@ -237,7 +240,8 @@ def feature_risk_multiplier(state, event):
     # Negative evidence takes priority over positive; don't stack multiplicative bets.
     if 'NEGATIVE_EVIDENCE' in statuses:
         return (0.5, 'Forward evidence supports reducing this feature cohort')
-    if 'POSITIVE_EVIDENCE' in statuses:
+    from .evaluation import certified
+    if any(reports.get(k,{}).get('status')=='POSITIVE_EVIDENCE' and certified(state,'feature:'+k) for k in feature_buckets(features)):
         return (1.25, 'Forward actual closed-trade feature cohort supports modest reinforcement')
     return (1.0, 'Feature cohorts are still collecting outcome evidence')
 
@@ -443,6 +447,8 @@ def research_cycle(state, candidate_pools, prices, new_events, current):
 def finalize(state, current):
     """Associate true, post-execution paper positions/closures with recorded features."""
     r = ensure(state)
+    from .evaluation import safe_update
+    safe_update(state,current)
     features = r['entry_features']
     lookup = {s['signal_id']:s for s in r['signals']}
     for trade in [*state.get('positions', []), *state.get('closed', [])[-100:]]:

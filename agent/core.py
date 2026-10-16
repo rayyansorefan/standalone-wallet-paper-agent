@@ -241,6 +241,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     state["screening"] = []
     # Store recent IDs to avoid acting on the same on-chain trade multiple times.
     seen = set(state['seen_trades'])
+    pools = []
     try:
         payload = fetch('/networks/solana/trending_pools', {'page': 1, 'include':'base_token'})
         from .adaptive import enrich_meta
@@ -376,12 +377,18 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     try:
         from .whales import whale_cycle
         whale_cycle(state, candidate_pools, new_events, dict(prices), current,
-                    fetch=fetch, screener=screen_token, previous_run=whale_previous_run)
+                    fetch=fetch, screener=screen_token, previous_run=whale_previous_run, discovered=pools)
     except Exception as v3_exc:
         from .whales import initialize, record_issue
         whale_research = initialize(state)
         record_issue(whale_research, 'V3 isolated research failure: '+str(v3_exc)[:145])
         whale_research['status'] = 'DEGRADED'
+    from .evaluation import safe_update, observe_positions
+    try:
+        observe_positions(state,prices,current)
+    except Exception as exc:
+        state['research'].setdefault('evaluation_v1',{})['path_error']=str(exc)[:160]
+    safe_update(state,current)
     state['snapshots'].append(dict(at=now_iso(), equity_gbp=equity(state, prices), cash_gbp=round(state['cash_gbp'], 2),
                                    open_positions=len(state['positions']), closed_trades=len(state['closed']),
                                    watched_pools=len(candidate_pools), sampled_feeds=sampled_feeds, screened_pools=screened_pools, status=state['last_status']))

@@ -176,10 +176,11 @@ def _dedup_flows(state, base_events, extra_events, now, extra_meta):
         flows.append({'event_id':identifier,'at':stamp.isoformat(timespec='seconds'),
                       'wallet':event['wallet'],'token':event['token'],
                       'pool_name':event.get('pool_name'),'kind':event.get('kind'),
-                      'usd':round(amount,2),'source':source,'fresh':0<=age<=MAX_EVENT_AGE_SECONDS,
+                      'usd':round(amount,2),'source':source,'fresh':0<=age<=MAX_EVENT_AGE_SECONDS and not event.get('research_only',False),
+                      'transaction_hash':str(identifier).split(':',1)[0],
                       'age_seconds':round(age,1),
                       'size_tier':'VERY_LARGE_FLOW' if amount>=USD_VERY_LARGE else 'LARGE_FLOW',
-                      'sender_identity':'UNVERIFIED_TX_FROM_ADDRESS'})
+                      'sender_identity':'UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved'})
     r['observed_ids'] = (r['observed_ids']+[f['event_id'] for f in flows])[-MAX_EVENT_IDS:]
     r['recent_flows'] = ([f for f in r['recent_flows'] if timestamp(f.get('at')) and latest-timestamp(f.get('at'))<=age_limit]+flows)[-MAX_HISTORY:]
     for f in flows:
@@ -195,6 +196,24 @@ def _dedup_flows(state, base_events, extra_events, now, extra_meta):
         ordered=sorted(r['sender_profiles'],key=lambda w:r['sender_profiles'][w].get('last_seen') or '',reverse=True)
         r['sender_profiles']={w:r['sender_profiles'][w] for w in ordered[:MAX_IDENTITIES]}
     return flows
+
+
+def _observe_activity(r,events,now):
+    # Sampled transaction-origin behaviour, never beneficial-owner attribution.
+    seen=set(r.get('activity_seen',[]));profiles=r.setdefault('sampled_activity',{})
+    for ev in events:
+        sid=ev.get('id');wallet=ev.get('wallet');at=timestamp(ev.get('timestamp'))
+        if not sid or sid in seen or not wallet or not at or not 0<=(now-at).total_seconds()<=7200:continue
+        seen.add(sid)
+        p=profiles.setdefault(wallet,{'buys':0,'sells':0,'pools':[],'last_seen':None,'identity_verified':False})
+        if ev.get('kind') not in ('buy','sell'):continue
+        p[ev['kind']+'s']+=1
+        p['last_seen']=max(p.get('last_seen') or '',at.isoformat(timespec='seconds'))
+        if ev['token'] not in p['pools']:p['pools']=(p['pools']+[ev['token']])[-12:]
+        p['attribution']='MULTI_POOL_OR_ROUTER_POSSIBLE' if len(p['pools'])>=3 else 'UNVERIFIED_TRANSACTION_ORIGIN'
+        p['two_sided_activity']=bool(p['buys'] and p['sells'])
+    r['activity_seen']=list(dict.fromkeys([*r.get('activity_seen',[]),*[ev['id'] for ev in events if ev.get('id') in seen]]))[-3500:]
+    r['sampled_activity']=dict(sorted(profiles.items(),key=lambda x:x[1].get('last_seen') or '',reverse=True)[:700])
 
 
 def candidates_from_flows(r, flows, now):
@@ -304,7 +323,8 @@ def _update_reports(r, now):
         if closed.get('strategy') in STRATEGIES: by[closed['strategy']].append(closed)
     for name in STRATEGIES:
         report=simple_report(by[name])
-        evidence=strong_evidence(report)
+        validation=(r.get('oos_validation') or {}).get(name,False)
+        evidence=strong_evidence(report) and validation
         old=r['shadow_sizing'].get(name,.005)
         # Shadow account only! This NEVER changes real simulated £2k positions.
         new=.0075 if evidence else .005
@@ -342,25 +362,43 @@ def _update_reports(r, now):
     r['sender_shadow_reports']={wallet:scores[wallet] for wallet in ordered[:MAX_IDENTITIES]}
 
 
-def _pick_watchlist(state, fetch, r):
-    # Rotate one additional source to discover whale-sized flows beyond V2's four trending pools.
-    if state.get('completed_cycles',0)%DISCOVERY_PERIOD_CYCLES != 0 and r['watched_pools']:
-        return
+def _pick_watchlist(state, fetch, r, discovered=None):
+    # Reuse the full primary discovery page. Rotate pages 2–5, rather than
+    # repeatedly querying the same two pools. Inventory is observational only.
     from .core import pool_meta, eligible
-    payload=fetch('/networks/solana/trending_pools', {'page':2,'include':'base_token'})
-    arr=payload.get('data')
-    if not isinstance(arr,list):raise ValueError('Supplemental trending-pool feed is malformed')
+    registry=r.setdefault('pool_registry', {})
+    cycle=state.get('completed_cycles',0)
+    for meta in discovered or []:
+        if eligible(meta):registry[meta['pool']]=meta
+    due=cycle%DISCOVERY_PERIOD_CYCLES==0 or not r['watched_pools']
+    if due:
+        page=2+(r.get('discovery_rotation',0)%4)
+        try:
+            payload=fetch('/networks/solana/trending_pools', {'page':page,'include':'base_token'})
+            arr=payload.get('data')
+            if not isinstance(arr,list):raise ValueError('Supplemental trending-pool feed is malformed')
+            for raw in arr:
+                meta=pool_meta(raw)
+                if eligible(meta):registry[meta['pool']]=meta
+            r['discovery_rotation']=r.get('discovery_rotation',0)+1
+        except Exception as exc:
+            record_issue(r,'extra pool discovery: '+str(exc))
+    for meta in r['watched_pools']:
+        registry.setdefault(meta['pool'],meta)
     original={m.get('pool') for m in state.get('watched_pools',[])}
-    items=[]
-    for raw in arr:
-        meta=pool_meta(raw)
-        if eligible(meta) and meta['pool'] not in original and meta['pool'] not in {x['pool'] for x in items}:
-            items.append(meta)
-        if len(items)>=MAX_EXTRA_POOLS:break
-    r['watched_pools']=items
+    held={p['token'] for p in r['shadow_positions']}
+    active={f['token'] for f in r['recent_flows'] if f.get('fresh')}
+    scans=r.setdefault('pool_last_scanned',{})
+    items=[m for m in registry.values() if m['pool'] not in original and eligible(m)]
+    items.sort(key=lambda m:(m['pool'] not in held, m['pool'] not in active, scans.get(m['pool'],''),m['pool']))
+    r['watched_pools']=items[:MAX_EXTRA_POOLS]
+    # Keep active holdings plus recent inventory; bounds remain small on Actions.
+    keep=list(dict.fromkeys([*held,*[m['pool'] for m in items],*registry]))[:64]
+    r['pool_registry']={k:registry[k] for k in keep if k in registry}
+    r['pool_last_scanned']={k:v for k,v in scans.items() if k in r['pool_registry']}
 
 
-def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=None, screener=None, previous_run=None):
+def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=None, screener=None, previous_run=None, discovered=None):
     """Separate, bounded market research; *only* mutates research.whale_v3.
 
     Uses existing candidate flows plus extra pools. Extra fetches never retry and
@@ -383,15 +421,17 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
             if status in ('PASS','REJECTED','UNAVAILABLE'):
                 r['safety_cache'][mint]={'at':now.isoformat(timespec='seconds'),'status':status}
     prior=timestamp(previous_run if previous_run is not None else state.get('last_run'))
-    if fetch is None or fetch is core.api:
-        fetch=fast_fetch
+    production = fetch is None or fetch is core.api
+    if production:
+        from .research_feed import ResearchFeed
+        fetch=ResearchFeed(r,now)
     if screener is None:
         from .safety import inspect_token
         screener=inspect_token
     meta={p['pool']:p for p in candidate_pools if p.get('pool')}
     extra_events=[]
     try:
-        _pick_watchlist(state,fetch,r)
+        _pick_watchlist(state,fetch,r,discovered)
     except Exception as exc:
         record_issue(r,'extra pool discovery: '+str(exc))
     watch=r['watched_pools'][:MAX_EXTRA_POOLS]
@@ -399,7 +439,12 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     if watch:
         addrs=','.join(urllib.parse.quote(x['pool'],safe='') for x in watch)
         try:
-            detail=fetch('/networks/solana/pools/multi/'+addrs,{'include':'base_token'})
+            try:
+                detail=fetch('/networks/solana/pools/multi/'+addrs,{'include':'base_token'})
+            except Exception as primary_error:
+                if not production:raise
+                r['scan_metrics']['quote_primary_error']=str(primary_error)[:160]
+                detail=fetch.fallback_quotes([x['pool'] for x in watch])
             feed=detail.get('data')
             if not isinstance(feed,list):raise ValueError('multi-pool response not a list')
             for raw in feed:
@@ -433,6 +478,7 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
             record_issue(r,'V3 research time budget reached before extra swap scan');break
         if pool['pool'] not in meta:continue  # fail closed if fresh quote missing
         try:
+            r.setdefault('pool_last_scanned',{})[pool['pool']]=now.isoformat(timespec='seconds')
             path='/networks/solana/pools/'+urllib.parse.quote(pool['pool'],safe='')+'/trades'
             response=fetch(path,{'trade_volume_in_usd_greater_than':core.MIN_TRADE_USD if hasattr(core,'MIN_TRADE_USD') else 100})
             if not isinstance(response.get('data'),list):raise ValueError('extra trade feed missing list')
@@ -442,7 +488,8 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
                 event=core.extract_event(raw,meta[pool['pool']])
                 if event:
                     stamp=timestamp(event['timestamp'])
-                    if stamp and prior and prior<stamp<=now and (now-stamp).total_seconds()<=MAX_EVENT_AGE_SECONDS:
+                    if stamp and 0 <= (now-stamp).total_seconds() <= 7200:
+                        event['research_only']=not (prior and prior<stamp<=now and (now-stamp).total_seconds()<=MAX_EVENT_AGE_SECONDS)
                         extra_events.append(event)
         except Exception as exc:
             record_issue(r,'extra trades '+pool['pool'][:12]+': '+str(exc))
@@ -450,8 +497,11 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     # Observe even smaller sells from the core feed when managing whale shadows.
     # This reduces conflict/churn, even though small trades are not whale-sized discoveries.
     seen_sells=[{'wallet':e['wallet'],'token':e['token'],'kind':'sell','fresh':True}
-                for e in [*new_events,*extra_events] if e.get('kind')=='sell']
+                for e in [*new_events,*extra_events] if e.get('kind')=='sell' and not e.get('research_only',False)]
     _mark_open(r,prices,flows+seen_sells,now)
+    _observe_activity(r,[*new_events,*extra_events],now)
+    from .evaluation import observe_whales
+    observe_whales(r,flows,prices,now)
     chosen=candidates_from_flows(r,flows,now)
     conflicting={(f['wallet'],f['token']) for f in flows+seen_sells if f['kind']=='sell' and f['fresh']}
     for signal in chosen:
@@ -489,11 +539,14 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
         r['research_events'].append({'at':now.isoformat(timespec='seconds'),
                                      'action':'WHALE_SHADOW_OPEN','strategy':name,
                                      'wallet':wallet,'token':token,'transaction_usd':signal['usd']})
+    r['scanner']['inventory_pools']=len(r.get('pool_registry',{}))
     r['scanner']['additional_pools']=len(watch)
     r['scanner']['large_flows']+=len(flows)  # includes every event >= $10k
     r['scanner']['very_large_flows']+=sum(f['size_tier']=='VERY_LARGE_FLOW' for f in flows)
     r['scanner']['fresh_signals']+=sum(f['fresh'] for f in flows)
     r['research_events']=r['research_events'][-250:]
+    from .evaluation import certified
+    r['oos_validation']={name:certified(state,'v3:'+name) for name in STRATEGIES}
     _update_reports(r,now)
     r['last_run']=now.isoformat(timespec='seconds')
     r['scan_metrics']['elapsed_seconds']=round(time.monotonic()-budget_started,3)
