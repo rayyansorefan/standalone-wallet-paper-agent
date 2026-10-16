@@ -177,6 +177,11 @@ def close_position(state, pos, price, reason):
 def maybe_open(state, ev, price, current, prices):
     wallet = ev['wallet']; token = ev['token']
     reason = None
+    from .decision import entry_assessment
+    assessment = entry_assessment(state, ev, current)
+    if assessment is not None and not assessment['allowed']:
+        log_decision(state, 'SKIP_POLICY', wallet, token, '; '.join(assessment['reasons']), assessment=assessment)
+        return
     ws = wallet_stats(state, wallet)
     if ws['seen'] < MIN_WALLET_SEEN: reason = 'wallet has fewer than 3 observed qualifying trades'
     elif len(state['positions']) >= MAX_OPEN: reason = 'portfolio position limit'
@@ -188,6 +193,9 @@ def maybe_open(state, ev, price, current, prices):
     alloc_fraction = wallet_risk_fraction(ws)
     from .adaptive import feature_risk_multiplier
     feature_weight, feature_reason = feature_risk_multiplier(state, ev)
+    if assessment and assessment.get('news',{}).get('status') == 'PARTIAL':
+        feature_weight *= 0.5
+        feature_reason += '; partial news coverage halves exploration allocation'
     alloc_fraction = min(0.015, alloc_fraction * feature_weight)
     if alloc_fraction == 0: reason = 'risk-adjusted trader score below threshold'
     eq = equity(state, prices)
@@ -205,9 +213,15 @@ def maybe_open(state, ev, price, current, prices):
     if entry_cost > state['cash_gbp']: return
     pos = dict(wallet=wallet, token=token, pool_name=ev['pool_name'], opened_at=now_iso(),
                entry_price_usd=price, last_mark_price_usd=price, signal_at=ev['timestamp'].isoformat(),
-               notional_gbp=alloc, cost_gbp=entry_cost, signal_id=ev['id'])
+               notional_gbp=alloc, cost_gbp=entry_cost, signal_id=ev['id'],
+               mint=((state.get('research') or {}).get('decision_v1') or {}).get('pool_mints',{}).get(token),
+               entry_assessment=assessment)
     state['cash_gbp'] = round(state['cash_gbp'] - entry_cost, 6)
     state['positions'].append(pos)
+    if assessment and assessment['history']['shrunk_roi_pct'] > 0:
+        log_decision(state, 'POSITIVE_SELECTION', wallet, token,
+                     'positive shrunk token ROI prioritised; sizing still requires OOS validation',
+                     history=assessment['history'])
     log_decision(state, 'PAPER_BUY', wallet, token, 'qualified copied signal at current pool quote',
                  notional_gbp=alloc, score=ws, feature_weight=feature_weight, feature_reason=feature_reason, signal_age_seconds=round((current-ev['timestamp']).total_seconds(),1))
 
@@ -251,8 +265,11 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         candidate_pools = []
         errors.append('pool discovery: '+str(e)[:240])
     prices = {}
+    quote_times = {}
+    discovery_at = dt.datetime.now(UTC)
     for m in candidate_pools:
         prices[m['pool']] = m['price_usd']
+        quote_times[m['pool']] = discovery_at
     # Always refresh the pools held in the portfolio even if no longer trending.
     for pos in state['positions']:
         if pos['token'] in prices: continue
@@ -339,9 +356,22 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # On the first run, deliberately record trades for discovery only and never copy them.
     # No stale purchases from before the previous scan if a schedule is delayed.
     from .adaptive import research_cycle, conflicting_keys
+    # News budget: two 4s requests at most once per 15 minutes; no market API calls.
+    from .news import refresh
+    from .decision import prepare, observe_forward
+    if fetch is api:
+        refresh(state, dt.datetime.now(UTC))
+        current = dt.datetime.now(UTC)
+    prepare(state, candidate_pools, current)
+    observe_forward(state, new_events, prices, current)
     research_cycle(state, candidate_pools, prices, new_events, current)
     sells_in_cycle = conflicting_keys(new_events)
-    for ev in sorted(new_events, key=lambda x: x['timestamp']):
+    # Process sells before buys, then prioritise profitable token histories.
+    # Same-token signals retain chronological order; no extra exposure is earned.
+    from .decision import history
+    for ev in sorted(new_events, key=lambda x: (x['kind'] != 'sell',
+                     -history(state,x['token'],current)['shrunk_roi_pct'] if x['kind']=='buy' else 0,
+                     x['timestamp'])):
         if ev['kind'] == 'buy' and (ev['wallet'], ev['token']) in sells_in_cycle:
             log_decision(state, 'SKIP', ev['wallet'], ev['token'],
                          'Conflicting buy/sell signals observed in one scan; avoid immediate churn')
@@ -351,7 +381,14 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 if pos['wallet'] == ev['wallet'] and pos['token'] == ev['token']:
                     close_position(state, pos, prices.get(ev['token']), 'observed trader sell')
         elif ev['kind'] == 'buy' and ev['token'] in prices:
-            maybe_open(state, ev, prices[ev['token']], current, prices)
+            decision_now = dt.datetime.now(UTC)
+            if not 0 <= (decision_now-quote_times[ev['token']]).total_seconds() <= MAX_TRADE_AGE_SECONDS:
+                log_decision(state,'SKIP',ev['wallet'],ev['token'],'entry quote expired during data collection')
+                continue
+            if not 0 <= (decision_now-ev['timestamp']).total_seconds() <= MAX_TRADE_AGE_SECONDS:
+                log_decision(state,'SKIP',ev['wallet'],ev['token'],'signal expired during data collection')
+                continue
+            maybe_open(state, ev, prices[ev['token']], decision_now, prices)
     # Keep recent event IDs in insertion order rather than lexicographic order.
     # The event-time gate also rejects observations older than the prior cycle.
     old_ids = state['seen_trades']
