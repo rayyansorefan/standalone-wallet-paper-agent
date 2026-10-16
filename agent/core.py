@@ -276,7 +276,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         try:
             detail = fetch(f"/networks/solana/pools/{urllib.parse.quote(pos['token'], safe='')}", {'include':'base_token'})
             m = pool_meta(detail.get('data') or {})
-            if m['price_usd'] and m['price_usd'] > 0: prices[pos['token']] = m['price_usd']
+            if m['price_usd'] and m['price_usd'] > 0:
+                prices[pos['token']] = m['price_usd']
+                quote_times[pos['token']] = dt.datetime.now(UTC)
         except Exception as e: errors.append('mark '+pos['token']+': '+str(e)[:160])
     from .adaptive import ensure, shadow_tokens
     ensure(state)['cycle_errors'] = []
@@ -289,6 +291,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             meta = pool_meta(detail.get('data') or {})
             if meta['price_usd'] and meta['price_usd'] > 0:
                 prices[research_token] = meta['price_usd']
+                quote_times[research_token] = dt.datetime.now(UTC)
             else:
                 raise ValueError('Shadow pool has no valid current price')
         except Exception as exc:
@@ -361,9 +364,11 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     from .decision import prepare, observe_forward
     if fetch is api:
         refresh(state, dt.datetime.now(UTC))
-        current = dt.datetime.now(UTC)
+    current = dt.datetime.now(UTC)
     prepare(state, candidate_pools, current)
-    observe_forward(state, new_events, prices, current)
+    fresh_prices = {token:price for token,price in prices.items()
+                    if token in quote_times and 0 <= (current-quote_times[token]).total_seconds() <= MAX_TRADE_AGE_SECONDS}
+    observe_forward(state, new_events, fresh_prices, current)
     research_cycle(state, candidate_pools, prices, new_events, current)
     sells_in_cycle = conflicting_keys(new_events)
     # Process sells before buys, then prioritise profitable token histories.

@@ -138,7 +138,9 @@ def observe_forward(state, events, prices, current):
                     x['outcomes'][key]={'status':'MISSING_FRESH_QUOTE'}
         if len(x['outcomes'])==3:
             done.append(x);pending.remove(x)
+    conflicting={(e['wallet'],e['token']) for e in events if e['kind']=='sell'}
     for ev in events:
+        if (ev['wallet'],ev['token']) in conflicting:continue
         if ev['kind']!='buy' or (state.get('observed',{}).get(ev['wallet']) or {}).get('count',0)<3: continue
         if not 0 <= (current-ev['timestamp']).total_seconds()<=240: continue
         if any(y['token']==ev['token'] and (current-stamp(y['at'])).total_seconds()<3600 for y in pending+done):continue
@@ -150,12 +152,13 @@ def observe_forward(state, events, prices, current):
     d['forward_outcomes']=done[-500:]
     summary={}
     for accepted in (True,False):
-        cohort=[x for x in done if x['accepted_by_policy']==accepted]
+        cohort=[x for x in done+pending if x['accepted_by_policy']==accepted]
         result={}
         for minute in (5,30,60):
             key=str(minute)+'m'
-            values=[x['outcomes'][key]['net_quote_roi_pct'] for x in cohort if 'net_quote_roi_pct' in x['outcomes'][key]]
-            result[key]={'priced':len(values),'missing':len(cohort)-len(values),
+            mature=[x for x in cohort if key in x['outcomes']]
+            values=[x['outcomes'][key]['net_quote_roi_pct'] for x in mature if 'net_quote_roi_pct' in x['outcomes'][key]]
+            result[key]={'priced':len(values),'missing':len(mature)-len(values),'pending':len(cohort)-len(mature),
                          'mean_net_quote_roi_pct':round(sum(values)/len(values),4) if values else None}
         summary['accepted' if accepted else 'blocked']=result
     d['forward_summary']=summary

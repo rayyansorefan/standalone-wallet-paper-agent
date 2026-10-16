@@ -76,6 +76,10 @@ class Decisions(unittest.TestCase):
         d=s['research']['decision_v1'];self.assertEqual(len(d['forward_pending']),1)
         decision.observe_forward(s,[],{'pool':1.1},NOW+dt.timedelta(minutes=5))
         self.assertAlmostEqual(d['forward_pending'][0]['outcomes']['5m']['net_quote_roi_pct'],7.8218)
+        self.assertEqual(d['forward_summary']['accepted']['5m']['priced'],1)
+        self.assertEqual(d['forward_summary']['accepted']['30m']['priced'],0)
+        self.assertEqual(d['forward_summary']['accepted']['30m']['missing'],0)
+        self.assertEqual(d['forward_summary']['accepted']['30m']['pending'],1)
         decision.observe_forward(s,[],{'pool':2},NOW+dt.timedelta(minutes=75))
         self.assertEqual(d['forward_outcomes'][0]['outcomes']['60m']['status'],'MISSING_FRESH_QUOTE')
         self.assertEqual(d['forward_summary']['accepted']['60m']['priced'],0)
@@ -109,6 +113,18 @@ class Decisions(unittest.TestCase):
         self.assertEqual(s['positions'][0]['notional_gbp'],5)
         core.maintain_positions(s,{'pool':.8},NOW)
         self.assertFalse(s['positions']);self.assertEqual(len(s['closed']),1)
+
+
+    def test_conflicting_sells_do_not_create_forward_buy_cohort(self):
+        s,m=fixture();decision.prepare(s,[m],NOW)
+        ev=dict(wallet='wallet',token='pool',id='new',kind='buy',timestamp=NOW)
+        decision.observe_forward(s,[ev,{**ev,'kind':'sell'}],{'pool':1},NOW)
+        self.assertFalse(s['research']['decision_v1']['forward_pending'])
+
+    def test_no_retrospective_technical_reinforcement_cohort(self):
+        from agent.adaptive import feature_buckets
+        keys=feature_buckets(dict(change_5m_pct=1,change_1h_pct=4))
+        self.assertFalse(any(k.startswith('technical:') for k in keys))
 
 
 class FullPolicyCycle(unittest.TestCase):

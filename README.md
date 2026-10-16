@@ -103,8 +103,8 @@ failures never prevent existing position management. No external AI is required.
 Positive net token histories earn selection priority using mean net ROI shrunk by
 10 pseudo-observations; they do not alone increase exposure. Wallet and feature
 reinforcement still require the existing frozen forward OOS evaluation and remain
-capped at 1.5%. A new predeclared aligned-technical feature cohort participates in
-that evaluation. Sparse winners cannot bypass negative controls or certification.
+capped at 1.5%. The new policy uses its own registration time for forward quote
+comparisons. Sparse winners cannot bypass negative controls or certification.
 
 The dashboard exposes each pool's policy decision and net history, news coverage,
 and forward accepted/blocked quote cohorts. Forward cohorts register before the
