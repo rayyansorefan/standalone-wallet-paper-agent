@@ -76,7 +76,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 <!-- UNIFIED_V2_NAV -->
-<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#decisions-v1">Decision evidence</a><a href="#experiments">Experiments</a><a href="#whales">Whales</a><a href="#system">System health</a></nav>
+<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#strategies-v1">Two-way strategies</a><a href="#decisions-v1">Decision evidence</a><a href="#experiments">Experiments</a><a href="#whales">Whales</a><a href="#system">System health</a></nav>
 
 <div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
@@ -204,10 +204,36 @@ $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCoun
 table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
 table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
-table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
 async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
 poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
 })();
+</script>
+
+
+<section id="strategies-v1" class="v2-section">
+<div class="v2-head"><div><h2>Two-way paper strategies</h2><p>One independent $2,000 USD challenger: momentum long/short and pump-fade short. The original £2,000 account remains above. Percentage returns have different exposure and costs; these are not equal-risk comparisons.</p></div></div>
+<p id="strategy-status" class="v2-alert">Awaiting first forward scan.</p>
+<div class="table-wrap"><table><thead><tr><th>Equity</th><th>Realised</th><th>Closed / wins</th><th>Profit factor</th><th>Max drawdown</th><th>Cost stress P&amp;L</th></tr></thead><tbody id="strategy-metrics"></tbody></table></div>
+<h3>Current position and selection</h3><p id="strategy-position"></p><p id="strategy-selection"></p>
+<h3>Learning evidence</h3><p id="strategy-learning"></p>
+<h3>Recent actions</h3><div class="table-wrap"><table><thead><tr><th>UTC</th><th>Action</th><th>Instrument</th><th>Setup</th><th>Detail</th></tr></thead><tbody id="strategy-events"></tbody></table></div>
+<p>Public Kraken perpetual prices; simulated fills at bid/ask plus 0.10% adverse slippage and 0.05% fee each side. Adverse carry reserve: at least 0.01%/hour, or greater observed absolute funding rate; no funding credits. This is a conservative estimate, not exchange funding settlement. Stress deducts another 0.35% each side. Exits are sampled every five minutes and can gap beyond stops. No paid AI, live orders or automatic promotion.</p>
+</section>
+<script>
+window.unifiedStrategyRender=function(s){
+ const b=s.research?.strategies_v1;if(!b)return;
+ const el=id=>document.getElementById(id), put=(id,v)=>el(id).textContent=v;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const money=v=>'$'+Number(v??0).toFixed(2), summary=b.summary||{};
+ const stale=!b.last_run||Date.now()-new Date(b.last_run).valueOf()>1200000;
+ put('strategy-status',(stale?'STALE · ':'')+(b.status||'UNPROVEN')+' · '+(b.entry_status||'')+' · '+(b.last_run||'')+' · '+(b.error||'')+' · '+(b.feed?.scanned||0)+' scanned / '+(b.feed?.eligible||0)+' liquid instruments; '+Object.keys(b.feed?.errors||{}).length+' candle failures');
+ el('strategy-metrics').innerHTML='<tr>'+[money(b.equity_usd),money(summary.net_usd),(summary.closed||0)+' / '+(summary.wins||0),summary.profit_factor==null?'—':Number(summary.profit_factor).toFixed(2),Number(b.max_drawdown_pct||0).toFixed(2)+'%',money(summary.stress_net_usd)].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>';
+ const p=b.position;put('strategy-position',p?(p.direction===1?'LONG ':'SHORT ')+p.symbol+' · '+p.setup+' · net '+money(p.net_usd)+' · stop '+Number(p.stop).toPrecision(6)+' · winner add '+(p.added?'used':'available')+' · quote '+p.marked_at:'Flat; no forced trades.');
+ put('strategy-selection',(b.candidates||[]).map(c=>c.symbol+' '+c.setup+' '+(c.feedback.allowed?'eligible':c.feedback.paused?'setup paused after losses':'cooldown')).join(' | ')||'No qualified candle setup in the scanned universe.');
+ put('strategy-learning',Object.entries(summary.feedback||{}).map(([name,f])=>name+': '+f.closed+' closed, '+(f.paused?'PAUSED':f.reinforced?'validated risk ×1.25':'unproven risk ×1.00')).join(' | ')+' · Registered '+b.registered_at+'. Reinforcement requires 20 training + 10 subsequent validation closures per setup, 14 days, three instruments and positive results excluding the best winner and under cost stress in both splits. One add to an open winner is a separate bounded rule.');
+ el('strategy-events').innerHTML=(b.events||[]).slice(-12).reverse().map(e=>'<tr>'+[e.at,e.action,e.symbol,e.setup,e.reason??(e.net_usd!=null?money(e.net_usd):e.notional_usd!=null?money(e.notional_usd):'')].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('');
+};
 </script>
 
 <section id="decisions-v1" class="v2-section"><div class="v2-head"><div><h2>History-aware decisions</h2><p>Losses change entry eligibility across wallets. Positive history changes selection priority; larger allocations still require independent forward validation.</p></div></div>

@@ -441,6 +441,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         whale_research = initialize(state)
         record_issue(whale_research, 'V3 isolated research failure: '+str(v3_exc)[:145])
         whale_research['status'] = 'DEGRADED'
+    # Independent, bounded public futures PAPER ledger; never changes GBP positions.
+    if fetch is api:
+        from .strategies import run as run_strategies
+        run_strategies(state)
     from .evaluation import safe_update, observe_positions
     try:
         observe_positions(state,prices,current)
