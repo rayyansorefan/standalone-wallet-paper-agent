@@ -433,6 +433,7 @@ poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
         ['Supplemental trade feeds read',w.scan_metrics?.trade_feeds??0],
         ['Last supplemental market data',uk(w.last_market_data_at)],
         ['Research elapsed seconds',w.scan_metrics?.elapsed_seconds??'—'],
+        ['Primary-provider window wait seconds',w.scan_metrics?.primary_window_wait_seconds??0],
         ['Shadow strategies','large_repeat, very_large, accumulation'],
         ['Fresh large-flow observations',sc.fresh_signals??0],
         ['Current scan errors',(w.last_scan_errors||[]).slice(-2).join('; ')||'None'],
