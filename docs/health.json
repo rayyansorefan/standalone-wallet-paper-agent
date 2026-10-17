@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-17T23:19:12+00:00",
-  "last_data_at": "2026-10-17T23:19:12+00:00",
-  "cycle": 575,
+  "last_run": "2026-10-17T23:24:14+00:00",
+  "last_data_at": "2026-10-17T23:24:14+00:00",
+  "cycle": 576,
   "status": "OK",
   "cycle_health": {
     "screened_pass": 8,
@@ -18,7 +18,7 @@
     "unscreened_discovery_candidates": 0,
     "discoveries_eligible_unique": 10,
     "discovery_raw_rows": 21,
-    "discovery_free_batch_tokens": 44,
+    "discovery_free_batch_tokens": 45,
     "discovery_errors": [],
     "alternate_quoted_pools": 0,
     "trade_feeds_unavailable": 0,
@@ -44,7 +44,7 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-17T23:19:12+00:00",
+    "latest_cycle": "2026-10-17T23:24:14+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -63,16 +63,16 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-17T23:19:07.210187+00:00"
+    "last_success_at": "2026-10-17T23:24:08.792013+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_QUOTA",
-    "last_run": "2026-10-17T23:19:12+00:00",
+    "last_run": "2026-10-17T23:24:14+00:00",
     "last_scan_errors": []
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-17T23:19:13.162586+00:00",
+    "last_run": "2026-10-17T23:24:14.950544+00:00",
     "closed": 10,
     "wins": 1
   },
@@ -115,8 +115,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T23:18:45.999Z",
-    "run_id": "39078531873",
+    "scheduled_at": "2026-10-17T23:23:46.557Z",
+    "run_id": "39078857254",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
