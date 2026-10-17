@@ -328,7 +328,9 @@ def _update_reports(r, now):
         evidence=strong_evidence(report) and validation
         old=r['shadow_sizing'].get(name,.005)
         # Shadow account only! This NEVER changes real simulated £2k positions.
-        new=.0075 if evidence else .005
+        # A retired experiment remains marked and exits normally, but gets
+        # zero new shadow allocation. It cannot resurrect on historical data.
+        new=0.0 if name in r.get('retired_shadow_strategies',{}) else (.0075 if evidence else .005)
         if new!=old:
             r['shadow_sizing_events'].append({'at':now.isoformat(timespec='seconds'),'strategy':name,
                  'previous':old,'new':new,'reason':'EVIDENCE_GATED_SHADOW_ONLY' if evidence else 'REVERT_INSUFFICIENT_EVIDENCE',
@@ -341,6 +343,10 @@ def _update_reports(r, now):
         r['shadow_reports'][name]=report
     update_retirements(r,r['shadow_reports'],now,event_key='research_events',
                        event_action='WHALE_SHADOW_STRATEGY_RETIRED')
+    for name in r.get('retired_shadow_strategies',{}):
+        r['shadow_sizing'][name]=0.0
+        if name in r['shadow_reports']:
+            r['shadow_reports'][name]['allocation_fraction_of_original_equity']=0.0
     r['shadow_sizing_events']=r['shadow_sizing_events'][-80:]
     # A wallet may produce the same signal in multiple experimental strategies.
     # Do not count those correlated outcomes as independent wallet successes.
