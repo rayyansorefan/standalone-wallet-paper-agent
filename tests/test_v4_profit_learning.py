@@ -28,7 +28,7 @@ class V4ForwardLearning(unittest.TestCase):
 
     def test_forward_quotes_only_and_deduplicated(self):
         b={'version':'momentum-fade-2'};q={'PF_TESTUSD':{'bid':99,'ask':101}}
-        v4.observe_forward(b,NOW,q,[candidate()],'PF_TESTUSD')
+        v4.observe_forward(b,NOW,q,[candidate()],('PF_TESTUSD','momentum_long'))
         self.assertEqual(len(b['forward_signals']),1)
         self.assertEqual(b['forward_signals'][0]['outcomes'],{})
         self.assertEqual(b['forward_signals'][0]['decision'],'ENTERED')
