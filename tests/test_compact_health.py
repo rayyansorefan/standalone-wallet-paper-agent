@@ -89,7 +89,8 @@ class CompactHealth(unittest.TestCase):
             {'wallet':'private-wallet','token':'secret-token',
              'last_mark_at':'2026-10-17T16:55:00+00:00',
              'trailing_stop_price_usd':1.18,
-             'additions':[{'notional_gbp':4.0}], 'position_action':'HOLD_PROTECTED'},
+             'additions':[{'notional_gbp':4.0}], 'position_action':'LOSS_WARNING',
+             'loss_warning_active':True},
             {'wallet':'other-secret','token':'other-pool',
              'position_action':'UNPRICED_HOLD'}]
         state['closed']=[{'wallet':'old-secret',
@@ -105,6 +106,10 @@ class CompactHealth(unittest.TestCase):
         self.assertEqual(stats['open_with_trailing_protection'],1)
         self.assertEqual(stats['open_with_recorded_mark'],1)
         self.assertEqual(stats['open_unpriced'],1)
+        self.assertEqual(stats['open_loss_warnings'],1)
+        self.assertEqual(stats['closed_at_4_5pct_stop'],0)
+        self.assertEqual(stats['net_loss_warning_pct'],-2.0)
+        self.assertEqual(stats['net_loss_exit_pct'],-4.5)
         self.assertEqual(stats['last_add_at'],'2026-10-17T16:50:00+00:00')
         published=json.dumps(health)
         for secret in ('private-wallet','secret-token','other-secret','old-secret'):
