@@ -220,8 +220,12 @@ def maybe_open(state, ev, price, current, prices):
     # Total paid includes 1% fees/slippage; no direct execution is implemented.
     entry_cost = round(alloc*(1+COST_PER_SIDE), 6)
     if entry_cost > state['cash_gbp']: return
-    pos = dict(wallet=wallet, token=token, pool_name=ev['pool_name'], opened_at=now_iso(),
-               entry_price_usd=price, last_mark_price_usd=price, signal_at=ev['timestamp'].isoformat(),
+    opened_at=now_iso()
+    pos = dict(wallet=wallet, token=token, pool_name=ev['pool_name'], opened_at=opened_at,
+               entry_price_usd=price, last_mark_price_usd=price, last_mark_at=opened_at,
+               recent_marks=[{'at':opened_at,'price_usd':price}],
+               peak_mark_price_usd=price,additions=[],position_action='NEW_POSITION',
+               signal_at=ev['timestamp'].isoformat(),
                notional_gbp=alloc, cost_gbp=entry_cost, signal_id=ev['id'],
                mint=((state.get('research') or {}).get('decision_v1') or {}).get('pool_mints',{}).get(token),
                entry_assessment=assessment)
@@ -236,17 +240,75 @@ def maybe_open(state, ev, price, current, prices):
 
 
 def maintain_positions(state, prices, current):
+    """Review every original-wallet holding on every scheduled price cycle."""
+    from .position_management import observe, confirmed_rising, confirmed_falling
     for pos in list(state['positions']):
         price = prices.get(pos['token'])
         if not price or price <= 0:
-            log_decision(state, 'HOLD_NO_PRICE', pos['wallet'], pos['token'], 'no fresh pool price; never fabricate valuation')
+            pos['position_action']='UNPRICED_HOLD'
+            log_decision(state, 'HOLD_NO_PRICE', pos['wallet'], pos['token'],
+                         'No current valid pool price; retain position; never fake a stop fill')
             continue
-        pos['last_mark_price_usd'] = price
-        return_pct = 100*((price/pos['entry_price_usd'])*(1-COST_PER_SIDE)/(1+COST_PER_SIDE)-1)
+        # Stops, duration, portfolio valuation and momentum all use the SAME
+        # freshly observed pool price, not a historic saved mark.
+        return_pct=observe(pos,price,current,COST_PER_SIDE)
+        if return_pct is None:
+            continue
         hours = (current-(parse_time(pos['opened_at']) or current)).total_seconds()/3600
-        if return_pct <= -12: close_position(state, pos, price, '12% paper stop loss')
-        elif return_pct >= 20: close_position(state, pos, price, '20% paper take profit')
-        elif hours >= MAX_HOLD_HOURS: close_position(state, pos, price, '6-hour maximum hold')
+        trailing=pos.get('trailing_stop_price_usd')
+        if return_pct<=-12:
+            close_position(state,pos,price,'12% net paper stop loss')
+        elif return_pct<=-5 and confirmed_falling(pos,current):
+            close_position(state,pos,price,'confirmed falling price · early loss exit')
+        elif trailing is not None and price<=trailing:
+            close_position(state,pos,price,'confirmed winner trailing stop')
+        elif hours>=MAX_HOLD_HOURS:
+            close_position(state,pos,price,'6-hour maximum hold')
+        elif return_pct>=20 and not confirmed_rising(pos,current):
+            # Never turn an unconfirmed abrupt spike into an indefinite hold.
+            close_position(state,pos,price,'20% paper take profit without confirmed continuation')
+
+
+def reinforce_open_winners(state, prices, quote_times, current, safe_pools, conflicting_sells):
+    """At most one evidence-gated, 0.5%-of-equity additional PAPER purchase."""
+    from .position_management import addition_amount, apply_add, MAX_ADDITIONS
+    if not state.get('positions') or not safe_pools:
+        return 0
+    complete=equity(state,prices)
+    if complete is None:
+        return 0
+    count=0
+    for pos in list(state['positions']):
+        if pos['token'] not in safe_pools:
+            continue
+        if len(pos.get('additions') or [])>=MAX_ADDITIONS:
+            continue
+        profile=wallet_stats(state,pos.get('wallet'))
+        extra,reason=addition_amount(
+            state,pos,prices.get(pos['token']),current,safe_pools=safe_pools,
+            conflicting_sells=conflicting_sells,
+            fresh_quote_at=quote_times.get(pos['token']),
+            wallet_profile=profile,equity_gbp=complete,cost_per_side=COST_PER_SIDE)
+        if extra<=0:
+            continue
+        prev_notional=pos['notional_gbp']
+        prev_entry=pos['entry_price_usd']
+        prior_cash=state['cash_gbp']
+        try:
+            apply_add(state,pos,prices[pos['token']],extra,current,COST_PER_SIDE)
+        except (ValueError,TypeError,KeyError):
+            continue
+        if state['cash_gbp']>=prior_cash or pos['notional_gbp']<=prev_notional:
+            raise AssertionError('Paper add accounting invariant failed')
+        log_decision(state,'PAPER_ADD_WINNER',pos.get('wallet'),pos['token'],reason,
+                     extra_notional_gbp=extra,from_notional_gbp=prev_notional,
+                     total_notional_gbp=pos['notional_gbp'],prior_entry_price_usd=prev_entry,
+                     blended_entry_price_usd=pos['entry_price_usd'],
+                     trailing_stop_price_usd=pos.get('trailing_stop_price_usd'))
+        complete=equity(state,prices)
+        count+=1
+        if complete is None:break
+    return count
 
 
 def run_cycle(fetch=api, path=STATE, screen_token=None):
@@ -265,6 +327,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     sampled_feeds = 0
     skipped_risk = 0
     unavailable_risk = 0
+    safe_pool_tokens=set()
     state["screening"] = []
     # A single provider failure must not invalidate unrelated safely screened
     # pools. Missing risk evidence always fails closed for its own token.
@@ -386,6 +449,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                               +' ('+str(assessment.get('reason','unknown'))+')')
             continue
         screened_pools += 1
+        safe_pool_tokens.add(pool['pool'])
         if production and screened_pools>MAX_MAIN_TRADE_FEEDS_PER_CYCLE:
             budget_deferred+=1
             continue  # Not a provider failure; never generate unobserved trades.
@@ -453,6 +517,11 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 log_decision(state,'SKIP',ev['wallet'],ev['token'],'signal expired during data collection')
                 continue
             maybe_open(state, ev, prices[ev['token']], decision_now, prices)
+    # Act on existing winners only AFTER current-cycle sell signals and entries
+    # have been processed. Current PASS screening plus genuinely fresh quotes
+    # are mandatory. Never add based on stale marks or missing trade feeds.
+    reinforce_open_winners(state,prices,quote_times,dt.datetime.now(UTC),
+                           safe_pool_tokens,sells_in_cycle)
     # Keep recent event IDs in insertion order rather than lexicographic order.
     # The event-time gate also rejects observations older than the prior cycle.
     old_ids = state['seen_trades']

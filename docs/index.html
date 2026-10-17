@@ -143,8 +143,8 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   </div>
   <p class="small" id="history-summary" aria-live="polite">Waiting for saved paper trade records.</p>
   <div class="tablewrap"><table id="history-table">
-    <thead><tr><th>Market / Pool</th><th>Side</th><th>Opened (UK)</th><th>Closed (UK)</th><th>Notional</th><th>Entry → Exit (USD)</th><th>Status</th><th>Net P&amp;L / ROI</th><th>Exit reason</th></tr></thead>
-    <tbody id="history-rows"><tr><td colspan="9" class="quiet">Loading recorded trades…</td></tr></tbody>
+    <thead><tr><th>Market / Pool</th><th>Side</th><th>Opened (UK)</th><th>Closed (UK)</th><th>Notional</th><th>Entry → Exit (USD)</th><th>Status</th><th>Winner additions</th><th>Net P&amp;L / ROI</th><th>Exit reason</th></tr></thead>
+    <tbody id="history-rows"><tr><td colspan="10" class="quiet">Loading recorded trades…</td></tr></tbody>
   </table></div>
   <div class="history-controls">
     <span id="history-count" class="small">Awaiting the saved ledger.</span>
@@ -155,7 +155,9 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <div class="layout">
 <div>
 <section class="panel"><div class="panelhead"><div><h2>Portfolio progression</h2><div class="small">Paper equity across successfully priced research snapshots</div></div><div class="segment" aria-label="Chart timeframe"><button class="sel" data-span="all">ALL</button><button data-span="7d">7D</button><button data-span="1d">24H</button></div></div><div id="chartHolder"><svg id="chart" role="img" aria-label="Simulated equity over time"></svg><div id="hover"></div></div><div id="chartNote" class="legend">Chart will appear after two priced observations.</div></section>
-<section class="panel"><div class="panelhead"><h2>Current paper positions</h2><span class="pill" id="positionCount">0 POSITIONS</span></div><div class="tablewrap"><table><thead><tr><th>Pool / Token</th><th>Signal sender</th><th>Amount</th><th>Latest marked P&amp;L*</th><th>Age</th></tr></thead><tbody id="positions"><tr><td colspan="5" class="quiet">No paper positions opened.</td></tr></tbody></table></div></section>
+<section class="panel"><div class="panelhead"><div><h2>Current paper positions</h2><div class="small">Every five-minute observation · additions and profit protection</div></div><span class="pill" id="positionCount">0 POSITIONS</span></div>
+<div class="tablewrap"><table><thead><tr><th>Pool / Token</th><th>Signal sender</th><th>Position</th><th>Additions</th><th>Fresh marked net P&amp;L</th><th>Peak net ROI</th><th>Position management</th><th>Age</th></tr></thead><tbody id="positions"><tr><td colspan="8" class="quiet">No paper positions opened.</td></tr></tbody></table></div>
+<div class="small">If a fresh quote is missing, P&amp;L is explicitly unpriced and paper stops cannot be assumed filled. Trailing stops are checked only on subsequent five-minute observations; positions can gap past them.</div></section>
 <section class="panel"><div class="panelhead"><h2>Decision audit trail</h2><span class="pill">EXPLAINABLE</span></div><div class="tablewrap"><table><thead><tr><th>Time (UK)</th><th>Action</th><th>Wallet</th><th>Reason / rule</th></tr></thead><tbody id="decisions"><tr><td colspan="4" class="quiet">No real observations or decisions yet.</td></tr></tbody></table></div></section>
 </div>
 <aside>
@@ -167,7 +169,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <div class="insight"><div class="circle">⚑</div><div><div class="small">Issues in latest cycle</div><strong id="errors">0</strong></div></div>
 </section>
 <section class="panel"><div class="panelhead"><h2>Observed wallet candidates</h2><span class="pill">NOT VERIFIED</span></div><div class="tablewrap"><table><thead><tr><th>Sender</th><th>Observed</th><th>Copies</th><th>Copy P&amp;L</th></tr></thead><tbody id="wallets"><tr><td colspan="4" class="quiet">No candidate observations yet.</td></tr></tbody></table></div><div class="small" style="padding-top:12px">These are transaction-origin addresses, not established beneficial traders or proven profitable wallets. Rankings are exploratory and shrink small samples.</div></section>
-<section class="panel"><h2>Execution assumptions</h2><div class="small" style="margin-top:12px;line-height:1.9">Market scan target: <b>5 minutes</b><br>Browser display refresh: <b>60 seconds</b><br>Mode: <b>Paper only</b><br>Assumed adverse costs: <b>1% each side</b><br>Maximum open positions: <b>5</b><br>Per-position allocation: <b>0.5–1.5%</b><br>Risk screen: <b>Fail closed</b><br>Profitable strategy verified: <b>No</b></div></section>
+<section class="panel"><h2>Execution assumptions</h2><div class="small" style="margin-top:12px;line-height:1.9">Market scan target: <b>5 minutes</b><br>Browser display refresh: <b>60 seconds</b><br>Mode: <b>Paper only</b><br>Assumed adverse costs: <b>1% each side</b><br>Maximum open positions: <b>5</b><br>New position: <b>typically 0.5%</b><br>Confirmed winner: <b>one capped 0.5% addition</b><br>Total position exposure: <b>1% unproven / 1.5% reinforced</b><br>Risk screen: <b>Fail closed</b><br>Profitable strategy verified: <b>No</b></div></section>
 </aside></div>
 <!-- UNIFIED_V2_START: Advanced research retained without cluttering the main view. -->
 <details class="research-drawer" id="research-details"><summary>Advanced research archive · wallet intelligence, shadow tests, whales and execution evidence</summary>
@@ -272,7 +274,20 @@ document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',(
 function render(s){state=s;health(s);let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
 $('equity').textContent=eq===null?'UNAVAILABLE':money(eq);$('totalPnl').textContent=gross===null?'—':money(gross,true);$('totalPnl').className='value '+color(gross);$('return').textContent=gross===null?'No complete portfolio valuation':pct(gross/(num(s.starting_gbp)||2000)*100)+' versus starting capital';$('realized').textContent=money(realized,true);$('realized').className='value '+color(realized);$('open').textContent=(s.positions||[]).length;$('closed').textContent=(s.closed||[]).length+' closed · '+wins+' wins';$('positionCount').textContent=(s.positions||[]).length+' POSITIONS';
 $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCount').textContent=Object.keys(s.observed||{}).length;$('stale').textContent=s.stale_signals||0;$('priced').textContent=(s.snapshots||[]).filter(x=>num(x.equity_gbp)!==null).length;$('errors').textContent=s.cycle_health?.errors_this_cycle??(s.errors||[]).filter(e=>e.at&&s.last_run&&Math.abs(new Date(e.at)-new Date(s.last_run))<=120000).length;
-table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
+table('positions',s.positions||[],[
+ p=>safe(p.pool_name||'Unknown'),
+ p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',
+ p=>money(p.notional_gbp),
+ p=>{const adds=Array.isArray(p.additions)?p.additions:[];const total=adds.reduce((a,x)=>a+(num(x.notional_gbp)||0),0);return adds.length?safe(adds.length)+' · +'+money(total):'None';},
+ p=>{const mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp),at=p.last_mark_at?Date.parse(p.last_mark_at):NaN;
+  const fresh=Number.isFinite(at)&&Date.now()-at<=15*60000&&Date.now()>=at-30000&&p.position_action!=='UNPRICED_HOLD';
+  const value=fresh&&mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;
+  return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>';},
+ p=>p.highest_net_roi_pct===undefined?'Collecting':safe(p.highest_net_roi_pct)+'%',
+ p=>{const stop=num(p.trailing_stop_price_usd);const action=String(p.position_action||'COLLECTING_MARKS').replaceAll('_',' ');
+  return safe(action)+(stop?' · trailing USD '+safe(stop.toPrecision(6)):' · basic stop / 6h cap');},
+ p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?h.toFixed(1)+' h':'—';}
+],'No open paper positions.');
 table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
 table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedTradeHistoryRender?.(s);window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}

@@ -47,6 +47,8 @@
       const notional = number(original ? t.notional_gbp : t.entry_notional);
       const roi = isClosed ? (original ? number(t.roi_pct)
         : notional && net !== null ? 100 * net / notional : null) : null;
+      const adds=original ? records(t.additions) : [];
+      const addNotional=original ? adds.reduce((total,item)=>total+(number(item?.notional_gbp)||0),0) : null;
       return {
         id: (original ? 'gbp' : 'usd')+'-'+(isClosed ? 'closed' : 'open')+'-'+i,
         account:original ? 'gbp' : 'usd',currency:original ? 'GBP' : 'USD',
@@ -55,7 +57,8 @@
         direction, opened,exit,
         notional,entry:number(original ? t.entry_price_usd : t.entry),
         exitPrice:isClosed ? number(original ? t.exit_price_usd : t.exit_price) : null,
-        net,roi,
+        net,roi,additionCount:original ? adds.length : null,
+        addedNotional:addNotional,
         reason:isClosed ? String((original ? t.exit_reason : t.reason) || 'Not recorded') : 'Position still open',
         sender:String(t.wallet || ''),
         sortTime:validTime(exit || opened) ?? -1
@@ -98,11 +101,13 @@
     const headings=['Account','Status','Market or pool','Direction','Opened UTC',
       'Closed UTC','Notional','Notional currency','Entry price USD','Exit price USD',
       'Net profit or loss','P&L currency','ROI on entry notional (%)',
-      'Exit reason','Observed sender (unverified)'];
+      'Exit reason','Observed sender (unverified)',
+      'Winner additions','Added notional GBP'];
     const values=rows.map(t=>[
       t.account==='gbp'?'Original paper wallet':'Futures challenger',t.status,
       t.market,t.direction,t.opened,t.exit,t.notional,t.currency,t.entry,
-      t.exitPrice,t.net,t.currency,t.roi,t.reason,t.sender
+      t.exitPrice,t.net,t.currency,t.roi,t.reason,t.sender,
+      t.additionCount,t.addedNotional
     ]);
     return [headings,...values].map(row=>row.map(csvCell).join(',')).join('\r\n')+'\r\n';
   }
@@ -135,7 +140,7 @@
     body.replaceChildren();
     if (!filtered.length) {
       const tr=root.document.createElement('tr');
-      const td=cell(tr,'No matching paper trades in this account.');td.colSpan=9;
+      const td=cell(tr,'No matching paper trades in this account.');td.colSpan=10;
       body.appendChild(tr);
     }
     filtered.slice(0,ui.limit).forEach(t=>{
@@ -147,6 +152,8 @@
       cell(tr,isNumber(t.notional) ? amount(t.notional,t.currency).replace(/^\+/,'') : '—');
       cell(tr,price(t.entry)+' → '+price(t.exitPrice));
       cell(tr,t.status);
+      cell(tr,t.additionCount===null?'—':t.additionCount?
+        t.additionCount+' · +'+amount(t.addedNotional,'GBP').replace(/^\\+/,''):'None');
       cell(tr,amount(t.net,t.currency)+(t.net!==null?' ('+pct(t.roi)+')':''),t.net===null?'':t.net<0?'negative':t.net>0?'positive':'');
       cell(tr,t.reason);
       body.appendChild(tr);

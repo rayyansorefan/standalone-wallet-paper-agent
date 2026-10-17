@@ -144,3 +144,28 @@ test('Source serves a readily visible interactive trade history on the main dash
   assert.ok(html.indexOf('<script src="./trade-history.js"></script>') <
     html.indexOf('window.unifiedTradeHistoryRender?.(s)'));
 });
+
+test('Original trade history shows one added winner lot and preserves saved net P&L',()=>{
+  const state=structuredClone(sample);
+  state.closed[0].additions=[{
+    at:'2026-10-17T08:30:00Z',notional_gbp:9.95,
+    price_usd:1.68,modelled_entry_fee_gbp:.0995
+  }];
+  state.closed[0].notional_gbp=19.95;
+  state.closed[0].entry_price_usd=1.58;
+  state.closed[0].net_pnl_gbp=5.5;
+  const before=JSON.stringify(state);
+  const wallet=tradeRows(state,'gbp');
+  const winner=wallet.find(x=>x.market==='MEME / SOL');
+  assert.equal(winner.additionCount,1);
+  assert.equal(winner.addedNotional,9.95);
+  assert.equal(winner.notional,19.95);
+  assert.equal(winner.net,5.5);
+  const csv=exportCsv(wallet);
+  assert.ok(csv.includes('"Winner additions"'));
+  assert.ok(csv.includes('"Added notional GBP"'));
+  assert.ok(csv.includes('"9.95"'));
+  assert.equal(JSON.stringify(state),before);
+  const futures=tradeRows(state,'usd');
+  assert.ok(futures.every(x=>x.additionCount===null));
+});
