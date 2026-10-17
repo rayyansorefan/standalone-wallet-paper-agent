@@ -60,6 +60,43 @@ def observed_net_roi(direction, entry, quote):
     return 100*(direction*(exit_px-entry)/entry - FEE*(1+exit_px/entry))
 
 
+def reconcile_forward_entries(book):
+    """Audit legacy selected-vs-entered label mismatches, never rewrite history.
+
+    Only use recorded exact open times from the independent USD paper ledger.
+    When an entry occurred at a timestamp, a different symbol/setup cannot
+    honestly claim to be ENTERED in the same single-position account.
+    """
+    entries={}
+    for t in [*book.get('closed',[]),book.get('position')]:
+        if not isinstance(t,dict):continue
+        opened=t.get('opened_at')
+        if opened and t.get('symbol') and t.get('setup'):
+            entries[opened]=(t['symbol'],t['setup'])
+    conflicts=0
+    for row in book.get('forward_signals',[]):
+        at=row.get('at')
+        if at not in entries:
+            continue
+        intended=entries[at]
+        same=(row.get('symbol'),row.get('setup'))==intended
+        labelled=row.get('decision')=='ENTERED'
+        if labelled!=same:
+            row['identity_audit']='HISTORICAL_LEDGER_LABEL_CONFLICT'
+            row['learning_excluded']=True
+            conflicts+=1
+        elif row.get('identity_audit') != 'HISTORICAL_LEDGER_LABEL_CONFLICT':
+            row['identity_audit']='MATCHES_RECORDED_LEDGER'
+    book['forward_identity_audit']={
+        'historical_conflicts':sum(
+            r.get('identity_audit')=='HISTORICAL_LEDGER_LABEL_CONFLICT'
+            for r in book.get('forward_signals',[])),
+        'latest_audit_at':book.get('last_run'),
+        'historical_records_unchanged':True,
+        'note':'Conflicting legacy decisions retained but excluded from learning.'}
+    return conflicts
+
+
 def observe_forward(book, now, quotes, candidates, entered_symbol=None):
     """Score previously sampled signals BEFORE registering fresh ones.
 
@@ -95,9 +132,12 @@ def observe_forward(book, now, quotes, candidates, entered_symbol=None):
                for r in rows):
             continue
         entry = q['ask']*(1+SLIP) if direction == 1 else q['bid']*(1-SLIP)
-        entered = entered_symbol == (c['symbol'],s) or entered_symbol == c['symbol']
+        # Only a complete (symbol, setup) identity can label ENTERED.
+        entered=entered_symbol == (c['symbol'],s)
         reason = 'ENTERED' if entered else (c.get('rejection_reason') or 'NOT_SELECTED')
+        trade_id=(book.get('position') or {}).get('entry_trade_id') if entered else None
         rows.append({'at':now.isoformat(), 'symbol':c['symbol'], 'setup':s,
+                     'entry_trade_id':trade_id if entered else None,
                      'direction':direction, 'regime':c['regime'], 'entry':entry,
                      'decision':'ENTERED' if reason == 'ENTERED' else 'OBSERVED_NOT_ENTERED',
                      'rejection_reason':None if reason=='ENTERED' else reason,
@@ -126,6 +166,7 @@ def missed_winners(rows, limit=12):
     both successes and failures rather than cherry-picking success-only stats.
     """
     cohorts=[r for r in rows if r.get('decision')=='OBSERVED_NOT_ENTERED'
+             and not r.get('learning_excluded')
              and r.get('policy_revision')=='v4.1'
              and isinstance(r.get('outcomes',{}).get('60m',{}).get('net_roi_pct'),(int,float))]
     winners=sorted((r for r in cohorts if r['outcomes']['60m']['net_roi_pct']>0),
@@ -195,7 +236,7 @@ def recovery_state(book, setup, now, rows):
     # Only future samples that were NOT actually entered after suspension.
     tests=[r for r in book.get('forward_signals',[]) if
            r.get('setup')==setup and r.get('rule_version')==book.get('version') and
-           r.get('decision')=='OBSERVED_NOT_ENTERED' and
+           r.get('decision')=='OBSERVED_NOT_ENTERED' and not r.get('learning_excluded') and
            (t:=_stamp(r.get('at'))) and t>started and t<=now and
            isinstance(r.get('outcomes',{}).get('60m',{}).get('net_roi_pct'),(int,float))]
     # Suppress multiple time-coincident signals from several correlated coins.
@@ -225,7 +266,7 @@ def context_adjustment(book, setup, regime):
     rows = [(r['at'], r['outcomes']['60m']['net_roi_pct'])
             for r in book.get('forward_signals', [])
             if r.get('setup') == setup and r.get('regime') == regime and
-               r.get('rule_version') == version and
+               r.get('rule_version') == version and not r.get('learning_excluded') and
                'net_roi_pct' in r.get('outcomes',{}).get('60m',{})]
     days = len({t[:10] for t,_ in rows})
     if len(rows) < 20 or days < 7:
