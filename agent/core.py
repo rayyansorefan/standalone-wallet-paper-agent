@@ -484,6 +484,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     budget_deferred=0
     uninspected_candidates=0
     security_checks=0
+    attempted_feeds=0
     for pool in ordered_pools:
         # Scan broad, validate a bounded rotating slice; never create 100+
         # expensive Rugcheck network calls or assume unscreened == PASS.
@@ -523,9 +524,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             continue
         screened_pools += 1
         safe_pool_tokens.add(pool['pool'])
-        if production and sampled_feeds>=budget:
+        if production and attempted_feeds>=budget:
             budget_deferred+=1
             continue  # Not a provider failure; never generate unobserved trades.
+        attempted_feeds+=1
         try:
             payload = fetch(f"/networks/solana/pools/{urllib.parse.quote(pool['pool'], safe='')}/trades", {'trade_volume_in_usd_greater_than': MIN_TRADE_USD})
             if not isinstance(payload.get('data'), list):
@@ -622,7 +624,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'screened_rejected_or_unavailable': skipped_risk,
         'trade_feeds_sampled': sampled_feeds,
         'trade_feeds_budget_deferred': budget_deferred,
-        'trade_feeds_attempted': screened_pools - budget_deferred,
+        'trade_feeds_attempted': attempted_feeds,
         'trade_feed_budget': budget,
         'security_screened': security_checks,
         'unscreened_discovery_candidates': uninspected_candidates,
