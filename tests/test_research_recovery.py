@@ -174,7 +174,10 @@ class ForwardEvaluation(unittest.TestCase):
         for key in b:self.assertEqual(s[key],b[key])
 
     def test_frozen_cohort_change_invalidates_permanently(self):
-        s={'closed':self.trades(),'research':{}}
+        from agent.policy_evidence import new_entry_tags,new_exit_tags
+        rows=self.trades()
+        for row in rows:row.update(new_entry_tags(),**new_exit_tags())
+        s={'closed':rows,'research':{}}
         evaluation.initialize(s,NOW);evaluation.update(s,NOW+dt.timedelta(days=61))
         self.assertEqual(s['research']['evaluation_v1']['reports']['actual:all']['status'],'VALIDATED_OOS')
         s['closed'][45]['signal_id']='changed'
@@ -182,6 +185,24 @@ class ForwardEvaluation(unittest.TestCase):
             r=evaluation.update(s,NOW+dt.timedelta(days=62))
             self.assertEqual(r['reports']['actual:all']['status'],'UNPROVEN')
             self.assertTrue(r['reports']['actual:all']['invalidated'])
+
+    def test_policy_epoch_tags_do_not_rewrite_history_or_certify_legacy_losses(self):
+        from agent.policy_evidence import new_entry_tags,new_exit_tags,certifiable_trade
+        latest=dict(self.trades()[-1],**new_entry_tags(),**new_exit_tags())
+        old=dict(self.trades()[0])
+        self.assertTrue(certifiable_trade(latest))
+        self.assertFalse(certifiable_trade(old))
+        self.assertFalse(certifiable_trade({**latest,'exit_policy_id':'different-stop-policy'}))
+        s={'closed':[old,latest],'research':{}}
+        before=copy.deepcopy(s['closed'])
+        evaluation.initialize(s,NOW)
+        evaluation.update(s,NOW+dt.timedelta(days=62))
+        e=s['research']['evaluation_v1']
+        self.assertEqual(e['noncomparable_legacy_and_cross_policy_closes'],1)
+        self.assertEqual(e['certifiable_current_policy_closed'],1)
+        self.assertEqual(e['legacy_actual_summary']['closed'],2)
+        self.assertEqual(s['closed'],before)
+        self.assertFalse(evaluation.certified(s,'actual:all'))
 
     def test_observed_flow_outcomes_not_wallet_profit(self):
         r={};flows=[{'event_id':'tx','wallet':'W','token':'P','fresh':True,'kind':'buy'}]
