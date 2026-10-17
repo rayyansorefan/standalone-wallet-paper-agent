@@ -10,6 +10,10 @@ import math
 
 ADD_THRESHOLD_NET_ROI_PCT = 10.
 MAX_ADD_FRACTION = .005
+# Proportional to the position, never an automatic fixed £10 top-up.
+MIN_TOPUP_RATIO = .30
+MID_TOPUP_RATIO = .40
+MAX_TOPUP_RATIO = .50
 EXPLORATION_TOTAL_CAP = .010
 REINFORCED_TOTAL_CAP = .015
 MIN_HOLD_SECONDS = 600
@@ -147,11 +151,18 @@ def addition_amount(state,pos,price,current,*,safe_pools,conflicting_sells,
         return 0.,'missing complete live paper equity'
     used=finite(pos.get('notional_gbp')) or 0
     cash=finite(state.get('cash_gbp')) or 0
-    room=min(equity*MAX_ADD_FRACTION,cap*equity-used,cash*.98/(1+cost_per_side))
+    # Scale additions as a FRACTION OF THE CURRENT INITIAL PAPER SIZE:
+    # 10–15% net return -> 30%, 15–20% -> 40%, 20–35% -> 50%.
+    # A £10 original therefore adds £3, £4 or £5 at most, once.
+    # Preserve previously declared equity, risk-screen and cash caps.
+    fraction=(MAX_TOPUP_RATIO if gain>=20 else
+              MID_TOPUP_RATIO if gain>=15 else MIN_TOPUP_RATIO)
+    room=min(used*fraction,equity*MAX_ADD_FRACTION,
+             cap*equity-used,cash*.98/(1+cost_per_side))
     amount=round(max(0,room),2)
     if amount<3:
         return 0.,'portfolio/sender cap or cash restriction'
-    return amount,'sustained net winner and current security confirmation'
+    return amount,'confirmed rising winner; '+str(int(fraction*100))+'% of original position'
 
 
 def apply_add(state,pos,price,extra,current,cost_per_side=.01):
