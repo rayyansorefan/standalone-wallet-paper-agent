@@ -67,13 +67,16 @@ def primary_window_delay(started, current):
 
 
 class ResearchFeed:
-    def __init__(self, research, now, transport=None, clock=time.monotonic, sleep=time.sleep):
+    def __init__(self, research, now, transport=None, clock=time.monotonic, sleep=time.sleep, defer_gecko=False):
         from .whales import fast_fetch
         self.r, self.now = research, now
         self.production = transport is None
         self.transport = transport or (lambda path,params:fast_fetch(path,params,timeout=REQUEST_TIMEOUT))
         self.clock, self.sleep = clock, sleep
-        quiet = primary_window_delay(now,dt.datetime.now(UTC)) if transport is None and os.getenv('GITHUB_ACTIONS')=='true' else 0
+        # The free DEX quote-only path does not contact GeckoTerminal, so
+        # withholding a full 60 seconds protects no shared-provider quota.
+        quiet = (primary_window_delay(now,dt.datetime.now(UTC))
+                 if transport is None and os.getenv('GITHUB_ACTIONS')=='true' and not defer_gecko else 0)
         if quiet:
             sleep(quiet)
         if self.production:
