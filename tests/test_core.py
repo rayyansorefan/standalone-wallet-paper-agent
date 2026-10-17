@@ -49,6 +49,29 @@ class PaperTradingTests(unittest.TestCase):
             self.assertEqual(s2['observed']['A'*32]['count'],1)
             self.assertEqual(s2['positions'],[])
 
+    def test_canonical_mint_duplicate_pool_is_not_second_paper_exposure(self):
+        from unittest import mock
+        state=core.blank_state()
+        now=dt.datetime.now(core.UTC)
+        a,b='A'*32,'B'*32
+        first,second='P'*32,'Q'*32
+        mint='M'*32
+        state['observed'][a]={'count':3,'last_seen':core.now_iso()}
+        state['observed'][b]={'count':3,'last_seen':core.now_iso()}
+        first_event=dict(id='first',wallet=a,token=first,pool_name='ONE',timestamp=now)
+        second_event=dict(id='second',wallet=b,token=second,pool_name='TWO',timestamp=now)
+        core.maybe_open(state,first_event,1,now,{first:1})
+        self.assertEqual(len(state['positions']),1)
+        state['positions'][0]['mint']=mint
+        state['research']={'decision_v1':{'pool_mints':{first:mint,second:mint}}}
+        existing_cash=state['cash_gbp']
+        with mock.patch('agent.decision.entry_assessment',return_value=None):
+            core.maybe_open(state,second_event,1,now,{first:1,second:1})
+        self.assertEqual(len(state['positions']),1)
+        self.assertEqual(state['cash_gbp'],existing_cash)
+        self.assertEqual(state['decisions'][-1]['action'],'SKIP')
+        self.assertIn('canonical mint',state['decisions'][-1]['reason'])
+
     def test_missing_price_never_closes_at_guess(self):
         s=core.blank_state();w='A'*32;now=dt.datetime.now(core.UTC)
         s['observed'][w]={'count':3,'last_seen':core.now_iso()}
