@@ -88,4 +88,34 @@ class ScreeningIsolation(unittest.TestCase):
             self.assertGreater(x['cycle_health']['errors_this_cycle'],1)
             self.assertEqual(x['positions'],[])
 
+
+    def test_rate_limited_one_trade_feed_does_not_hide_partial_coverage(self):
+        def limited(path,params=None):
+            if path.endswith('/trades') and ADDRESSES[0] in path:
+                raise OSError('HTTP Error 429: Too Many Requests')
+            return feed(path,params)
+        with tempfile.TemporaryDirectory() as tmp:
+            saved=core.run_cycle(fetch=limited,path=Path(tmp)/'state.json',
+                                 screen_token=lambda mint:{
+                                     'status':'PASS','allowed':True,'reason':'low risk'})
+            self.assertEqual(saved['last_status'],'PARTIAL_TRADE_FEEDS_UNAVAILABLE')
+            self.assertTrue(saved['cycle_health']['partial_trade_feeds_only'])
+            self.assertEqual(saved['cycle_health']['trade_feeds_sampled'],3)
+            self.assertEqual(saved['cycle_health']['trade_feeds_unavailable'],1)
+            self.assertEqual(saved['cycle_health']['rate_limit_errors'],1)
+            self.assertEqual(saved['positions'],[])
+
+    def test_mixed_security_and_trade_failure_still_degraded(self):
+        def limited(path,params=None):
+            if path.endswith('/trades') and ADDRESSES[0] in path:
+                raise OSError('HTTP Error 429: Too Many Requests')
+            return feed(path,params)
+        with tempfile.TemporaryDirectory() as tmp:
+            saved=core.run_cycle(fetch=limited,path=Path(tmp)/'state.json',screen_token=screener)
+            self.assertEqual(saved['last_status'],'DEGRADED')
+            self.assertEqual(saved['cycle_health']['screened_unavailable'],1)
+            self.assertEqual(saved['cycle_health']['trade_feeds_unavailable'],1)
+            self.assertFalse(saved['cycle_health']['partial_trade_feeds_only'])
+            self.assertFalse(saved['cycle_health']['partial_screening_only'])
+
 if __name__=='__main__':unittest.main()
