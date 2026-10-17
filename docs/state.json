@@ -2,12 +2,12 @@
   "schema": 1,
   "paper_only": true,
   "initialized_at": "2026-10-15T22:18:05+00:00",
-  "last_run": "2026-10-17T15:54:00+00:00",
+  "last_run": "2026-10-17T15:59:01+00:00",
   "cash_gbp": 1980.807438,
   "starting_gbp": 2000.0,
   "last_status": "API_ERROR",
   "last_data_at": "2026-10-17T15:49:11+00:00",
-  "completed_cycles": 486,
+  "completed_cycles": 487,
   "stale_signals": 17265,
   "unattributed_events": 0,
   "observed": {
@@ -12019,7 +12019,7 @@
       "pool_name": "PUMP / USDC",
       "opened_at": "2026-10-17T13:49:04+00:00",
       "entry_price_usd": 0.004497335855469954,
-      "last_mark_price_usd": 0.004413,
+      "last_mark_price_usd": 0.004415,
       "signal_at": "2026-10-17T13:45:22+00:00",
       "notional_gbp": 9.94,
       "cost_gbp": 10.0394,
@@ -35997,6 +35997,17 @@
       "sampled_feeds": 0,
       "screened_pools": 0,
       "status": "API_ERROR"
+    },
+    {
+      "at": "2026-10-17T15:59:01+00:00",
+      "equity_gbp": 1990.47,
+      "cash_gbp": 1980.81,
+      "open_positions": 1,
+      "closed_trades": 52,
+      "watched_pools": 0,
+      "sampled_feeds": 0,
+      "screened_pools": 0,
+      "status": "API_ERROR"
     }
   ],
   "watched_pools": [],
@@ -36088,18 +36099,22 @@
     {
       "at": "2026-10-17T15:54:00+00:00",
       "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T15:59:09.538954+00:00; retry at 2026-10-17T15:59:09.538954+00:00"
+    },
+    {
+      "at": "2026-10-17T15:59:01+00:00",
+      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T15:59:09.538954+00:00; retry at 2026-10-17T15:59:09.538954+00:00"
     }
   ],
   "screening": [],
   "execution": {
     "event": "workflow_dispatch",
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T15:53:46.777Z",
+    "scheduled_at": "2026-10-17T15:58:46.802Z",
     "trigger_uid": "3977529251376136192",
-    "run_id": "39047050534",
+    "run_id": "39047402697",
     "run_attempt": "1",
-    "started_at": "2026-10-17T15:53:56+00:00",
-    "slot": 5974174
+    "started_at": "2026-10-17T15:58:55+00:00",
+    "slot": 5974175
   },
   "research": {
     "version": 2,
@@ -143461,7 +143476,7 @@
       }
     },
     "last_status": "OK",
-    "last_run": "2026-10-17T15:53:57+00:00",
+    "last_run": "2026-10-17T15:58:56+00:00",
     "reinforcement_events": [],
     "wallet_tiers": {
       "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X": "exploration",
@@ -168074,7 +168089,7 @@
         "accumulation": false
       },
       "retired_shadow_strategies": {},
-      "last_deferral_at": "2026-10-17T15:53:57.221718+00:00",
+      "last_deferral_at": "2026-10-17T15:58:56.377793+00:00",
       "last_deferral_reason": "Main free-provider access limited; preserve capacity and existing shadow history"
     },
     "evaluation_v1": {
@@ -170869,7 +170884,7 @@
         }
       },
       "status": "UNPROVEN",
-      "last_run": "2026-10-17T15:53:57+00:00",
+      "last_run": "2026-10-17T15:58:56+00:00",
       "exit_diagnostics": {
         "12% paper stop loss": {
           "closed": 23,
@@ -171218,8 +171233,8 @@
           "first_observed_at": "2026-10-17T11:29:03+00:00",
           "mfe_pct": 0.0007,
           "mae_pct": -4.3607,
-          "samples": 53,
-          "last_observed_at": "2026-10-17T15:53:57+00:00"
+          "samples": 54,
+          "last_observed_at": "2026-10-17T15:58:56+00:00"
         },
         "actual:2Ci8Fn1JUNmd3D42cRrVA2Af5tsJZDiUtvoLAMkRedtvypffhdmoEuidCmVGi6iedFfcwMtS9Rqe2qYafVY3d7cU:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
           "signal_id": "2Ci8Fn1JUNmd3D42cRrVA2Af5tsJZDiUtvoLAMkRedtvypffhdmoEuidCmVGi6iedFfcwMtS9Rqe2qYafVY3d7cU:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
@@ -171236,8 +171251,8 @@
           "first_observed_at": "2026-10-17T13:49:04+00:00",
           "mfe_pct": 1.0049,
           "mae_pct": -2.0369,
-          "samples": 25,
-          "last_observed_at": "2026-10-17T15:53:57+00:00"
+          "samples": 26,
+          "last_observed_at": "2026-10-17T15:58:56+00:00"
         },
         "quality:udnCLiKywN78GycpbusojwAp4A7xmQRkG535ji4VEFkbc4NrSasjeb7QzfWYkMLdM4VXtffAmZi6UQYQnpA9tNg:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj": {
           "signal_id": "udnCLiKywN78GycpbusojwAp4A7xmQRkG535ji4VEFkbc4NrSasjeb7QzfWYkMLdM4VXtffAmZi6UQYQnpA9tNg:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
@@ -171245,17 +171260,17 @@
           "first_observed_at": "2026-10-17T14:49:04+00:00",
           "mfe_pct": 2.6797,
           "mae_pct": 0.0,
-          "samples": 13,
-          "last_observed_at": "2026-10-17T15:53:57+00:00"
+          "samples": 14,
+          "last_observed_at": "2026-10-17T15:58:56+00:00"
         },
         "momentum:5H9UMah59Ys2jCcw38e8qSJwdsuQE9tumcvwgkdb6s7RqhEFCXjuVm9j5oQCfYViXGtbcq3cTVg5pKWbuVKDn5LZ:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": {
           "signal_id": "5H9UMah59Ys2jCcw38e8qSJwdsuQE9tumcvwgkdb6s7RqhEFCXjuVm9j5oQCfYViXGtbcq3cTVg5pKWbuVKDn5LZ:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
           "strategy": "momentum",
           "first_observed_at": "2026-10-17T15:14:06+00:00",
           "mfe_pct": 0.0,
-          "mae_pct": -1.1869,
-          "samples": 8,
-          "last_observed_at": "2026-10-17T15:53:57+00:00"
+          "mae_pct": -1.2538,
+          "samples": 9,
+          "last_observed_at": "2026-10-17T15:58:56+00:00"
         },
         "actual:55cz8KKZYyLcVmmLNhKJWZTg9X2NEADXrvSuKgZMg1dutLobgTEF1T6BJnVxcHi9t29hoGg8bHL3EeAwrhcZxPqX:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
           "signal_id": "55cz8KKZYyLcVmmLNhKJWZTg9X2NEADXrvSuKgZMg1dutLobgTEF1T6BJnVxcHi9t29hoGg8bHL3EeAwrhcZxPqX:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
@@ -171269,7 +171284,7 @@
       }
     },
     "news_v1": {
-      "checked_at": "2026-10-17T15:39:07.577279+00:00",
+      "checked_at": "2026-10-17T15:58:55.834682+00:00",
       "status": "OK",
       "sources": {
         "solana_status": {
@@ -171313,7 +171328,7 @@
         "positive_exposure_requires_oos": true,
         "automatic_shadow_promotion": false
       },
-      "last_run": "2026-10-17T15:53:57.221718+00:00",
+      "last_run": "2026-10-17T15:58:56.377793+00:00",
       "pool_reports": {},
       "forward_pending": [
         {
@@ -173985,7 +174000,7 @@
       "equity_usd": 1979.355924399658,
       "peak_equity_usd": 2004.3313262807205,
       "max_drawdown_pct": 1.246071522885761,
-      "cycles": 229,
+      "cycles": 230,
       "rules": {
         "paper_only": true,
         "max_positions": 1,
@@ -174000,7 +174015,7 @@
         "promotion": "Never automatically replaces the original account"
       },
       "feed": {
-        "at": "2026-10-17T15:54:00.898000+00:00",
+        "at": "2026-10-17T15:59:01.215000+00:00",
         "eligible": 31,
         "scanned": 6,
         "requests": 7,
@@ -174010,7 +174025,7 @@
       },
       "candidates": [
         {
-          "symbol": "PF_FILUSD",
+          "symbol": "PF_DOTUSD",
           "setup": "momentum_short",
           "direction": -1,
           "regime": "ACTIVE_TREND",
@@ -174020,7 +174035,7 @@
             "observations": 13,
             "days": 1
           },
-          "score": 1.661187,
+          "score": 1.737604,
           "cost_qualified": true,
           "feedback": {
             "allowed": true,
@@ -174043,19 +174058,70 @@
             }
           },
           "features": {
-            "at": "2026-10-17T15:50:00+00:00",
-            "close": 1.0897,
-            "previous": 1.0932,
-            "atr": 0.004742857142857192,
-            "ema_fast": 1.0927699864146851,
-            "ema_slow": 1.101965122578874,
-            "r1h": -0.019613135402609116,
-            "r15m": -0.003839473443642216,
-            "volume_ratio": 2.5300386090973634,
-            "fade_volume_ratio": 9.27198615221397,
-            "pump": 0.008599838753023281,
-            "drawdown": 7.632530120481851,
-            "peak_age": 17,
+            "at": "2026-10-17T15:55:00+00:00",
+            "close": 1.1181,
+            "previous": 1.118,
+            "atr": 0.0036285714285714094,
+            "ema_fast": 1.1227935830482187,
+            "ema_slow": 1.1288915319785409,
+            "r1h": -0.016536194915999558,
+            "r15m": -0.005691418408181326,
+            "volume_ratio": 2.0243319176739627,
+            "fade_volume_ratio": 0.7820520587225622,
+            "pump": 0.005639263371222114,
+            "drawdown": 6.393700787401578,
+            "peak_age": 18,
+            "lower_closes": false
+          },
+          "rejection_reason": "DAILY_LIMIT"
+        },
+        {
+          "symbol": "PF_INJUSD",
+          "setup": "momentum_short",
+          "direction": -1,
+          "regime": "ACTIVE_TREND",
+          "learning": {
+            "status": "COLLECTING",
+            "adjustment": 0.0,
+            "observations": 13,
+            "days": 1
+          },
+          "score": 1.597507,
+          "cost_qualified": true,
+          "feedback": {
+            "allowed": true,
+            "paused": false,
+            "cooldown": false,
+            "recovery": {
+              "allowed": true,
+              "status": "ACTIVE",
+              "evaluated": 0
+            },
+            "closed": 1,
+            "edge": -0.05426972080302744,
+            "reinforced": false,
+            "risk_multiplier": 1.0,
+            "learned": {
+              "status": "COLLECTING",
+              "adjustment": 0.0,
+              "observations": 13,
+              "days": 1
+            }
+          },
+          "features": {
+            "at": "2026-10-17T15:55:00+00:00",
+            "close": 8.424,
+            "previous": 8.423,
+            "atr": 0.03364285714285727,
+            "ema_fast": 8.45492532084315,
+            "ema_slow": 8.498196299477074,
+            "r1h": -0.013583138173302034,
+            "r15m": -0.005900401227283525,
+            "volume_ratio": 2.73821755601105,
+            "fade_volume_ratio": 2.857749392168959,
+            "pump": 0.0003490807540145191,
+            "drawdown": 5.142250530785544,
+            "peak_age": 18,
             "lower_closes": false
           },
           "rejection_reason": "DAILY_LIMIT"
@@ -174071,7 +174137,7 @@
             "observations": 13,
             "days": 1
           },
-          "score": 1.498986,
+          "score": 1.504122,
           "cost_qualified": true,
           "feedback": {
             "allowed": true,
@@ -174094,71 +174160,20 @@
             }
           },
           "features": {
-            "at": "2026-10-17T15:50:00+00:00",
-            "close": 0.06544,
-            "previous": 0.06569,
-            "atr": 0.0006564285714285727,
-            "ema_fast": 0.06613738011771494,
-            "ema_slow": 0.06704371989527359,
-            "r1h": -0.03580374244879925,
-            "r15m": -0.01505117399157141,
-            "volume_ratio": 1.6257205359300098,
-            "fade_volume_ratio": 1.7185999300461317,
-            "pump": 0.027732220068585,
-            "drawdown": 5.31664853101197,
-            "peak_age": 11,
-            "lower_closes": true
-          },
-          "rejection_reason": "DAILY_LIMIT"
-        },
-        {
-          "symbol": "PF_INJUSD",
-          "setup": "momentum_short",
-          "direction": -1,
-          "regime": "ACTIVE_TREND",
-          "learning": {
-            "status": "COLLECTING",
-            "adjustment": 0.0,
-            "observations": 13,
-            "days": 1
-          },
-          "score": 1.430426,
-          "cost_qualified": true,
-          "feedback": {
-            "allowed": true,
-            "paused": false,
-            "cooldown": false,
-            "recovery": {
-              "allowed": true,
-              "status": "ACTIVE",
-              "evaluated": 0
-            },
-            "closed": 1,
-            "edge": -0.05426972080302744,
-            "reinforced": false,
-            "risk_multiplier": 1.0,
-            "learned": {
-              "status": "COLLECTING",
-              "adjustment": 0.0,
-              "observations": 13,
-              "days": 1
-            }
-          },
-          "features": {
-            "at": "2026-10-17T15:50:00+00:00",
-            "close": 8.423,
-            "previous": 8.473,
-            "atr": 0.0324285714285716,
-            "ema_fast": 8.467295449180412,
-            "ema_slow": 8.506008874593654,
-            "r1h": -0.012428186188298773,
-            "r15m": -0.008942228497470395,
-            "volume_ratio": 2.2931780660684433,
-            "fade_volume_ratio": 2.3967775882715827,
-            "pump": 0.003970571061543637,
-            "drawdown": 5.36563876651978,
-            "peak_age": 17,
-            "lower_closes": true
+            "at": "2026-10-17T15:55:00+00:00",
+            "close": 0.06574,
+            "previous": 0.06544,
+            "atr": 0.0006535714285714299,
+            "ema_fast": 0.06602384294122496,
+            "ema_slow": 0.06691956239888848,
+            "r1h": -0.041131855309218035,
+            "r15m": -0.0042411390487728795,
+            "volume_ratio": 1.371007803577452,
+            "fade_volume_ratio": 1.4934737294865006,
+            "pump": 0.026049419470080437,
+            "drawdown": 4.880874316939878,
+            "peak_age": 12,
+            "lower_closes": false
           },
           "rejection_reason": "DAILY_LIMIT"
         }
@@ -174218,10 +174233,10 @@
           }
         }
       },
-      "last_run": "2026-10-17T15:54:01.189747+00:00",
+      "last_run": "2026-10-17T15:59:01.548185+00:00",
       "entry_status": "DAILY_CAP",
       "policy_registered_at": "2026-10-17T08:00:08.448086+00:00",
-      "cost_hurdle_rejections": 2,
+      "cost_hurdle_rejections": 1,
       "forward_signals": [
         {
           "at": "2026-10-17T08:30:13.255307+00:00",
@@ -174712,14 +174727,19 @@
           "rejection_reason": "DAILY_LIMIT",
           "policy_revision": "v4.1",
           "rule_version": "momentum-fade-2",
-          "outcomes": {}
+          "outcomes": {
+            "5m": {
+              "net_roi_pct": -0.69307,
+              "at": "2026-10-17T15:59:01.548185+00:00"
+            }
+          }
         }
       ],
       "forward_summary": {
         "5m": {
-          "priced": 19,
+          "priced": 20,
           "missing": 0,
-          "mean_net_roi_pct": -0.3642
+          "mean_net_roi_pct": -0.3806
         },
         "30m": {
           "priced": 18,
@@ -174788,8 +174808,8 @@
     "retired_shadow_strategies": {},
     "alternate_price_feed_v1": {
       "status": "OK",
-      "quoted_pools": 4,
-      "requested_pools": 4,
+      "quoted_pools": 3,
+      "requested_pools": 3,
       "provider": "dexscreener"
     }
   },
@@ -174800,7 +174820,7 @@
     "trade_feeds_sampled": 0,
     "trade_feeds_budget_deferred": 0,
     "trade_feeds_attempted": 0,
-    "alternate_quoted_pools": 4,
+    "alternate_quoted_pools": 3,
     "trade_feeds_unavailable": 0,
     "candidate_pools": 0,
     "errors_this_cycle": 1,
