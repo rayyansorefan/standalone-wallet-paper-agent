@@ -478,7 +478,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         offset=cursor%len(candidate_pools)
         ordered_pools=candidate_pools[offset:]+candidate_pools[:offset]
         state['research']['main_trade_cursor']=(
-            cursor+MAX_SECURITY_SCREENS_PER_CYCLE)%len(candidate_pools)
+            cursor+budget)%len(candidate_pools)
     else:
         ordered_pools=candidate_pools
     budget_deferred=0
