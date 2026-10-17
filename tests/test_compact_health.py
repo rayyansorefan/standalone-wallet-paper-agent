@@ -43,6 +43,56 @@ class CompactHealth(unittest.TestCase):
         self.assertLess(len(body),8000)
         self.assertEqual(json.dumps(s,sort_keys=True),original)
 
+    def test_realised_profit_and_six_hour_loss_trend_are_available_without_full_ledger(self):
+        s=core.blank_state()
+        s['last_run']='2026-10-17T22:00:00+00:00'
+        s['cash_gbp']=1980.35
+        s['positions']=[{'wallet':'private-wallet','notional_gbp':10.0}]
+        s['closed']=[
+            {'wallet':'secret1','net_pnl_gbp':3.0,
+             'exit_at':'2026-10-16T00:00:00+00:00'},
+            {'wallet':'secret2','net_pnl_gbp':-.60,
+             'exit_at':'2026-10-17T20:00:00+00:00'},
+            {'wallet':'secret3','net_pnl_gbp':-.40,
+             'exit_at':'2026-10-17T21:30:00+00:00'},
+            {'wallet':'secret4','net_pnl_gbp':1.20,
+             'exit_at':'2026-10-17T21:55:00+00:00'}]
+        pristine=json.dumps(s,sort_keys=True)
+        health=dashboard.compact_health(s)
+        p=health['original']['performance']
+        self.assertEqual(p['starting_gbp'],2000)
+        self.assertEqual(p['available_cash_gbp'],1980.35)
+        self.assertEqual(p['open_notional_gbp'],10.)
+        self.assertEqual(p['all_time']['closed'],4)
+        self.assertEqual(p['all_time']['wins'],2)
+        self.assertEqual(p['all_time']['losses'],2)
+        self.assertEqual(p['all_time']['win_rate_pct'],50)
+        self.assertEqual(p['all_time']['net_pnl_gbp'],3.2)
+        self.assertEqual(p['last_6h']['closed'],3)
+        self.assertEqual(p['last_6h']['losses'],2)
+        self.assertEqual(p['last_6h']['net_pnl_gbp'],.2)
+        self.assertEqual(p['last_24h']['net_pnl_gbp'],.2)
+        self.assertIn('CLOSED GBP paper only',p['method'])
+        for secret in ('secret1','secret2','secret3','secret4','private-wallet'):
+            self.assertNotIn(secret,json.dumps(health))
+        self.assertEqual(json.dumps(s,sort_keys=True),pristine)
+
+    def test_missing_pnl_or_unknown_timestamp_is_not_falsely_profitable(self):
+        s=core.blank_state()
+        s['last_run']='2026-10-17T22:00:00+00:00'
+        s['closed']=[{'exit_at':'2026-10-17T21:45:00+00:00',
+                      'net_pnl_gbp':2},
+                     {'exit_at':'2026-10-17T21:55:00+00:00'}]
+        p=dashboard.compact_health(s)['original']['performance']
+        self.assertFalse(p['all_time']['complete_outcomes'])
+        self.assertIsNone(p['all_time']['net_pnl_gbp'])
+        self.assertFalse(p['last_6h']['complete_outcomes'])
+        self.assertIsNone(p['last_6h']['win_rate_pct'])
+        s['last_run']=None
+        p=dashboard.compact_health(s)['original']['performance']
+        self.assertFalse(p['last_6h']['data_available'])
+        self.assertIsNone(p['last_24h']['closed'])
+
     def test_healthy_cycle_does_not_resurface_old_errors(self):
         s=core.blank_state()
         s.update(last_status='OK',errors=[{'at':'yesterday','error':'old 429'}])
