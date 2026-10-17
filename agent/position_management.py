@@ -54,7 +54,7 @@ def confirmed_rising(pos,current):
     prices=[finite(x.get('price_usd')) for x in seq]
     return (all(t is not None for t in times)
             and all(p is not None and p>0 for p in prices)
-            and times[-1]==current
+            and 0 <= (current-times[-1]).total_seconds() < 1.5
             and MIN_SAMPLE_SECONDS <= (times[1]-times[0]).total_seconds() <= 900
             and MIN_SAMPLE_SECONDS <= (times[2]-times[1]).total_seconds() <= 900
             and prices[0]<prices[1]<prices[2])
