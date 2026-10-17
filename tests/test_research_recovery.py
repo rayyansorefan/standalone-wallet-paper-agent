@@ -256,6 +256,18 @@ class ProviderWindow(unittest.TestCase):
         self.assertEqual(clock.value,0)
         self.assertEqual(r['scan_metrics']['primary_window_wait_seconds'],0)
 
+    def test_optional_quote_only_whale_path_skips_unneeded_sixty_second_wait(self):
+        clock=Clock();r={'scan_metrics':{}}
+        with patch.dict('os.environ',{'GITHUB_ACTIONS':'true'}), patch.object(
+                research_feed,'primary_window_delay',return_value=60) as delay, patch.object(
+                whales,'fast_fetch',return_value={'data':[]}):
+            f=research_feed.ResearchFeed(r,NOW,clock=clock,sleep=clock.sleep,defer_gecko=True)
+            self.assertEqual(clock.value,0)
+            self.assertEqual(f.metrics['primary_window_wait_seconds'],0)
+            delay.assert_not_called()
+            self.assertEqual(f('/pool/trades'),{'data':[]})
+            self.assertEqual(f.requests,1)
+
     def test_research_deadline_starts_after_primary_window(self):
         clock=Clock();r={'scan_metrics':{}}
         with patch.dict('os.environ',{'GITHUB_ACTIONS':'true'}), patch.object(research_feed,'primary_window_delay',return_value=55), patch.object(whales,'fast_fetch',return_value={'data':[]}):
