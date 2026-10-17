@@ -22,6 +22,7 @@ class Integration(unittest.TestCase):
     def test_upgrade_preserves_original_and_versioned_challenger_records(self):
         state,q,f=fixture()
         b=s.initialize(state,NOW-dt.timedelta(days=2))
+        b['version']='momentum-fade-1'  # simulate the persisted legacy ledger
         b['closed'].append({'setup':'momentum_long','symbol':'PF_TESTUSD',
                             'version':'momentum-fade-1',
                             'exit_at':(NOW-dt.timedelta(days=1)).isoformat(),
