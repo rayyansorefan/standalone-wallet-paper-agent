@@ -38,6 +38,20 @@ class V4ForwardLearning(unittest.TestCase):
         v4.observe_forward(b,NOW+dt.timedelta(minutes=60),q,[])
         self.assertIn('60m',b['forward_signals'][0]['outcomes'])
 
+    def test_new_real_entry_is_never_hidden_by_earlier_nonentered_signal(self):
+        book={'version':'momentum-fade-2'}
+        q={'PF_TESTUSD':{'bid':99,'ask':101}}
+        v4.observe_forward(book,NOW,q,[candidate()])
+        self.assertEqual(book['forward_signals'][0]['decision'],'OBSERVED_NOT_ENTERED')
+        book['position']={'symbol':'PF_TESTUSD','setup':'momentum_long',
+                          'entry_trade_id':'verified-open-identity'}
+        v4.observe_forward(book,NOW+dt.timedelta(minutes=5),q,[candidate()],
+                           ('PF_TESTUSD','momentum_long'))
+        self.assertEqual(len(book['forward_signals']),2)
+        self.assertEqual(book['forward_signals'][1]['decision'],'ENTERED')
+        self.assertEqual(book['forward_signals'][1]['entry_trade_id'],'verified-open-identity')
+        self.assertEqual(book['forward_signals'][0]['decision'],'OBSERVED_NOT_ENTERED')
+
     def test_missing_quote_not_a_zero_or_fabricated_win(self):
         b={'version':'momentum-fade-2'}
         v4.observe_forward(b,NOW,{'PF_TESTUSD':{'bid':99,'ask':101}},[candidate()])

@@ -127,13 +127,16 @@ def observe_forward(book, now, quotes, candidates, entered_symbol=None):
         if not q:
             continue
         s, direction = c['setup'], c['direction']
-        if any(r['symbol'] == c['symbol'] and r['setup'] == s and
+        # A newly executed PAPER entry is never deduplicated away by an
+        # earlier hour's *unentered* signal from the same instrument/setup.
+        # Otherwise the opened ledger trade has no matching forward identity.
+        entered=entered_symbol == (c['symbol'],s)
+        if not entered and any(r['symbol'] == c['symbol'] and r['setup'] == s and
                (at := _stamp(r['at'])) and 0 <= (now-at).total_seconds() < COOLDOWN_SECONDS
                for r in rows):
             continue
         entry = q['ask']*(1+SLIP) if direction == 1 else q['bid']*(1-SLIP)
         # Only a complete (symbol, setup) identity can label ENTERED.
-        entered=entered_symbol == (c['symbol'],s)
         reason = 'ENTERED' if entered else (c.get('rejection_reason') or 'NOT_SELECTED')
         trade_id=(book.get('position') or {}).get('entry_trade_id') if entered else None
         rows.append({'at':now.isoformat(), 'symbol':c['symbol'], 'setup':s,
