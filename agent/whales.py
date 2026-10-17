@@ -371,7 +371,7 @@ def _update_reports(r, now):
     r['sender_shadow_reports']={wallet:scores[wallet] for wallet in ordered[:MAX_IDENTITIES]}
 
 
-def _pick_watchlist(state, fetch, r, discovered=None):
+def _pick_watchlist(state, fetch, r, discovered=None, allow_extra_discovery=True):
     # Reuse the full primary discovery page. Rotate pages 2–5, rather than
     # repeatedly querying the same two pools. Inventory is observational only.
     from .core import pool_meta, eligible
@@ -379,7 +379,7 @@ def _pick_watchlist(state, fetch, r, discovered=None):
     cycle=state.get('completed_cycles',0)
     for meta in discovered or []:
         if eligible(meta):registry[meta['pool']]=meta
-    due=cycle%DISCOVERY_PERIOD_CYCLES==0 or not r['watched_pools']
+    due=allow_extra_discovery and (cycle%DISCOVERY_PERIOD_CYCLES==0 or not r['watched_pools'])
     if due:
         page=2+(r.get('discovery_rotation',0)%4)
         try:
@@ -407,7 +407,7 @@ def _pick_watchlist(state, fetch, r, discovered=None):
     r['pool_last_scanned']={k:v for k,v in scans.items() if k in r['pool_registry']}
 
 
-def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=None, screener=None, previous_run=None, discovered=None):
+def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=None, screener=None, previous_run=None, discovered=None, allow_optional_gecko=True):
     """Separate, bounded market research; *only* mutates research.whale_v3.
 
     Uses existing candidate flows plus extra pools. Extra fetches never retry and
@@ -444,7 +444,7 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     meta={p['pool']:p for p in candidate_pools if p.get('pool')}
     extra_events=[]
     try:
-        _pick_watchlist(state,fetch,r,discovered)
+        _pick_watchlist(state,fetch,r,discovered,allow_extra_discovery=allow_optional_gecko)
     except Exception as exc:
         record_issue(r,'extra pool discovery: '+str(exc))
     watch=r['watched_pools'][:MAX_EXTRA_POOLS]
@@ -452,12 +452,18 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     if watch:
         addrs=','.join(urllib.parse.quote(x['pool'],safe='') for x in watch)
         try:
-            try:
-                detail=fetch('/networks/solana/pools/multi/'+addrs,{'include':'base_token'})
-            except Exception as primary_error:
-                if not production:raise
-                r['scan_metrics']['quote_primary_error']=str(primary_error)[:160]
+            if not allow_optional_gecko:
+                # Preserve whale paper shadow marks from an independent FREE
+                # quote-only provider, never use Gecko market quota already
+                # needed for main wallet swaps. Quotes are NOT swap evidence.
                 detail=fetch.fallback_quotes([x['pool'] for x in watch])
+            else:
+                try:
+                    detail=fetch('/networks/solana/pools/multi/'+addrs,{'include':'base_token'})
+                except Exception as primary_error:
+                    if not production:raise
+                    r['scan_metrics']['quote_primary_error']=str(primary_error)[:160]
+                    detail=fetch.fallback_quotes([x['pool'] for x in watch])
             feed=detail.get('data')
             if not isinstance(feed,list):raise ValueError('multi-pool response not a list')
             for raw in feed:
@@ -482,7 +488,9 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
             record_issue(r,'fresh supplemental quote missing for '+pool['pool'][:44])
     # Mark older whale shadow positions (possibly no longer on the supplemental watchlist).
     missing=[p['token'] for p in r['shadow_positions'] if p['token'] not in prices]
-    for token in list(dict.fromkeys(missing))[:MAX_SHADOW_MARKS]:
+    if not allow_optional_gecko:
+        r['scan_metrics']['shadow_mark_gecko_deferred']=min(len(set(missing)),MAX_SHADOW_MARKS)
+    for token in ([] if not allow_optional_gecko else list(dict.fromkeys(missing))[:MAX_SHADOW_MARKS]):
         if time.monotonic()-budget_started >= RESEARCH_TIME_BUDGET_SECONDS:
             record_issue(r,'V3 research time budget reached before shadow mark');break
         try:
@@ -491,7 +499,9 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
             if nfloat(m.get('price_usd'),0)>0:prices[token]=m['price_usd']
         except Exception as exc:
             record_issue(r,'shadow quote '+token[:12]+': '+str(exc))
-    for pool in watch:
+    if not allow_optional_gecko:
+        r['scan_metrics']['trade_feeds_deferred_for_primary']=len(watch)
+    for pool in ([] if not allow_optional_gecko else watch):
         if time.monotonic()-budget_started >= RESEARCH_TIME_BUDGET_SECONDS:
             record_issue(r,'V3 research time budget reached before extra swap scan');break
         if pool['pool'] not in r['last_quotes']:continue  # no unpriced/stale supplemental trades
@@ -573,5 +583,5 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     _update_reports(r,now)
     r['last_run']=now.isoformat(timespec='seconds')
     r['scan_metrics']['elapsed_seconds']=round(time.monotonic()-budget_started,3)
-    r['status']='DEGRADED' if r['last_scan_errors'] else 'OK'
+    r['status']='DEGRADED' if r['last_scan_errors'] else ('DEFERRED_PRIMARY_QUOTA' if not allow_optional_gecko else 'OK')
     return r
