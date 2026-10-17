@@ -136,9 +136,17 @@ def evaluate(trades, registered_at, wallet=False):
 
 def update(state, now):
     from .adaptive import feature_buckets
+    from .policy_evidence import certifiable_trade
     e=initialize(state,now);r=state['research']
     groups=defaultdict(list)
+    # Historic closes across changing economic rules remain in complete
+    # descriptive account P&L, but are not allowed to combine into a
+    # seemingly validated current-policy strategy. No old record is edited.
+    noncomparable=0
     for t in state.get('closed',[]):
+        if not certifiable_trade(t):
+            noncomparable+=1
+            continue
         groups['actual:all'].append(t)
         groups['wallet:'+str(t.get('wallet'))].append(t)
         features=r.get('entry_features',{}).get(t.get('signal_id'))
@@ -168,6 +176,8 @@ def update(state, now):
     e['sampled_adverse_selection']={'tracked_entries':len(e.get('entry_paths',{})),
         'description':'Subsequent sampled quotes only; missed intracycle extremes and stop counterfactuals are unknown'}
     e.update(reports=reports,last_run=now.isoformat(timespec='seconds'),status='UNPROVEN',
+        noncomparable_legacy_and_cross_policy_closes=noncomparable,
+        certifiable_current_policy_closed=sum(certifiable_trade(t) for t in state.get('closed',[])),
         legacy_actual_summary=summarize(state.get('closed',[])),
         validated_reports=sum(x['status']=='VALIDATED_OOS' for x in reports.values()),
         positive_reinforcement_events=sum(str(x.get('to_tier','')).startswith('reinforced') for x in r.get('reinforcement_events',[])),

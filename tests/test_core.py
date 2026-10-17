@@ -26,6 +26,23 @@ class PaperTradingTests(unittest.TestCase):
         self.assertEqual(s['cash_gbp'],2004.75)
         self.assertGreater(core.wallet_stats(s,w)['shrunk_roi_pct'],0)
 
+    def test_new_entry_and_exit_have_distinct_versioned_policy_provenance(self):
+        from agent.policy_evidence import ENTRY_ID,EXIT_ID,CONFIG_HASH,certifiable_trade
+        s=core.blank_state();w='A'*32;now=dt.datetime.now(core.UTC)
+        s['observed'][w]={'count':4,'last_seen':core.now_iso()}
+        e=dict(id='new-policy',wallet=w,token='P'*32,pool_name='TEST',timestamp=now)
+        core.maybe_open(s,e,1,now,{e['token']:1})
+        p=s['positions'][0]
+        self.assertEqual(p['entry_policy_id'],ENTRY_ID)
+        self.assertEqual(p['entry_configuration_hash'],CONFIG_HASH)
+        self.assertNotIn('exit_policy_id',p)
+        core.close_position(s,p,1.05,'observed exit')
+        record=s['closed'][0]
+        self.assertEqual(record['exit_policy_id'],EXIT_ID)
+        self.assertEqual(record['exit_configuration_hash'],CONFIG_HASH)
+        self.assertTrue(certifiable_trade(record))
+        self.assertEqual(len(s['closed']),1)
+
     def test_no_empty_evidence_trading(self):
         s=core.blank_state();now=dt.datetime.now(core.UTC)
         core.maybe_open(s,dict(wallet='A'*32, token='x',id='x',pool_name='x',timestamp=now),1,now,{'x':1})
