@@ -81,16 +81,50 @@ class WinnerManagement(unittest.TestCase):
         self.assertLess(self.state['cash_gbp'],old_cash)
         self.assertEqual(len(p['additions']),1)
         self.assertLessEqual(p['notional_gbp'],eq*EXPLORATION_TOTAL_CAP+0.01)
-        self.assertGreaterEqual(p['notional_gbp'],19.9)
+        self.assertAlmostEqual(p['notional_gbp'],13.,places=2)
         self.assertGreater(p['entry_price_usd'],1.)
         self.assertLess(p['entry_price_usd'],1.14)
-        self.assertGreater(p['cost_gbp'],20)
+        self.assertAlmostEqual(p['cost_gbp'],13.13,places=2)
         after_units=p['notional_gbp']/p['entry_price_usd']
         self.assertAlmostEqual(after_units,old_units+p['additions'][0]['notional_gbp']/1.14,places=6)
         self.assertEqual(self.state['research']['strategies_v1']['cash_usd'],2000)
         self.assertEqual(len(self.state['closed']),0)
         self.assertEqual(self.state['decisions'][-1]['action'],'PAPER_ADD_WINNER')
         self.assertEqual(core.reinforce_open_winners(self.state,{POOL:1.14},{POOL:T},T,{POOL},set()),0)
+
+    def test_position_topups_scale_from_thirty_to_fifty_percent(self):
+        scenarios=[
+            ((1.08,1.11,1.14),3.,'30%'),
+            ((1.09,1.13,1.19),4.,'40%'),
+            ((1.09,1.17,1.25),5.,'50%'),
+        ]
+        for marks,expected,label in scenarios:
+            with self.subTest(label=label):
+                s=copy.deepcopy(self.state)
+                prime(s,marks)
+                with mock.patch.object(core,'wallet_stats',return_value=profile()):
+                    count=core.reinforce_open_winners(
+                        s,{POOL:marks[-1]},{POOL:T},T,{POOL},set())
+                self.assertEqual(count,1)
+                pos=s['positions'][0]
+                self.assertAlmostEqual(pos['notional_gbp'],10+expected,places=2)
+                self.assertAlmostEqual(pos['additions'][0]['notional_gbp'],expected,places=2)
+                self.assertIn(label,s['decisions'][-1]['reason'])
+                self.assertEqual(len(pos['additions']),1)
+                self.assertEqual(len(s['research']['strategies_v1']['closed']),0)
+
+    def test_add_does_not_inflate_larger_position_or_exceed_account_cap(self):
+        s=copy.deepcopy(self.state)
+        p=s['positions'][0]
+        p.update(notional_gbp=19.5,cost_gbp=19.695)
+        s['cash_gbp']=1980.305
+        prime(s,(1.08,1.11,1.25))
+        with mock.patch.object(core,'wallet_stats',return_value=profile()):
+            count=core.reinforce_open_winners(
+                s,{POOL:1.25},{POOL:T},T,{POOL},set())
+        self.assertEqual(count,0)
+        self.assertEqual(p.get('additions'),[])
+        self.assertEqual(s['cash_gbp'],1980.305)
 
     def test_trailing_stop_exits_held_run_and_preserves_correct_net_accounting(self):
         p=prime(self.state)

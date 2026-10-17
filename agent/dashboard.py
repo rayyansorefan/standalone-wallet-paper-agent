@@ -37,6 +37,25 @@ def compact_health(state):
     futures=research.get('strategies_v1') or {}
     execution=state.get('execution') or {}
     status=state.get('last_status')
+    opened=state.get('positions') or []
+    closed=state.get('closed') or []
+    last_cycle=state.get('last_run')
+    # Aggregate only; do not publish wallet identities, token addresses or
+    # individual saved transactions in the compact public health endpoint.
+    recent_adds=[x for x in (state.get('decisions') or [])
+                 if isinstance(x,dict) and x.get('action')=='PAPER_ADD_WINNER']
+    position_management={
+        'open_with_additions':sum(bool(p.get('additions')) for p in opened),
+        'closed_with_additions':sum(bool(p.get('additions')) for p in closed),
+        'open_additions':sum(len(p.get('additions') or []) for p in opened),
+        'closed_additions':sum(len(p.get('additions') or []) for p in closed),
+        'open_with_trailing_protection':sum(p.get('trailing_stop_price_usd') is not None for p in opened),
+        'open_with_recorded_mark':sum(bool(p.get('last_mark_at')) for p in opened),
+        'open_unpriced':sum(p.get('position_action')=='UNPRICED_HOLD' for p in opened),
+        'last_add_at':recent_adds[-1].get('at') if recent_adds else None,
+        'latest_cycle':last_cycle,
+        'risk_policy':'ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS'
+    }
     return {
         'schema':1, 'paper_only':state.get('paper_only') is True,
         'last_run':state.get('last_run'),
@@ -47,6 +66,7 @@ def compact_health(state):
         'recent_errors':[] if status in ('OK','NO_ELIGIBLE_POOLS','NO_SAFE_POOLS','BOOTSTRAPPED_NO_TRADES')
                         else [{'at':e.get('at'),'error':str(e.get('error',''))[:200]}
                               for e in state.get('errors',[])[-6:] if isinstance(e,dict)],
+        'position_management':position_management,
         'market_resilience':research.get('alternate_price_feed_v1') or {},
         'helius_rpc':research.get('helius_rpc_v1') or {'status':'NOT_CONFIGURED'},
         'primary_provider':{k:primary.get(k) for k in
