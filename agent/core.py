@@ -523,7 +523,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         # when primary market discovery/trades are unavailable or cooling down.
         # Retain prior whale research and shadow positions; resume next cycle.
         provider_cooldown=parse_time(primary_health.get('retry_at'))
-        primary_busy=bool(provider_cooldown and provider_cooldown>dt.datetime.now(UTC))
+        last_429=parse_time(primary_health.get('last_rate_limit_at'))
+        now_provider=dt.datetime.now(UTC)
+        primary_busy=bool((provider_cooldown and provider_cooldown>now_provider) or
+                          (last_429 and dt.timedelta(0)<=now_provider-last_429<dt.timedelta(minutes=30)))
         if fetch is api and (primary_busy or state['last_status'] in
                              ('API_ERROR','TRADE_FEEDS_FAILED','SCREENING_UNAVAILABLE')):
             whale_research=state['research'].setdefault('whale_v3',{})
