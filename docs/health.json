@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-17T21:49:14+00:00",
-  "last_data_at": "2026-10-17T21:49:14+00:00",
-  "cycle": 557,
+  "last_run": "2026-10-17T21:54:13+00:00",
+  "last_data_at": "2026-10-17T21:54:13+00:00",
+  "cycle": 558,
   "status": "OK",
   "cycle_health": {
     "screened_pass": 9,
@@ -44,7 +44,7 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-17T21:49:14+00:00",
+    "latest_cycle": "2026-10-17T21:54:13+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -63,16 +63,16 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-17T21:49:08.548801+00:00"
+    "last_success_at": "2026-10-17T21:54:08.499405+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_QUOTA",
-    "last_run": "2026-10-17T21:50:14+00:00",
+    "last_run": "2026-10-17T21:55:13+00:00",
     "last_scan_errors": []
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-17T21:50:15.235698+00:00",
+    "last_run": "2026-10-17T21:55:14.669817+00:00",
     "closed": 10,
     "wins": 1
   },
@@ -82,8 +82,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T21:48:46.474Z",
-    "run_id": "39072503757",
+    "scheduled_at": "2026-10-17T21:53:46.145Z",
+    "run_id": "39072837655",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
