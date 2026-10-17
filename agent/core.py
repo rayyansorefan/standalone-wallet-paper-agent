@@ -241,7 +241,7 @@ def maybe_open(state, ev, price, current, prices):
 
 def maintain_positions(state, prices, current):
     """Review every original-wallet holding on every scheduled price cycle."""
-    from .position_management import observe, confirmed_rising
+    from .position_management import observe, confirmed_rising, confirmed_falling
     for pos in list(state['positions']):
         price = prices.get(pos['token'])
         if not price or price <= 0:
@@ -258,6 +258,8 @@ def maintain_positions(state, prices, current):
         trailing=pos.get('trailing_stop_price_usd')
         if return_pct<=-12:
             close_position(state,pos,price,'12% net paper stop loss')
+        elif return_pct<=-5 and confirmed_falling(pos,current):
+            close_position(state,pos,price,'confirmed falling price · early loss exit')
         elif trailing is not None and price<=trailing:
             close_position(state,pos,price,'confirmed winner trailing stop')
         elif hours>=MAX_HOLD_HOURS:
