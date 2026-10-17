@@ -75,7 +75,20 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 .research-drawer[open]{padding-bottom:18px}
 .research-drawer summary:focus-visible{outline:2px solid #71d2bd}
 .research-drawer .v2-section{margin-top:18px}
-@media(max-width:520px){.strategy-brief table{min-width:390px}}
+.history-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:12px 0}
+.history-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.history-actions button,.history-load{font:inherit;cursor:pointer;border-radius:7px;padding:8px 12px;border:1px solid #456078;background:#1d3852;color:#cde7f9;font-size:12px;font-weight:700}
+.history-actions button:hover,.history-load:hover{border-color:#68dabb}
+.history-actions button:disabled{opacity:.45;cursor:not-allowed}
+#history-search{min-width:170px;max-width:230px;width:100%;background:#0f1e32;border:1px solid #405771;color:#eaf1fc;padding:9px 11px;border-radius:8px;font:inherit;font-size:12px}
+#history-table{min-width:1010px}
+#history-table td{white-space:normal;overflow-wrap:anywhere;vertical-align:top}
+#history-table th{white-space:nowrap}
+#history-table td:last-child{max-width:230px}
+#trade-history{scroll-margin-top:85px}
+#history-more[hidden]{display:none}
+@media(max-width:520px){.strategy-brief table{min-width:390px}.history-controls{align-items:flex-start}.history-actions{width:100%}.history-actions button{flex:1}#history-search{flex:1;max-width:none}}
+
 
 /* Whale tables scroll inside their panel on phones rather than crushing columns. */
 #whales table:has(thead){min-width:640px}
@@ -88,7 +101,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 <!-- UNIFIED_V2_NAV -->
-<nav class="v2-nav" aria-label="Paper dashboard"><span class="v2-mark">PAPER / V4.1</span><a href="#portfolio">Portfolio</a><a href="#strategy-overview">Strategy control</a><a href="#research-details" data-open-details="research-details">Research details</a><a href="#futures-details" data-open-details="futures-details">Trade details</a></nav>
+<nav class="v2-nav" aria-label="Paper dashboard"><span class="v2-mark">PAPER / V4.1</span><a href="#portfolio">Portfolio</a><a href="#strategy-overview">Strategy control</a><a href="#trade-history">Trade history</a><a href="#research-details" data-open-details="research-details">Research details</a><a href="#futures-details" data-open-details="futures-details">Trade details</a></nav>
 
 <div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
@@ -102,6 +115,42 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
     <tbody id="strategy-overview-rows"><tr><td colspan="4">Waiting for fresh forward evidence.</td></tr></tbody></table></div>
   <p id="strategy-overview-shadows">Wallet and whale shadow experiments run separately. They are not additional funded portfolios.</p>
   <p id="strategy-overview-health">Data validity and latest execution are shown above. Failed strategies remain archived for audit, not displayed as winners.</p>
+</section>
+<section class="panel" id="trade-history" aria-labelledby="history-title">
+  <div class="panelhead">
+    <div><h2 id="history-title">Trade history</h2>
+      <div class="small">Every recorded original and futures paper trade · separate accounts and currencies</div></div>
+    <span class="pill">PAPER · REALISED OUTCOMES</span>
+  </div>
+  <div class="history-controls">
+    <div class="segment" role="group" aria-label="Choose paper account">
+      <button type="button" class="sel" data-history-account="gbp" aria-pressed="true">Original · GBP</button>
+      <button type="button" data-history-account="usd" aria-pressed="false">Futures · USD</button>
+    </div>
+    <div class="history-actions">
+      <input type="search" id="history-search" aria-label="Search trade history" placeholder="Search coin, pool or exit reason" autocomplete="off">
+      <button type="button" id="history-export" disabled>Export filtered CSV ↓</button>
+    </div>
+  </div>
+  <div class="history-controls">
+    <div class="segment" role="group" aria-label="Filter trade results">
+      <button type="button" class="sel" data-history-mode="all" aria-pressed="true">All</button>
+      <button type="button" data-history-mode="closed" aria-pressed="false">Closed</button>
+      <button type="button" data-history-mode="wins" aria-pressed="false">Wins</button>
+      <button type="button" data-history-mode="losses" aria-pressed="false">Losses</button>
+      <button type="button" data-history-mode="open" aria-pressed="false">Open</button>
+    </div>
+  </div>
+  <p class="small" id="history-summary" aria-live="polite">Waiting for saved paper trade records.</p>
+  <div class="tablewrap"><table id="history-table">
+    <thead><tr><th>Market / Pool</th><th>Side</th><th>Opened (UK)</th><th>Closed (UK)</th><th>Notional</th><th>Entry → Exit (USD)</th><th>Status</th><th>Net P&amp;L / ROI</th><th>Exit reason</th></tr></thead>
+    <tbody id="history-rows"><tr><td colspan="9" class="quiet">Loading recorded trades…</td></tr></tbody>
+  </table></div>
+  <div class="history-controls">
+    <span id="history-count" class="small">Awaiting the saved ledger.</span>
+    <button id="history-more" class="history-load" type="button" hidden>Show 15 more trades</button>
+  </div>
+  <div class="small">Realised P&amp;L includes each account's modelled trading costs. Futures ROI is net P&amp;L divided by entry notional; original wallet ROI is the recorded trade ROI. Open positions have no realised P&amp;L. All timestamps use UK local time. Shadow experiments are deliberately excluded.</div>
 </section>
 <div class="layout">
 <div>
@@ -186,6 +235,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 
 <footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
 </main>
+<script src="./trade-history.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), money=(n,sign=false)=>Number.isFinite(Number(n))?'£'+(sign&&Number(n)>0?'+':'')+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
@@ -225,7 +275,7 @@ $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCoun
 table('positions',s.positions||[],[p=>safe(p.pool_name||'Unknown'),p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',p=>money(p.notional_gbp),p=>{let mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp);let value=mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>'},p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?(h.toFixed(1)+' h'):'—'}],'No open paper positions.');
 table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
-table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedTradeHistoryRender?.(s);window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
 async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
 document.querySelectorAll('[data-open-details]').forEach(a=>a.addEventListener('click',()=>{const d=document.getElementById(a.dataset.openDetails);if(d)d.open=true;}));
 poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
