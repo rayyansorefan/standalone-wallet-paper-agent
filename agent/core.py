@@ -40,7 +40,14 @@ def swap_budget(provider, now, production=True):
     age=(now-last).total_seconds() if last else None
     if age is not None and 0<=age<1800:return 2
     if age is not None and 0<=age<3600:return 3
-    return 6 if int(provider.get('healthy_sampling_cycles',0))>=12 else DEFAULT_MAIN_TRADE_FEEDS_PER_CYCLE
+    # Twelve clean five-minute observations are only ONE HOUR, insufficient
+    # evidence that a shared free-IP quota will sustain six swap feeds.
+    # Require 24 hours / 288 clean observations without a 429 before even
+    # attempting higher throughput; drop back to 2/3 automatically on 429.
+    clean=int(provider.get('healthy_sampling_cycles',0))
+    if clean>=288 and (age is None or age>=24*3600):
+        return MAX_MAIN_TRADE_FEEDS_PER_CYCLE
+    return DEFAULT_MAIN_TRADE_FEEDS_PER_CYCLE
 MAX_OPEN = 5
 MAX_HOLD_HOURS = 6.0
 MIN_WALLET_SEEN = 3
@@ -378,15 +385,27 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     except Exception as e:
         errors.append('pool discovery: '+str(e)[:240])
     if live_production:
-        page=2+(int((state.get('research') or {}).get('gecko_discovery_cursor',0))%4)
-        state.setdefault('research',{})['gecko_discovery_cursor']=page-1
-        try:
-            more=fetch('/networks/solana/trending_pools',{'page':page,'include':'base_token'})
-            if isinstance(more.get('data'),list):
-                pools += [enrich_meta(x,pool_meta(x)) for x in more['data']]
-                discovery_health['gecko_extra_page']=page
-        except Exception:
-            discovery_health['errors'].append('gecko deeper page unavailable')
+        # One DEX batched discovery supplies dozens of free candidates, so an
+        # extra Gecko trending page EVERY five minutes has poor quota value.
+        # Cycle through pages 2-5 once per three genuine cycles when the
+        # primary provider is not in recent 429 recovery.
+        primary_health=state.setdefault('research',{}).setdefault('primary_provider_v1',{})
+        previous_429=parse_time(primary_health.get('last_rate_limit_at'))
+        recent_429=bool(previous_429 and
+            0<=(current-previous_429).total_seconds()<3600)
+        page_due=(int(state.get('completed_cycles',0))%3==0)
+        if page_due and not recent_429 and not primary_health.get('retry_at'):
+            page=2+(int((state.get('research') or {}).get('gecko_discovery_cursor',0))%4)
+            state['research']['gecko_discovery_cursor']=(page-1)%4+1
+            try:
+                more=fetch('/networks/solana/trending_pools',{'page':page,'include':'base_token'})
+                if isinstance(more.get('data'),list):
+                    pools += [enrich_meta(x,pool_meta(x)) for x in more['data']]
+                    discovery_health['gecko_extra_page']=page
+            except Exception:
+                discovery_health['errors'].append('gecko deeper page unavailable')
+        else:
+            discovery_health['gecko_extra_page_deferred']=True
         try:
             from .opportunity_discovery import discover
             extra,report=discover()
@@ -485,6 +504,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     uninspected_candidates=0
     security_checks=0
     attempted_feeds=0
+    primary_cooldown_deferred=0
     for pool in ordered_pools:
         # Scan broad, validate a bounded rotating slice; never create 100+
         # expensive Rugcheck network calls or assume unscreened == PASS.
@@ -527,6 +547,13 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         if production and attempted_feeds>=budget:
             budget_deferred+=1
             continue  # Not a provider failure; never generate unobserved trades.
+        # A 429 after the discovery request opens a persisted cooldown.
+        # Don't pointlessly call its already-closed circuit for each pool
+        # and turn one rate limit into multiple misleading feed errors.
+        retry=parse_time(provider.get('retry_at')) if production else None
+        if retry and dt.datetime.now(UTC)<retry:
+            primary_cooldown_deferred+=1
+            continue
         attempted_feeds+=1
         try:
             payload = fetch(f"/networks/solana/pools/{urllib.parse.quote(pool['pool'], safe='')}/trades", {'trade_volume_in_usd_greater_than': MIN_TRADE_USD})
@@ -626,6 +653,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'trade_feeds_budget_deferred': budget_deferred,
         'trade_feeds_attempted': attempted_feeds,
         'trade_feed_budget': budget,
+        'trade_feeds_provider_cooldown_deferred': primary_cooldown_deferred,
         'security_screened': security_checks,
         'unscreened_discovery_candidates': uninspected_candidates,
         'discoveries_eligible_unique': discovery_health['eligible_unique_pools'],
@@ -640,7 +668,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'error_messages': [str(message)[:200] for message in errors[-6:]],
         'partial_screening_only': partial_screening_only,
         'partial_trade_feeds_only': partial_trade_feeds_only,
-        'rate_limit_errors': sum('429' in x for x in errors),
+        'rate_limit_errors': sum(
+            '429' in x or 'rate limit' in x.lower() or 'cooling down' in x.lower()
+            for x in errors),
         'screening_http_statuses': [
             v.get('http_status') for v in state['screening']
             if v.get('status') == 'UNAVAILABLE' and v.get('http_status') is not None],
@@ -651,7 +681,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         if errors or not sampled_feeds:
             provider['healthy_sampling_cycles']=0
         else:
-            provider['healthy_sampling_cycles']=min(30,int(provider.get('healthy_sampling_cycles',0))+1)
+            # The 24h promotion requirement must actually be reachable.
+            provider['healthy_sampling_cycles']=min(288,int(provider.get('healthy_sampling_cycles',0))+1)
     state['last_status'] = ('API_ERROR' if not candidate_pools and errors
                             else 'NO_ELIGIBLE_POOLS' if not candidate_pools
                             else 'SCREENING_UNAVAILABLE' if candidate_pools and unavailable_risk and not screened_pools
