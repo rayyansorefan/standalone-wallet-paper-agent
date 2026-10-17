@@ -324,8 +324,13 @@ def advance(state, now, quotes, indicators, eligible):
                    features=f,feedback=c['feedback'],version=VERSION)
             p['net_usd']=exit_value(p,q)[1]
             b['position']=p; b['cash_usd']-=fee; b['entries_today']+=1
-            selected_new=(symbol,c['setup'])
-            event(b,now,'OPEN',symbol=p['symbol'],setup=p['setup'],direction=direction,notional_usd=notional)
+            # Use the immutable identity of the actual selected candidate.
+            # The 'symbol' variable from an earlier indicators loop is NOT
+            # the selected symbol and previously corrupted forward labels.
+            selected_new=(c['symbol'],c['setup'])
+            p['entry_trade_id']=now.isoformat()+'|'+c['symbol']+'|'+c['setup']
+            event(b,now,'OPEN',symbol=p['symbol'],setup=p['setup'],
+                  trade_id=p['entry_trade_id'],direction=direction,notional_usd=notional)
             break
     # Record blocked setups too: their future outcomes identify whether the veto
     # avoided a loss or missed a positive forward quote. Never backfill.
@@ -349,6 +354,11 @@ def advance(state, now, quotes, indicators, eligible):
         else:
             reason='RANKED_BELOW_SELECTED'
         c['rejection_reason']=reason
+    # Keep legacy evidence intact, but exclude documented mismatches between
+    # historic opening ledger and forward training labels. Never rewrite old
+    # ENTERED/OBSERVED_NOT_ENTERED decisions after the fact.
+    from .strategy_lab import reconcile_forward_entries
+    reconcile_forward_entries(b)
     # Mark forward outcomes using current quotes before registering fresh signals.
     observe_forward(b,now,quotes,watched_setups,selected_new)
     p=b.get('position')
