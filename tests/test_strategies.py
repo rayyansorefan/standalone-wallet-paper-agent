@@ -33,6 +33,48 @@ class Strategies(unittest.TestCase):
         f['r15m']=.002
         self.assertEqual(s.setups(f),[])
 
+    def test_selected_trade_identity_is_not_stale_indicators_loop_variable(self):
+        # White paper D01 reproduction: best X selected while Y is iterated
+        # last, and the old code incorrectly labelled Y as ENTERED.
+        state,q,indicators=fixture()
+        q['Y']=dict(bid=99.99,ask=100.01,mid=100.,relativeFundingRate=.00001)
+        weak=copy.deepcopy(indicators['X'])
+        weak.update(r1h=.0065,r15m=.0011,volume_ratio=1.31)
+        indicators['Y']=weak
+        book=step(state,q,indicators)
+        self.assertEqual(book['position']['symbol'],'X')
+        entered=[r for r in book['forward_signals'] if r['decision']=='ENTERED']
+        self.assertEqual(len(entered),1)
+        self.assertEqual((entered[0]['symbol'],entered[0]['setup']),
+                         ('X','momentum_long'))
+        self.assertEqual(entered[0]['entry_trade_id'],
+                         book['position']['entry_trade_id'])
+        rejected=[r for r in book['forward_signals'] if r['symbol']=='Y']
+        self.assertTrue(rejected)
+        self.assertTrue(all(r['decision']=='OBSERVED_NOT_ENTERED' for r in rejected))
+        self.assertFalse(any(r.get('entry_trade_id') for r in rejected))
+
+    def test_legacy_label_conflicts_remain_original_and_are_excluded_from_learning(self):
+        from agent.strategy_lab import reconcile_forward_entries,missed_winners
+        state,q,f=fixture()
+        b=s.initialize(state,NOW)
+        # Existing historical positions are authoritative evidence for this
+        # audit, but original forward labels must never be rewritten.
+        b['closed']=[{'opened_at':NOW.isoformat(),'symbol':'X',
+                      'setup':'momentum_long'}]
+        b['forward_signals']=[
+            {'at':NOW.isoformat(),'symbol':'X','setup':'momentum_long',
+             'decision':'OBSERVED_NOT_ENTERED','policy_revision':'v4.1',
+             'outcomes':{'60m':{'net_roi_pct':3.}}},
+            {'at':NOW.isoformat(),'symbol':'Y','setup':'momentum_long',
+             'decision':'ENTERED','outcomes':{'60m':{'net_roi_pct':2.}}}]
+        self.assertEqual(reconcile_forward_entries(b),2)
+        self.assertEqual(b['forward_identity_audit']['historical_conflicts'],2)
+        self.assertEqual(b['forward_signals'][0]['decision'],'OBSERVED_NOT_ENTERED')
+        self.assertEqual(b['forward_signals'][1]['decision'],'ENTERED')
+        self.assertTrue(all(r['learning_excluded'] for r in b['forward_signals']))
+        self.assertEqual(missed_winners(b['forward_signals'])['evaluated'],0)
+
     def test_original_account_untouched_and_one_position_only(self):
         state,q,f=fixture();original=copy.deepcopy(state)
         b=step(state,q,f);step(state,q,f,5)
