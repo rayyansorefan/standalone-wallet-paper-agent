@@ -193,9 +193,11 @@ def close_position(state, pos, price, reason):
     gross = pos['notional_gbp'] * price / pos['entry_price_usd']
     proceeds = gross * (1-COST_PER_SIDE)
     pnl = proceeds - pos['cost_gbp']
+    from .policy_evidence import new_exit_tags
     record = dict(**pos, exit_at=now_iso(), exit_price_usd=price, exit_reason=reason,
                   proceeds_gbp=round(proceeds, 4), net_pnl_gbp=round(pnl, 4),
-                  roi_pct=round(100*pnl/pos['cost_gbp'], 3))
+                  roi_pct=round(100*pnl/pos['cost_gbp'], 3),
+                  **new_exit_tags())
     state['cash_gbp'] = round(state['cash_gbp'] + proceeds, 6)
     state['positions'].remove(pos)
     state['closed'].append(record)
@@ -258,6 +260,8 @@ def maybe_open(state, ev, price, current, prices):
                notional_gbp=alloc, cost_gbp=entry_cost, signal_id=ev['id'],
                mint=((state.get('research') or {}).get('decision_v1') or {}).get('pool_mints',{}).get(token),
                entry_assessment=assessment)
+    from .policy_evidence import new_entry_tags
+    pos.update(new_entry_tags())
     state['cash_gbp'] = round(state['cash_gbp'] - entry_cost, 6)
     state['positions'].append(pos)
     if assessment and assessment['history']['shrunk_roi_pct'] > 0:
