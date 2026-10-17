@@ -149,9 +149,26 @@ class Strategies(unittest.TestCase):
         state,_,_=fixture();b=s.initialize(state,NOW-dt.timedelta(days=20))
         rows=[dict(setup='momentum_long',symbol=str(i%3),exit_at=(NOW-dt.timedelta(hours=40-i)).isoformat(),net_usd=2,risk_usd=5,stress_net_usd=1) for i in range(30)]
         b['closed']=rows[:20];self.assertFalse(s.feedback(b,'momentum_long','X',NOW)['reinforced'])
-        b['closed']=rows;self.assertTrue(s.feedback(b,'momentum_long','X',NOW)['reinforced'])
+        b['closed']=rows
+        report=s.feedback(b,'momentum_long','X',NOW)
+        self.assertTrue(report['provisional_positive'])
+        self.assertFalse(report['reinforced'])
+        self.assertEqual(report['risk_multiplier'],1.)
+        self.assertEqual(report['reinforcement_status'],'AWAITING_SHARED_FROZEN_OOS_AND_BASELINE')
         b['closed'][-1]['stress_net_usd']=-100
         self.assertFalse(s.feedback(b,'momentum_long','X',NOW)['reinforced'])
+
+    def test_futures_candidate_order_does_not_grant_automatic_positive_sizing(self):
+        state,q,f=fixture()
+        b=s.initialize(state,NOW-dt.timedelta(days=30))
+        b['closed']=[dict(setup='pump_fade',symbol='SY'+str(i%4),
+            exit_at=(NOW-dt.timedelta(days=12)+dt.timedelta(hours=i)).isoformat(),
+            net_usd=2.,risk_usd=5.,stress_net_usd=1.)
+            for i in range(30)]
+        report=s.feedback(b,'pump_fade','X',NOW)
+        self.assertTrue(report['provisional_positive'])
+        self.assertFalse(report['reinforced'])
+        self.assertEqual(report['risk_multiplier'],1.)
 
     def test_completed_candles_only_no_gaps_or_future_data(self):
         bars=[dict(time=int((NOW.timestamp()-(100-i)*300)*1000),open=100,high=102,low=99,close=101,volume=10) for i in range(100)]
