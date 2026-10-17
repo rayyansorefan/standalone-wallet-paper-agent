@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from . import core
-from .dashboard import publish_json
+from .dashboard import publish_json, publish_health
 
 MIN_INTERVAL_SECONDS = 240
 
@@ -53,6 +53,7 @@ def execute(path=core.STATE, dashboard_path='docs/state.json', current=None, run
     }
     core.save(state, Path(path))
     publish_json(state, dashboard_path)
+    publish_health(state, Path(dashboard_path).with_name('health.json'))
     print('PAPER_EXECUTION ' + json.dumps({
         **state['execution'], 'completed_cycles': state['completed_cycles'],
         'status': state['last_status'], 'last_data_at': state['last_data_at'],

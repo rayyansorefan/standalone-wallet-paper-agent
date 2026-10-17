@@ -22,3 +22,54 @@ def html_dashboard(s,path):
     for d in s.get('decisions',[]):
         html_body+='<p>'+esc(d.get('action'))+' '+esc(d.get('reason'))+'</p>'
     Path(path).write_text('<!doctype html><html><meta charset="utf-8">'+html_body+'</html>',encoding='utf8')
+
+def compact_health(state):
+    """Small, public, non-sensitive health check for GitHub monitoring.
+
+    Never expose secrets, sender identities, complete positions or account state.
+    Missing fields remain explicitly unknown; a completed cycle is not proof of
+    healthy feeds or profitable trading.
+    """
+    research=state.get('research') or {}
+    main_health=state.get('cycle_health') or {}
+    primary=research.get('primary_provider_v1') or {}
+    whale=research.get('whale_v3') or {}
+    futures=research.get('strategies_v1') or {}
+    execution=state.get('execution') or {}
+    status=state.get('last_status')
+    return {
+        'schema':1, 'paper_only':state.get('paper_only') is True,
+        'last_run':state.get('last_run'),
+        'last_data_at':state.get('last_data_at'),
+        'cycle':state.get('completed_cycles'),
+        'status':status,
+        'cycle_health':main_health,
+        'recent_errors':[] if status in ('OK','NO_ELIGIBLE_POOLS','NO_SAFE_POOLS','BOOTSTRAPPED_NO_TRADES')
+                        else [{'at':e.get('at'),'error':str(e.get('error',''))[:200]}
+                              for e in state.get('errors',[])[-6:] if isinstance(e,dict)],
+        'primary_provider':{k:primary.get(k) for k in
+                            ('http_status','requests','last_error','retry_at',
+                             'rate_limit_strikes','last_success_at')},
+        'whale':{'status':whale.get('status'),
+                 'last_run':whale.get('last_run'),
+                 'last_scan_errors':[str(x)[:160] for x in whale.get('last_scan_errors',[])[-3:]]},
+        'futures':{'status':futures.get('status'),
+                   'last_run':futures.get('last_run'),
+                   'closed':len(futures.get('closed') or []),
+                   'wins':(futures.get('summary') or {}).get('wins')},
+        'original':{'closed':len(state.get('closed') or []),
+                    'open_positions':len(state.get('positions') or [])},
+        'execution':{k:execution.get(k) for k in
+                     ('scheduler','scheduled_at','run_id','trigger_uid')},
+        'note':'Diagnostic observations only; successful workflow != profitable trading.'
+    }
+
+
+def publish_health(state, path='docs/health.json'):
+    """Atomic snapshot; no provider requests and no trading-state mutation."""
+    dst=Path(path)
+    dst.parent.mkdir(parents=True,exist_ok=True)
+    tmp=dst.with_suffix('.tmp')
+    tmp.write_text(json.dumps(compact_health(state),ensure_ascii=False,allow_nan=False,
+                              indent=2),encoding='utf8')
+    tmp.replace(dst)

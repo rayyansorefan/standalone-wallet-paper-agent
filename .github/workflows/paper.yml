@@ -47,10 +47,10 @@ jobs:
       - name: Save cycle state and updated visualiser feed
         if: always() && steps.scan.outputs.executed == 'true'
         run: |
-          if [ -f state/state.json ] && [ -f docs/state.json ]; then
+          if [ -f state/state.json ] && [ -f docs/state.json ] && [ -f docs/health.json ]; then
             git config user.name 'standalone-wallet-paper[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add -f state/state.json docs/state.json
+            git add -f state/state.json docs/state.json docs/health.json
             if ! git diff --cached --quiet; then
               git commit -m "paper research $(date -u +%Y-%m-%dT%H:%M:%SZ)"
               git pull --rebase
@@ -71,6 +71,10 @@ jobs:
           print('Wallet candidates:',len(s.get('observed',{})))
           health=s.get('cycle_health') or {}
           print('Latest cycle screening:',health)
+          print('Cycle error messages:',health.get('error_messages',[]))
+          primary=(s.get('research') or {}).get('primary_provider_v1') or {}
+          print('Primary provider:',{k:primary.get(k) for k in
+                ('http_status','retry_at','rate_limit_strikes','last_error','requests')})
           if status == 'PARTIAL_SCREENING_UNAVAILABLE':
               print('::warning::Partial safety provider failure: affected tokens were blocked; '
                     'other safe-token trade feeds succeeded. Check cycle_health, screening and audit log.')
