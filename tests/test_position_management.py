@@ -183,5 +183,26 @@ class WinnerManagement(unittest.TestCase):
             self.assertEqual(core.reinforce_open_winners(self.state,{POOL:1.15},
               {POOL:T+dt.timedelta(minutes=2)},T+dt.timedelta(minutes=2),{POOL},set()),0)
 
+
+    def test_three_declining_fresh_prices_cut_loser_before_twelve_percent_threshold(self):
+        for k,px in enumerate((.99,.97,.95)):
+            core.maintain_positions(self.state,{POOL:px},T+dt.timedelta(minutes=5*k))
+            if k<2:
+                self.assertEqual(len(self.state['positions']),1)
+        self.assertEqual(len(self.state['positions']),0)
+        self.assertEqual(len(self.state['closed']),1)
+        self.assertIn('early loss exit',self.state['closed'][0]['exit_reason'])
+        self.assertGreater(self.state['closed'][0]['roi_pct'],-12)
+
+    def test_isolated_loss_never_causes_unconfirmed_early_exit(self):
+        core.maintain_positions(self.state,{POOL:.96},T)
+        self.assertEqual(len(self.state['positions']),1)
+        self.assertEqual(len(self.state['closed']),0)
+
+    def test_early_loss_requires_real_five_minute_spacing(self):
+        for k,px in enumerate((.99,.97,.95)):
+            core.maintain_positions(self.state,{POOL:px},T+dt.timedelta(minutes=k))
+        self.assertEqual(len(self.state['positions']),1)
+
 if __name__=='__main__':
     unittest.main()
