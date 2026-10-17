@@ -1,63 +1,35 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-17T20:43:59+00:00",
-  "last_data_at": "2026-10-17T20:39:20+00:00",
-  "cycle": 544,
-  "status": "TRADE_FEEDS_FAILED",
+  "last_run": "2026-10-17T20:49:11+00:00",
+  "last_data_at": "2026-10-17T20:49:11+00:00",
+  "cycle": 545,
+  "status": "OK",
   "cycle_health": {
-    "screened_pass": 1,
+    "screened_pass": 9,
     "screened_unavailable": 0,
-    "screened_rejected_or_unavailable": 0,
-    "trade_feeds_sampled": 0,
-    "trade_feeds_budget_deferred": 0,
-    "trade_feeds_attempted": 1,
+    "screened_rejected_or_unavailable": 1,
+    "trade_feeds_sampled": 2,
+    "trade_feeds_budget_deferred": 7,
+    "trade_feeds_attempted": 2,
     "trade_feed_budget": 2,
-    "security_screened": 1,
-    "unscreened_discovery_candidates": 0,
-    "discoveries_eligible_unique": 1,
-    "discovery_raw_rows": 1,
+    "security_screened": 10,
+    "unscreened_discovery_candidates": 6,
+    "discoveries_eligible_unique": 16,
+    "discovery_raw_rows": 41,
     "discovery_free_batch_tokens": 42,
     "discovery_errors": [],
-    "alternate_quoted_pools": 5,
-    "trade_feeds_unavailable": 1,
-    "candidate_pools": 1,
-    "errors_this_cycle": 2,
-    "error_messages": [
-      "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T20:44:13.712806+00:00; retry at 2026-10-17T20:44:13.712806+00:00",
-      "trades 867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD: Primary rate limit for /networks/solana/pools/867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD/trades: Primary provider cooling down until 2026-10-17T2"
-    ],
+    "alternate_quoted_pools": 0,
+    "trade_feeds_unavailable": 0,
+    "candidate_pools": 16,
+    "errors_this_cycle": 0,
+    "error_messages": [],
     "partial_screening_only": false,
     "partial_trade_feeds_only": false,
     "rate_limit_errors": 0,
     "screening_http_statuses": []
   },
-  "recent_errors": [
-    {
-      "at": "2026-10-17T19:28:59+00:00",
-      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T19:29:12.883952+00:00; retry at 2026-10-17T19:29:12.883952+00:00"
-    },
-    {
-      "at": "2026-10-17T19:28:59+00:00",
-      "error": "trades 867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD: Primary rate limit for /networks/solana/pools/867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD/trades: Primary provider cooling down until 2026-10-17T1"
-    },
-    {
-      "at": "2026-10-17T20:39:20+00:00",
-      "error": "trades 93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu: Primary rate limit for /networks/solana/pools/93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu/trades: HTTP Error 429: Too Many Requests; retry at 2026"
-    },
-    {
-      "at": "2026-10-17T20:39:20+00:00",
-      "error": "trades AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x: Primary rate limit for /networks/solana/pools/AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x/trades: Primary provider cooling down until 2026-10-17T2"
-    },
-    {
-      "at": "2026-10-17T20:43:59+00:00",
-      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T20:44:13.712806+00:00; retry at 2026-10-17T20:44:13.712806+00:00"
-    },
-    {
-      "at": "2026-10-17T20:43:59+00:00",
-      "error": "trades 867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD: Primary rate limit for /networks/solana/pools/867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD/trades: Primary provider cooling down until 2026-10-17T2"
-    }
-  ],
+  "recent_errors": [],
   "position_management": {
     "open_with_additions": 0,
     "closed_with_additions": 0,
@@ -71,13 +43,12 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-17T20:43:59+00:00",
+    "latest_cycle": "2026-10-17T20:49:11+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
-    "status": "OK",
-    "quoted_pools": 5,
-    "requested_pools": 5,
+    "status": "NOT_REQUIRED",
+    "quoted_pools": 0,
     "provider": "dexscreener"
   },
   "helius_rpc": {
@@ -86,12 +57,12 @@
     "swap_decoding": false
   },
   "primary_provider": {
-    "http_status": 429,
-    "requests": 0,
-    "last_error": "HTTP 429; adaptive persisted provider cooldown; no immediate retry",
-    "retry_at": "2026-10-17T20:44:13.712806+00:00",
+    "http_status": 200,
+    "requests": 4,
+    "last_error": null,
+    "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-17T20:39:11.413322+00:00"
+    "last_success_at": "2026-10-17T20:49:04.174881+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_PRIORITY",
@@ -100,7 +71,7 @@
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-17T20:44:00.250457+00:00",
+    "last_run": "2026-10-17T20:49:12.264265+00:00",
     "closed": 10,
     "wins": 1
   },
@@ -110,8 +81,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T20:43:46.275Z",
-    "run_id": "39067944168",
+    "scheduled_at": "2026-10-17T20:48:46.064Z",
+    "run_id": "39068293198",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
