@@ -241,7 +241,7 @@ def maybe_open(state, ev, price, current, prices):
 
 def maintain_positions(state, prices, current):
     """Review every original-wallet holding on every scheduled price cycle."""
-    from .position_management import observe, confirmed_rising, NET_STOP_LOSS_PCT
+    from .position_management import observe, confirmed_rising, NET_WARNING_LOSS_PCT, NET_STOP_LOSS_PCT
     for pos in list(state['positions']):
         price = prices.get(pos['token'])
         if not price or price <= 0:
@@ -256,11 +256,23 @@ def maintain_positions(state, prices, current):
             continue
         hours = (current-(parse_time(pos['opened_at']) or current)).total_seconds()/3600
         trailing=pos.get('trailing_stop_price_usd')
+        # -2% NET warns and flags the holding immediately; it is not an exit.
+        # Warn only on crossing: no repeated alarm every 5-minute scan.
+        if return_pct <= NET_WARNING_LOSS_PCT:
+            pos['loss_warning_active']=True
+            pos['position_action']='LOSS_WARNING'
+            if not pos.get('loss_warning_reported'):
+                pos['loss_warning_reported']=True
+                pos['first_loss_warning_at']=current.isoformat(timespec='seconds')
+                log_decision(state,'PAPER_LOSS_WARNING',pos['wallet'],pos['token'],
+                             '2% observed net paper loss risk trigger; continue monitoring',
+                             observed_net_roi_pct=round(return_pct,3))
+        else:
+            pos['loss_warning_active']=False
         if return_pct<=NET_STOP_LOSS_PCT:
-            # Immediate at THIS observed quote (not a guaranteed limit fill).
-            # No waiting for three falling samples: 4.5% NET is a hard
-            # observed-price exit threshold, including modelled 1% each side.
-            close_position(state,pos,price,'4.5% net paper stop loss')
+            # Sell at this observed quote on the first breach. Five-minute
+            # sampling can overshoot, so this is not a guaranteed fill at -4.5%.
+            close_position(state,pos,price,'4.5% observed net paper stop loss')
         elif trailing is not None and price<=trailing:
             close_position(state,pos,price,'confirmed winner trailing stop')
         elif hours>=MAX_HOLD_HOURS:
