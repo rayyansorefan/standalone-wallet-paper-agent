@@ -549,7 +549,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # This bounded RPC observation is NOT transaction parsing / entry approval.
     if fetch is api:
         from .helius_rpc import probe as probe_helius
-        probe_helius(state,candidate_pools or state.get('watched_pools',[]),dt.datetime.now(UTC))
+        helius_watch=candidate_pools or [{'pool':p.get('token')} for p in state.get('positions',[])]
+        probe_helius(state,helius_watch,dt.datetime.now(UTC))
     from .evaluation import safe_update, observe_positions
     try:
         observe_positions(state,prices,current)
