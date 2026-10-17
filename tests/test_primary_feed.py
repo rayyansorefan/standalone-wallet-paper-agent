@@ -32,11 +32,52 @@ class PrimaryFeedTests(unittest.TestCase):
         self.assertEqual(g.requests,0)
 
     def test_retry_after_http_date_and_malformed_header(self):
-        for header,expected in [('Fri, 16 Oct 2026 19:10:00 GMT','19:10:00'),('nonsense','19:01:00')]:
+        for header,expected in [('Fri, 16 Oct 2026 19:10:00 GMT','19:10:00'),('nonsense','19:05:00')]:
             def fail(*a,**k):raise urllib.error.HTTPError('x',429,'rate',{'Retry-After':header},None)
             f,_,h=self.make(opener=fail)
             with self.assertRaises(urllib.error.HTTPError):f.read('a')
             self.assertIn(expected,h['retry_at'])
+
+    def test_consecutive_429s_escalate_across_independent_five_minute_runs(self):
+        h={}
+        calls=[]
+        def fail(*a,**k):
+            calls.append(1)
+            raise urllib.error.HTTPError('https://example.com',429,'rate',{},None)
+        base=dt.datetime(2026,10,16,19,tzinfo=dt.timezone.utc)
+        for minutes,strikes,delay in [(0,1,300),(6,2,600),(17,3,1200)]:
+            c=Clock()
+            now=lambda minute=minutes,clock=c:base+dt.timedelta(minutes=minute,seconds=clock.t)
+            f=PrimaryFeed(h,c,c.sleep,now=now,opener=fail)
+            with self.assertRaises(urllib.error.HTTPError):
+                f.read('/trades')
+            self.assertEqual(h['rate_limit_strikes'],strikes)
+            self.assertEqual((dt.datetime.fromisoformat(h['retry_at'])-now()).total_seconds(),delay)
+        self.assertEqual(len(calls),3)
+        c=Clock()
+        f=PrimaryFeed(h,c,c.sleep,now=lambda:base+dt.timedelta(minutes=20),opener=fail)
+        with self.assertRaisesRegex(RuntimeError,'cooling down'):
+            f.read('/trades')
+        self.assertEqual(f.requests,0)
+        self.assertEqual(len(calls),3)
+
+    def test_strikes_decay_after_one_hour_and_success_keeps_no_stale_cooldown(self):
+        h={}
+        def fail(*a,**k):
+            raise urllib.error.HTTPError('https://example.com',429,'rate',{},None)
+        base=dt.datetime(2026,10,16,19,tzinfo=dt.timezone.utc)
+        c=Clock()
+        PrimaryFeed(h,c,c.sleep,now=lambda:base,opener=fail)
+        f=PrimaryFeed(h,c,c.sleep,now=lambda:base,opener=fail)
+        with self.assertRaises(urllib.error.HTTPError):f.read('/trades')
+        g=PrimaryFeed(h,Clock(),lambda _:None,now=lambda:base+dt.timedelta(hours=2),opener=fail)
+        with self.assertRaises(urllib.error.HTTPError):g.read('/trades')
+        self.assertEqual(h['rate_limit_strikes'],1)
+        recovery=PrimaryFeed(h,Clock(),lambda _:None,now=lambda:base+dt.timedelta(hours=2,minutes=6),
+                             opener=lambda *a,**k:io.BytesIO(b'{"data":[]}'))
+        self.assertEqual(recovery.read('/trades'),{'data':[]})
+        self.assertIsNone(h['retry_at'])
+        self.assertEqual(h['http_status'],200)
 
     def test_deadline_never_issues_another_request(self):
         f,c,h=self.make();c.t=60
