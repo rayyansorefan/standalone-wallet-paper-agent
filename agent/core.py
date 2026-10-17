@@ -436,6 +436,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'trade_feeds_unavailable': sum(x.startswith('trades ') for x in errors),
         'candidate_pools': len(candidate_pools),
         'errors_this_cycle': len(errors),
+        # Diagnosable in tiny docs/health.json; bounded, no wallet history.
+        'error_messages': [str(message)[:200] for message in errors[-6:]],
         'partial_screening_only': partial_screening_only,
         'partial_trade_feeds_only': partial_trade_feeds_only,
         'rate_limit_errors': sum('429' in x for x in errors),
