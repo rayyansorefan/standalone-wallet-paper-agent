@@ -52,6 +52,10 @@ def compact_health(state):
         'open_with_trailing_protection':sum(p.get('trailing_stop_price_usd') is not None for p in opened),
         'open_with_recorded_mark':sum(bool(p.get('last_mark_at')) for p in opened),
         'open_unpriced':sum(p.get('position_action')=='UNPRICED_HOLD' for p in opened),
+        'open_loss_warnings':sum(bool(p.get('loss_warning_active')) for p in opened),
+        'closed_at_4_5pct_stop':sum('4.5% observed net paper stop loss' in str(p.get('exit_reason','')) for p in closed),
+        'net_loss_warning_pct':-2.0,
+        'net_loss_exit_pct':-4.5,
         'last_add_at':recent_adds[-1].get('at') if recent_adds else None,
         'latest_cycle':last_cycle,
         'risk_policy':'ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS'

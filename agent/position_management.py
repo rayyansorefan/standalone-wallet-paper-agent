@@ -8,6 +8,8 @@ unvalidated sender, and 1.5% for an independently reinforced sender.
 import datetime as dt
 import math
 
+NET_WARNING_LOSS_PCT = -2.0  # Observed net loss: warn / heightened risk state; not a sell.
+NET_STOP_LOSS_PCT = -4.5  # Observed net loss: close immediately at sampled price.
 ADD_THRESHOLD_NET_ROI_PCT = 10.
 MAX_ADD_FRACTION = .005
 # Proportional to the position, never an automatic fixed £10 top-up.
