@@ -95,7 +95,8 @@ def observe_forward(book, now, quotes, candidates, entered_symbol=None):
                for r in rows):
             continue
         entry = q['ask']*(1+SLIP) if direction == 1 else q['bid']*(1-SLIP)
-        reason = 'ENTERED' if entered_symbol == c['symbol'] else (c.get('rejection_reason') or 'NOT_SELECTED')
+        entered = entered_symbol == (c['symbol'],s) or entered_symbol == c['symbol']
+        reason = 'ENTERED' if entered else (c.get('rejection_reason') or 'NOT_SELECTED')
         rows.append({'at':now.isoformat(), 'symbol':c['symbol'], 'setup':s,
                      'direction':direction, 'regime':c['regime'], 'entry':entry,
                      'decision':'ENTERED' if reason == 'ENTERED' else 'OBSERVED_NOT_ENTERED',
