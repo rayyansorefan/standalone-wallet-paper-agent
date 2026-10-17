@@ -145,6 +145,32 @@ class WhaleResearch(unittest.TestCase):
         self.assertEqual(w['shadow_positions'][0]['source'],'extra_pool')
         self.assertEqual(w['shadow_positions'][0]['entry_price_usd'],1.2)
         self.unchanged()
+    def test_free_quota_prioritises_core_and_uses_dex_quotes_for_whale_shadows(self):
+        extra='D'*32;mint='E'*32
+        extra_meta=pool(extra,mint,price=1.2)
+        class FreeOnlyFeed:
+            def __init__(self):self.calls=[];self.fallback_calls=[]
+            def __call__(self,path,params=None):
+                self.calls.append(path)
+                raise AssertionError('No supplemental Gecko requests allowed')
+            def fallback_quotes(self,addresses):
+                self.fallback_calls.append(addresses)
+                return {'data':[{'meta':extra_meta}]}
+        f=FreeOnlyFeed()
+        w=whales.whale_cycle(
+            self.s,[pool()],[],{TOKEN:1.0},NOW,fetch=f,
+            screener=lambda _: {'allowed':True,'status':'PASS'},
+            previous_run=self.s['last_run'],discovered=[pool(),extra_meta],
+            allow_optional_gecko=False)
+        self.assertEqual(f.calls,[])
+        self.assertEqual(f.fallback_calls,[[extra]])
+        self.assertEqual(w['status'],'DEFERRED_PRIMARY_QUOTA')
+        self.assertEqual(w['scan_metrics']['trade_feeds'],0)
+        self.assertEqual(w['scan_metrics']['trade_feeds_deferred_for_primary'],1)
+        self.assertEqual(w['scan_metrics']['quote_pools'],1)
+        self.assertEqual(w['shadow_positions'],[])
+        self.unchanged()
+
     def test_quote_failure_skips_extra_entries_and_degrades_whale_only(self):
         extra='D'*32
         def fetch(path,params=None):
