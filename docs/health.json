@@ -1,31 +1,30 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-17T15:49:11+00:00",
+  "last_run": "2026-10-17T15:54:00+00:00",
   "last_data_at": "2026-10-17T15:49:11+00:00",
-  "cycle": 485,
-  "status": "PARTIAL_TRADE_FEEDS_UNAVAILABLE",
+  "cycle": 486,
+  "status": "API_ERROR",
   "cycle_health": {
-    "screened_pass": 4,
+    "screened_pass": 0,
     "screened_unavailable": 0,
     "screened_rejected_or_unavailable": 0,
-    "trade_feeds_sampled": 3,
-    "trade_feeds_unavailable": 1,
-    "candidate_pools": 4,
+    "trade_feeds_sampled": 0,
+    "trade_feeds_budget_deferred": 0,
+    "trade_feeds_attempted": 0,
+    "alternate_quoted_pools": 4,
+    "trade_feeds_unavailable": 0,
+    "candidate_pools": 0,
     "errors_this_cycle": 1,
     "error_messages": [
-      "trades 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd/trades: HTTP Error 429: Too Many Requests; retry at 2026"
+      "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T15:59:09.538954+00:00; retry at 2026-10-17T15:59:09.538954+00:00"
     ],
     "partial_screening_only": false,
-    "partial_trade_feeds_only": true,
-    "rate_limit_errors": 1,
+    "partial_trade_feeds_only": false,
+    "rate_limit_errors": 0,
     "screening_http_statuses": []
   },
   "recent_errors": [
-    {
-      "at": "2026-10-17T15:29:10+00:00",
-      "error": "trades HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3: Primary rate limit for /networks/solana/pools/HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3/trades: HTTP Error 429: Too Many Requests; retry at 2026"
-    },
     {
       "at": "2026-10-17T15:39:10+00:00",
       "error": "trades 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd/trades: HTTP Error 429: Too Many Requests; retry at 2026"
@@ -45,18 +44,28 @@
     {
       "at": "2026-10-17T15:49:11+00:00",
       "error": "trades 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd/trades: HTTP Error 429: Too Many Requests; retry at 2026"
+    },
+    {
+      "at": "2026-10-17T15:54:00+00:00",
+      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T15:59:09.538954+00:00; retry at 2026-10-17T15:59:09.538954+00:00"
     }
   ],
+  "market_resilience": {
+    "status": "OK",
+    "quoted_pools": 4,
+    "requested_pools": 4,
+    "provider": "dexscreener"
+  },
   "primary_provider": {
     "http_status": 429,
-    "requests": 5,
+    "requests": 0,
     "last_error": "HTTP 429; adaptive persisted provider cooldown; no immediate retry",
     "retry_at": "2026-10-17T15:59:09.538954+00:00",
     "rate_limit_strikes": 2,
     "last_success_at": "2026-10-17T15:49:06.492037+00:00"
   },
   "whale": {
-    "status": "DEGRADED",
+    "status": "DEFERRED_PRIMARY_PRIORITY",
     "last_run": "2026-10-17T15:50:11+00:00",
     "last_scan_errors": [
       "extra trades HnhpJPJgBG2K: gecko_trades cooling down until 2026-10-17T15:59:09.538954+00:00",
@@ -65,18 +74,18 @@
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-17T15:50:11.943670+00:00",
+    "last_run": "2026-10-17T15:54:01.189747+00:00",
     "closed": 10,
     "wins": 1
   },
   "original": {
-    "closed": 51,
-    "open_positions": 2
+    "closed": 52,
+    "open_positions": 1
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T15:48:47.125Z",
-    "run_id": "39046691238",
+    "scheduled_at": "2026-10-17T15:53:46.777Z",
+    "run_id": "39047050534",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
