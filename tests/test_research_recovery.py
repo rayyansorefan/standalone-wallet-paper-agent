@@ -98,6 +98,51 @@ class ForwardEvaluation(unittest.TestCase):
         self.assertEqual(evaluation.evaluate(t,(NOW+dt.timedelta(days=80)).isoformat())['training']['closed'],0)
         self.assertEqual(evaluation.evaluate([t[0]]*100,NOW.isoformat())['training']['closed'],1)
 
+    def test_white_paper_p0_fast_first_twenty_then_later_days_can_validate(self):
+        # The first 20 validation closes all occur on the first day;
+        # previously the permanent [:20] prevented later days qualifying.
+        from agent import evaluation
+        train=[]
+        for i in range(40):
+            entered=NOW+dt.timedelta(days=i%14,hours=i//14)
+            train.append(dict(signal_id='train'+str(i),wallet='W'+str(i%10),
+                token='P'+str(i%5),opened_at=entered.isoformat(),
+                exit_at=(entered+dt.timedelta(minutes=20)).isoformat(),
+                entry_price_usd=1.,exit_price_usd=1.15,net_pnl_gbp=1.28,
+                notional_gbp=10.,roi_pct=12.8))
+        train.sort(key=lambda t:t['exit_at'])
+        cutoff=max(evaluation.stamp(t['exit_at']) for t in train)
+        validation=[]
+        for i in range(20):
+            opened=cutoff+dt.timedelta(hours=2,minutes=i)
+            validation.append(dict(signal_id='rapid'+str(i),wallet='W'+str(i%10),
+                token='P'+str(i%5),opened_at=opened.isoformat(),
+                exit_at=(opened+dt.timedelta(minutes=1)).isoformat(),
+                entry_price_usd=1.,exit_price_usd=1.15,net_pnl_gbp=1.28,
+                notional_gbp=10.,roi_pct=12.8))
+        early=evaluation.evaluate(train+validation,NOW.isoformat())
+        self.assertEqual(early['status'],'UNPROVEN')
+        self.assertFalse(early['validation_prefix_complete'])
+        self.assertEqual(early['validation']['days'],1)
+        self.assertEqual(len(early['validation_ids']),20)
+        for day in range(1,7):
+            opened=cutoff+dt.timedelta(days=day,hours=2)
+            validation.append(dict(signal_id='later'+str(day),wallet='W'+str(day),
+                token='P'+str(day%5),opened_at=opened.isoformat(),
+                exit_at=(opened+dt.timedelta(minutes=20)).isoformat(),
+                entry_price_usd=1.,exit_price_usd=1.15,net_pnl_gbp=1.28,
+                notional_gbp=10.,roi_pct=12.8))
+        fixed=evaluation.evaluate(train+validation,NOW.isoformat())
+        self.assertTrue(fixed['validation_prefix_complete'])
+        self.assertEqual(fixed['validation']['days'],7)
+        self.assertEqual(len(fixed['validation_ids']),26)
+        self.assertEqual(fixed['status'],'VALIDATED_OOS')
+        # Later outcomes cannot cherry-pick a new winning cohort.
+        late=dict(validation[-1],signal_id='after',opened_at=(cutoff+dt.timedelta(days=8)).isoformat(),
+                  exit_at=(cutoff+dt.timedelta(days=8,minutes=20)).isoformat(),net_pnl_gbp=-10,roi_pct=-100)
+        unchanged=evaluation.evaluate(train+validation+[late],NOW.isoformat())
+        self.assertEqual(fixed['evidence_hash'],unchanged['evidence_hash'])
+
     def test_overlapping_validation_entries_are_purged(self):
         t=self.trades()
         for x in t[40:]:x['opened_at']=t[0]['opened_at']
