@@ -279,7 +279,7 @@ def advance(state, now, quotes, indicators, eligible):
             continue
         cost_ok=has_cost_room(f,q)
         setups_now=setups(f)
-        if setups_now and not cost_ok:
+        if not cost_ok:
             b['cost_hurdle_rejections'] += 1
         for setup,direction,base_score in setups_now:
             memory=feedback(b,setup,symbol,now)
