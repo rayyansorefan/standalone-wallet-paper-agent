@@ -1,5 +1,7 @@
 """Publish a minimal, public and read-only state for the JS visualiser."""
+import datetime as dt
 import json
+import math
 from pathlib import Path
 
 
@@ -22,6 +24,60 @@ def html_dashboard(s,path):
     for d in s.get('decisions',[]):
         html_body+='<p>'+esc(d.get('action'))+' '+esc(d.get('reason'))+'</p>'
     Path(path).write_text('<!doctype html><html><meta charset="utf-8">'+html_body+'</html>',encoding='utf8')
+
+def _utc_timestamp(value):
+    try:
+        parsed=dt.datetime.fromisoformat(str(value).replace('Z','+00:00'))
+        return parsed.astimezone(dt.timezone.utc) if parsed.tzinfo else None
+    except (ValueError,TypeError,OverflowError):
+        return None
+
+
+def _finite(value):
+    try:
+        number=float(value)
+        return number if math.isfinite(number) else None
+    except (ValueError,TypeError,OverflowError):
+        return None
+
+
+def _realised_summary(closes):
+    """Only genuine original-account closed paper outcomes; never shadows."""
+    values=[_finite(t.get('net_pnl_gbp')) if isinstance(t,dict) else None for t in closes]
+    complete=all(p is not None for p in values)
+    if not complete:
+        return {'closed':len(closes),'complete_outcomes':False,
+                'wins':None,'losses':None,'win_rate_pct':None,
+                'net_pnl_gbp':None,'profit_factor':None}
+    wins=sum(p>0 for p in values)
+    losses=len(values)-wins
+    positives=sum(p for p in values if p>0)
+    negatives=abs(sum(p for p in values if p<0))
+    return {'closed':len(closes),'complete_outcomes':True,
+            'wins':wins,'losses':losses,
+            'win_rate_pct':round(100*wins/len(values),2) if values else None,
+            'net_pnl_gbp':round(sum(values),4),
+            'profit_factor':round(positives/negatives,3) if negatives else None}
+
+
+def _original_performance(state, opened, closed):
+    """Bounded public aggregates for independent overnight health monitoring."""
+    now=_utc_timestamp(state.get('last_run'))
+    def window(hours):
+        if now is None:return {'closed':None,'data_available':False}
+        cutoff=now-dt.timedelta(hours=hours)
+        return _realised_summary([t for t in closed if isinstance(t,dict)
+            and (tstamp:=_utc_timestamp(t.get('exit_at'))) is not None
+            and cutoff<=tstamp<=now])
+    balances=[_finite(p.get('notional_gbp')) if isinstance(p,dict) else None for p in opened]
+    return {'starting_gbp':_finite(state.get('starting_gbp')),
+            'available_cash_gbp':_finite(state.get('cash_gbp')),
+            'open_notional_gbp':round(sum(balances),4) if all(v is not None for v in balances) else None,
+            'all_time':_realised_summary(closed),
+            'last_6h':window(6),
+            'last_24h':window(24),
+            'method':'realised CLOSED GBP paper only; excludes open/unpriced and independent futures/shadow results'}
+
 
 def compact_health(state):
     """Small, public, non-sensitive health check for GitHub monitoring.
@@ -83,8 +139,9 @@ def compact_health(state):
                    'last_run':futures.get('last_run'),
                    'closed':len(futures.get('closed') or []),
                    'wins':(futures.get('summary') or {}).get('wins')},
-        'original':{'closed':len(state.get('closed') or []),
-                    'open_positions':len(state.get('positions') or [])},
+        'original':{'closed':len(closed),
+                    'open_positions':len(opened),
+                    'performance':_original_performance(state,opened,closed)},
         'execution':{k:execution.get(k) for k in
                      ('scheduler','scheduled_at','run_id','trigger_uid')},
         'note':'Diagnostic observations only; successful workflow != profitable trading.'
