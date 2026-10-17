@@ -420,14 +420,20 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         unavailable_risk and screened_pools and sampled_feeds and
         len(errors) == unavailable_risk and
         all(x.startswith('token security provider unavailable for ') for x in errors))
+    partial_trade_feeds_only = bool(
+        sampled_feeds and len(errors) > 0 and
+        all(x.startswith('trades ') for x in errors))
     state['cycle_health'] = {
         'screened_pass': screened_pools,
         'screened_unavailable': unavailable_risk,
         'screened_rejected_or_unavailable': skipped_risk,
         'trade_feeds_sampled': sampled_feeds,
+        'trade_feeds_unavailable': sum(x.startswith('trades ') for x in errors),
         'candidate_pools': len(candidate_pools),
         'errors_this_cycle': len(errors),
         'partial_screening_only': partial_screening_only,
+        'partial_trade_feeds_only': partial_trade_feeds_only,
+        'rate_limit_errors': sum('429' in x for x in errors),
         'screening_http_statuses': [
             v.get('http_status') for v in state['screening']
             if v.get('status') == 'UNAVAILABLE' and v.get('http_status') is not None],
@@ -438,6 +444,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                             else 'NO_SAFE_POOLS' if candidate_pools and not screened_pools and not errors
                             else 'TRADE_FEEDS_FAILED' if screened_pools and not sampled_feeds
                             else 'PARTIAL_SCREENING_UNAVAILABLE' if partial_screening_only
+                            else 'PARTIAL_TRADE_FEEDS_UNAVAILABLE' if partial_trade_feeds_only
                             else 'DEGRADED' if errors
                             else 'BOOTSTRAPPED_NO_TRADES' if first else 'OK')
     from .adaptive import finalize
