@@ -345,16 +345,16 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # all discovered candidates. Skipped pools are recorded, not falsely
     # labelled as sampled or treated as a market-data outage.
     production=(fetch is api)
-    eligible_pool_addresses=[p['pool'] for p in candidate_pools]
-    cursor=state.setdefault('research',{}).get('main_trade_cursor',0)
-    if production and eligible_pool_addresses:
-        count=min(MAX_MAIN_TRADE_FEEDS_PER_CYCLE,len(eligible_pool_addresses))
-        selected={eligible_pool_addresses[(cursor+i)%len(eligible_pool_addresses)] for i in range(count)}
-        state['research']['main_trade_cursor']=(cursor+count)%len(eligible_pool_addresses)
+    cursor=int(state.setdefault('research',{}).get('main_trade_cursor',0))
+    if production and candidate_pools:
+        offset=cursor%len(candidate_pools)
+        ordered_pools=candidate_pools[offset:]+candidate_pools[:offset]
+        state['research']['main_trade_cursor']=(
+            cursor+MAX_MAIN_TRADE_FEEDS_PER_CYCLE)%len(candidate_pools)
     else:
-        selected=set(eligible_pool_addresses)
+        ordered_pools=candidate_pools
     budget_deferred=0
-    for pool in candidate_pools:
+    for pool in ordered_pools:
         mint = pool.get('mint', '')
         try:
             assessment = screen_token(mint)
@@ -386,7 +386,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                               +' ('+str(assessment.get('reason','unknown'))+')')
             continue
         screened_pools += 1
-        if pool['pool'] not in selected:
+        if production and screened_pools>MAX_MAIN_TRADE_FEEDS_PER_CYCLE:
             budget_deferred+=1
             continue  # Not a provider failure; never generate unobserved trades.
         try:
