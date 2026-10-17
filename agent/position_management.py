@@ -98,7 +98,7 @@ def observe(pos,price,current,cost_per_side=.01):
 
 
 def addition_amount(state,pos,price,current,*,safe_pools,conflicting_sells,
-                    fresh_quote_at,wallet_profile,cost_per_side=.01):
+                    fresh_quote_at,wallet_profile,equity_gbp,cost_per_side=.01):
     """Return (extra GBP, reason), before any paper ledger mutation."""
     px=finite(price)
     if px is None or px<=0 or current.tzinfo is None:
@@ -125,9 +125,9 @@ def addition_amount(state,pos,price,current,*,safe_pools,conflicting_sells,
     cap=(REINFORCED_TOTAL_CAP if
          str(wallet_profile.get('reinforcement_tier','')).startswith('reinforced')
          else EXPLORATION_TOTAL_CAP)
-    # Revalue all positions from fresh prices elsewhere before offering any
-    # addition. Do not infer equity from stale marks.
-    equity=finite(state.get('_current_equity_for_add'))
+    # Equity is calculated from fresh full-account quotes by the caller.
+    # Never infer total exposure from stale individual marks.
+    equity=finite(equity_gbp)
     if equity is None or equity<=0:
         return 0.,'missing complete live paper equity'
     used=finite(pos.get('notional_gbp')) or 0
