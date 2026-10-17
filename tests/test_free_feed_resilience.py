@@ -104,6 +104,27 @@ class LiveModeIntegration(unittest.TestCase):
             self.assertEqual(out['positions'],[])
             self.assertEqual(out['completed_cycles'],1)
 
+    def test_recent_rate_limit_reserves_core_budget_even_after_partial_recovery(self):
+        now=dt.datetime.now(core.UTC)
+        def backend(endpoint,params):
+            if 'trending_pools' in endpoint:return {'data':[pool(A),pool(B),pool(C),pool(D)]}
+            if endpoint.endswith('/trades'):return {'data':[]}
+            raise AssertionError('Unexpected '+endpoint)
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'state.json'
+            state=core.blank_state()
+            state['last_run']=(now-dt.timedelta(minutes=5)).isoformat()
+            state['research']={'primary_provider_v1':{
+                'last_rate_limit_at':(now-dt.timedelta(minutes=10)).isoformat(),
+                'rate_limit_strikes':2}}
+            core.save(state,path)
+            result,provider,whale=self.run_prod(path,backend)
+            self.assertEqual(result['last_status'],'OK')
+            self.assertEqual(result['cycle_health']['trade_feeds_sampled'],2)
+            self.assertEqual(result['cycle_health']['trade_feeds_budget_deferred'],2)
+            whale.assert_not_called()
+            self.assertEqual(result['research']['whale_v3']['status'],'DEFERRED_PRIMARY_PRIORITY')
+
     def test_held_position_is_marked_by_free_quote_without_gecko_pool_call(self):
         def backend(endpoint,params):
             if 'trending_pools' in endpoint:return {'data':[]}
