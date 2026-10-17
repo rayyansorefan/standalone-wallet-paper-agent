@@ -8,6 +8,7 @@ from __future__ import annotations
 import datetime as dt
 import math
 from collections import defaultdict
+from .shadow_retirement import update_retirements
 
 VERSION = 2
 COST_SIDE = 0.01
@@ -380,6 +381,13 @@ def research_cycle(state, candidate_pools, prices, new_events, current):
                                         sells_1h=meta.get('sells_1h'))
                                    for meta in candidate_pools])
     r['pool_observations'] = r['pool_observations'][-MAX_STORED_OBSERVATIONS:]
+    # Freeze losing experiments only when multiple days, wallets and pools
+    # provide strong negative PAPER evidence. Open shadows still close normally.
+    retirement_reports = {
+        name:pnl_report([t for t in r['shadow_closed'] if t.get('strategy')==name])
+        for name in STRATEGIES
+    }
+    update_retirements(r,retirement_reports,current)
     original_last_run = stamp(state.get('last_run'))
     for ev in sorted(new_events, key=lambda e:e['timestamp']):
         meta = metadatas.get(ev['token'])
@@ -419,6 +427,8 @@ def research_cycle(state, candidate_pools, prices, new_events, current):
         if price is None or price <= 0:
             continue
         for strategy in STRATEGIES:
+            if strategy in r.get('retired_shadow_strategies',{}):
+                continue
             if not passes(strategy, meta, lag):
                 continue
             active = [p for p in r['shadow_positions'] if p['strategy'] == strategy]
@@ -492,6 +502,7 @@ def finalize(state, current):
         report['status'] = 'CANDIDATE_FOR_REVIEW' if eligible else 'COLLECTING_EVIDENCE'
         report['live_promoted'] = False
         shadow_reports[strategy] = report
+    update_retirements(r,shadow_reports,current)
     r['shadow_reports'] = shadow_reports
     r['feature_reports'] = feature_reports(state)
     r['actual_report'] = pnl_report(state.get('closed', []))
