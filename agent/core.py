@@ -61,7 +61,12 @@ def api(path, params=None):
         try:
             return feed.read(req)
         except (urllib.error.URLError, TimeoutError, RuntimeError, ValueError) as exc:
-            if getattr(exc,'code',None)==429 or feed.health.get('retry_at'):
+            # Expired persisted cooldowns must not turn an unrelated transient
+            # JSON/network error into a false rate-limit report. Only an actual
+            # HTTP 429 or an ACTIVE cooldown is a non-retryable rate limit.
+            retry_at=parse_time(feed.health.get('retry_at'))
+            active_cooldown=bool(retry_at and retry_at>dt.datetime.now(UTC))
+            if getattr(exc,'code',None)==429 or active_cooldown:
                 raise RuntimeError(f'Primary rate limit for {path}: {exc}; retry at {feed.health.get("retry_at")}') from exc
             if 'budget exhausted' in str(exc):raise
             if attempt == 2: raise RuntimeError(f'API unavailable for {path}: {exc}') from exc
