@@ -35,7 +35,7 @@ jobs:
           python - <<'PY'
           import pathlib, re, subprocess, tempfile
           html=pathlib.Path('docs/index.html').read_text(encoding='utf8')
-          scripts=re.findall(r'<script\\b[^>]*>(.*?)</script>',html,re.I|re.S)
+          scripts=re.findall(r'<script\b[^>]*>(.*?)</script>',html,re.I|re.S)
           checked=0
           for body in scripts:
               if not body.strip(): continue
