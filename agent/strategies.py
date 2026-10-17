@@ -9,10 +9,11 @@ import json
 import math
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from .strategy_lab import market_regime, context_adjustment, observe_forward, improved_stop, has_cost_room
 
 UTC = dt.timezone.utc
 BASE = 'https://futures.kraken.com'
-VERSION = 'momentum-fade-1'
+VERSION = 'momentum-fade-2'
 FEE = .0005
 SLIP = .001
 COST = FEE + SLIP
@@ -160,7 +161,7 @@ def setups(f):
 
 
 def feedback(book, setup, symbol, now):
-    rows = [t for t in book['closed'] if t['setup']==setup and stamp(t['exit_at']) <= now]
+    rows = [t for t in book['closed'] if t['setup']==setup and t.get('version',VERSION)==VERSION and stamp(t['exit_at']) <= now]
     # An asset's loss cooldown survives a change of strategy label.
     same = [t for t in book['closed'] if t['symbol']==symbol and stamp(t['exit_at']) <= now]
     cooldown = any(0 <= (now-stamp(t['exit_at'])).total_seconds() <
@@ -173,7 +174,7 @@ def feedback(book, setup, symbol, now):
         profits = [t['net_usd'] for t in xs]
         return (sum(profits)-max([0]+profits)>0 and sum(t['stress_net_usd'] for t in xs)>0)
     reinforced = (len(valid)>=10 and len({t['symbol'] for t in rows})>=3 and
-                  (now-stamp(book['registered_at'])).total_seconds()>=14*86400 and
+                  (now-stamp(book.get('policy_registered_at') or book['registered_at'])).total_seconds()>=14*86400 and
                   robust(train) and robust(valid))
     edge = sum(t['net_usd']/t['risk_usd'] for t in rows)/(len(rows)+10)
     return dict(allowed=not(cooldown or paused), paused=paused, cooldown=cooldown,
@@ -198,6 +199,13 @@ def news_allowed(state, now):
 
 def advance(state, now, quotes, indicators, eligible):
     b = initialize(state,now)
+    # Do not allow historic strategy evidence to certify the new policy.
+    # Original and challenger balances, trade records and open positions survive.
+    if b.get('version') != VERSION:
+        previous = b.get('version')
+        b['version'] = VERSION
+        b['policy_registered_at'] = now.isoformat()
+        event(b,now,'POLICY_VERSION_CHANGED',previous=previous,current=VERSION)
     p = b.get('position')
     closed_symbol = None
     if p:
@@ -227,11 +235,15 @@ def advance(state, now, quotes, indicators, eligible):
                 b['closed'] = (b['closed']+[record])[-1000:]
                 event(b,now,'CLOSE',symbol=p['symbol'],setup=p['setup'],net_usd=net,reason=reason)
                 closed_symbol=p['symbol']; b['position']=None; p=None
-            elif f:
-                # Ratchet only after a net +1R; apply new stop on the next observation.
-                if net>=p['risk_usd']:
-                    candidate=p['best']-p['direction']*2*f['atr']
-                    p['stop']=max(p['stop'],candidate) if p['direction']==1 else min(p['stop'],candidate)
+            else:
+                # Break-even at +0.5R; after +1R retain a portion of net profit.
+                # Stops execute against subsequent observations, not guaranteed fills.
+                atr = f['atr'] if f else (p.get('features') or {}).get('atr')
+                revised_stop = improved_stop(p,q,net,atr)
+                if revised_stop is not None:
+                    p['stop'] = revised_stop
+                    event(b,now,'PROFIT_STOP_RATCHET',symbol=p['symbol'],stop=revised_stop)
+                if f and net>=p['risk_usd']:
                     still_valid=any(s==p['setup'] for s,_,_ in setups(f))
                     if not p['added'] and still_valid and news_allowed(state,now):
                         eq=b['cash_usd']+p['direction']*(q['mid']-p['entry'])*p['units']
@@ -253,13 +265,23 @@ def advance(state, now, quotes, indicators, eligible):
         else:
             event(b,now,'HOLD_UNPRICED',symbol=p['symbol'],reason='No executable fresh quote; no fabricated exit')
     candidates=[]
+    b['cost_hurdle_rejections'] = 0
     for symbol,f in indicators.items():
         if symbol not in eligible or symbol==closed_symbol:
             continue
+        if not has_cost_room(f,quotes.get(symbol) or {}):
+            b['cost_hurdle_rejections'] += 1
+            continue
         for setup,direction,score in setups(f):
             memory=feedback(b,setup,symbol,now)
+            regime=market_regime(f)
+            learned=context_adjustment(b,setup,regime)
+            memory={**memory,'learned':learned,
+                    'allowed':memory['allowed'] and learned['status']!='NEGATIVE_FORWARD'}
             candidates.append(dict(symbol=symbol,setup=setup,direction=direction,
-                                   score=score+memory['edge'],feedback=memory,features=f))
+                                   regime=regime,learning=learned,
+                                   score=score+memory['edge']+learned['adjustment'],
+                                   feedback=memory,features=f))
     candidates.sort(key=lambda c:c['score'],reverse=True)
     b['candidates']=candidates[:12]
     b['news_allows_entry']=news_allowed(state,now)
@@ -268,6 +290,7 @@ def advance(state, now, quotes, indicators, eligible):
     if b.get('day')!=day:
         b.update(day=day,day_start_equity=current_equity,entries_today=0)
     day_loss=current_equity-b['day_start_equity']
+    selected_new = None
     if not p and news_allowed(state,now) and b['entries_today']<6 and day_loss > -b['starting_usd']*.02:
         for c in candidates:
             if not c['feedback']['allowed']:
@@ -287,8 +310,11 @@ def advance(state, now, quotes, indicators, eligible):
                    features=f,feedback=c['feedback'],version=VERSION)
             p['net_usd']=exit_value(p,q)[1]
             b['position']=p; b['cash_usd']-=fee; b['entries_today']+=1
+            selected_new=symbol
             event(b,now,'OPEN',symbol=p['symbol'],setup=p['setup'],direction=direction,notional_usd=notional)
             break
+    # Mark forward outcomes using current quotes before registering fresh signals.
+    observe_forward(b,now,quotes,candidates,selected_new)
     p=b.get('position')
     # Cash includes fees and carry already; net includes them for the trade report only.
     unrealized=0.
