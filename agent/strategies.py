@@ -176,14 +176,19 @@ def feedback(book, setup, symbol, now):
     def robust(xs):
         profits = [t['net_usd'] for t in xs]
         return (sum(profits)-max([0]+profits)>0 and sum(t['stress_net_usd'] for t in xs)>0)
-    reinforced = (len(valid)>=10 and len({t['symbol'] for t in rows})>=3 and
-                  (now-stamp(book.get('policy_registered_at') or book['registered_at'])).total_seconds()>=14*86400 and
-                  robust(train) and robust(valid))
+    provisional = (len(valid)>=10 and len({t['symbol'] for t in rows})>=3 and
+                   (now-stamp(book.get('policy_registered_at') or book['registered_at'])).total_seconds()>=14*86400 and
+                   robust(train) and robust(valid))
+    # White paper D04: above is an exploratory performance gate, NOT a
+    # common independently frozen OOS/clustered baseline-relative certificate.
+    # Never grant automatic futures +25% risk sizing from this weaker test.
+    reinforced=False
     edge = sum(t['net_usd']/t['risk_usd'] for t in rows)/(len(rows)+10)
     return dict(allowed=not cooldown and recovery['allowed'], paused=paused,
                 cooldown=cooldown, recovery=recovery, closed=len(rows),
-                edge=edge, reinforced=reinforced,
-                risk_multiplier=1.25 if reinforced else 1.)
+                edge=edge, reinforced=reinforced,provisional_positive=provisional,
+                reinforcement_status='AWAITING_SHARED_FROZEN_OOS_AND_BASELINE',
+                risk_multiplier=1.)
 
 
 def exit_value(p, q):
