@@ -2,12 +2,12 @@
   "schema": 1,
   "paper_only": true,
   "initialized_at": "2026-10-15T22:18:05+00:00",
-  "last_run": "2026-10-17T19:24:18+00:00",
+  "last_run": "2026-10-17T19:28:59+00:00",
   "cash_gbp": 1957.486007,
   "starting_gbp": 2000.0,
-  "last_status": "PARTIAL_TRADE_FEEDS_UNAVAILABLE",
+  "last_status": "TRADE_FEEDS_FAILED",
   "last_data_at": "2026-10-17T19:24:18+00:00",
-  "completed_cycles": 528,
+  "completed_cycles": 529,
   "stale_signals": 25841,
   "unattributed_events": 0,
   "observed": {
@@ -12019,13 +12019,9 @@
       "pool_name": "CATE / SOL",
       "opened_at": "2026-10-17T18:19:06+00:00",
       "entry_price_usd": 0.07137066143034099,
-      "last_mark_price_usd": 0.07491700042072205,
-      "last_mark_at": "2026-10-17T19:23:54+00:00",
+      "last_mark_price_usd": 0.07384,
+      "last_mark_at": "2026-10-17T19:28:55+00:00",
       "recent_marks": [
-        {
-          "at": "2026-10-17T19:13:55+00:00",
-          "price_usd": 0.07477249548078437
-        },
         {
           "at": "2026-10-17T19:18:55+00:00",
           "price_usd": 0.07414173159564012
@@ -12033,6 +12029,10 @@
         {
           "at": "2026-10-17T19:23:54+00:00",
           "price_usd": 0.07491700042072205
+        },
+        {
+          "at": "2026-10-17T19:28:55+00:00",
+          "price_usd": 0.07384
         }
       ],
       "peak_mark_price_usd": 0.07494726925386057,
@@ -12085,7 +12085,7 @@
         }
       },
       "highest_net_roi_pct": 2.932,
-      "last_net_roi_pct": 2.89,
+      "last_net_roi_pct": 1.411,
       "loss_warning_active": false,
       "loss_warning_reported": true,
       "first_loss_warning_at": "2026-10-17T18:23:55+00:00"
@@ -12096,13 +12096,9 @@
       "pool_name": "swordcat / SOL",
       "opened_at": "2026-10-17T18:34:12+00:00",
       "entry_price_usd": 0.0024610050565027006,
-      "last_mark_price_usd": 0.0025337450618642494,
-      "last_mark_at": "2026-10-17T19:23:54+00:00",
+      "last_mark_price_usd": 0.002445,
+      "last_mark_at": "2026-10-17T19:28:55+00:00",
       "recent_marks": [
-        {
-          "at": "2026-10-17T19:13:55+00:00",
-          "price_usd": 0.00253
-        },
         {
           "at": "2026-10-17T19:18:55+00:00",
           "price_usd": 0.002466
@@ -12110,11 +12106,15 @@
         {
           "at": "2026-10-17T19:23:54+00:00",
           "price_usd": 0.0025337450618642494
+        },
+        {
+          "at": "2026-10-17T19:28:55+00:00",
+          "price_usd": 0.002445
         }
       ],
       "peak_mark_price_usd": 0.002539568796928913,
       "additions": [],
-      "position_action": "WATCHING_WINNER",
+      "position_action": "LOSS_WARNING",
       "signal_at": "2026-10-17T18:31:04+00:00",
       "notional_gbp": 9.94,
       "cost_gbp": 10.0394,
@@ -12162,8 +12162,8 @@
         }
       },
       "highest_net_roi_pct": 1.149,
-      "last_net_roi_pct": 0.917,
-      "loss_warning_active": false,
+      "last_net_roi_pct": -2.618,
+      "loss_warning_active": true,
       "loss_warning_reported": true,
       "first_loss_warning_at": "2026-10-17T18:48:58+00:00"
     },
@@ -12173,8 +12173,8 @@
       "pool_name": "CLAUDIA / SOL",
       "opened_at": "2026-10-17T19:19:13+00:00",
       "entry_price_usd": 0.006653569626711811,
-      "last_mark_price_usd": 0.006858011197357094,
-      "last_mark_at": "2026-10-17T19:23:54+00:00",
+      "last_mark_price_usd": 0.006906,
+      "last_mark_at": "2026-10-17T19:28:55+00:00",
       "recent_marks": [
         {
           "at": "2026-10-17T19:19:13+00:00",
@@ -12183,9 +12183,13 @@
         {
           "at": "2026-10-17T19:23:54+00:00",
           "price_usd": 0.006858011197357094
+        },
+        {
+          "at": "2026-10-17T19:28:55+00:00",
+          "price_usd": 0.006906
         }
       ],
-      "peak_mark_price_usd": 0.006858011197357094,
+      "peak_mark_price_usd": 0.006906,
       "additions": [],
       "position_action": "WATCHING_WINNER",
       "signal_at": "2026-10-17T19:16:15+00:00",
@@ -12234,8 +12238,8 @@
           "evidence": []
         }
       },
-      "highest_net_roi_pct": 1.032,
-      "last_net_roi_pct": 1.032,
+      "highest_net_roi_pct": 1.739,
+      "last_net_roi_pct": 1.739,
       "loss_warning_active": false
     }
   ],
@@ -13701,56 +13705,6 @@
     }
   ],
   "decisions": [
-    {
-      "at": "2026-10-17T17:24:03+00:00",
-      "action": "SKIP_POLICY",
-      "wallet": "FwTNw9bPQqJXtJu9agzSqnMRHscNaB2kFApaKbzaLn3E",
-      "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "reason": "token-wide history cooldown",
-      "assessment": {
-        "version": 1,
-        "allowed": false,
-        "reasons": [
-          "token-wide history cooldown"
-        ],
-        "history": {
-          "closed": 6,
-          "wins": 0,
-          "losses": 6,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -4.7088,
-          "avg_pnl_gbp": -0.7848,
-          "mean_net_roi_pct": -7.787,
-          "conservative_mean_roi_95_pct": -12.806,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 4.7088,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 4.7088,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 6,
-          "distinct_pools": 1,
-          "distinct_signals": 6,
-          "conservative_mean_95_gbp": -1.2905,
-          "loss_streak": 6,
-          "shrunk_roi_pct": -2.9202,
-          "cooldown_until": "2026-10-17T20:28:58+00:00"
-        },
-        "selection_score": -2.9202,
-        "technical": {
-          "change_5m_pct": 6.258,
-          "change_1h_pct": 6.079,
-          "volume_pace_ratio": 0.5611673364840813,
-          "buy_count_share": 0.5567307692307693
-        },
-        "news": {
-          "status": "OK",
-          "checked_at": "2026-10-17T17:19:04.589734+00:00",
-          "risk_off": false,
-          "evidence": []
-        }
-      }
-    },
     {
       "at": "2026-10-17T17:24:03+00:00",
       "action": "SKIP_POLICY",
@@ -28527,6 +28481,13 @@
           "evidence": []
         }
       }
+    },
+    {
+      "at": "2026-10-17T19:28:56+00:00",
+      "action": "SKIP_TOKEN",
+      "wallet": null,
+      "token": "2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj",
+      "reason": "security rejected: normalized risk score above 25"
     }
   ],
   "snapshots": [
@@ -34337,404 +34298,57 @@
       "sampled_feeds": 4,
       "screened_pools": 6,
       "status": "PARTIAL_TRADE_FEEDS_UNAVAILABLE"
+    },
+    {
+      "at": "2026-10-17T19:29:00+00:00",
+      "equity_gbp": 1987.67,
+      "cash_gbp": 1957.49,
+      "open_positions": 3,
+      "closed_trades": 56,
+      "watched_pools": 2,
+      "sampled_feeds": 0,
+      "screened_pools": 1,
+      "status": "TRADE_FEEDS_FAILED"
     }
   ],
   "watched_pools": [
-    {
-      "id": "solana_Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "name": "FTR / SOL",
-      "mint": "DFMt2FyLpB6ekPNAzVErLXgpSnJ9CRf1VnxBAkTLpump",
-      "pool": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "liquidity_usd": 211893.786,
-      "volume_24h_usd": 3489331.16234499,
-      "price_usd": 0.0028440842412185497,
-      "change_24h_pct": -20.716,
-      "age_hours": 65.25620910333333,
-      "change_5m_pct": -2.568,
-      "change_1h_pct": -4.498,
-      "volume_1h_usd": 43687.9414657871,
-      "fdv_usd": 2837283.753,
-      "market_cap_usd": null,
-      "buys_1h": 922.0,
-      "sells_1h": 198.0
-    },
-    {
-      "id": "solana_EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-      "name": "simulator / SOL",
-      "mint": "8hnMfF4XL717GVwzDmvqjJvULozKW6w7BhHFABjvHje4",
-      "pool": "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-      "liquidity_usd": 124967.859,
-      "volume_24h_usd": 8112338.52351159,
-      "price_usd": 0.0009609826898986519,
-      "change_24h_pct": 683.787,
-      "age_hours": 4829.625931330278,
-      "change_5m_pct": -0.818,
-      "change_1h_pct": 0.892,
-      "volume_1h_usd": 35019.8259364416,
-      "fdv_usd": 962054.1758,
-      "market_cap_usd": null,
-      "buys_1h": 278.0,
-      "sells_1h": 220.0
-    },
-    {
-      "id": "solana_2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-      "name": "PUMP / USDC",
-      "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
-      "pool": "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-      "liquidity_usd": 23569256.1351,
-      "volume_24h_usd": 5026622.63683208,
-      "price_usd": 0.0044799448336096444,
-      "change_24h_pct": 4.117,
-      "age_hours": 11042.466764669445,
-      "change_5m_pct": 0.248,
-      "change_1h_pct": 0.77,
-      "volume_1h_usd": 124115.182058262,
-      "fdv_usd": 3707037752.37655,
-      "market_cap_usd": 2072399198.18036,
-      "buys_1h": 334.0,
-      "sells_1h": 271.0
-    },
-    {
-      "id": "solana_HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
-      "name": "CATE / SOL",
-      "mint": "Ai66LHZG9MCzg1WKdawwqduVAXpNDUuV8M3uyq5ppump",
-      "pool": "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
-      "liquidity_usd": 3103181.8607,
-      "volume_24h_usd": 1553977.95725558,
-      "price_usd": 0.07491700042072205,
-      "change_24h_pct": 18.988,
-      "age_hours": 1994.8531535641669,
-      "change_5m_pct": 0.755,
-      "change_1h_pct": 5.195,
-      "volume_1h_usd": 84066.672603328,
-      "fdv_usd": 72207738.7730106,
-      "market_cap_usd": 72224810.7510352,
-      "buys_1h": 530.0,
-      "sells_1h": 504.0
-    },
-    {
-      "id": "solana_AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-      "name": "1 / TRUMP",
-      "mint": "2bCCHQadi4QeHWPKG3w13siCyWWQPgkFtniouTqVpump",
-      "pool": "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-      "liquidity_usd": 110047.3604,
-      "volume_24h_usd": 2002972.68985166,
-      "price_usd": 0.0009380007027995304,
-      "change_24h_pct": -44.313,
-      "age_hours": 47.07426467777778,
-      "change_5m_pct": -1.927,
-      "change_1h_pct": 18.93,
-      "volume_1h_usd": 42895.4972700731,
-      "fdv_usd": 921861.55645333,
-      "market_cap_usd": null,
-      "buys_1h": 413.0,
-      "sells_1h": 349.0
-    },
-    {
-      "id": "solana_3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
-      "name": "fone / SOL",
-      "mint": "CTPoyCwkjMvoJwU4xvZZqoD8tiYk6yDchySiN5gGpump",
-      "pool": "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
-      "liquidity_usd": 499952.8385,
-      "volume_24h_usd": 902327.64632704,
-      "price_usd": 0.004439676918140196,
-      "change_24h_pct": 10.974,
-      "age_hours": 1243.3362091244444,
-      "change_5m_pct": -0.118,
-      "change_1h_pct": 3.148,
-      "volume_1h_usd": 7552.6048952377,
-      "fdv_usd": 4395765.5532234,
-      "market_cap_usd": 4395766.0003609,
-      "buys_1h": 55.0,
-      "sells_1h": 24.0
-    },
-    {
-      "id": "solana_4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E",
-      "name": "VEIL / SOL",
-      "mint": "HgTGdc29D5bDMrDvsCLnorxz899VyDj7ZN7FPa6vpump",
-      "pool": "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E",
-      "liquidity_usd": 164099.7103,
-      "volume_24h_usd": 944226.764729199,
-      "price_usd": 0.002795058157887273,
-      "change_24h_pct": -55.699,
-      "age_hours": 120.37593135833333,
-      "change_5m_pct": 0.908,
-      "change_1h_pct": -6.165,
-      "volume_1h_usd": 22943.5609675906,
-      "fdv_usd": 2727542.79562316,
-      "market_cap_usd": 2727544.26908689,
-      "buys_1h": 134.0,
-      "sells_1h": 120.0
-    },
-    {
-      "id": "solana_Fe7bpDYCs74GqiCUF14HwgUMToPKV1d9mDYVX5BTohFr",
-      "name": "CLAUDIA / SOL",
-      "mint": "2j5SaS7xy776qCBpyPQbZjyQSAtKiFgrwjfErthnW2ZM",
-      "pool": "Fe7bpDYCs74GqiCUF14HwgUMToPKV1d9mDYVX5BTohFr",
-      "liquidity_usd": 346940.8092,
-      "volume_24h_usd": 2157853.90209587,
-      "price_usd": 0.006858011197357094,
-      "change_24h_pct": 63.032,
-      "age_hours": 257.6567646958333,
-      "change_5m_pct": 2.784,
-      "change_1h_pct": 12.019,
-      "volume_1h_usd": 107837.154736454,
-      "fdv_usd": 6450613.95048126,
-      "market_cap_usd": 6450614.1293232,
-      "buys_1h": 405.0,
-      "sells_1h": 374.0
-    },
-    {
-      "id": "solana_4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-      "name": "JEANPHIL / SOL",
-      "mint": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump",
-      "pool": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-      "liquidity_usd": 404828.3762,
-      "volume_24h_usd": 458597.318803758,
-      "price_usd": 0.006705037451096811,
-      "change_24h_pct": -3.966,
-      "age_hours": 672.2820424758334,
-      "change_5m_pct": -0.055,
-      "change_1h_pct": 2.519,
-      "volume_1h_usd": 23339.7667172239,
-      "fdv_usd": 6500341.70930325,
-      "market_cap_usd": 6500341.7428801,
-      "buys_1h": 63.0,
-      "sells_1h": 77.0
-    },
-    {
-      "id": "solana_3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
-      "name": "TRUMP / USDC",
-      "mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
-      "pool": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
-      "liquidity_usd": 6293855.3079,
-      "volume_24h_usd": 2566881.8724437,
-      "price_usd": 1.7784427780446939,
-      "change_24h_pct": -1.472,
-      "age_hours": 15300.498986923889,
-      "change_5m_pct": -0.182,
-      "change_1h_pct": 0.317,
-      "volume_1h_usd": 25478.4046068712,
-      "fdv_usd": 1778440759.51288,
-      "market_cap_usd": 501285995.640507,
-      "buys_1h": 65.0,
-      "sells_1h": 34.0
-    },
-    {
-      "id": "solana_6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
-      "name": "DOPE / SOL",
-      "mint": "33jENUQnjoitkMFpvNJcSHyLAHFWJuHwT6E3E8CNpump",
-      "pool": "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ",
-      "liquidity_usd": 245056.7028,
-      "volume_24h_usd": 1404772.16014281,
-      "price_usd": 0.003759400258124198,
-      "change_24h_pct": 1.908,
-      "age_hours": 149.84620914805555,
-      "change_5m_pct": 2.65,
-      "change_1h_pct": -5.722,
-      "volume_1h_usd": 57709.3894995673,
-      "fdv_usd": 3749599.2330033,
-      "market_cap_usd": null,
-      "buys_1h": 261.0,
-      "sells_1h": 217.0
-    },
-    {
-      "id": "solana_8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d",
-      "name": "swordcat / SOL",
-      "mint": "5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump",
-      "pool": "8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d",
-      "liquidity_usd": 211713.0444,
-      "volume_24h_usd": 519446.106362854,
-      "price_usd": 0.0025337450618642494,
-      "change_24h_pct": 28.336,
-      "age_hours": 466.1801081877778,
-      "change_5m_pct": 2.824,
-      "change_1h_pct": 8.252,
-      "volume_1h_usd": 85910.5088119393,
-      "fdv_usd": 2408860.4928995,
-      "market_cap_usd": 2408860.49393989,
-      "buys_1h": 1725.0,
-      "sells_1h": 934.0
-    },
-    {
-      "id": "solana_HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe",
-      "name": "MASK / SOL",
-      "mint": "HuAXPyDWDaMYFKuwQHpqL1oPnj93zdzWmtvFGzCeCUa7",
-      "pool": "HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe",
-      "liquidity_usd": 129063.4655,
-      "volume_24h_usd": 647050.554093337,
-      "price_usd": 0.04959221377858431,
-      "change_24h_pct": 9.85,
-      "age_hours": 499.7078859777778,
-      "change_5m_pct": -0.122,
-      "change_1h_pct": 3.538,
-      "volume_1h_usd": 23792.3948504429,
-      "fdv_usd": 48635518.4578709,
-      "market_cap_usd": 0.0,
-      "buys_1h": 202.0,
-      "sells_1h": 119.0
-    },
-    {
-      "id": "solana_zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX",
-      "name": "STONK / SOL",
-      "mint": "6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx",
-      "pool": "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX",
-      "liquidity_usd": 2053481.2078,
-      "volume_24h_usd": 1575930.1293003,
-      "price_usd": 0.1089198540422062,
-      "change_24h_pct": -1.343,
-      "age_hours": 1592.5381637577777,
-      "change_5m_pct": 0.0,
-      "change_1h_pct": 0.128,
-      "volume_1h_usd": 29278.4403586844,
-      "fdv_usd": 85687875.8396242,
-      "market_cap_usd": 85694477.1930439,
-      "buys_1h": 24.0,
-      "sells_1h": 50.0
-    },
-    {
-      "id": "solana_3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp",
-      "name": "ZEREBRO / SOL",
-      "mint": "8x5VqbHA8D7NkD52uNuS5nnt3PwA8pLD34ymskeSo2Wn",
-      "pool": "3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp",
-      "liquidity_usd": 2866087.9445,
-      "volume_24h_usd": 3022200.34108587,
-      "price_usd": 0.02688351124973255,
-      "change_24h_pct": -21.913,
-      "age_hours": 17256.258163762777,
-      "change_5m_pct": 0.429,
-      "change_1h_pct": -1.325,
-      "volume_1h_usd": 44126.7190670169,
-      "fdv_usd": 27044934.0459323,
-      "market_cap_usd": 27044934.0459323,
-      "buys_1h": 129.0,
-      "sells_1h": 192.0
-    },
-    {
-      "id": "solana_CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf",
-      "name": "ELON / MUSK4",
-      "mint": "B2GESkSErPjuCq6n4LcaJP5v2z1kJnw3xHVZnop2sZx",
-      "pool": "CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf",
-      "liquidity_usd": 129651.7224,
-      "volume_24h_usd": 3454714.52254916,
-      "price_usd": 0.0016959718871319316,
-      "change_24h_pct": 784.596,
-      "age_hours": 25.888163764722222,
-      "change_5m_pct": -12.37,
-      "change_1h_pct": 7.694,
-      "volume_1h_usd": 123212.145238368,
-      "fdv_usd": 1696996.16496358,
-      "market_cap_usd": null,
-      "buys_1h": 557.0,
-      "sells_1h": 496.0
-    },
-    {
-      "id": "solana_DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt",
-      "name": "OTC / SOL",
-      "mint": "MukLDtJ8Cx9DxLbeyLRSWPSposTMWuwHANbuaudpump",
-      "pool": "DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt",
-      "liquidity_usd": 508546.9915,
-      "volume_24h_usd": 685743.923335969,
-      "price_usd": 0.006958632603666894,
-      "change_24h_pct": -14.063,
-      "age_hours": 1205.8462193227776,
-      "change_5m_pct": 0.034,
-      "change_1h_pct": 0.263,
-      "volume_1h_usd": 5730.1888795319,
-      "fdv_usd": 4579328.4451867,
-      "market_cap_usd": 4580008.60206885,
-      "buys_1h": 53.0,
-      "sells_1h": 34.0
-    },
-    {
-      "id": "solana_HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-      "name": "CARDS / USDC",
-      "mint": "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp",
-      "pool": "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-      "liquidity_usd": 4177028.0091,
-      "volume_24h_usd": 2741737.7976516,
-      "price_usd": 0.2841491449820259,
-      "change_24h_pct": -3.797,
-      "age_hours": 9936.4864971075,
-      "change_5m_pct": 0.0,
-      "change_1h_pct": 0.863,
-      "volume_1h_usd": 16539.2639197448,
-      "fdv_usd": 560955391.821235,
-      "market_cap_usd": 256473565.447524,
-      "buys_1h": 102.0,
-      "sells_1h": 117.0
-    },
-    {
-      "id": "solana_3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
-      "name": "KMNO / USDC",
-      "mint": "KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS",
-      "pool": "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
-      "liquidity_usd": 1997246.0866,
-      "volume_24h_usd": 6627940.38942662,
-      "price_usd": 0.03987543068994341,
-      "change_24h_pct": 4.226,
-      "age_hours": 17698.065941555556,
-      "change_5m_pct": -0.017,
-      "change_1h_pct": 1.279,
-      "volume_1h_usd": 149321.791045244,
-      "fdv_usd": 398752577.569248,
-      "market_cap_usd": 230512778.107503,
-      "buys_1h": 689.0,
-      "sells_1h": 874.0
-    },
-    {
-      "id": "solana_2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3",
-      "name": "FTR / SOL",
-      "mint": "DFMt2FyLpB6ekPNAzVErLXgpSnJ9CRf1VnxBAkTLpump",
-      "pool": "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3",
-      "liquidity_usd": 258138.1112,
-      "volume_24h_usd": 2794430.02718483,
-      "price_usd": 0.0028509494050894223,
-      "change_24h_pct": -19.536,
-      "age_hours": 42.139830446388885,
-      "change_5m_pct": -2.415,
-      "change_1h_pct": -4.752,
-      "volume_1h_usd": 61326.9517641755,
-      "fdv_usd": 2850921.13,
-      "market_cap_usd": null,
-      "buys_1h": 264.0,
-      "sells_1h": 313.0
-    },
-    {
-      "id": "solana_FTmwv748VxVVrRohjYzvdfyL4SXP3C6QTnHSem5QhewZ",
-      "name": "BORDR / SOL",
-      "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
-      "pool": "FTmwv748VxVVrRohjYzvdfyL4SXP3C6QTnHSem5QhewZ",
-      "liquidity_usd": 463553.0608,
-      "volume_24h_usd": 1108232.33954043,
-      "price_usd": 0.0045440939536264754,
-      "change_24h_pct": 8.265,
-      "age_hours": 233.10899711750002,
-      "change_5m_pct": -1.2,
-      "change_1h_pct": 9.989,
-      "volume_1h_usd": 19027.0633816831,
-      "fdv_usd": 4543957.00478668,
-      "market_cap_usd": 4543957.00478668,
-      "buys_1h": 26.0,
-      "sells_1h": 23.0
-    },
     {
       "id": "solana_2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj",
       "pool": "2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj",
       "mint": "3rF2NSivMQcHgKJfSQST2SHESmsHr6vHbzfkVgG2pump",
       "name": "XTO/DEX",
-      "liquidity_usd": 2066753.65,
-      "volume_24h_usd": 1102824.02,
-      "price_usd": 0.5819,
-      "age_hours": 27.723719796685113,
-      "change_24h_pct": 6082.0,
-      "change_5m_pct": 0.42,
-      "change_1h_pct": 6.81,
-      "volume_1h_usd": 48994.54,
-      "buys_1h": 3769.0,
-      "sells_1h": 939.0,
-      "fdv_usd": 581823242.0,
-      "market_cap_usd": 581823242.0,
+      "liquidity_usd": 2072107.46,
+      "volume_24h_usd": 1105887.55,
+      "price_usd": 0.5849,
+      "age_hours": 27.806606185574,
+      "change_24h_pct": 6049.0,
+      "change_5m_pct": 0.47,
+      "change_1h_pct": 6.58,
+      "volume_1h_usd": 51329.89,
+      "buys_1h": 3906.0,
+      "sells_1h": 970.0,
+      "fdv_usd": 584834086.0,
+      "market_cap_usd": 584834086.0,
+      "discovery_source": "dexscreener_public_promoted_list",
+      "promotion_is_not_safety_approval": true
+    },
+    {
+      "id": "solana_867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD",
+      "pool": "867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD",
+      "mint": "HKZDfZnkHZxd9agRDNPyDv4iT6LmAurJnpRtj9wpump",
+      "name": "MISTAKE/DEX",
+      "liquidity_usd": 215690.07,
+      "volume_24h_usd": 256744.27,
+      "price_usd": 0.003727,
+      "age_hours": 881.1568839633518,
+      "change_24h_pct": 16.12,
+      "change_5m_pct": 0.43,
+      "change_1h_pct": 5.72,
+      "volume_1h_usd": 10095.77,
+      "buys_1h": 80.0,
+      "sells_1h": 85.0,
+      "fdv_usd": 3589697.0,
+      "market_cap_usd": 3589697.0,
       "discovery_source": "dexscreener_public_promoted_list",
       "promotion_is_not_safety_approval": true
     }
@@ -34839,89 +34453,41 @@
     {
       "at": "2026-10-17T19:24:18+00:00",
       "error": "trades DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt: Primary rate limit for /networks/solana/pools/DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt/trades: Primary provider cooling down until 2026-10-17T19:29:12.883952+00:00; retry at 20"
+    },
+    {
+      "at": "2026-10-17T19:28:59+00:00",
+      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T19:29:12.883952+00:00; retry at 2026-10-17T19:29:12.883952+00:00"
+    },
+    {
+      "at": "2026-10-17T19:28:59+00:00",
+      "error": "trades 867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD: Primary rate limit for /networks/solana/pools/867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD/trades: Primary provider cooling down until 2026-10-17T19:29:12.883952+00:00; retry at 20"
     }
   ],
   "screening": [
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump"
-    },
-    {
-      "status": "REJECTED",
-      "reason": "normalized risk score above 25",
-      "score_normalised": 58.0,
-      "http_status": null,
-      "mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "33jENUQnjoitkMFpvNJcSHyLAHFWJuHwT6E3E8CNpump"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump"
-    },
-    {
-      "status": "REJECTED",
-      "reason": "normalized risk score above 25",
-      "score_normalised": 40.0,
-      "http_status": null,
-      "mint": "HuAXPyDWDaMYFKuwQHpqL1oPnj93zdzWmtvFGzCeCUa7"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx"
-    },
-    {
-      "status": "REJECTED",
-      "reason": "normalized risk score above 25",
-      "score_normalised": 53.0,
-      "http_status": null,
-      "mint": "8x5VqbHA8D7NkD52uNuS5nnt3PwA8pLD34ymskeSo2Wn"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "B2GESkSErPjuCq6n4LcaJP5v2z1kJnw3xHVZnop2sZx"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "MukLDtJ8Cx9DxLbeyLRSWPSposTMWuwHANbuaudpump"
-    },
     {
       "status": "REJECTED",
       "reason": "normalized risk score above 25",
       "score_normalised": 54.0,
       "http_status": null,
-      "mint": "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp"
+      "mint": "3rF2NSivMQcHgKJfSQST2SHESmsHr6vHbzfkVgG2pump"
+    },
+    {
+      "status": "PASS",
+      "reason": "risk score and flags pass provisional screen",
+      "score_normalised": 1.0,
+      "http_status": null,
+      "mint": "HKZDfZnkHZxd9agRDNPyDv4iT6LmAurJnpRtj9wpump"
     }
   ],
   "execution": {
     "event": "workflow_dispatch",
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T19:23:46.118Z",
+    "scheduled_at": "2026-10-17T19:28:46.070Z",
     "trigger_uid": "3977529251376136192",
-    "run_id": "39062280503",
+    "run_id": "39062636712",
     "run_attempt": "1",
-    "started_at": "2026-10-17T19:23:54+00:00",
-    "slot": 5974216
+    "started_at": "2026-10-17T19:28:55+00:00",
+    "slot": 5974217
   },
   "research": {
     "version": 2,
@@ -146462,6 +146028,42 @@
         "market_cap_usd": 581823242.0,
         "buys_1h": 3769.0,
         "sells_1h": 939.0
+      },
+      {
+        "at": "2026-10-17T19:28:57+00:00",
+        "pool": "2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj",
+        "name": "XTO/DEX",
+        "mint": "3rF2NSivMQcHgKJfSQST2SHESmsHr6vHbzfkVgG2pump",
+        "price_usd": 0.5849,
+        "liquidity_usd": 2072107.46,
+        "volume_24h_usd": 1105887.55,
+        "change_24h_pct": 6049.0,
+        "token_safety": "NOT_PASS",
+        "change_1h_pct": 6.58,
+        "change_5m_pct": 0.47,
+        "volume_1h_usd": 51329.89,
+        "fdv_usd": 584834086.0,
+        "market_cap_usd": 584834086.0,
+        "buys_1h": 3906.0,
+        "sells_1h": 970.0
+      },
+      {
+        "at": "2026-10-17T19:28:57+00:00",
+        "pool": "867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD",
+        "name": "MISTAKE/DEX",
+        "mint": "HKZDfZnkHZxd9agRDNPyDv4iT6LmAurJnpRtj9wpump",
+        "price_usd": 0.003727,
+        "liquidity_usd": 215690.07,
+        "volume_24h_usd": 256744.27,
+        "change_24h_pct": 16.12,
+        "token_safety": "PASS",
+        "change_1h_pct": 5.72,
+        "change_5m_pct": 0.43,
+        "volume_1h_usd": 10095.77,
+        "fdv_usd": 3589697.0,
+        "market_cap_usd": 3589697.0,
+        "buys_1h": 80.0,
+        "sells_1h": 85.0
       }
     ],
     "shadow_positions": [
@@ -149871,7 +149473,7 @@
       }
     },
     "last_status": "OK",
-    "last_run": "2026-10-17T19:24:14+00:00",
+    "last_run": "2026-10-17T19:28:57+00:00",
     "reinforcement_events": [],
     "wallet_tiers": {
       "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X": "exploration",
@@ -174715,7 +174317,7 @@
         "accumulation": false
       },
       "retired_shadow_strategies": {},
-      "last_deferral_at": "2026-10-17T19:24:14.058547+00:00",
+      "last_deferral_at": "2026-10-17T19:28:57.153174+00:00",
       "last_deferral_reason": "Main free-provider access limited; preserve capacity and existing shadow history"
     },
     "evaluation_v1": {
@@ -177669,7 +177271,7 @@
         }
       },
       "status": "UNPROVEN",
-      "last_run": "2026-10-17T19:24:14+00:00",
+      "last_run": "2026-10-17T19:28:57+00:00",
       "exit_diagnostics": {
         "12% paper stop loss": {
           "closed": 23,
@@ -178077,8 +177679,8 @@
           "first_observed_at": "2026-10-17T14:49:04+00:00",
           "mfe_pct": 2.6797,
           "mae_pct": -3.4923,
-          "samples": 55,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "samples": 56,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         },
         "momentum:5H9UMah59Ys2jCcw38e8qSJwdsuQE9tumcvwgkdb6s7RqhEFCXjuVm9j5oQCfYViXGtbcq3cTVg5pKWbuVKDn5LZ:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": {
           "signal_id": "5H9UMah59Ys2jCcw38e8qSJwdsuQE9tumcvwgkdb6s7RqhEFCXjuVm9j5oQCfYViXGtbcq3cTVg5pKWbuVKDn5LZ:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
@@ -178086,8 +177688,8 @@
           "first_observed_at": "2026-10-17T15:14:06+00:00",
           "mfe_pct": 7.3507,
           "mae_pct": -2.815,
-          "samples": 50,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "samples": 51,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         },
         "actual:55cz8KKZYyLcVmmLNhKJWZTg9X2NEADXrvSuKgZMg1dutLobgTEF1T6BJnVxcHi9t29hoGg8bHL3EeAwrhcZxPqX:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
           "signal_id": "55cz8KKZYyLcVmmLNhKJWZTg9X2NEADXrvSuKgZMg1dutLobgTEF1T6BJnVxcHi9t29hoGg8bHL3EeAwrhcZxPqX:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
@@ -178111,10 +177713,10 @@
           "signal_id": "4P5ZyTbk29ZxfGCbkDGmbNDAM153qfpg57CPoz8bUjHpGMCdR7M1tC4XrHsxucy9PRD95nd7dKbYHLmdvSh4BjRh:buy:2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
           "strategy": "quality",
           "first_observed_at": "2026-10-17T18:08:42+00:00",
-          "mfe_pct": 1.9556,
+          "mfe_pct": 2.0024,
           "mae_pct": 0.0,
-          "samples": 16,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "samples": 17,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         },
         "actual:XLBiMnUMC5E8UP7shyAE9bZaBVYQcyyXQy3gdzuGCfC5q86j8BjpspXRoJcnkokoSBPtEmdXydh8AxDyfv5pFpw:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": {
           "signal_id": "XLBiMnUMC5E8UP7shyAE9bZaBVYQcyyXQy3gdzuGCfC5q86j8BjpspXRoJcnkokoSBPtEmdXydh8AxDyfv5pFpw:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
@@ -178122,8 +177724,8 @@
           "first_observed_at": "2026-10-17T18:19:06+00:00",
           "mfe_pct": 5.0113,
           "mae_pct": -0.2737,
-          "samples": 14,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "samples": 15,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         },
         "momentum:RhWWSZBmP2qkSL3oNRA5qsTe1Eyf1feGUEAwRSj8A61k4Z24R4ifyAnG8YMd6sJPFZygfX1Sq1PDzt2mp2Ywye5:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj": {
           "signal_id": "RhWWSZBmP2qkSL3oNRA5qsTe1Eyf1feGUEAwRSj8A61k4Z24R4ifyAnG8YMd6sJPFZygfX1Sq1PDzt2mp2Ywye5:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
@@ -178131,17 +177733,17 @@
           "first_observed_at": "2026-10-17T18:29:14+00:00",
           "mfe_pct": 1.8213,
           "mae_pct": -1.0589,
-          "samples": 12,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "samples": 13,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         },
         "actual:2Zxy4zqhvzSJ8p8UYo9MTazxSua1h2JMBX5t2H2xNjBCFUt2vmXMg3KXwiqTNn4vGShLdAD2rRqaca8SoB9tJxXn:buy:8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d": {
           "signal_id": "2Zxy4zqhvzSJ8p8UYo9MTazxSua1h2JMBX5t2H2xNjBCFUt2vmXMg3KXwiqTNn4vGShLdAD2rRqaca8SoB9tJxXn:buy:8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d",
           "strategy": "actual",
           "first_observed_at": "2026-10-17T18:34:12+00:00",
           "mfe_pct": 3.1923,
-          "mae_pct": -0.246,
-          "samples": 11,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "mae_pct": -0.6503,
+          "samples": 12,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         },
         "actual:2g78WTY6ErKaEw2YaHamu8qH6DzmQfjMxL9g45BvdXvLRyGTwhYmRCWqAQpu1nBuwYpPZdyBqJRqnQqf8X3QyMN5:buy:3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK": {
           "signal_id": "2g78WTY6ErKaEw2YaHamu8qH6DzmQfjMxL9g45BvdXvLRyGTwhYmRCWqAQpu1nBuwYpPZdyBqJRqnQqf8X3QyMN5:buy:3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
@@ -178165,10 +177767,10 @@
           "signal_id": "37xNeWLsHK7xFPoH2VKK3NRwdPEQMCeQeRgDB121LWeKJ2TARa4M49x3AvdTnysuMvPbb7MZm9sr2Lh9gbtAJH42:buy:Fe7bpDYCs74GqiCUF14HwgUMToPKV1d9mDYVX5BTohFr",
           "strategy": "actual",
           "first_observed_at": "2026-10-17T19:19:13+00:00",
-          "mfe_pct": 3.0727,
+          "mfe_pct": 3.7939,
           "mae_pct": 0.0,
-          "samples": 2,
-          "last_observed_at": "2026-10-17T19:24:14+00:00"
+          "samples": 3,
+          "last_observed_at": "2026-10-17T19:28:57+00:00"
         }
       }
     },
@@ -178206,934 +177808,14 @@
         "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
         "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U": "8hnMfF4XL717GVwzDmvqjJvULozKW6w7BhHFABjvHje4",
         "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": "Ai66LHZG9MCzg1WKdawwqduVAXpNDUuV8M3uyq5ppump",
-        "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj": "CTPoyCwkjMvoJwU4xvZZqoD8tiYk6yDchySiN5gGpump",
-        "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump",
-        "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
         "8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d": "5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump",
         "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK": "KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS",
         "Fe7bpDYCs74GqiCUF14HwgUMToPKV1d9mDYVX5BTohFr": "2j5SaS7xy776qCBpyPQbZjyQSAtKiFgrwjfErthnW2ZM",
         "CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf": "B2GESkSErPjuCq6n4LcaJP5v2z1kJnw3xHVZnop2sZx",
         "2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj": "3rF2NSivMQcHgKJfSQST2SHESmsHr6vHbzfkVgG2pump",
-        "3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp": "8x5VqbHA8D7NkD52uNuS5nnt3PwA8pLD34ymskeSo2Wn",
-        "HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe": "HuAXPyDWDaMYFKuwQHpqL1oPnj93zdzWmtvFGzCeCUa7",
-        "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX": "6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx",
-        "DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt": "MukLDtJ8Cx9DxLbeyLRSWPSposTMWuwHANbuaudpump",
-        "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD": "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp",
-        "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3": "DFMt2FyLpB6ekPNAzVErLXgpSnJ9CRf1VnxBAkTLpump",
-        "FTmwv748VxVVrRohjYzvdfyL4SXP3C6QTnHSem5QhewZ": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr"
+        "867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD": "HKZDfZnkHZxd9agRDNPyDv4iT6LmAurJnpRtj9wpump"
       },
       "assessments": {
-        "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -1.307,
-            "avg_pnl_gbp": -1.307,
-            "mean_net_roi_pct": -12.979,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 1.307,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 1.307,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -1.1799,
-            "cooldown_until": "2026-10-16T22:28:58+00:00"
-          },
-          "selection_score": -1.1799,
-          "technical": {
-            "change_5m_pct": -2.568,
-            "change_1h_pct": -4.498,
-            "volume_pace_ratio": 0.300490422489519,
-            "buy_count_share": 0.8232142857142857
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.6334,
-            "avg_pnl_gbp": -0.6334,
-            "mean_net_roi_pct": -6.309,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.6334,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.6334,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -0.5735,
-            "cooldown_until": "2026-10-17T10:34:04+00:00"
-          },
-          "selection_score": -0.5735,
-          "technical": {
-            "change_5m_pct": -0.818,
-            "change_1h_pct": 0.892,
-            "volume_pace_ratio": 0.10360462892896898,
-            "buy_count_share": 0.5582329317269076
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd": {
-          "version": 1,
-          "allowed": true,
-          "reasons": [],
-          "history": {
-            "closed": 2,
-            "wins": 0,
-            "losses": 2,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.7152,
-            "avg_pnl_gbp": -0.3576,
-            "mean_net_roi_pct": -3.562,
-            "conservative_mean_roi_95_pct": -5.426,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.7152,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.7152,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 2,
-            "conservative_mean_95_gbp": -0.5448,
-            "loss_streak": 2,
-            "shrunk_roi_pct": -0.5937,
-            "cooldown_until": "2026-10-17T19:18:56+00:00"
-          },
-          "selection_score": -0.5937,
-          "technical": {
-            "change_5m_pct": 0.248,
-            "change_1h_pct": 0.77,
-            "volume_pace_ratio": 0.5925975718908532,
-            "buy_count_share": 0.5520661157024793
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": {
-          "version": 1,
-          "allowed": true,
-          "reasons": [],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 0.755,
-            "change_1h_pct": 5.195,
-            "volume_pace_ratio": 1.298345406419456,
-            "buy_count_share": 0.5125725338491296
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required"
-          ],
-          "history": {
-            "closed": 4,
-            "wins": 1,
-            "losses": 3,
-            "win_rate_pct": 25.0,
-            "win_rate_wilson_lower_pct": 4.56,
-            "net_gbp": 1.5991,
-            "avg_pnl_gbp": 0.3998,
-            "mean_net_roi_pct": 3.986,
-            "conservative_mean_roi_95_pct": -16.597,
-            "gross_wins_gbp": 3.469,
-            "gross_losses_gbp": 1.8699,
-            "profit_factor": 1.855,
-            "max_drawdown_gbp": 1.3172,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 4,
-            "distinct_pools": 1,
-            "distinct_signals": 4,
-            "conservative_mean_95_gbp": -1.667,
-            "loss_streak": 1,
-            "shrunk_roi_pct": 1.1387,
-            "cooldown_until": "2026-10-17T18:53:54+00:00"
-          },
-          "selection_score": 1.1387,
-          "technical": {
-            "change_5m_pct": -1.927,
-            "change_1h_pct": 18.93,
-            "volume_pace_ratio": 0.513982012684356,
-            "buy_count_share": 0.541994750656168
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": -0.118,
-            "change_1h_pct": 3.148,
-            "volume_pace_ratio": 0.2008832581197539,
-            "buy_count_share": 0.6962025316455697
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -1.2968,
-            "avg_pnl_gbp": -1.2968,
-            "mean_net_roi_pct": -12.866,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 1.2968,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 1.2968,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -1.1696,
-            "cooldown_until": "2026-10-16T23:33:59+00:00"
-          },
-          "selection_score": -1.1696,
-          "technical": {
-            "change_5m_pct": 0.908,
-            "change_1h_pct": -6.165,
-            "volume_pace_ratio": 0.5831707845944164,
-            "buy_count_share": 0.5275590551181102
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "Fe7bpDYCs74GqiCUF14HwgUMToPKV1d9mDYVX5BTohFr": {
-          "version": 1,
-          "allowed": true,
-          "reasons": [],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 2.784,
-            "change_1h_pct": 12.019,
-            "volume_pace_ratio": 1.1993822710430706,
-            "buy_count_share": 0.5198973042362003
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": -0.055,
-            "change_1h_pct": 2.519,
-            "volume_pace_ratio": 1.2214515398269776,
-            "buy_count_share": 0.45
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": -0.182,
-            "change_1h_pct": 0.317,
-            "volume_pace_ratio": 0.2382196536308745,
-            "buy_count_share": 0.6565656565656566
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.5297,
-            "avg_pnl_gbp": -0.5297,
-            "mean_net_roi_pct": -5.245,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.5297,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.5297,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -0.4768,
-            "cooldown_until": "2026-10-16T23:29:05+00:00"
-          },
-          "selection_score": -0.4768,
-          "technical": {
-            "change_5m_pct": 2.65,
-            "change_1h_pct": -5.722,
-            "volume_pace_ratio": 0.9859430499027064,
-            "buy_count_share": 0.5460251046025104
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d": {
-          "version": 1,
-          "allowed": true,
-          "reasons": [],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 2.824,
-            "change_1h_pct": 8.252,
-            "volume_pace_ratio": 3.9693284562734914,
-            "buy_count_share": 0.6487401278676194
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": -0.122,
-            "change_1h_pct": 3.538,
-            "volume_pace_ratio": 0.8824928327443489,
-            "buy_count_share": 0.6292834890965732
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 0.0,
-            "change_1h_pct": 0.128,
-            "volume_pace_ratio": 0.4458843419158506,
-            "buy_count_share": 0.32432432432432434
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 0.429,
-            "change_1h_pct": -1.325,
-            "volume_pace_ratio": 0.3504206002530906,
-            "buy_count_share": 0.40186915887850466
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "token-wide history cooldown",
-            "positive 5m and 1h momentum required"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -1.3699,
-            "avg_pnl_gbp": -1.3699,
-            "mean_net_roi_pct": -13.632,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 1.3699,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 1.3699,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -1.2393,
-            "cooldown_until": "2026-10-17T21:08:59+00:00"
-          },
-          "selection_score": -1.2393,
-          "technical": {
-            "change_5m_pct": -12.37,
-            "change_1h_pct": 7.694,
-            "volume_pace_ratio": 0.8559582756895517,
-            "buy_count_share": 0.5289648622981956
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "hourly volume fading versus daily pace"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 0.034,
-            "change_1h_pct": 0.263,
-            "volume_pace_ratio": 0.20054794279436539,
-            "buy_count_share": 0.6091954022988506
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": 0.0,
-            "change_1h_pct": 0.863,
-            "volume_pace_ratio": 0.144777642272675,
-            "buy_count_share": 0.4657534246575342
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "token-wide history cooldown",
-            "positive 5m and 1h momentum required",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.0923,
-            "avg_pnl_gbp": -0.0923,
-            "mean_net_roi_pct": -0.92,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.0923,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.0923,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -0.0836,
-            "cooldown_until": "2026-10-17T21:04:12+00:00"
-          },
-          "selection_score": -0.0836,
-          "technical": {
-            "change_5m_pct": -0.017,
-            "change_1h_pct": 1.279,
-            "volume_pace_ratio": 0.5406993386366111,
-            "buy_count_share": 0.44081893793985927
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -1.307,
-            "avg_pnl_gbp": -1.307,
-            "mean_net_roi_pct": -12.979,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 1.307,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 1.307,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -1.1799,
-            "cooldown_until": "2026-10-16T22:28:58+00:00"
-          },
-          "selection_score": -1.1799,
-          "technical": {
-            "change_5m_pct": -2.415,
-            "change_1h_pct": -4.752,
-            "volume_pace_ratio": 0.5267073528489753,
-            "buy_count_share": 0.45753899480069327
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "FTmwv748VxVVrRohjYzvdfyL4SXP3C6QTnHSem5QhewZ": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace"
-          ],
-          "history": {
-            "closed": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate_pct": null,
-            "win_rate_wilson_lower_pct": null,
-            "net_gbp": 0,
-            "avg_pnl_gbp": 0.0,
-            "mean_net_roi_pct": null,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0,
-            "profit_factor": null,
-            "max_drawdown_gbp": 0.0,
-            "distinct_exit_days": 0,
-            "distinct_wallets": 0,
-            "distinct_pools": 0,
-            "distinct_signals": 0,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 0,
-            "shrunk_roi_pct": 0.0,
-            "cooldown_until": null
-          },
-          "selection_score": 0.0,
-          "technical": {
-            "change_5m_pct": -1.2,
-            "change_1h_pct": 9.989,
-            "volume_pace_ratio": 0.4120521526648114,
-            "buy_count_share": 0.5306122448979592
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T19:24:13.465570+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
         "2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj": {
           "version": 1,
           "allowed": true,
@@ -179163,10 +177845,53 @@
           },
           "selection_score": 0.0,
           "technical": {
-            "change_5m_pct": 0.42,
-            "change_1h_pct": 6.81,
-            "volume_pace_ratio": 1.0662344478133512,
-            "buy_count_share": 0.800552251486831
+            "change_5m_pct": 0.47,
+            "change_1h_pct": 6.58,
+            "volume_pace_ratio": 1.1139625905002728,
+            "buy_count_share": 0.8010664479081214
+          },
+          "news": {
+            "status": "OK",
+            "checked_at": "2026-10-17T19:24:13.465570+00:00",
+            "risk_off": false,
+            "evidence": []
+          }
+        },
+        "867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD": {
+          "version": 1,
+          "allowed": false,
+          "reasons": [
+            "sell-dominated transaction count"
+          ],
+          "history": {
+            "closed": 0,
+            "wins": 0,
+            "losses": 0,
+            "win_rate_pct": null,
+            "win_rate_wilson_lower_pct": null,
+            "net_gbp": 0,
+            "avg_pnl_gbp": 0.0,
+            "mean_net_roi_pct": null,
+            "conservative_mean_roi_95_pct": null,
+            "gross_wins_gbp": 0,
+            "gross_losses_gbp": 0,
+            "profit_factor": null,
+            "max_drawdown_gbp": 0.0,
+            "distinct_exit_days": 0,
+            "distinct_wallets": 0,
+            "distinct_pools": 0,
+            "distinct_signals": 0,
+            "conservative_mean_95_gbp": null,
+            "loss_streak": 0,
+            "shrunk_roi_pct": 0.0,
+            "cooldown_until": null
+          },
+          "selection_score": 0.0,
+          "technical": {
+            "change_5m_pct": 0.43,
+            "change_1h_pct": 5.72,
+            "volume_pace_ratio": 0.943734713144718,
+            "buy_count_share": 0.48484848484848486
           },
           "news": {
             "status": "OK",
@@ -179186,492 +177911,32 @@
         "positive_exposure_requires_oos": true,
         "automatic_shadow_promotion": false
       },
-      "last_run": "2026-10-17T19:24:14.058547+00:00",
+      "last_run": "2026-10-17T19:28:57.153174+00:00",
       "pool_reports": {
-        "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -1.307,
-          "avg_pnl_gbp": -1.307,
-          "mean_net_roi_pct": -12.979,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 1.307,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 1.307,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -1.1799,
-          "cooldown_until": "2026-10-16T22:28:58+00:00"
-        },
-        "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.6334,
-          "avg_pnl_gbp": -0.6334,
-          "mean_net_roi_pct": -6.309,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.6334,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.6334,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -0.5735,
-          "cooldown_until": "2026-10-17T10:34:04+00:00"
-        },
-        "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd": {
-          "closed": 2,
-          "wins": 0,
-          "losses": 2,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.7152,
-          "avg_pnl_gbp": -0.3576,
-          "mean_net_roi_pct": -3.562,
-          "conservative_mean_roi_95_pct": -5.426,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.7152,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.7152,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 2,
-          "conservative_mean_95_gbp": -0.5448,
-          "loss_streak": 2,
-          "shrunk_roi_pct": -0.5937,
-          "cooldown_until": "2026-10-17T19:18:56+00:00"
-        },
-        "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
-          "closed": 4,
-          "wins": 1,
-          "losses": 3,
-          "win_rate_pct": 25.0,
-          "win_rate_wilson_lower_pct": 4.56,
-          "net_gbp": 1.5991,
-          "avg_pnl_gbp": 0.3998,
-          "mean_net_roi_pct": 3.986,
-          "conservative_mean_roi_95_pct": -16.597,
-          "gross_wins_gbp": 3.469,
-          "gross_losses_gbp": 1.8699,
-          "profit_factor": 1.855,
-          "max_drawdown_gbp": 1.3172,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 4,
-          "distinct_pools": 1,
-          "distinct_signals": 4,
-          "conservative_mean_95_gbp": -1.667,
-          "loss_streak": 1,
-          "shrunk_roi_pct": 1.1387,
-          "cooldown_until": "2026-10-17T18:53:54+00:00"
-        },
-        "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -1.2968,
-          "avg_pnl_gbp": -1.2968,
-          "mean_net_roi_pct": -12.866,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 1.2968,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 1.2968,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -1.1696,
-          "cooldown_until": "2026-10-16T23:33:59+00:00"
-        },
-        "Fe7bpDYCs74GqiCUF14HwgUMToPKV1d9mDYVX5BTohFr": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "6iep3EgqksbZwgzMBCyAJtiVtVYkCgL9BnPBEwLR8AGQ": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.5297,
-          "avg_pnl_gbp": -0.5297,
-          "mean_net_roi_pct": -5.245,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.5297,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.5297,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -0.4768,
-          "cooldown_until": "2026-10-16T23:29:05+00:00"
-        },
-        "8ewuF2o8ACro7fqWepZ3tKhkbBjndZU4Ldk9scRPw83d": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -1.3699,
-          "avg_pnl_gbp": -1.3699,
-          "mean_net_roi_pct": -13.632,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 1.3699,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 1.3699,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -1.2393,
-          "cooldown_until": "2026-10-17T21:08:59+00:00"
-        },
-        "DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
-        "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.0923,
-          "avg_pnl_gbp": -0.0923,
-          "mean_net_roi_pct": -0.92,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.0923,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.0923,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -0.0836,
-          "cooldown_until": "2026-10-17T21:04:12+00:00"
-        },
-        "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -1.307,
-          "avg_pnl_gbp": -1.307,
-          "mean_net_roi_pct": -12.979,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 1.307,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 1.307,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -1.1799,
-          "cooldown_until": "2026-10-16T22:28:58+00:00"
-        },
-        "FTmwv748VxVVrRohjYzvdfyL4SXP3C6QTnHSem5QhewZ": {
-          "closed": 0,
-          "wins": 0,
-          "losses": 0,
-          "win_rate_pct": null,
-          "win_rate_wilson_lower_pct": null,
-          "net_gbp": 0,
-          "avg_pnl_gbp": 0.0,
-          "mean_net_roi_pct": null,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0,
-          "profit_factor": null,
-          "max_drawdown_gbp": 0.0,
-          "distinct_exit_days": 0,
-          "distinct_wallets": 0,
-          "distinct_pools": 0,
-          "distinct_signals": 0,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 0,
-          "shrunk_roi_pct": 0.0,
-          "cooldown_until": null
-        },
         "2aEWsofKAiPyoTEdsSWVDL5paCmb9GvK9Dtg5w8UhHgj": {
+          "closed": 0,
+          "wins": 0,
+          "losses": 0,
+          "win_rate_pct": null,
+          "win_rate_wilson_lower_pct": null,
+          "net_gbp": 0,
+          "avg_pnl_gbp": 0.0,
+          "mean_net_roi_pct": null,
+          "conservative_mean_roi_95_pct": null,
+          "gross_wins_gbp": 0,
+          "gross_losses_gbp": 0,
+          "profit_factor": null,
+          "max_drawdown_gbp": 0.0,
+          "distinct_exit_days": 0,
+          "distinct_wallets": 0,
+          "distinct_pools": 0,
+          "distinct_signals": 0,
+          "conservative_mean_95_gbp": null,
+          "loss_streak": 0,
+          "shrunk_roi_pct": 0.0,
+          "cooldown_until": null
+        },
+        "867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD": {
           "closed": 0,
           "wins": 0,
           "losses": 0,
@@ -182212,7 +180477,7 @@
       "forward_description": "Forward sampled quote cohorts, one per pool/hour; costs 1% each side; not strategy P&L or causal proof; no automatic promotion."
     },
     "primary_provider_v1": {
-      "requests": 7,
+      "requests": 0,
       "spacing_seconds": 3.1,
       "budget_seconds": 70,
       "http_status": 429,
@@ -182925,7 +181190,7 @@
       "equity_usd": 1979.355924399658,
       "peak_equity_usd": 2004.3313262807205,
       "max_drawdown_pct": 1.246071522885761,
-      "cycles": 271,
+      "cycles": 272,
       "rules": {
         "paper_only": true,
         "max_positions": 1,
@@ -182940,8 +181205,8 @@
         "promotion": "Never automatically replaces the original account"
       },
       "feed": {
-        "at": "2026-10-17T19:24:18.545000+00:00",
-        "eligible": 29,
+        "at": "2026-10-17T19:28:59.686000+00:00",
+        "eligible": 30,
         "scanned": 6,
         "requests": 7,
         "errors": {},
@@ -183004,10 +181269,10 @@
           }
         }
       },
-      "last_run": "2026-10-17T19:24:18.802230+00:00",
+      "last_run": "2026-10-17T19:29:00.061482+00:00",
       "entry_status": "DAILY_CAP",
       "policy_registered_at": "2026-10-17T08:00:08.448086+00:00",
-      "cost_hurdle_rejections": 3,
+      "cost_hurdle_rejections": 2,
       "forward_signals": [
         {
           "at": "2026-10-17T08:30:13.255307+00:00",
@@ -183808,6 +182073,10 @@
             "30m": {
               "net_roi_pct": -0.27725,
               "at": "2026-10-17T19:00:16.030465+00:00"
+            },
+            "60m": {
+              "net_roi_pct": 0.01454,
+              "at": "2026-10-17T19:29:00.061482+00:00"
             }
           }
         },
@@ -183848,6 +182117,10 @@
             "5m": {
               "net_roi_pct": 0.29662,
               "at": "2026-10-17T19:00:16.030465+00:00"
+            },
+            "30m": {
+              "net_roi_pct": 0.49022,
+              "at": "2026-10-17T19:29:00.061482+00:00"
             }
           }
         },
@@ -183877,23 +182150,23 @@
           "mean_net_roi_pct": -0.4527
         },
         "30m": {
-          "priced": 32,
+          "priced": 33,
           "missing": 0,
-          "mean_net_roi_pct": -0.3746
+          "mean_net_roi_pct": -0.3483
         },
         "60m": {
-          "priced": 30,
+          "priced": 31,
           "missing": 0,
-          "mean_net_roi_pct": -0.2495
+          "mean_net_roi_pct": -0.241
         }
       },
       "ranking_policy": "V4_1_COST_NORMALIZED_WITH_FORWARD_FEEDBACK",
       "missed_winners": {
-        "evaluated": 29,
-        "winners": 13,
+        "evaluated": 30,
+        "winners": 14,
         "losers_or_flat": 16,
-        "win_rate_pct": 44.83,
-        "net_mean_pct": -0.2454,
+        "win_rate_pct": 46.67,
+        "net_mean_pct": -0.2368,
         "top_missed": [
           {
             "at": "2026-10-17T12:40:12.742689+00:00",
@@ -183998,58 +182271,58 @@
     },
     "retired_shadow_strategies": {},
     "alternate_price_feed_v1": {
-      "status": "NOT_REQUIRED",
-      "quoted_pools": 0,
+      "status": "OK",
+      "quoted_pools": 5,
+      "requested_pools": 5,
       "provider": "dexscreener"
     },
-    "main_trade_cursor": 14,
+    "main_trade_cursor": 0,
     "helius_rpc_v1": {
       "status": "NOT_CONFIGURED",
       "purpose": "READ_ONLY_RPC_PROBE",
       "swap_decoding": false
     },
-    "gecko_discovery_cursor": 1,
+    "gecko_discovery_cursor": 2,
     "broad_discovery_v1": {
       "mode": "gecko_plus_free_dex_batch",
       "sources": {
-        "/token-profiles/latest/v1": 22,
-        "/token-boosts/top/v1": 19
+        "/token-profiles/latest/v1": 24,
+        "/token-boosts/top/v1": 20
       },
       "errors": [],
-      "gecko_extra_page": 2,
-      "raw_token_mints": 41,
-      "qualified_pairs": 1,
+      "raw_token_mints": 44,
+      "qualified_pairs": 2,
       "batch_requests": 2,
-      "raw_pool_rows": 41,
-      "eligible_unique_pools": 22,
-      "bounded_candidates": 22
+      "raw_pool_rows": 2,
+      "eligible_unique_pools": 2,
+      "bounded_candidates": 2
     }
   },
   "cycle_health": {
-    "screened_pass": 6,
+    "screened_pass": 1,
     "screened_unavailable": 0,
-    "screened_rejected_or_unavailable": 4,
-    "trade_feeds_sampled": 4,
+    "screened_rejected_or_unavailable": 1,
+    "trade_feeds_sampled": 0,
     "trade_feeds_budget_deferred": 0,
-    "trade_feeds_attempted": 6,
-    "trade_feed_budget": 6,
-    "security_screened": 10,
-    "unscreened_discovery_candidates": 12,
-    "discoveries_eligible_unique": 22,
-    "discovery_raw_rows": 41,
-    "discovery_free_batch_tokens": 41,
+    "trade_feeds_attempted": 1,
+    "trade_feed_budget": 2,
+    "security_screened": 2,
+    "unscreened_discovery_candidates": 0,
+    "discoveries_eligible_unique": 2,
+    "discovery_raw_rows": 2,
+    "discovery_free_batch_tokens": 44,
     "discovery_errors": [],
-    "alternate_quoted_pools": 0,
-    "trade_feeds_unavailable": 2,
-    "candidate_pools": 22,
+    "alternate_quoted_pools": 5,
+    "trade_feeds_unavailable": 1,
+    "candidate_pools": 2,
     "errors_this_cycle": 2,
     "error_messages": [
-      "trades CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf: Primary rate limit for /networks/solana/pools/CnHqem7jPbjA5p2xHBGPHQG7E9NkZWcQr9q6R9YWb7zf/trades: HTTP Error 429: Too Many Requests; retry at 2026",
-      "trades DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt: Primary rate limit for /networks/solana/pools/DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt/trades: Primary provider cooling down until 2026-10-17T1"
+      "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T19:29:12.883952+00:00; retry at 2026-10-17T19:29:12.883952+00:00",
+      "trades 867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD: Primary rate limit for /networks/solana/pools/867dKvaCcyRrUDP66bqNXbujXfjaxsNB9wTpc4CmBdAD/trades: Primary provider cooling down until 2026-10-17T1"
     ],
     "partial_screening_only": false,
-    "partial_trade_feeds_only": true,
-    "rate_limit_errors": 1,
+    "partial_trade_feeds_only": false,
+    "rate_limit_errors": 0,
     "screening_http_statuses": []
   }
 }
