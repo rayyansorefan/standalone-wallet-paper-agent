@@ -87,6 +87,8 @@ class LiveModeIntegration(unittest.TestCase):
                 self.assertEqual(result['cycle_health']['security_screened'],10)
                 self.assertEqual(result['cycle_health']['unscreened_discovery_candidates'],0)
                 self.assertEqual(result['cycle_health']['trade_feeds_attempted'],4)
+                self.assertFalse(whale.call_args.kwargs['allow_optional_gecko'],
+                                 'Main four swap feeds must reserve shared free quota')
                 sampled.extend(feeds)
             self.assertEqual(len(set(sampled)),10,
                              'Broad rotation must eventually cover every candidate')
