@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-17T16:44:03+00:00",
-  "last_data_at": "2026-10-17T16:44:03+00:00",
-  "cycle": 496,
+  "last_run": "2026-10-17T16:49:06+00:00",
+  "last_data_at": "2026-10-17T16:49:06+00:00",
+  "cycle": 497,
   "status": "OK",
   "cycle_health": {
     "screened_pass": 4,
@@ -40,16 +40,16 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 2,
-    "last_success_at": "2026-10-17T16:44:00.874982+00:00"
+    "last_success_at": "2026-10-17T16:49:00.895452+00:00"
   },
   "whale": {
     "status": "OK",
-    "last_run": "2026-10-17T16:45:03+00:00",
+    "last_run": "2026-10-17T16:50:06+00:00",
     "last_scan_errors": []
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-17T16:45:09.264250+00:00",
+    "last_run": "2026-10-17T16:50:11.885969+00:00",
     "closed": 10,
     "wins": 1
   },
@@ -59,8 +59,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T16:43:46.106Z",
-    "run_id": "39050674275",
+    "scheduled_at": "2026-10-17T16:48:46.117Z",
+    "run_id": "39051037884",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
