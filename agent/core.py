@@ -259,6 +259,8 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     skipped_risk = 0
     unavailable_risk = 0
     state["screening"] = []
+    # A single provider failure must not invalidate unrelated safely screened
+    # pools. Missing risk evidence always fails closed for its own token.
     # Store recent IDs to avoid acting on the same on-chain trade multiple times.
     seen = set(state['seen_trades'])
     pools = []
@@ -411,11 +413,31 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     if sampled_feeds:
         state['last_data_at'] = now_iso()
     state['errors'] = (state['errors'] + [{'at': now_iso(), 'error': x} for x in errors])[-80:]
+    # Isolate a PARTIAL security-provider outage only when at least one safe
+    # token actually delivered an on-chain trade feed and ALL observed errors
+    # came from unavailable security checks. Other failures remain degraded.
+    partial_screening_only = bool(
+        unavailable_risk and screened_pools and sampled_feeds and
+        len(errors) == unavailable_risk and
+        all(x.startswith('token security provider unavailable for ') for x in errors))
+    state['cycle_health'] = {
+        'screened_pass': screened_pools,
+        'screened_unavailable': unavailable_risk,
+        'screened_rejected_or_unavailable': skipped_risk,
+        'trade_feeds_sampled': sampled_feeds,
+        'candidate_pools': len(candidate_pools),
+        'errors_this_cycle': len(errors),
+        'partial_screening_only': partial_screening_only,
+        'screening_http_statuses': [
+            v.get('http_status') for v in state['screening']
+            if v.get('status') == 'UNAVAILABLE' and v.get('http_status') is not None],
+    }
     state['last_status'] = ('API_ERROR' if not candidate_pools and errors
                             else 'NO_ELIGIBLE_POOLS' if not candidate_pools
                             else 'SCREENING_UNAVAILABLE' if candidate_pools and unavailable_risk and not screened_pools
                             else 'NO_SAFE_POOLS' if candidate_pools and not screened_pools and not errors
                             else 'TRADE_FEEDS_FAILED' if screened_pools and not sampled_feeds
+                            else 'PARTIAL_SCREENING_UNAVAILABLE' if partial_screening_only
                             else 'DEGRADED' if errors
                             else 'BOOTSTRAPPED_NO_TRADES' if first else 'OK')
     from .adaptive import finalize
