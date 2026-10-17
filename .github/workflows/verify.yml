@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'agent/**'
+      - 'docs/index.html'
       - 'tests/**'
       - 'infra/**'
       - '.github/workflows/**'
@@ -10,6 +11,7 @@ on:
     branches: [main]
     paths:
       - 'agent/**'
+      - 'docs/index.html'
       - 'tests/**'
       - 'infra/**'
       - '.github/workflows/**'
@@ -28,3 +30,19 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Google scheduler tests
         run: node infra/google_apps_script/test.mjs
+      - name: Check dashboard JavaScript syntax
+        run: |
+          python - <<'PY'
+          import pathlib, re, subprocess, tempfile
+          html=pathlib.Path('docs/index.html').read_text(encoding='utf8')
+          scripts=re.findall(r'<script\b[^>]*>(.*?)</script>',html,re.I|re.S)
+          checked=0
+          for body in scripts:
+              if not body.strip(): continue
+              with tempfile.NamedTemporaryFile('w',suffix='.js',encoding='utf8') as f:
+                  f.write(body);f.flush()
+                  subprocess.run(['node','--check',f.name],check=True)
+              checked+=1
+          if checked<1:raise SystemExit('No embedded JavaScript scripts found')
+          print(f'Checked {checked} embedded JavaScript blocks')
+          PY

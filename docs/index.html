@@ -217,6 +217,8 @@ poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
 <div class="table-wrap"><table><thead><tr><th>Equity</th><th>Realised</th><th>Closed / wins</th><th>Profit factor</th><th>Max drawdown</th><th>Cost stress P&amp;L</th></tr></thead><tbody id="strategy-metrics"></tbody></table></div>
 <h3>Current position and selection</h3><p id="strategy-position"></p><p id="strategy-selection"></p>
 <h3>Learning evidence</h3><p id="strategy-learning"></p>
+<h3>Forward outcomes · not executed trades</h3><p id="strategy-forward"></p>
+<div class="table-wrap"><table><thead><tr><th>Observed UTC</th><th>Instrument</th><th>Setup</th><th>Why skipped</th><th>60m net quote return</th></tr></thead><tbody id="strategy-missed"><tr><td colspan="5">Awaiting future observed quotes.</td></tr></tbody></table></div>
 <h3>Recent actions</h3><div class="table-wrap"><table><thead><tr><th>UTC</th><th>Action</th><th>Instrument</th><th>Setup</th><th>Detail</th></tr></thead><tbody id="strategy-events"></tbody></table></div>
 <p>Public Kraken perpetual prices; simulated fills at bid/ask plus 0.10% adverse slippage and 0.05% fee each side. Adverse carry reserve: at least 0.01%/hour, or greater observed absolute funding rate; no funding credits. This is a conservative estimate, not exchange funding settlement. Stress deducts another 0.35% each side. Exits are sampled every five minutes and can gap beyond stops. No paid AI, live orders or automatic promotion.</p>
 </section>
@@ -232,6 +234,19 @@ window.unifiedStrategyRender=function(s){
  const p=b.position;put('strategy-position',p?(p.direction===1?'LONG ':'SHORT ')+p.symbol+' · '+p.setup+' · net '+money(p.net_usd)+' · stop '+Number(p.stop).toPrecision(6)+' · winner add '+(p.added?'used':'available')+' · quote '+p.marked_at:'Flat; no forced trades.');
  put('strategy-selection',(b.candidates||[]).map(c=>c.symbol+' '+c.setup+' '+(c.feedback.allowed?'eligible':c.feedback.paused?'setup paused after losses':'cooldown')).join(' | ')||'No qualified candle setup in the scanned universe.');
  put('strategy-learning',Object.entries(summary.feedback||{}).map(([name,f])=>name+': '+f.closed+' closed, '+(f.paused?'PAUSED':f.reinforced?'validated risk ×1.25':'unproven risk ×1.00')).join(' | ')+' · Registered '+b.registered_at+'. Reinforcement requires 20 training + 10 subsequent validation closures per setup, 14 days, three instruments and positive results excluding the best winner and under cost stress in both splits. One add to an open winner is a separate bounded rule.');
+ const missed=b.missed_winners||{}, forward=b.forward_summary?.['60m']||{}, rec=b.recovery_v1||{};
+ put('strategy-forward',
+     '60-minute observed quotes: '+(forward.priced||0)+' priced, '+(forward.missing||0)+' missing · '
+     +(missed.evaluated||0)+' non-entered setup outcomes, '+(missed.winners||0)+' positive net · '
+     +'These are hypothetical quote observations, NOT executed winning trades. Recovery: '
+     +Object.entries(rec).map(([name,x])=>name+' '+x.status+' ('+(x.evaluated||0)+' retests)').join('; '));
+ const missedRows=missed.top_missed||[];
+ el('strategy-missed').innerHTML=missedRows.length
+     ?missedRows.map(x=>'<tr>'+[
+         x.at,x.symbol,x.setup,x.reason,
+         Number(x.net_quote_roi_pct).toFixed(2)+'% (hypothetical)'
+       ].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')
+     :'<tr><td colspan="5">No verified positive missed 60-minute quote outcomes yet.</td></tr>';
  el('strategy-events').innerHTML=(b.events||[]).slice(-12).reverse().map(e=>'<tr>'+[e.at,e.action,e.symbol,e.setup,e.reason??(e.net_usd!=null?money(e.net_usd):e.notional_usd!=null?money(e.notional_usd):'')].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('');
 };
 </script>

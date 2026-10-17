@@ -9,7 +9,9 @@ import json
 import math
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from .strategy_lab import market_regime, context_adjustment, observe_forward, improved_stop, has_cost_room
+from .strategy_lab import (market_regime, context_adjustment, observe_forward,
+                           improved_stop, has_cost_room, priority_score,
+                           recovery_state)
 
 UTC = dt.timezone.utc
 BASE = 'https://futures.kraken.com'
@@ -167,7 +169,8 @@ def feedback(book, setup, symbol, now):
     cooldown = any(0 <= (now-stamp(t['exit_at'])).total_seconds() <
                    (7200 if t['net_usd']<0 else 1800) for t in same)
     recent = [t for t in rows if 0 <= (now-stamp(t['exit_at'])).total_seconds() < 86400]
-    paused = len(recent)>=3 and all(t['net_usd']<0 for t in recent[-3:])
+    recovery = recovery_state(book,setup,now,rows)
+    paused = recovery['status'] in ('PAUSED','RETESTING')
     # Fixed training/validation split per predeclared setup, no retrospective cohort search.
     train, valid = rows[:20], rows[20:]
     def robust(xs):
@@ -177,8 +180,9 @@ def feedback(book, setup, symbol, now):
                   (now-stamp(book.get('policy_registered_at') or book['registered_at'])).total_seconds()>=14*86400 and
                   robust(train) and robust(valid))
     edge = sum(t['net_usd']/t['risk_usd'] for t in rows)/(len(rows)+10)
-    return dict(allowed=not(cooldown or paused), paused=paused, cooldown=cooldown,
-                closed=len(rows), edge=edge, reinforced=reinforced,
+    return dict(allowed=not cooldown and recovery['allowed'], paused=paused,
+                cooldown=cooldown, recovery=recovery, closed=len(rows),
+                edge=edge, reinforced=reinforced,
                 risk_multiplier=1.25 if reinforced else 1.)
 
 
@@ -265,25 +269,35 @@ def advance(state, now, quotes, indicators, eligible):
         else:
             event(b,now,'HOLD_UNPRICED',symbol=p['symbol'],reason='No executable fresh quote; no fabricated exit')
     candidates=[]
+    watched_setups=[]
     b['cost_hurdle_rejections'] = 0
     for symbol,f in indicators.items():
         if symbol not in eligible or symbol==closed_symbol:
             continue
-        if not has_cost_room(f,quotes.get(symbol) or {}):
-            b['cost_hurdle_rejections'] += 1
+        q=quotes.get(symbol)
+        if not q:
             continue
-        for setup,direction,score in setups(f):
+        cost_ok=has_cost_room(f,q)
+        setups_now=setups(f)
+        if not cost_ok:
+            b['cost_hurdle_rejections'] += 1
+        for setup,direction,base_score in setups_now:
             memory=feedback(b,setup,symbol,now)
             regime=market_regime(f)
             learned=context_adjustment(b,setup,regime)
             memory={**memory,'learned':learned,
                     'allowed':memory['allowed'] and learned['status']!='NEGATIVE_FORWARD'}
-            candidates.append(dict(symbol=symbol,setup=setup,direction=direction,
-                                   regime=regime,learning=learned,
-                                   score=score+memory['edge']+learned['adjustment'],
-                                   feedback=memory,features=f))
+            rank=priority_score(base_score,f,q,learned,memory['edge'])
+            candidate=dict(symbol=symbol,setup=setup,direction=direction,
+                           regime=regime,learning=learned,score=rank,
+                           cost_qualified=cost_ok,feedback=memory,features=f)
+            watched_setups.append(candidate)
+            if cost_ok and rank>-999:
+                candidates.append(candidate)
     candidates.sort(key=lambda c:c['score'],reverse=True)
+    watched_setups.sort(key=lambda c:c['score'],reverse=True)
     b['candidates']=candidates[:12]
+    b['ranking_policy']='V4_1_COST_NORMALIZED_WITH_FORWARD_FEEDBACK'
     b['news_allows_entry']=news_allowed(state,now)
     day=now.date().isoformat()
     current_equity=b['cash_usd']+(p['net_usd']+p['entry_fees']+p['carry_usd'] if p else 0)
@@ -310,11 +324,33 @@ def advance(state, now, quotes, indicators, eligible):
                    features=f,feedback=c['feedback'],version=VERSION)
             p['net_usd']=exit_value(p,q)[1]
             b['position']=p; b['cash_usd']-=fee; b['entries_today']+=1
-            selected_new=symbol
+            selected_new=(symbol,c['setup'])
             event(b,now,'OPEN',symbol=p['symbol'],setup=p['setup'],direction=direction,notional_usd=notional)
             break
+    # Record blocked setups too: their future outcomes identify whether the veto
+    # avoided a loss or missed a positive forward quote. Never backfill.
+    for c in watched_setups:
+        if selected_new == (c['symbol'],c['setup']):
+            reason=None
+        elif not c['cost_qualified']:
+            reason='COST_HURDLE'
+        elif c['feedback']['recovery']['status'] in ('PAUSED','RETESTING'):
+            reason='LOSS_SUSPENSION'
+        elif c['learning']['status']=='NEGATIVE_FORWARD':
+            reason='NEGATIVE_FORWARD'
+        elif c['feedback']['cooldown']:
+            reason='TOKEN_COOLDOWN'
+        elif not b['news_allows_entry']:
+            reason='NEWS_VETO'
+        elif p:
+            reason='POSITION_OCCUPIED'
+        elif b['entries_today']>=6 or day_loss<=-b['starting_usd']*.02:
+            reason='DAILY_LIMIT'
+        else:
+            reason='RANKED_BELOW_SELECTED'
+        c['rejection_reason']=reason
     # Mark forward outcomes using current quotes before registering fresh signals.
-    observe_forward(b,now,quotes,candidates,selected_new)
+    observe_forward(b,now,quotes,watched_setups,selected_new)
     p=b.get('position')
     # Cash includes fees and carry already; net includes them for the trade report only.
     unrealized=0.
