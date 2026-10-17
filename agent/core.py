@@ -396,7 +396,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         page_due=(int(state.get('completed_cycles',0))%3==0)
         if page_due and not recent_429 and not primary_health.get('retry_at'):
             page=2+(int((state.get('research') or {}).get('gecko_discovery_cursor',0))%4)
-            state['research']['gecko_discovery_cursor']=(page-1)%4+1
+            state['research']['gecko_discovery_cursor']=(int(state['research'].get('gecko_discovery_cursor',0))+1)%4
             try:
                 more=fetch('/networks/solana/trending_pools',{'page':page,'include':'base_token'})
                 if isinstance(more.get('data'),list):
