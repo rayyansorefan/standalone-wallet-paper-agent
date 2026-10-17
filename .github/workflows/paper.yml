@@ -106,7 +106,9 @@ jobs:
                     'other safe-token feeds succeeded. Check cycle_health and audit log.')
           w=(s.get('research') or {}).get('whale_v3') or {}
           print('Whale research status:',w.get('status'),'metrics:',w.get('scan_metrics'))
-          if w.get('status') != 'OK':
+          if w.get('status') == 'DEFERRED_PRIMARY_QUOTA':
+              print('Optional whale Gecko reads intentionally deferred to protect main free wallet-swap quota.')
+          elif w.get('status') != 'OK':
               print('::warning::Whale research incomplete; inspect persisted V3 errors and provider cooldowns.')
           e=(s.get('research') or {}).get('evaluation_v1') or {}
           print('Forward evaluation:',e.get('status'),'validated cohorts:',e.get('validated_reports',0))
