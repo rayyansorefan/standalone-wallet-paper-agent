@@ -60,6 +60,21 @@ def confirmed_rising(pos,current):
             and prices[0]<prices[1]<prices[2])
 
 
+def confirmed_falling(pos,current):
+    """Three independent sampled declines; no intrabar price inference."""
+    marks=pos.get('recent_marks') or []
+    if len(marks)<3:return False
+    seq=marks[-3:]
+    times=[stamp(x.get('at')) for x in seq]
+    prices=[finite(x.get('price_usd')) for x in seq]
+    return (all(t is not None for t in times)
+            and all(p is not None and p>0 for p in prices)
+            and 0 <= (current-times[-1]).total_seconds() < 1.5
+            and MIN_SAMPLE_SECONDS <= (times[1]-times[0]).total_seconds() <= 900
+            and MIN_SAMPLE_SECONDS <= (times[2]-times[1]).total_seconds() <= 900
+            and prices[0]>prices[1]>prices[2])
+
+
 def observe(pos,price,current,cost_per_side=.01):
     """Update monitoring evidence; must only be called for a FRESH valid quote."""
     px=finite(price)
