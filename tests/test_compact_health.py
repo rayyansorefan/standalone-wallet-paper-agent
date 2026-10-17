@@ -82,4 +82,32 @@ class CompactHealth(unittest.TestCase):
         self.assertIsNone(h['primary_provider']['retry_at'])
         self.assertEqual(h['cycle'],None)
 
+
+    def test_position_management_health_is_account_safe_and_evidence_based(self):
+        state=core.blank_state()
+        state['positions']=[
+            {'wallet':'private-wallet','token':'secret-token',
+             'last_mark_at':'2026-10-17T16:55:00+00:00',
+             'trailing_stop_price_usd':1.18,
+             'additions':[{'notional_gbp':4.0}], 'position_action':'HOLD_PROTECTED'},
+            {'wallet':'other-secret','token':'other-pool',
+             'position_action':'UNPRICED_HOLD'}]
+        state['closed']=[{'wallet':'old-secret',
+                         'additions':[{'notional_gbp':3.0}]}]
+        state['decisions']=[{'action':'PAPER_ADD_WINNER','at':'2026-10-17T16:50:00+00:00',
+                             'wallet':'private-wallet','token':'secret-token'}]
+        health=dashboard.compact_health(state)
+        stats=health['position_management']
+        self.assertEqual(stats['open_with_additions'],1)
+        self.assertEqual(stats['closed_with_additions'],1)
+        self.assertEqual(stats['open_additions'],1)
+        self.assertEqual(stats['closed_additions'],1)
+        self.assertEqual(stats['open_with_trailing_protection'],1)
+        self.assertEqual(stats['open_with_recorded_mark'],1)
+        self.assertEqual(stats['open_unpriced'],1)
+        self.assertEqual(stats['last_add_at'],'2026-10-17T16:50:00+00:00')
+        published=json.dumps(health)
+        for secret in ('private-wallet','secret-token','other-secret','old-secret'):
+            self.assertNotIn(secret,published)
+
 if __name__=='__main__':unittest.main()
