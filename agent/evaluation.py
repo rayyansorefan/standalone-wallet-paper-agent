@@ -81,10 +81,13 @@ def summarize(trades):
 
 
 def evaluate(trades, registered_at, wallet=False):
-    """Freeze first qualifying training prefix, then first 20 future entries.
+    """Predeclare outcome-blind forward validation sampling to reach 7 days.
 
-    Late inserted records cannot silently rewrite an accepted validation set:
-    report IDs are persisted separately and changes invalidate certification.
+    Training stops on the first >=40 closes across >=14 distinct days.
+    Validation then takes the smallest subsequent chronological prefix with
+    >=20 closes on >=7 independent exit dates. This cures the old frozen-first-
+    20 day-one trap; it does NOT let performance cherry-pick validation trades.
+    A completed cohort freezes against late insertions / historical rewrites.
     """
     start=stamp(registered_at)
     unique={}
@@ -101,9 +104,21 @@ def evaluate(trades, registered_at, wallet=False):
             boundary=i;break
     train=clean[:boundary] if boundary else clean
     cutoff=max((stamp(t['exit_at']) for t in train),default=None) if boundary else None
-    test=[t for t in clean[boundary:] if cutoff and stamp(t['opened_at'])>cutoff][:TEST_MIN] if boundary else []
+    validation_stream=[t for t in clean[boundary:]
+                       if cutoff and stamp(t['opened_at'])>cutoff] if boundary else []
+    # Fixed, predeclared rule: take earliest point with minimum observations
+    # AND distinct dates. Do NOT choose a later boundary based on profit.
+    # Until sufficient evidence exists the incomplete stream may extend;
+    # once complete, later trades cannot alter this frozen prefix.
+    validation_end=None
+    for i in range(TEST_MIN,len(validation_stream)+1):
+        dates={stamp(t['exit_at']).date() for t in validation_stream[:i]}
+        if len(dates)>=TEST_DAYS:
+            validation_end=i
+            break
+    test=validation_stream[:validation_end] if validation_end else validation_stream
     a,b=summarize(train),summarize(test)
-    enough=(boundary is not None and len(test)==TEST_MIN and b['days']>=TEST_DAYS
+    enough=(boundary is not None and validation_end is not None and len(test)>=TEST_MIN and b['days']>=TEST_DAYS
         and a['pools']>=3 and b['pools']>=3
         and (wallet or (a['wallets']>=8 and b['wallets']>=8)))
     valid=(enough and a['complete_outcomes'] and b['complete_outcomes']
@@ -111,6 +126,7 @@ def evaluate(trades, registered_at, wallet=False):
         and b['cost_stress']['2pct_each_side_mean_roi_pct'] is not None
         and b['cost_stress']['2pct_each_side_mean_roi_pct']>0)
     return {'status':'VALIDATED_OOS' if valid else 'UNPROVEN','training':a,'validation':b,
+        'validation_window_complete':bool(enough), 'validation_prefix_complete':validation_end is not None,
         'evidence_hash':hashlib.sha256(json.dumps(train+test,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
         'training_ids':[t['signal_id'] for t in train], 'validation_ids':[t['signal_id'] for t in test],
         'cutoff':cutoff.isoformat() if cutoff else None,
@@ -140,7 +156,9 @@ def update(state, now):
     for key in keys:
         rep=evaluate(groups[key],e['registered_at'],wallet=key.startswith('wallet:'))
         prior=old.get(key,{})
-        if prior.get('invalidated') or (prior.get('validation_ids') and len(prior['validation_ids'])==TEST_MIN):
+        if prior.get('invalidated') or prior.get('validation_prefix_complete'):
+            # Legacy first-20 prefixes that never crossed seven days are NOT
+            # frozen, otherwise adding day-eight closes can never qualify.
             if (prior.get('invalidated') or rep['validation_ids']!=prior['validation_ids'] or rep['training_ids']!=prior.get('training_ids') or rep['evidence_hash']!=prior.get('evidence_hash')):
                 rep['status']='UNPROVEN';rep['invalidated']=True;rep['reason']='Frozen cohort changed; independent review required'
         reports[key]=rep
