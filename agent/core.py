@@ -217,6 +217,14 @@ def maybe_open(state, ev, price, current, prices):
     elif len(state['positions']) >= MAX_OPEN: reason = 'portfolio position limit'
     elif any(x['wallet'] == wallet for x in state['positions']): reason = 'one position per wallet'
     elif any(x['token'] == token for x in state['positions']): reason = 'one position per pool'
+    # White paper D16: pools are not canonical tokens. Two different pools
+    # of the same mint are one correlated token exposure, not diversification.
+    elif ((mint := (((state.get('research') or {}).get('decision_v1') or {})
+                    .get('pool_mints') or {}).get(token)) and
+          any((p.get('mint') or (((state.get('research') or {})
+                .get('decision_v1') or {}).get('pool_mints') or {})
+                .get(p.get('token'))) == mint for p in state['positions'])):
+        reason = 'canonical mint already held in another pool'
     elif any(x['wallet'] == wallet and x['token'] == token and
              (current-(parse_time(x['exit_at']) or current)).total_seconds() < 1800 for x in state['closed'][-50:]):
         reason = '30-minute cooldown'
