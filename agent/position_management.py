@@ -8,6 +8,7 @@ unvalidated sender, and 1.5% for an independently reinforced sender.
 import datetime as dt
 import math
 
+NET_STOP_LOSS_PCT = -4.5  # Modelled net trade ROI, including both entry and exit costs.
 ADD_THRESHOLD_NET_ROI_PCT = 10.
 MAX_ADD_FRACTION = .005
 # Proportional to the position, never an automatic fixed £10 top-up.
