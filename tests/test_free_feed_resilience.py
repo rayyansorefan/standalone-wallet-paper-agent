@@ -68,25 +68,48 @@ class LiveModeIntegration(unittest.TestCase):
             out=core.run_cycle(fetch=provider,path=path,screen_token=lambda _:screen)
             return out,provider,whale
 
-    def test_rotating_two_main_trades_from_four_risk_approved_pools(self):
+    def test_broad_rotation_samples_four_feeds_from_ten_and_covers_all(self):
+        names=['A','B','C','D','E','F','G','H','J','K']
+        found=[pool(letter*32) for letter in names]
         def backend(endpoint,params):
-            if 'trending_pools' in endpoint:return {'data':[pool(A),pool(B),pool(C),pool(D)]}
+            if 'trending_pools' in endpoint:return {'data':found}
             if endpoint.endswith('/trades'):return {'data':[]}
             raise AssertionError('Unexpected Gecko detail request '+endpoint)
         with tempfile.TemporaryDirectory() as d:
             path=Path(d)/'state.json'
-            first,reqs,whale=self.run_prod(path,backend)
-            first_trades=[c.args[0] for c in reqs.call_args_list if c.args[0].endswith('/trades')]
-            self.assertEqual(len(first_trades),2)
-            self.assertEqual(first['cycle_health']['trade_feeds_budget_deferred'],2)
-            self.assertEqual(first['cycle_health']['trade_feeds_attempted'],2)
-            self.assertEqual(first['last_status'],'BOOTSTRAPPED_NO_TRADES')
-            second,reqs,whale=self.run_prod(path,backend)
-            second_trades=[c.args[0] for c in reqs.call_args_list if c.args[0].endswith('/trades')]
-            self.assertEqual(len(second_trades),2)
-            self.assertFalse(set(first_trades)&set(second_trades))
-            self.assertEqual(second['last_status'],'OK')
-            self.assertEqual(second['completed_cycles'],2)
+            sampled=[]
+            for cycle in range(4):
+                result,reqs,whale=self.run_prod(path,backend)
+                feeds=[c.args[0] for c in reqs.call_args_list if c.args[0].endswith('/trades')]
+                self.assertEqual(len(feeds),4)
+                self.assertEqual(result['cycle_health']['trade_feed_budget'],4)
+                self.assertEqual(result['cycle_health']['trade_feeds_budget_deferred'],6)
+                self.assertEqual(result['cycle_health']['security_screened'],10)
+                self.assertEqual(result['cycle_health']['unscreened_discovery_candidates'],0)
+                self.assertEqual(result['cycle_health']['trade_feeds_attempted'],4)
+                sampled.extend(feeds)
+            self.assertEqual(len(set(sampled)),10,
+                             'Broad rotation must eventually cover every candidate')
+            self.assertEqual(result['completed_cycles'],4)
+
+    def test_recent_provider_rate_limit_reduces_actual_feed_attempts(self):
+        now=dt.datetime.now(core.UTC)
+        def backend(endpoint,params):
+            if 'trending_pools' in endpoint:return {'data':[pool(letter*32) for letter in 'ABCDEF']}
+            if endpoint.endswith('/trades'):return {'data':[]}
+            raise AssertionError(endpoint)
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'state.json'
+            state=core.blank_state()
+            state['last_run']=(now-dt.timedelta(minutes=5)).isoformat()
+            state['research']={'primary_provider_v1':{
+                'last_rate_limit_at':(now-dt.timedelta(minutes=10)).isoformat(),
+                'rate_limit_strikes':2}}
+            core.save(state,path)
+            result,reqs,whale=self.run_prod(path,backend)
+            self.assertEqual(result['cycle_health']['trade_feed_budget'],2)
+            self.assertEqual(result['cycle_health']['trade_feeds_attempted'],2)
+            whale.assert_not_called()
 
     def test_degraded_main_feed_defers_supplemental_whale_requests(self):
         def backend(endpoint,params):

@@ -25,8 +25,22 @@ COST_PER_SIDE = 0.01
 MIN_LIQUIDITY_USD = 100_000.0
 MIN_VOLUME_24H_USD = 150_000.0
 MAX_TRADE_AGE_SECONDS = 240
-# Two rotating on-chain swap feeds per five-minute production cycle (free quota).
-MAX_MAIN_TRADE_FEEDS_PER_CYCLE = 2
+# Separate broad free discovery from costly, security-screened on-chain swaps.
+MAX_MAIN_TRADE_FEEDS_PER_CYCLE = 6
+DEFAULT_MAIN_TRADE_FEEDS_PER_CYCLE = 4
+MAX_POOL_CANDIDATES = 100
+MAX_SECURITY_SCREENS_PER_CYCLE = 10
+MAX_GECKO_PAGE = 5
+
+
+def swap_budget(provider, now, production=True):
+    """Low request budgets after 429; recover coverage from demonstrated health."""
+    if not production:return MAX_MAIN_TRADE_FEEDS_PER_CYCLE
+    last=parse_time(provider.get('last_rate_limit_at'))
+    age=(now-last).total_seconds() if last else None
+    if age is not None and 0<=age<1800:return 2
+    if age is not None and 0<=age<3600:return 3
+    return 6 if int(provider.get('healthy_sampling_cycles',0))>=12 else DEFAULT_MAIN_TRADE_FEEDS_PER_CYCLE
 MAX_OPEN = 5
 MAX_HOLD_HOURS = 6.0
 MIN_WALLET_SEEN = 3
@@ -347,14 +361,51 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # Store recent IDs to avoid acting on the same on-chain trade multiple times.
     seen = set(state['seen_trades'])
     pools = []
+    # A full hundred independent discoveries cost far fewer calls than one
+    # on-chain /trades request PER pool. Prices are FRESH for the observed
+    # cycle; promotional DEX lists do NOT constitute token approval.
+    # Real production uses the unwrapped free client; injection tests do not
+    # perform unexpected network calls.
+    production=(fetch is api)
+    live_production=production and getattr(fetch,'__name__',None)=='api'
+    discovery_health={'mode':'gecko_only','sources':{},'errors':[]}
     try:
-        payload = fetch('/networks/solana/trending_pools', {'page': 1, 'include':'base_token'})
+        payload=fetch('/networks/solana/trending_pools',{'page':1,'include':'base_token'})
         from .adaptive import enrich_meta
-        pools = [enrich_meta(x, pool_meta(x)) for x in payload.get('data', [])]
-        candidate_pools = [m for m in pools if eligible(m)][:4]
+        if not isinstance(payload.get('data'),list):
+            raise ValueError('trending pools data unavailable')
+        pools=[enrich_meta(x,pool_meta(x)) for x in payload['data']]
     except Exception as e:
-        candidate_pools = []
         errors.append('pool discovery: '+str(e)[:240])
+    if live_production:
+        page=2+(int((state.get('research') or {}).get('gecko_discovery_cursor',0))%4)
+        state.setdefault('research',{})['gecko_discovery_cursor']=page-1
+        try:
+            more=fetch('/networks/solana/trending_pools',{'page':page,'include':'base_token'})
+            if isinstance(more.get('data'),list):
+                pools += [enrich_meta(x,pool_meta(x)) for x in more['data']]
+                discovery_health['gecko_extra_page']=page
+        except Exception:
+            discovery_health['errors'].append('gecko deeper page unavailable')
+        try:
+            from .opportunity_discovery import discover
+            extra,report=discover()
+            pools.extend(extra)
+            discovery_health.update(report)
+            discovery_health['mode']='gecko_plus_free_dex_batch'
+        except Exception:
+            discovery_health['errors'].append('optional dex batch discovery unavailable')
+    unique={}
+    for meta in pools:
+        if eligible(meta):
+            address=meta['pool']
+            if address not in unique:
+                unique[address]=meta
+    candidate_pools=list(unique.values())[:MAX_POOL_CANDIDATES]
+    discovery_health['raw_pool_rows']=len(pools)
+    discovery_health['eligible_unique_pools']=len(unique)
+    discovery_health['bounded_candidates']=len(candidate_pools)
+    state.setdefault('research',{})['broad_discovery_v1']=discovery_health
     prices = {}
     quote_times = {}
     discovery_at = dt.datetime.now(UTC)
@@ -420,17 +471,27 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # Rotate only the limited swap-feed reads. Risk screening still evaluates
     # all discovered candidates. Skipped pools are recorded, not falsely
     # labelled as sampled or treated as a market-data outage.
-    production=(fetch is api)
+    provider=state['research'].setdefault('primary_provider_v1',{})
+    budget=swap_budget(provider,dt.datetime.now(UTC),production)
     cursor=int(state.setdefault('research',{}).get('main_trade_cursor',0))
     if production and candidate_pools:
         offset=cursor%len(candidate_pools)
         ordered_pools=candidate_pools[offset:]+candidate_pools[:offset]
         state['research']['main_trade_cursor']=(
-            cursor+MAX_MAIN_TRADE_FEEDS_PER_CYCLE)%len(candidate_pools)
+            cursor+budget)%len(candidate_pools)
     else:
         ordered_pools=candidate_pools
     budget_deferred=0
+    uninspected_candidates=0
+    security_checks=0
+    attempted_feeds=0
     for pool in ordered_pools:
+        # Scan broad, validate a bounded rotating slice; never create 100+
+        # expensive Rugcheck network calls or assume unscreened == PASS.
+        if production and security_checks>=MAX_SECURITY_SCREENS_PER_CYCLE:
+            uninspected_candidates+=1
+            continue
+        security_checks+=1
         mint = pool.get('mint', '')
         try:
             assessment = screen_token(mint)
@@ -463,9 +524,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             continue
         screened_pools += 1
         safe_pool_tokens.add(pool['pool'])
-        if production and screened_pools>MAX_MAIN_TRADE_FEEDS_PER_CYCLE:
+        if production and attempted_feeds>=budget:
             budget_deferred+=1
             continue  # Not a provider failure; never generate unobserved trades.
+        attempted_feeds+=1
         try:
             payload = fetch(f"/networks/solana/pools/{urllib.parse.quote(pool['pool'], safe='')}/trades", {'trade_volume_in_usd_greater_than': MIN_TRADE_USD})
             if not isinstance(payload.get('data'), list):
@@ -562,7 +624,14 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'screened_rejected_or_unavailable': skipped_risk,
         'trade_feeds_sampled': sampled_feeds,
         'trade_feeds_budget_deferred': budget_deferred,
-        'trade_feeds_attempted': screened_pools - budget_deferred,
+        'trade_feeds_attempted': attempted_feeds,
+        'trade_feed_budget': budget,
+        'security_screened': security_checks,
+        'unscreened_discovery_candidates': uninspected_candidates,
+        'discoveries_eligible_unique': discovery_health['eligible_unique_pools'],
+        'discovery_raw_rows': discovery_health['raw_pool_rows'],
+        'discovery_free_batch_tokens': discovery_health.get('raw_token_mints',0),
+        'discovery_errors':discovery_health.get('errors',[])[:4],
         'alternate_quoted_pools': research['alternate_price_feed_v1'].get('quoted_pools',0),
         'trade_feeds_unavailable': sum(x.startswith('trades ') for x in errors),
         'candidate_pools': len(candidate_pools),
@@ -576,6 +645,13 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             v.get('http_status') for v in state['screening']
             if v.get('status') == 'UNAVAILABLE' and v.get('http_status') is not None],
     }
+    # Successful on-chain coverage gradually unlocks the 6-feed ceiling;
+    # any request fault resets promotion, while recovery does not bypass 429.
+    if production:
+        if errors or not sampled_feeds:
+            provider['healthy_sampling_cycles']=0
+        else:
+            provider['healthy_sampling_cycles']=min(30,int(provider.get('healthy_sampling_cycles',0))+1)
     state['last_status'] = ('API_ERROR' if not candidate_pools and errors
                             else 'NO_ELIGIBLE_POOLS' if not candidate_pools
                             else 'SCREENING_UNAVAILABLE' if candidate_pools and unavailable_risk and not screened_pools
