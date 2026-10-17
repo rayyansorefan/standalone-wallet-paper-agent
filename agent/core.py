@@ -693,7 +693,13 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             whale_research['last_deferral_reason']='Main free-provider access limited; preserve capacity and existing shadow history'
         else:
             whale_cycle(state, candidate_pools, new_events, dict(prices), current,
-                        fetch=fetch, screener=screen_token, previous_run=whale_previous_run, discovered=pools)
+                        fetch=fetch, screener=screen_token,
+                        previous_run=whale_previous_run, discovered=pools,
+                        # Main on-chain wallet feeds must NEVER compete with
+                        # optional Gecko whale reads on the free shared quota.
+                        # Whale shadow observations continue using main flows
+                        # and independent free pair quote batches.
+                        allow_optional_gecko=not (fetch is api and attempted_feeds>=3))
     except Exception as v3_exc:
         from .whales import initialize, record_issue
         whale_research = initialize(state)
