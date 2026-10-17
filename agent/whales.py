@@ -433,7 +433,7 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     production = fetch is None or fetch is core.api
     if production:
         from .research_feed import ResearchFeed
-        fetch=ResearchFeed(r,now)
+        fetch=ResearchFeed(r,now,defer_gecko=not allow_optional_gecko)
         # The optional primary-window pause precedes the 25s research budget.
         # Freshness is evaluated at actual research observation time.
         now=dt.datetime.now(UTC)
