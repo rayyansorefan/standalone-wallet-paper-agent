@@ -43,6 +43,7 @@ jobs:
           PAPER_SCHEDULER: ${{ github.event_name == 'schedule' && 'github-cron' || inputs.scheduler }}
           PAPER_SCHEDULED_AT: ${{ inputs.scheduled_at }}
           PAPER_TRIGGER_UID: ${{ inputs.trigger_uid }}
+          HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
         run: python -m agent.scheduled
       - name: Save cycle state and updated visualiser feed
         if: always() && steps.scan.outputs.executed == 'true'

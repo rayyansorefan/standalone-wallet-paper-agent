@@ -48,6 +48,7 @@ def compact_health(state):
                         else [{'at':e.get('at'),'error':str(e.get('error',''))[:200]}
                               for e in state.get('errors',[])[-6:] if isinstance(e,dict)],
         'market_resilience':research.get('alternate_price_feed_v1') or {},
+        'helius_rpc':research.get('helius_rpc_v1') or {'status':'NOT_CONFIGURED'},
         'primary_provider':{k:primary.get(k) for k in
                             ('http_status','requests','last_error','retry_at',
                              'rate_limit_strikes','last_success_at')},

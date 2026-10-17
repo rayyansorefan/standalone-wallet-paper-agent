@@ -545,6 +545,12 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     if fetch is api:
         from .strategies import run as run_strategies
         run_strategies(state)
+    # Credential is injected only via GitHub encrypted Actions secret.
+    # This bounded RPC observation is NOT transaction parsing / entry approval.
+    if fetch is api:
+        from .helius_rpc import probe as probe_helius
+        helius_watch=candidate_pools or [{'pool':p.get('token')} for p in state.get('positions',[])]
+        probe_helius(state,helius_watch,dt.datetime.now(UTC))
     from .evaluation import safe_update, observe_positions
     try:
         observe_positions(state,prices,current)
