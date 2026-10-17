@@ -25,6 +25,8 @@ COST_PER_SIDE = 0.01
 MIN_LIQUIDITY_USD = 100_000.0
 MIN_VOLUME_24H_USD = 150_000.0
 MAX_TRADE_AGE_SECONDS = 240
+# Two rotating on-chain swap feeds per five-minute production cycle (free quota).
+MAX_MAIN_TRADE_FEEDS_PER_CYCLE = 2
 MAX_OPEN = 5
 MAX_HOLD_HOURS = 6.0
 MIN_WALLET_SEEN = 3
@@ -283,35 +285,76 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     for m in candidate_pools:
         prices[m['pool']] = m['price_usd']
         quote_times[m['pool']] = discovery_at
-    # Always refresh the pools held in the portfolio even if no longer trending.
-    for pos in state['positions']:
-        if pos['token'] in prices: continue
-        try:
-            detail = fetch(f"/networks/solana/pools/{urllib.parse.quote(pos['token'], safe='')}", {'include':'base_token'})
-            m = pool_meta(detail.get('data') or {})
-            if m['price_usd'] and m['price_usd'] > 0:
-                prices[pos['token']] = m['price_usd']
-                quote_times[pos['token']] = dt.datetime.now(UTC)
-        except Exception as e: errors.append('mark '+pos['token']+': '+str(e)[:160])
     from .adaptive import ensure, shadow_tokens
-    ensure(state)['cycle_errors'] = []
+    research=ensure(state)
+    research['cycle_errors'] = []
+    # Existing positions need fresh prices even when primary Gecko discovery
+    # fails or enters its persistent 429 cooldown. Public DEX Screener returns
+    # pair-specific quotes, NOT token-risk approval or attributable swaps.
+    outstanding=list(dict.fromkeys(
+        [p['token'] for p in state['positions'] if p['token'] not in prices]+
+        [t for t in shadow_tokens(state) if t not in prices]))
+    research['alternate_price_feed_v1']={'status':'NOT_REQUIRED' if not outstanding else 'NOT_USED',
+                                          'quoted_pools':0, 'provider':'dexscreener'}
+    if fetch is api and outstanding:
+        try:
+            from .market_resilience import fetch_pairs
+            fallback=fetch_pairs(outstanding[:30])
+            marked_at=dt.datetime.now(UTC)
+            for pool,price in fallback.items():
+                prices[pool]=price
+                quote_times[pool]=marked_at
+            research['alternate_price_feed_v1']={
+                'status':'OK' if len(fallback)==len(outstanding) else 'PARTIAL',
+                'quoted_pools':len(fallback), 'requested_pools':len(outstanding),
+                'provider':'dexscreener'}
+        except Exception as exc:
+            research['alternate_price_feed_v1']={
+                'status':'UNAVAILABLE','quoted_pools':0,'requested_pools':len(outstanding),
+                'provider':'dexscreener', 'error':str(exc)[:130]}
+    # Only if quote fallback failed: a bounded primary detail attempt may
+    # still preserve a mark. Never replay a cached quote as a current price.
+    for pos in state['positions']:
+        if pos['token'] in prices:continue
+        try:
+            detail=fetch(f"/networks/solana/pools/{urllib.parse.quote(pos['token'], safe='')}",
+                         {'include':'base_token'})
+            m=pool_meta(detail.get('data') or {})
+            if m['price_usd'] and m['price_usd']>0:
+                prices[pos['token']]=m['price_usd']
+                quote_times[pos['token']]=dt.datetime.now(UTC)
+        except Exception as exc:
+            errors.append('mark '+pos['token']+': '+str(exc)[:160])
     for research_token in shadow_tokens(state):
-        if research_token in prices: continue
+        if research_token in prices:continue
         try:
             from .adaptive import fast_shadow_pool
-            detail = (fast_shadow_pool(research_token) if fetch is api else
-                      fetch(f"/networks/solana/pools/{urllib.parse.quote(research_token, safe='')}", {'include':'base_token'}))
-            meta = pool_meta(detail.get('data') or {})
-            if meta['price_usd'] and meta['price_usd'] > 0:
-                prices[research_token] = meta['price_usd']
-                quote_times[research_token] = dt.datetime.now(UTC)
-            else:
-                raise ValueError('Shadow pool has no valid current price')
+            detail=(fast_shadow_pool(research_token) if fetch is api else
+                    fetch(f"/networks/solana/pools/{urllib.parse.quote(research_token, safe='')}",
+                          {'include':'base_token'}))
+            meta=pool_meta(detail.get('data') or {})
+            if meta['price_usd'] and meta['price_usd']>0:
+                prices[research_token]=meta['price_usd']
+                quote_times[research_token]=dt.datetime.now(UTC)
+            else:raise ValueError('Shadow pool has no valid current price')
         except Exception as exc:
-            ensure(state)['cycle_errors'].append('shadow mark '+str(research_token)[:48]+': '+str(exc)[:120])
+            research['cycle_errors'].append('shadow mark '+str(research_token)[:48]+': '+str(exc)[:120])
     maintain_positions(state, prices, current)
     new_events = []
-    for pool in candidate_pools:
+    # Rotate only the limited swap-feed reads. Risk screening still evaluates
+    # all discovered candidates. Skipped pools are recorded, not falsely
+    # labelled as sampled or treated as a market-data outage.
+    production=(fetch is api)
+    cursor=int(state.setdefault('research',{}).get('main_trade_cursor',0))
+    if production and candidate_pools:
+        offset=cursor%len(candidate_pools)
+        ordered_pools=candidate_pools[offset:]+candidate_pools[:offset]
+        state['research']['main_trade_cursor']=(
+            cursor+MAX_MAIN_TRADE_FEEDS_PER_CYCLE)%len(candidate_pools)
+    else:
+        ordered_pools=candidate_pools
+    budget_deferred=0
+    for pool in ordered_pools:
         mint = pool.get('mint', '')
         try:
             assessment = screen_token(mint)
@@ -343,6 +386,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                               +' ('+str(assessment.get('reason','unknown'))+')')
             continue
         screened_pools += 1
+        if production and screened_pools>MAX_MAIN_TRADE_FEEDS_PER_CYCLE:
+            budget_deferred+=1
+            continue  # Not a provider failure; never generate unobserved trades.
         try:
             payload = fetch(f"/networks/solana/pools/{urllib.parse.quote(pool['pool'], safe='')}/trades", {'trade_volume_in_usd_greater_than': MIN_TRADE_USD})
             if not isinstance(payload.get('data'), list):
@@ -433,6 +479,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'screened_unavailable': unavailable_risk,
         'screened_rejected_or_unavailable': skipped_risk,
         'trade_feeds_sampled': sampled_feeds,
+        'trade_feeds_budget_deferred': budget_deferred,
+        'trade_feeds_attempted': screened_pools - budget_deferred,
+        'alternate_quoted_pools': research['alternate_price_feed_v1'].get('quoted_pools',0),
         'trade_feeds_unavailable': sum(x.startswith('trades ') for x in errors),
         'candidate_pools': len(candidate_pools),
         'errors_this_cycle': len(errors),
@@ -470,8 +519,23 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 prior=parse_time(existing.get('retry_at'))
                 if not prior or prior<retry:
                     existing.update(retry_at=retry.isoformat(),http_status=429,last_error='Primary provider rate-limit backoff')
-        whale_cycle(state, candidate_pools, new_events, dict(prices), current,
-                    fetch=fetch, screener=screen_token, previous_run=whale_previous_run, discovered=pools)
+        # Supplemental GeckoTerminal reads cannot outrank the main account
+        # when primary market discovery/trades are unavailable or cooling down.
+        # Retain prior whale research and shadow positions; resume next cycle.
+        provider_cooldown=parse_time(primary_health.get('retry_at'))
+        last_429=parse_time(primary_health.get('last_rate_limit_at'))
+        now_provider=dt.datetime.now(UTC)
+        primary_busy=bool((provider_cooldown and provider_cooldown>now_provider) or
+                          (last_429 and dt.timedelta(0)<=now_provider-last_429<dt.timedelta(minutes=30)))
+        if fetch is api and (primary_busy or state['last_status'] in
+                             ('API_ERROR','TRADE_FEEDS_FAILED','SCREENING_UNAVAILABLE')):
+            whale_research=state['research'].setdefault('whale_v3',{})
+            whale_research['status']='DEFERRED_PRIMARY_PRIORITY'
+            whale_research['last_deferral_at']=current.isoformat()
+            whale_research['last_deferral_reason']='Main free-provider access limited; preserve capacity and existing shadow history'
+        else:
+            whale_cycle(state, candidate_pools, new_events, dict(prices), current,
+                        fetch=fetch, screener=screen_token, previous_run=whale_previous_run, discovered=pools)
     except Exception as v3_exc:
         from .whales import initialize, record_issue
         whale_research = initialize(state)

@@ -47,6 +47,7 @@ def compact_health(state):
         'recent_errors':[] if status in ('OK','NO_ELIGIBLE_POOLS','NO_SAFE_POOLS','BOOTSTRAPPED_NO_TRADES')
                         else [{'at':e.get('at'),'error':str(e.get('error',''))[:200]}
                               for e in state.get('errors',[])[-6:] if isinstance(e,dict)],
+        'market_resilience':research.get('alternate_price_feed_v1') or {},
         'primary_provider':{k:primary.get(k) for k in
                             ('http_status','requests','last_error','retry_at',
                              'rate_limit_strikes','last_success_at')},
