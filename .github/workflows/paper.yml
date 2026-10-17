@@ -50,11 +50,33 @@ jobs:
           if [ -f state/state.json ] && [ -f docs/state.json ] && [ -f docs/health.json ]; then
             git config user.name 'standalone-wallet-paper[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            # A pull-request merge can move main DURING this two-minute
+            # research job. Retry that benign code-only race, but NEVER
+            # overwrite a newer paper ledger or dashboard observation.
+            base_state_blob="$(git rev-parse HEAD:state/state.json)"
             git add -f state/state.json docs/state.json docs/health.json
             if ! git diff --cached --quiet; then
               git commit -m "paper research $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-              git pull --rebase
-              git push
+              published=false
+              for attempt in 1 2 3; do
+                git fetch origin main
+                latest_state_blob="$(git rev-parse origin/main:state/state.json)"
+                if [ "$base_state_blob" != "$latest_state_blob" ]; then
+                  echo '::error::A newer paper account state was published during this cycle. Refusing to overwrite trading history.'
+                  exit 3
+                fi
+                git rebase origin/main
+                if git push origin HEAD:main; then
+                  published=true
+                  break
+                fi
+                echo "::warning::main changed during state publication; safe retry $attempt/3"
+                sleep 2
+              done
+              if [ "$published" != true ]; then
+                echo '::error::Paper state could not be published after three safe attempts.'
+                exit 4
+              fi
             fi
           else
             echo 'No completed paper observation state to publish.'
