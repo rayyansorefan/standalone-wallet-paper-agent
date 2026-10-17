@@ -45,6 +45,23 @@ class V4ForwardLearning(unittest.TestCase):
         self.assertEqual(b['forward_signals'][0]['outcomes']['60m']['status'],'MISSING_QUOTE')
         self.assertEqual(b['forward_summary']['60m']['priced'],0)
 
+    def test_correlated_coins_do_not_multiply_independent_sample_size(self):
+        b={'version':'momentum-fade-2','forward_signals':[]}
+        for i in range(14):
+            b['forward_signals'].append({'at':NOW.isoformat(),
+                'setup':'pump_fade','regime':'POST_PUMP_REVERSAL',
+                'rule_version':'momentum-fade-2','outcomes':{'60m':{'net_roi_pct':5}}})
+        for i in range(1,7):
+            b['forward_signals'].append({'at':(NOW+dt.timedelta(days=i)).isoformat(),
+                'setup':'pump_fade','regime':'POST_PUMP_REVERSAL',
+                'rule_version':'momentum-fade-2','outcomes':{'60m':{'net_roi_pct':-1}}})
+        result=v4.context_adjustment(b,'pump_fade','POST_PUMP_REVERSAL')
+        self.assertEqual(result['observations'],20)
+        self.assertEqual(result['effective_sample_size'],7)
+        self.assertLess(result['mean_net_roi_pct'],0)
+        self.assertNotEqual(result['status'],'POSITIVE_FORWARD')
+        self.assertEqual(result['confidence'],'PROVISIONAL_DAILY_CLUSTER_APPROXIMATION')
+
     def test_learning_requires_forward_evidence_and_multiple_days(self):
         b={'version':'momentum-fade-2','forward_signals':[]}
         for i in range(21):
