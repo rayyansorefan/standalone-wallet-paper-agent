@@ -85,7 +85,7 @@ def observe_forward(book, now, quotes, candidates, entered_symbol=None):
                     r['outcomes'][key] = {'net_roi_pct':round(roi, 5), 'at':now.isoformat()}
             if key not in r['outcomes'] and seconds > minute*60+600:
                 r['outcomes'][key] = {'status':'MISSING_QUOTE'}
-    for c in candidates[:6]:
+    for c in candidates[:12]:
         q = quotes.get(c['symbol'])
         if not q:
             continue
@@ -95,13 +95,16 @@ def observe_forward(book, now, quotes, candidates, entered_symbol=None):
                for r in rows):
             continue
         entry = q['ask']*(1+SLIP) if direction == 1 else q['bid']*(1-SLIP)
+        reason = 'ENTERED' if entered_symbol == c['symbol'] else (c.get('rejection_reason') or 'NOT_SELECTED')
         rows.append({'at':now.isoformat(), 'symbol':c['symbol'], 'setup':s,
                      'direction':direction, 'regime':c['regime'], 'entry':entry,
-                     'decision':'ENTERED' if entered_symbol == c['symbol'] else 'OBSERVED_NOT_ENTERED',
-                     'rule_version':book.get('version'), 'outcomes':{}})
+                     'decision':'ENTERED' if reason == 'ENTERED' else 'OBSERVED_NOT_ENTERED',
+                     'rejection_reason':None if reason=='ENTERED' else reason,
+                     'policy_revision':'v4.1', 'rule_version':book.get('version'), 'outcomes':{}})
     if len(rows) > MAX_SIGNALS:
         del rows[:len(rows)-MAX_SIGNALS]
     book['forward_summary'] = forward_summary(rows)
+    book['missed_winners'] = missed_winners(rows)
 
 
 def forward_summary(rows):
@@ -113,6 +116,102 @@ def forward_summary(rows):
         summary[horizon] = {'priced':len(priced), 'missing':missing,
                             'mean_net_roi_pct':round(sum(priced)/len(priced), 4) if priced else None}
     return summary
+
+
+def missed_winners(rows, limit=12):
+    """Real observations of rejected setups, NEVER realised paper trades.
+
+    Samples with missing 60m prices are not treated as wins or losses. Report
+    both successes and failures rather than cherry-picking success-only stats.
+    """
+    cohorts=[r for r in rows if r.get('decision')=='OBSERVED_NOT_ENTERED'
+             and r.get('policy_revision')=='v4.1'
+             and isinstance(r.get('outcomes',{}).get('60m',{}).get('net_roi_pct'),(int,float))]
+    winners=sorted((r for r in cohorts if r['outcomes']['60m']['net_roi_pct']>0),
+                   key=lambda r:r['outcomes']['60m']['net_roi_pct'],reverse=True)
+    def digest(r):
+        return {'at':r['at'], 'symbol':r['symbol'], 'setup':r['setup'],
+                'reason':r.get('rejection_reason') or 'NOT_SELECTED',
+                'net_quote_roi_pct':r['outcomes']['60m']['net_roi_pct'],
+                'status':'HYPOTHETICAL_FORWARD_QUOTE_NOT_EXECUTED'}
+    total=len(cohorts)
+    return {'evaluated':total, 'winners':len(winners),
+            'losers_or_flat':total-len(winners),
+            'win_rate_pct':round(100*len(winners)/total,2) if total else None,
+            'net_mean_pct':round(sum(r['outcomes']['60m']['net_roi_pct'] for r in cohorts)/total,4) if total else None,
+            'top_missed':list(map(digest,winners[:limit])),
+            'description':'Missed eligible/blocked setup quote outcomes at 60m, net of modelled spread, fees and slippage; no actual fills or causal comparison.'}
+
+
+def priority_score(base, f, quote, learning, trade_edge=0.):
+    """Comparable cost-aware relative rank, not a return prediction.
+
+    Bounded components avoid a raw volatility-scaled momentum score burying
+    prospective learning. Total risk fraction never changes here.
+    """
+    try:
+        mid=quote['mid']
+        spread=(quote['ask']-quote['bid'])/mid
+        atr_pct=f['atr']/f['close']
+        activity=max(0.,min(f['volume_ratio'],4.)-1.)
+        base_score=math.log1p(min(max(float(base),0.),30.))
+        spread_penalty=min(2., spread/max(atr_pct,.0001))
+        a=float(learning.get('adjustment',0.))
+        edge=min(.75,max(-.75,float(trade_edge)))
+        score=base_score + .2*activity - spread_penalty + a + edge
+        return round(score,6) if math.isfinite(score) else -999.
+    except (KeyError,TypeError,ValueError,ZeroDivisionError):
+        return -999.
+
+
+def recovery_state(book, setup, now, rows):
+    """Restart a loss-paused setup only after NEW forward shadow evidence.
+
+    No automatic expiry of a losing setup. Four 60m quotes over two distinct
+    days, >=3 profitable, and positive aggregate net quote ROI after a full
+    24h wait are required. These are cautious operational gates, not validation.
+    """
+    records=book.setdefault('recovery_v1',{})
+    record=records.get(setup)
+    after=_stamp(record.get('recovered_at')) if record and record.get('status')=='RECOVERED' else None
+    valid=[t for t in rows if (end:=_stamp(t.get('exit_at'))) and end<=now and
+           (after is None or end>after)]
+    last_day=[t for t in valid if 0 <= (now-_stamp(t['exit_at'])).total_seconds()<86400]
+    last_three=last_day[-3:]
+    trigger=(len(last_three)==3 and all(t['net_usd']<0 for t in last_three))
+    if trigger and (not record or record['status']=='RECOVERED'):
+        at=last_three[-1]['exit_at']
+        record={'status':'PAUSED','since':at, 'trigger':'THREE_RECENT_LOSSES',
+                'recovered_at':None, 'recovery_count':0, 'evaluated':0}
+        records[setup]=record
+    if not record or record.get('status')=='RECOVERED':
+        return {'allowed':True,'status':record['status'] if record else 'ACTIVE',
+                'evaluated':record.get('evaluated',0) if record else 0}
+    started=_stamp(record.get('since'))
+    if started is None or now-started < dt.timedelta(hours=24):
+        record['status']='PAUSED'
+        return {'allowed':False,'status':'PAUSED','evaluated':0}
+    # Only future samples that were NOT actually entered after suspension.
+    tests=[r for r in book.get('forward_signals',[]) if
+           r.get('setup')==setup and r.get('rule_version')==book.get('version') and
+           r.get('decision')=='OBSERVED_NOT_ENTERED' and
+           (t:=_stamp(r.get('at'))) and t>started and t<=now and
+           isinstance(r.get('outcomes',{}).get('60m',{}).get('net_roi_pct'),(int,float))]
+    # Suppress multiple time-coincident signals from several correlated coins.
+    distinct={}
+    for r in tests:
+        key=r['at'][:13]
+        distinct.setdefault(key,r)
+    tests=list(distinct.values())
+    value=[r['outcomes']['60m']['net_roi_pct'] for r in tests]
+    record['evaluated']=len(value)
+    record['recovery_count']=sum(x>0 for x in value)
+    day_count=len({r['at'][:10] for r in tests})
+    if len(value)>=4 and day_count>=2 and sum(x>0 for x in value)>=3 and sum(value)>0:
+        record.update(status='RECOVERED',recovered_at=now.isoformat())
+        return {'allowed':True,'status':'RECOVERED','evaluated':len(value)}
+    record['status']='RETESTING'
+    return {'allowed':False,'status':'RETESTING','evaluated':len(value)}
 
 
 def context_adjustment(book, setup, regime):
