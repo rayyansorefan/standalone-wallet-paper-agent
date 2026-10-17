@@ -65,6 +65,18 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 @media(max-width:500px){.v2-nav{top:0;gap:1px}.v2-nav a{padding:8px 8px;font-size:11px}.v2-nav .v2-mark{display:none}.v2-panel{padding:13px}.v2-grid{gap:8px}.v2-kpi{padding:12px}.v2-kpi-value{font-size:23px}}
 
 
+.strategy-brief{margin:17px 0 22px;border-color:#344e60}
+.strategy-brief p{font-size:12px;color:#a3b8d0;margin:9px 0 0}
+.strategy-brief .panelhead{margin-bottom:10px}
+.strategy-brief .health-current{font-size:11px;color:#71e0b8}
+.strategy-brief .health-paused{font-size:11px;color:#f2bf78}
+.research-drawer{margin-top:24px;border:1px solid #30445c;border-radius:14px;background:#132136;padding:0 16px}
+.research-drawer summary{cursor:pointer;color:#bfcee5;font-weight:700;padding:16px 4px;font-size:13px}
+.research-drawer[open]{padding-bottom:18px}
+.research-drawer summary:focus-visible{outline:2px solid #71d2bd}
+.research-drawer .v2-section{margin-top:18px}
+@media(max-width:520px){.strategy-brief table{min-width:390px}}
+
 /* Whale tables scroll inside their panel on phones rather than crushing columns. */
 #whales table:has(thead){min-width:640px}
 </style>
@@ -76,7 +88,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 <!-- UNIFIED_V2_NAV -->
-<nav class="v2-nav" aria-label="Unified dashboard sections"><span class="v2-mark">PAPER / V2</span><a href="#portfolio">Portfolio</a><a href="#intelligence">Intelligence</a><a href="#learning">Learning</a><a href="#strategies-v1">Two-way strategies</a><a href="#decisions-v1">Decision evidence</a><a href="#experiments">Experiments</a><a href="#whales">Whales</a><a href="#system">System health</a></nav>
+<nav class="v2-nav" aria-label="Paper dashboard"><span class="v2-mark">PAPER / V4.1</span><a href="#portfolio">Portfolio</a><a href="#strategy-overview">Strategy control</a><a href="#research-details" data-open-details="research-details">Research details</a><a href="#futures-details" data-open-details="futures-details">Trade details</a></nav>
 
 <div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
@@ -84,6 +96,13 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <div class="metric"><div class="label">Realised paper P&amp;L</div><div class="value" id="realized">£0.00</div><div class="meta">After 1% modeled costs per side</div></div>
 <div class="metric"><div class="label">Open positions</div><div class="value" id="open">0</div><div class="meta" id="closed">0 closed · 0 wins</div></div>
 </div>
+<section class="panel strategy-brief" id="strategy-overview" aria-labelledby="strategy-overview-title">
+  <div class="panelhead"><h2 id="strategy-overview-title">Strategy control · three paper futures setups</h2><span class="pill">PAPER-ONLY</span></div>
+  <div class="tablewrap"><table><thead><tr><th>Setup</th><th>Decision</th><th>Closed</th><th>Wins</th></tr></thead>
+    <tbody id="strategy-overview-rows"><tr><td colspan="4">Waiting for fresh forward evidence.</td></tr></tbody></table></div>
+  <p id="strategy-overview-shadows">Wallet and whale shadow experiments run separately. They are not additional funded portfolios.</p>
+  <p id="strategy-overview-health">Data validity and latest execution are shown above. Failed strategies remain archived for audit, not displayed as winners.</p>
+</section>
 <div class="layout">
 <div>
 <section class="panel"><div class="panelhead"><div><h2>Portfolio progression</h2><div class="small">Paper equity across successfully priced research snapshots</div></div><div class="segment" aria-label="Chart timeframe"><button class="sel" data-span="all">ALL</button><button data-span="7d">7D</button><button data-span="1d">24H</button></div></div><div id="chartHolder"><svg id="chart" role="img" aria-label="Simulated equity over time"></svg><div id="hover"></div></div><div id="chartNote" class="legend">Chart will appear after two priced observations.</div></section>
@@ -101,7 +120,8 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <section class="panel"><div class="panelhead"><h2>Observed wallet candidates</h2><span class="pill">NOT VERIFIED</span></div><div class="tablewrap"><table><thead><tr><th>Sender</th><th>Observed</th><th>Copies</th><th>Copy P&amp;L</th></tr></thead><tbody id="wallets"><tr><td colspan="4" class="quiet">No candidate observations yet.</td></tr></tbody></table></div><div class="small" style="padding-top:12px">These are transaction-origin addresses, not established beneficial traders or proven profitable wallets. Rankings are exploratory and shrink small samples.</div></section>
 <section class="panel"><h2>Execution assumptions</h2><div class="small" style="margin-top:12px;line-height:1.9">Market scan target: <b>5 minutes</b><br>Browser display refresh: <b>60 seconds</b><br>Mode: <b>Paper only</b><br>Assumed adverse costs: <b>1% each side</b><br>Maximum open positions: <b>5</b><br>Per-position allocation: <b>0.5–1.5%</b><br>Risk screen: <b>Fail closed</b><br>Profitable strategy verified: <b>No</b></div></section>
 </aside></div>
-<!-- UNIFIED_V2_START: All adaptive research is in the canonical trading dashboard. -->
+<!-- UNIFIED_V2_START: Advanced research retained without cluttering the main view. -->
+<details class="research-drawer" id="research-details"><summary>Advanced research archive · wallet intelligence, shadow tests, whales and execution evidence</summary>
 <section class="v2-section" id="intelligence" aria-labelledby="v2-intelligence-title">
   <div class="v2-head"><div><h2 id="v2-intelligence-title">Wallet intelligence</h2><p>Independent sender-level evidence. Transaction-origin addresses are not verified profitable traders; rankings reflect only this paper engine's recorded outcomes.</p></div></div>
   <div class="v2-grid">
@@ -162,6 +182,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   <div class="v2-panel"><h3>Research integrity</h3><div class="v2-table-wrap"><table class="v2-table"><tbody id="v2-research-health"></tbody></table></div><div class="v2-small" id="v2-checked">Both original trading and V2 research sections use the same state feed and 60-second browser refresh.</div></div></div>
 </section>
 <!-- UNIFIED_V2_END -->
+</details>
 
 <footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
 </main>
@@ -206,11 +227,13 @@ table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'
 const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
 table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
 async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+document.querySelectorAll('[data-open-details]').forEach(a=>a.addEventListener('click',()=>{const d=document.getElementById(a.dataset.openDetails);if(d)d.open=true;}));
 poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
 })();
 </script>
 
 
+<details class="research-drawer" id="futures-details"><summary>Futures execution detail · open positions, exits, missed winners and learning history</summary>
 <section id="strategies-v1" class="v2-section">
 <div class="v2-head"><div><h2>Two-way paper strategies</h2><p>One independent $2,000 USD challenger: momentum long/short and pump-fade short. The original £2,000 account remains above. Percentage returns have different exposure and costs; these are not equal-risk comparisons.</p></div></div>
 <p id="strategy-status" class="v2-alert">Awaiting first forward scan.</p>
@@ -228,6 +251,22 @@ window.unifiedStrategyRender=function(s){
  const el=id=>document.getElementById(id), put=(id,v)=>el(id).textContent=v;
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const money=v=>'$'+Number(v??0).toFixed(2), summary=b.summary||{};
+ const names=[['momentum_long','Momentum · long'],['momentum_short','Momentum · short'],['pump_fade','Pump fade · short']];
+ const rows=names.map(([name,label])=>{
+   const f=summary.feedback?.[name]||{};
+   const closes=(b.closed||[]).filter(t=>t.setup===name && t.version===b.version);
+   const wins=closes.filter(t=>Number(t.net_usd)>0).length;
+   const decision=f.paused?'PAUSED · losses':f.cooldown?'COOLDOWN':f.recovery?.status==='RECOVERED'?'RECOVERED · monitoring':f.reinforced?'POSITIVE TEST EVIDENCE':'TESTING · unproven';
+   const cls=f.paused?'health-paused':'health-current';
+   return '<tr><td>'+esc(label)+'</td><td class="'+cls+'">'+esc(decision)+'</td><td>'+esc(f.closed??closes.length)+'</td><td>'+esc(closes.length?wins+'/'+closes.length:'—')+'</td></tr>';
+ });
+ el('strategy-overview-rows').innerHTML=rows.join('');
+ const v2=Object.values(s.research?.shadow_reports||{});
+ const v3=Object.values(s.research?.whale_v3?.shadow_reports||{});
+ const allShadows=[...v2,...v3],retired=allShadows.filter(x=>x.status==='RETIRED_NEGATIVE_EVIDENCE').length;
+ put('strategy-overview-shadows', 'Shadow research: '+allShadows.length+' variants · '+retired+' retired on negative evidence · '+(allShadows.length-retired)+' testing/review. No shadow outcomes count as actual portfolio wins.');
+ const whale=s.research?.whale_v3||{};
+ put('strategy-overview-health', 'Futures: '+(b.status||'UNPROVEN')+' · '+(b.entry_status||'—')+' · Whale feed: '+(whale.status||'UNAVAILABLE')+' · research outcomes require forward validation.');
  const stale=!b.last_run||Date.now()-new Date(b.last_run).valueOf()>1200000;
  put('strategy-status',(stale?'STALE · ':'')+(b.status||'UNPROVEN')+' · '+(b.entry_status||'')+' · '+(b.last_run||'')+' · '+(b.error||'')+' · '+(b.feed?.scanned||0)+' scanned / '+(b.feed?.eligible||0)+' liquid instruments; '+Object.keys(b.feed?.errors||{}).length+' candle failures');
  el('strategy-metrics').innerHTML='<tr>'+[money(b.equity_usd),money(summary.net_usd),(summary.closed||0)+' / '+(summary.wins||0),summary.profit_factor==null?'—':Number(summary.profit_factor).toFixed(2),Number(b.max_drawdown_pct||0).toFixed(2)+'%',money(summary.stress_net_usd)].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>';
@@ -250,6 +289,7 @@ window.unifiedStrategyRender=function(s){
  el('strategy-events').innerHTML=(b.events||[]).slice(-12).reverse().map(e=>'<tr>'+[e.at,e.action,e.symbol,e.setup,e.reason??(e.net_usd!=null?money(e.net_usd):e.notional_usd!=null?money(e.notional_usd):'')].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('');
 };
 </script>
+</details>
 
 <section id="decisions-v1" class="v2-section"><div class="v2-head"><div><h2>History-aware decisions</h2><p>Losses change entry eligibility across wallets. Positive history changes selection priority; larger allocations still require independent forward validation.</p></div></div>
 <div class="v2-panel"><h3 id="policy-status">Awaiting first policy cycle</h3><p id="policy-news"></p><p id="policy-scope"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Pool</th><th>24h net / closes</th><th>Entry decision</th><th>Technical context</th></tr></thead><tbody id="policy-pools"></tbody></table></div></div>

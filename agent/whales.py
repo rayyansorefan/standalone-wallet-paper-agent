@@ -13,6 +13,7 @@ import time
 import urllib.parse
 import urllib.request
 from collections import defaultdict
+from .shadow_retirement import update_retirements
 
 VERSION = 3
 USD_LARGE = 10_000.0
@@ -327,7 +328,9 @@ def _update_reports(r, now):
         evidence=strong_evidence(report) and validation
         old=r['shadow_sizing'].get(name,.005)
         # Shadow account only! This NEVER changes real simulated £2k positions.
-        new=.0075 if evidence else .005
+        # A retired experiment remains marked and exits normally, but gets
+        # zero new shadow allocation. It cannot resurrect on historical data.
+        new=0.0 if name in r.get('retired_shadow_strategies',{}) else (.0075 if evidence else .005)
         if new!=old:
             r['shadow_sizing_events'].append({'at':now.isoformat(timespec='seconds'),'strategy':name,
                  'previous':old,'new':new,'reason':'EVIDENCE_GATED_SHADOW_ONLY' if evidence else 'REVERT_INSUFFICIENT_EVIDENCE',
@@ -338,6 +341,12 @@ def _update_reports(r, now):
         report['allocation_fraction_of_original_equity']=new
         report['paper_account_promoted']=False
         r['shadow_reports'][name]=report
+    update_retirements(r,r['shadow_reports'],now,event_key='research_events',
+                       event_action='WHALE_SHADOW_STRATEGY_RETIRED')
+    for name in r.get('retired_shadow_strategies',{}):
+        r['shadow_sizing'][name]=0.0
+        if name in r['shadow_reports']:
+            r['shadow_reports'][name]['allocation_fraction_of_original_equity']=0.0
     r['shadow_sizing_events']=r['shadow_sizing_events'][-80:]
     # A wallet may produce the same signal in multiple experimental strategies.
     # Do not count those correlated outcomes as independent wallet successes.
@@ -508,6 +517,10 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
     seen_sells=[{'wallet':e['wallet'],'token':e['token'],'kind':'sell','fresh':True}
                 for e in [*new_events,*extra_events] if e.get('kind')=='sell' and not e.get('research_only',False)]
     _mark_open(r,prices,flows+seen_sells,now)
+    retirement_reports={name:simple_report([t for t in r['shadow_closed'] if t.get('strategy')==name])
+                        for name in STRATEGIES}
+    update_retirements(r,retirement_reports,now,event_key='research_events',
+                       event_action='WHALE_SHADOW_STRATEGY_RETIRED')
     _observe_activity(r,[*new_events,*extra_events],now)
     from .evaluation import observe_whales
     observe_whales(r,flows,prices,now)
@@ -517,6 +530,7 @@ def whale_cycle(state, candidate_pools, new_events, prices, current, *, fetch=No
         if time.monotonic()-budget_started >= RESEARCH_TIME_BUDGET_SECONDS:
             record_issue(r,'V3 research time budget reached before shadow entry screening');break
         token=signal['token'];wallet=signal['wallet'];name=signal['strategy']
+        if name in r.get('retired_shadow_strategies',{}):continue
         if (wallet,token) in conflicting:continue
         m=meta.get(token)
         if not m or not core.eligible(m):continue
