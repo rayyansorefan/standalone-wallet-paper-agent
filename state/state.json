@@ -2,12 +2,12 @@
   "schema": 1,
   "paper_only": true,
   "initialized_at": "2026-10-15T22:18:05+00:00",
-  "last_run": "2026-10-17T15:39:10+00:00",
+  "last_run": "2026-10-17T15:44:00+00:00",
   "cash_gbp": 1967.299049,
   "starting_gbp": 2000.0,
-  "last_status": "PARTIAL_TRADE_FEEDS_UNAVAILABLE",
+  "last_status": "API_ERROR",
   "last_data_at": "2026-10-17T15:39:10+00:00",
-  "completed_cycles": 483,
+  "completed_cycles": 484,
   "stale_signals": 17134,
   "unattributed_events": 0,
   "seen_trades": [
@@ -24021,7 +24021,7 @@
       "pool_name": "PUMP / USDC",
       "opened_at": "2026-10-17T13:49:04+00:00",
       "entry_price_usd": 0.004497335855469954,
-      "last_mark_price_usd": 0.004456510619594315,
+      "last_mark_price_usd": 0.004454749427950067,
       "signal_at": "2026-10-17T13:45:22+00:00",
       "notional_gbp": 9.94,
       "cost_gbp": 10.0394,
@@ -25213,41 +25213,6 @@
     }
   ],
   "decisions": [
-    {
-      "at": "2026-10-17T13:54:05+00:00",
-      "action": "SKIP",
-      "wallet": "MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa",
-      "token": "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-      "reason": "one position per pool",
-      "wallet_stats": {
-        "closed": 0,
-        "wins": 0,
-        "losses": 0,
-        "win_rate_pct": null,
-        "win_rate_wilson_lower_pct": null,
-        "net_gbp": 0,
-        "avg_pnl_gbp": 0.0,
-        "mean_net_roi_pct": null,
-        "conservative_mean_roi_95_pct": null,
-        "gross_wins_gbp": 0,
-        "gross_losses_gbp": 0,
-        "profit_factor": null,
-        "max_drawdown_gbp": 0.0,
-        "distinct_exit_days": 0,
-        "distinct_wallets": 0,
-        "distinct_pools": 0,
-        "distinct_signals": 0,
-        "conservative_mean_95_gbp": null,
-        "seen": 772,
-        "shrunk_roi_pct": 0.0,
-        "win_rate": null,
-        "excluding_best_gbp": 0.0,
-        "risk_fraction": 0.005,
-        "reinforcement_tier": "exploration",
-        "reinforcement_reason": "Insufficient independent profitable closed-trade evidence",
-        "identity_verified": false
-      }
-    },
     {
       "at": "2026-10-17T13:54:05+00:00",
       "action": "SKIP",
@@ -42793,6 +42758,13 @@
       "wallet": "FHpcNSe6tb2n15bAdq4BkeYWGyZKFD7yLYrH92ng7wCT",
       "token": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
       "reason": "Conflicting buy/sell signals observed in one scan; avoid immediate churn"
+    },
+    {
+      "at": "2026-10-17T15:43:58+00:00",
+      "action": "HOLD_NO_PRICE",
+      "wallet": "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB",
+      "token": "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+      "reason": "no fresh pool price; never fabricate valuation"
     }
   ],
   "snapshots": [
@@ -48108,82 +48080,20 @@
       "sampled_feeds": 3,
       "screened_pools": 4,
       "status": "PARTIAL_TRADE_FEEDS_UNAVAILABLE"
+    },
+    {
+      "at": "2026-10-17T15:45:06+00:00",
+      "equity_gbp": null,
+      "cash_gbp": 1967.3,
+      "open_positions": 2,
+      "closed_trades": 51,
+      "watched_pools": 0,
+      "sampled_feeds": 0,
+      "screened_pools": 0,
+      "status": "API_ERROR"
     }
   ],
-  "watched_pools": [
-    {
-      "id": "solana_Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "name": "FTR / SOL",
-      "mint": "DFMt2FyLpB6ekPNAzVErLXgpSnJ9CRf1VnxBAkTLpump",
-      "pool": "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-      "liquidity_usd": 216222.6861,
-      "volume_24h_usd": 4365107.46633116,
-      "price_usd": 0.0029106830218470006,
-      "change_24h_pct": -46.714,
-      "age_hours": 61.506456398055555,
-      "change_5m_pct": 5.526,
-      "change_1h_pct": 11.646,
-      "volume_1h_usd": 103605.964069805,
-      "fdv_usd": 2886420.544,
-      "market_cap_usd": null,
-      "buys_1h": 527.0,
-      "sells_1h": 487.0
-    },
-    {
-      "id": "solana_EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-      "name": "simulator / SOL",
-      "mint": "8hnMfF4XL717GVwzDmvqjJvULozKW6w7BhHFABjvHje4",
-      "pool": "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-      "liquidity_usd": 134121.242,
-      "volume_24h_usd": 7981530.29440381,
-      "price_usd": 0.0011125984306084816,
-      "change_24h_pct": 776.297,
-      "age_hours": 4825.876178627499,
-      "change_5m_pct": 0.995,
-      "change_1h_pct": -3.061,
-      "volume_1h_usd": 39957.0693096054,
-      "fdv_usd": 1112598.431,
-      "market_cap_usd": null,
-      "buys_1h": 252.0,
-      "sells_1h": 341.0
-    },
-    {
-      "id": "solana_AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-      "name": "1 / TRUMP",
-      "mint": "2bCCHQadi4QeHWPKG3w13siCyWWQPgkFtniouTqVpump",
-      "pool": "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-      "liquidity_usd": 107203.0951,
-      "volume_24h_usd": 2730754.79833818,
-      "price_usd": 0.000939850633999202,
-      "change_24h_pct": -51.577,
-      "age_hours": 43.32451196416667,
-      "change_5m_pct": 6.21,
-      "change_1h_pct": 22.68,
-      "volume_1h_usd": 99989.4262184862,
-      "fdv_usd": 887008.275120121,
-      "market_cap_usd": null,
-      "buys_1h": 1010.0,
-      "sells_1h": 817.0
-    },
-    {
-      "id": "solana_2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-      "name": "PUMP / USDC",
-      "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
-      "pool": "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-      "liquidity_usd": 23579627.5324,
-      "volume_24h_usd": 5290908.02531288,
-      "price_usd": 0.004456510619594315,
-      "change_24h_pct": 3.432,
-      "age_hours": 11038.717011971388,
-      "change_5m_pct": -0.732,
-      "change_1h_pct": -1.329,
-      "volume_1h_usd": 170867.259413462,
-      "fdv_usd": 3688792828.09939,
-      "market_cap_usd": 2062335272.44103,
-      "buys_1h": 274.0,
-      "sells_1h": 629.0
-    }
-  ],
+  "watched_pools": [],
   "errors": [
     {
       "at": "2026-10-15T22:18:14+00:00",
@@ -48252,47 +48162,30 @@
     {
       "at": "2026-10-17T15:39:10+00:00",
       "error": "trades 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd/trades: HTTP Error 429: Too Many Requests; retry at 2026-10-17T15:44:07.554111+00:00"
+    },
+    {
+      "at": "2026-10-17T15:44:00+00:00",
+      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T15:44:07.554111+00:00; retry at 2026-10-17T15:44:07.554111+00:00"
+    },
+    {
+      "at": "2026-10-17T15:44:00+00:00",
+      "error": "mark 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary provider cooling down until 2026-10-17T15:44:07.554111+00:00"
+    },
+    {
+      "at": "2026-10-17T15:44:00+00:00",
+      "error": "mark AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf: Primary rate limit for /networks/solana/pools/AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf: Primary provider cooling down until 2026-10-17T15:44:07.554111+00:00"
     }
   ],
-  "screening": [
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "DFMt2FyLpB6ekPNAzVErLXgpSnJ9CRf1VnxBAkTLpump"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "8hnMfF4XL717GVwzDmvqjJvULozKW6w7BhHFABjvHje4"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "2bCCHQadi4QeHWPKG3w13siCyWWQPgkFtniouTqVpump"
-    },
-    {
-      "status": "PASS",
-      "reason": "risk score and flags pass provisional screen",
-      "score_normalised": 1.0,
-      "http_status": null,
-      "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
-    }
-  ],
+  "screening": [],
   "execution": {
     "event": "workflow_dispatch",
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-17T15:38:46.098Z",
+    "scheduled_at": "2026-10-17T15:43:46.638Z",
     "trigger_uid": "3977529251376136192",
-    "run_id": "39045958089",
+    "run_id": "39046324608",
     "run_attempt": "1",
-    "started_at": "2026-10-17T15:38:55+00:00",
-    "slot": 5974171
+    "started_at": "2026-10-17T15:43:57+00:00",
+    "slot": 5974172
   },
   "research": {
     "version": 2,
@@ -155577,7 +155470,7 @@
       }
     },
     "last_status": "OK",
-    "last_run": "2026-10-17T15:39:08+00:00",
+    "last_run": "2026-10-17T15:43:58+00:00",
     "reinforcement_events": [],
     "wallet_tiers": {
       "MriyaNN8TMp6qRWjfr723PK7xgQK7yCt7Kg2v2PQu7X": "exploration",
@@ -157201,8 +157094,8 @@
     "whale_v3": {
       "version": 3,
       "initialized_at": "2026-10-16T10:54:02+00:00",
-      "last_run": "2026-10-17T15:40:10+00:00",
-      "status": "DEGRADED",
+      "last_run": "2026-10-17T15:45:00+00:00",
+      "status": "OK",
       "errors": [
         {
           "at": "2026-10-17T03:25:09+00:00",
@@ -157405,11 +157298,7 @@
           "error": "extra trades BofA2ViUSudP: gecko_trades cooling down until 2026-10-17T15:44:07.554111+00:00"
         }
       ],
-      "last_scan_errors": [
-        "extra pool discovery: gecko_quotes cooling down until 2026-10-17T15:44:07.554111+00:00",
-        "extra trades HnhpJPJgBG2K: gecko_trades cooling down until 2026-10-17T15:44:07.554111+00:00",
-        "extra trades BofA2ViUSudP: gecko_trades cooling down until 2026-10-17T15:44:07.554111+00:00"
-      ],
+      "last_scan_errors": [],
       "watched_pools": [
         {
           "id": "solana_HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
@@ -157423,15 +157312,22 @@
           "age_hours": 9931.674191096945
         },
         {
-          "id": "solana_BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-          "name": "PUMP / SOL",
-          "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
-          "pool": "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-          "liquidity_usd": 1877174.92,
-          "volume_24h_usd": 8111649.89696552,
-          "price_usd": 0.004489516960298674,
-          "change_24h_pct": 2.346,
-          "age_hours": 9527.5145099825
+          "id": "solana_3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "name": "TRUMP / USDC",
+          "mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
+          "pool": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "liquidity_usd": 6242158.0054,
+          "volume_24h_usd": 3214798.00474464,
+          "price_usd": 1.769062635123038,
+          "change_24h_pct": -3.254,
+          "age_hours": 15296.749234216944,
+          "change_5m_pct": -0.41,
+          "change_1h_pct": -1.614,
+          "volume_1h_usd": 301642.214449127,
+          "fdv_usd": 1769060628.63489,
+          "market_cap_usd": 498642034.119201,
+          "buys_1h": 172.0,
+          "sells_1h": 237.0
         }
       ],
       "recent_flows": [
@@ -157599,6 +157495,81 @@
           "age_seconds": 5655.9,
           "size_tier": "LARGE_FLOW",
           "sender_identity": "UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved"
+        },
+        {
+          "event_id": "3xxxzoPMgbt3xLjhYB1C563QUsmTF1MWjHLuR3RTvDdpw2o4dgfo9mMiapS9FwQCggsJDtPR47FLUJuAQXpgELoL:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "at": "2026-10-17T15:28:10+00:00",
+          "wallet": "CreQJ2t94QK5dsxUZGXfPJ8Nx7wA9LHr5chxjSMkbNft",
+          "token": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "pool_name": "TRUMP / USDC",
+          "kind": "sell",
+          "usd": 13980.48,
+          "source": "extra_pool",
+          "fresh": false,
+          "transaction_hash": "3xxxzoPMgbt3xLjhYB1C563QUsmTF1MWjHLuR3RTvDdpw2o4dgfo9mMiapS9FwQCggsJDtPR47FLUJuAQXpgELoL",
+          "age_seconds": 1010.9,
+          "size_tier": "LARGE_FLOW",
+          "sender_identity": "UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved"
+        },
+        {
+          "event_id": "4NQMLdU6Y4ES9QQJNMen3QgkNorbPgihuujz7ebUf8PQbhWiTedcpuZ6a2296RJ7WmgECnrQor5qxVGJn8JjQVEH:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "at": "2026-10-17T15:24:38+00:00",
+          "wallet": "CreQJ2t94QK5dsxUZGXfPJ8Nx7wA9LHr5chxjSMkbNft",
+          "token": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "pool_name": "TRUMP / USDC",
+          "kind": "sell",
+          "usd": 12485.95,
+          "source": "extra_pool",
+          "fresh": false,
+          "transaction_hash": "4NQMLdU6Y4ES9QQJNMen3QgkNorbPgihuujz7ebUf8PQbhWiTedcpuZ6a2296RJ7WmgECnrQor5qxVGJn8JjQVEH",
+          "age_seconds": 1222.9,
+          "size_tier": "LARGE_FLOW",
+          "sender_identity": "UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved"
+        },
+        {
+          "event_id": "SXGFFFQjwMZCwtDKsmXoZV4AKgitmMFa9xEkSM2VgEPrpnNMKML9BVEmf4jVfogW4roCh2fAByAmMEAzrRzm5Ug:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "at": "2026-10-17T15:21:13+00:00",
+          "wallet": "FkaLnX17cXZGyeu3kZGdHCNdFMJJzBrPPYVvd18B3MZp",
+          "token": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "pool_name": "TRUMP / USDC",
+          "kind": "buy",
+          "usd": 12839.69,
+          "source": "extra_pool",
+          "fresh": false,
+          "transaction_hash": "SXGFFFQjwMZCwtDKsmXoZV4AKgitmMFa9xEkSM2VgEPrpnNMKML9BVEmf4jVfogW4roCh2fAByAmMEAzrRzm5Ug",
+          "age_seconds": 1427.9,
+          "size_tier": "LARGE_FLOW",
+          "sender_identity": "UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved"
+        },
+        {
+          "event_id": "3pmN7is7Pqqtny1qW6AfCnyf7zLXMTxewhdS4oB7nzwpL5XZpkN7H2tswAfQpVLRN1CdxdZLpPo7odv6u7zA3g7m:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "at": "2026-10-17T15:20:25+00:00",
+          "wallet": "MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa",
+          "token": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "pool_name": "TRUMP / USDC",
+          "kind": "sell",
+          "usd": 17125.14,
+          "source": "extra_pool",
+          "fresh": false,
+          "transaction_hash": "3pmN7is7Pqqtny1qW6AfCnyf7zLXMTxewhdS4oB7nzwpL5XZpkN7H2tswAfQpVLRN1CdxdZLpPo7odv6u7zA3g7m",
+          "age_seconds": 1475.9,
+          "size_tier": "LARGE_FLOW",
+          "sender_identity": "UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved"
+        },
+        {
+          "event_id": "cjuRVSkhRiGx4jg2QjD814Gz8XCfhQoPyqwVZyZPNAq4uuykLpMKHYizjxjyqkKT1yQwf41pXHUr3MzfjDBHxrN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "at": "2026-10-17T15:20:16+00:00",
+          "wallet": "FkaLnX17cXZGyeu3kZGdHCNdFMJJzBrPPYVvd18B3MZp",
+          "token": "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+          "pool_name": "TRUMP / USDC",
+          "kind": "sell",
+          "usd": 27201.81,
+          "source": "extra_pool",
+          "fresh": false,
+          "transaction_hash": "cjuRVSkhRiGx4jg2QjD814Gz8XCfhQoPyqwVZyZPNAq4uuykLpMKHYizjxjyqkKT1yQwf41pXHUr3MzfjDBHxrN",
+          "age_seconds": 1484.9,
+          "size_tier": "LARGE_FLOW",
+          "sender_identity": "UNVERIFIED_TX_FROM_ADDRESS · aggregator/owner unresolved"
         }
       ],
       "observed_ids": [
@@ -157732,19 +157703,24 @@
         "5LbJYRdFSFK9Vy5MRGjQ4kzu6rCA4TQKhZXVYDhEJfwVAsEgeMz7QHipsPYmHSS9XnaXiuGNF3vcLWgDtkB65XLR:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
         "2jt3gwP5jDz4F6SnsV5rkuTa45oVDYcrCcAyQX6Xk5mLqN6wK8uL8hVGApupGcSHRhATnSNGv5czwDRUtr8ab32C:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
         "31acrYmiPtgakCstkrWwD1d3BowdVcdUvUs6W5KqMXWnKkctsn4X1iaihJPEwcKrHNQLCXaYzsRDJKWiQJH43iTY:sell:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
-        "2UiKrk8QFonQXj22GCRWLtt5krntBq5GYRFEcdMhiaVer95XgyirzS17oeEsVPYxHRLY1TdEcjrvsmg7PwnKQGjM:sell:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
+        "2UiKrk8QFonQXj22GCRWLtt5krntBq5GYRFEcdMhiaVer95XgyirzS17oeEsVPYxHRLY1TdEcjrvsmg7PwnKQGjM:sell:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
+        "3xxxzoPMgbt3xLjhYB1C563QUsmTF1MWjHLuR3RTvDdpw2o4dgfo9mMiapS9FwQCggsJDtPR47FLUJuAQXpgELoL:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4NQMLdU6Y4ES9QQJNMen3QgkNorbPgihuujz7ebUf8PQbhWiTedcpuZ6a2296RJ7WmgECnrQor5qxVGJn8JjQVEH:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "SXGFFFQjwMZCwtDKsmXoZV4AKgitmMFa9xEkSM2VgEPrpnNMKML9BVEmf4jVfogW4roCh2fAByAmMEAzrRzm5Ug:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3pmN7is7Pqqtny1qW6AfCnyf7zLXMTxewhdS4oB7nzwpL5XZpkN7H2tswAfQpVLRN1CdxdZLpPo7odv6u7zA3g7m:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "cjuRVSkhRiGx4jg2QjD814Gz8XCfhQoPyqwVZyZPNAq4uuykLpMKHYizjxjyqkKT1yQwf41pXHUr3MzfjDBHxrN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
       ],
       "sender_profiles": {
         "CreQJ2t94QK5dsxUZGXfPJ8Nx7wA9LHr5chxjSMkbNft": {
           "buys": 2,
-          "sells": 5,
+          "sells": 7,
           "buy_volume_usd": 26490.81,
-          "sell_volume_usd": 62423.23,
+          "sell_volume_usd": 88889.66,
           "pools": [
             "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
             "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
           ],
-          "last_seen": "2026-10-17T02:13:07+00:00",
+          "last_seen": "2026-10-17T15:24:38+00:00",
           "identity_verified": false
         },
         "D6DzC5CG9hcEDJ33QDxd2oBXtGKZs4PbSk4e8i7E3uFD": {
@@ -157798,15 +157774,16 @@
         },
         "MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa": {
           "buys": 2,
-          "sells": 2,
+          "sells": 3,
           "buy_volume_usd": 25636.98,
-          "sell_volume_usd": 28988.98,
+          "sell_volume_usd": 46114.12,
           "pools": [
             "HktfL7iwGKT5QHjywQkcDnZXScoh811k7akrMZJkCcEF",
             "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x"
+            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
-          "last_seen": "2026-10-17T12:52:20+00:00",
+          "last_seen": "2026-10-17T15:20:25+00:00",
           "identity_verified": false
         },
         "E8Nqon5R32UEds1Z2osEKjoi3S9cD9sCfAqnZnimPa8T": {
@@ -157921,16 +157898,16 @@
           "identity_verified": false
         },
         "FkaLnX17cXZGyeu3kZGdHCNdFMJJzBrPPYVvd18B3MZp": {
-          "buys": 3,
-          "sells": 1,
-          "buy_volume_usd": 36285.13,
-          "sell_volume_usd": 24848.13,
+          "buys": 4,
+          "sells": 2,
+          "buy_volume_usd": 49124.82,
+          "sell_volume_usd": 52049.94,
           "pools": [
             "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
             "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
             "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW"
           ],
-          "last_seen": "2026-10-17T12:06:18+00:00",
+          "last_seen": "2026-10-17T15:20:16+00:00",
           "identity_verified": false
         },
         "3cUiNHxZv8r77USiQajNUJn5V52TgCsNiUJa8reGXm9B": {
@@ -158689,7 +158666,7 @@
       },
       "scanner": {
         "additional_pools": 2,
-        "large_flows": 131,
+        "large_flows": 136,
         "very_large_flows": 6,
         "fresh_signals": 26,
         "inventory_pools": 64
@@ -158698,43 +158675,42 @@
       "methodology": "Tx sender attribution unverified; whale-sized flow is not wallet wealth or holder identity. Only forward paper shadow outcomes count as performance evidence.",
       "scan_metrics": {
         "quote_pools": 2,
-        "trade_feeds": 0,
-        "requests": 1,
+        "trade_feeds": 2,
+        "requests": 3,
         "cache_hits": 0,
-        "deferred": 4,
+        "deferred": 0,
         "isolated_timeouts": 0,
-        "quote_provider": "dexscreener",
+        "quote_provider": "geckoterminal",
         "primary_window_wait_seconds": 60.0,
-        "quote_primary_error": "gecko_quotes cooling down until 2026-10-17T15:44:07.554111+00:00",
-        "elapsed_seconds": 0.146
+        "elapsed_seconds": 5.146
       },
       "last_quotes": {
         "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD": {
-          "at": "2026-10-17T15:40:10+00:00",
-          "price_usd": 0.2915,
+          "at": "2026-10-17T15:45:01+00:00",
+          "price_usd": 0.29271694239355717,
           "mint": "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp"
         },
-        "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW": {
-          "at": "2026-10-17T15:40:10+00:00",
-          "price_usd": 0.004466,
-          "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+        "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": {
+          "at": "2026-10-17T15:45:01+00:00",
+          "price_usd": 1.772825634839085,
+          "mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
         }
       },
-      "last_market_data_at": "2026-10-17T15:40:10+00:00",
+      "last_market_data_at": "2026-10-17T15:45:06+00:00",
       "provider_health": {
         "gecko_quotes": {
           "consecutive_failures": 0,
-          "last_error": "Primary provider rate-limit backoff",
-          "http_status": 429,
-          "retry_at": "2026-10-17T15:44:07.554111+00:00",
-          "last_success": "2026-10-17T15:30:10+00:00"
+          "last_error": null,
+          "http_status": 200,
+          "retry_at": null,
+          "last_success": "2026-10-17T15:45:00+00:00"
         },
         "gecko_trades": {
-          "consecutive_failures": 1,
-          "last_error": "Primary provider rate-limit backoff",
-          "http_status": 429,
-          "retry_at": "2026-10-17T15:44:07.554111+00:00",
-          "last_success": "2026-10-17T15:25:09+00:00"
+          "consecutive_failures": 0,
+          "last_error": null,
+          "http_status": 200,
+          "retry_at": null,
+          "last_success": "2026-10-17T15:45:00+00:00"
         },
         "dexscreener_quotes": {
           "consecutive_failures": 0,
@@ -167114,17 +167090,6 @@
           "change_24h_pct": -13.417,
           "age_hours": 9931.674191096945
         },
-        "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW": {
-          "id": "solana_BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-          "name": "PUMP / SOL",
-          "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
-          "pool": "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-          "liquidity_usd": 1877174.92,
-          "volume_24h_usd": 8111649.89696552,
-          "price_usd": 0.004489516960298674,
-          "change_24h_pct": 2.346,
-          "age_hours": 9527.5145099825
-        },
         "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": {
           "id": "solana_3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
           "name": "TRUMP / USDC",
@@ -167869,12 +167834,23 @@
           "market_cap_usd": 1111849.23816181,
           "buys_1h": 1770.0,
           "sells_1h": 1235.0
+        },
+        "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW": {
+          "id": "solana_BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
+          "name": "PUMP / SOL",
+          "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+          "pool": "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
+          "liquidity_usd": 1877174.92,
+          "volume_24h_usd": 8111649.89696552,
+          "price_usd": 0.004489516960298674,
+          "change_24h_pct": 2.346,
+          "age_hours": 9527.5145099825
         }
       },
       "discovery_rotation": 100,
       "pool_last_scanned": {
         "2B8tftZ5ww8TREMr3pgkgERLNjJyJxEAPWMENViGMsL4": "2026-10-17T14:00:08+00:00",
-        "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": "2026-10-17T10:25:08+00:00",
+        "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9": "2026-10-17T15:45:00+00:00",
         "3sjNoCnkkhWPVXYGDtem8rCciHSGc9jSFZuUAzKbvRVp": "2026-10-17T14:40:11+00:00",
         "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C": "2026-10-17T14:25:12+00:00",
         "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj": "2026-10-17T14:50:08+00:00",
@@ -167899,7 +167875,7 @@
         "G2UuRbmVDzDFP4qyoBJrSKBXSi7d6V4bPP9tHPs36y4b": "2026-10-17T13:00:07+00:00",
         "G8kgi7aUpeX8EVR8VMkrth9SKEv5BietWC33UjAiiMGh": "2026-10-17T13:05:06+00:00",
         "GKVfZiv4EUNViMRfUejEn5QJN29oXGCyk7FY2iUv3bGi": "2026-10-17T13:05:06+00:00",
-        "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD": "2026-10-17T15:40:10+00:00",
+        "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD": "2026-10-17T15:45:00+00:00",
         "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp": "2026-10-17T14:05:07+00:00",
         "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX": "2026-10-17T14:30:08+00:00",
         "CwqkkPwKcTXAr4xYw8FKykBYY6x6iaJKrjJdNShiQp8A": "2026-10-17T15:00:07+00:00",
@@ -167939,6 +167915,153 @@
         "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": "2026-10-17T15:25:09+00:00"
       },
       "sampled_activity": {
+        "CreQJ2t94QK5dsxUZGXfPJ8Nx7wA9LHr5chxjSMkbNft": {
+          "buys": 57,
+          "sells": 64,
+          "pools": [
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "GjvW8JQSpKG5ogjyD3zozfaeJSShTajS5ZFrexT8L12k",
+            "Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw",
+            "EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx",
+            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
+            "93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:44:16+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "G7m3Y1eL4whGEUA1pcTZhiRZ7dkGZjAwTkg3BYFP9xw6": {
+          "buys": 5,
+          "sells": 4,
+          "pools": [
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:43:46+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu": {
+          "buys": 22,
+          "sells": 20,
+          "pools": [
+            "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
+            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe",
+            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
+            "Ckp1kwZqosaLU1h3zWtuaMBubyWM7LX3cxYezRVin7p2",
+            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+            "2B8tftZ5ww8TREMr3pgkgERLNjJyJxEAPWMENViGMsL4",
+            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
+            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3",
+            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
+          ],
+          "last_seen": "2026-10-17T15:43:40+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "GxDC9e7SP9mzhDo4re5HbpLa2RW7gB9DtmThx4i4pXSq": {
+          "buys": 6,
+          "sells": 4,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:43:23+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "FkaLnX17cXZGyeu3kZGdHCNdFMJJzBrPPYVvd18B3MZp": {
+          "buys": 581,
+          "sells": 624,
+          "pools": [
+            "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
+            "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
+            "2AXXcN6oN9bBT5owwmTH53C7QHUXvhLeu718Kqt8rvY2",
+            "DSUvc5qf5LJHHV5e2tD184ixotSnCnwj7i4jJa4Xsrmt",
+            "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
+            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
+            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+            "81GpCm4d13y8TozYtThabuSCLQN2o3bbrvDogXFPn8sA",
+            "Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw",
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
+          ],
+          "last_seen": "2026-10-17T15:43:05+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "9xE8a84niRRf1YwMoXBm7y2GYsfMTXjjC6SL7S3qi3f7": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:43:01+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "Af6Vm4E34VXB7SVqatY1ThJrQ2NL24FguMmL2G7HmEgD": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:41:19+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "4XBqViD1XYF1qHrErrsXBzDrCapvP9fEFX4LPjXZi9YU": {
+          "buys": 11,
+          "sells": 19,
+          "pools": [
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
+            "Ckp1kwZqosaLU1h3zWtuaMBubyWM7LX3cxYezRVin7p2",
+            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
+            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:41:16+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "CQwT1byuHgjKnL6vzmuNaAywKfDBVxDmFVgsQDBWxcWt": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:41:16+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "8ZgAmj7fSo2eTcwidgg4uUYLZRXi8vyeFuywmA8FBQAv": {
+          "buys": 0,
+          "sells": 9,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:41:15+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "5QJ1ErKb8TRcpHdNypUxbNr2wpgfRst3aFWB4MxyQGHR": {
           "buys": 1,
           "sells": 0,
@@ -167952,14 +168075,15 @@
         },
         "H3MNBqAMcvpzjhbUJLnzW1YGMakHgaSDsMQxojAruvKk": {
           "buys": 0,
-          "sells": 8,
+          "sells": 9,
           "pools": [
             "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
+            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:38:48+00:00",
           "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
           "two_sided_activity": false
         },
         "8wzhUC8xdBintQhzRpRbmRh8YsraPtWfs7g3BoFyRJ38": {
@@ -168099,14 +168223,15 @@
         },
         "gtagyESa99t49VmUqnnfsuowYnigSNKuYXdXWyXWNdd": {
           "buys": 1,
-          "sells": 0,
+          "sells": 1,
           "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:38:28+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
+          "two_sided_activity": true
         },
         "8YqX83g3hCSuZbFnv6gtVSL2cYoAy4UnywQsbyqL8g3y": {
           "buys": 0,
@@ -168574,6 +168699,38 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": true
         },
+        "4B8srvotmWddTZuMt4RrBQrnx1sQj2Z7FaXgLbWvpVdd": {
+          "buys": 9,
+          "sells": 4,
+          "pools": [
+            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:37:09+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "R32xAccFis3YzBzGwZ1C4QkGiehLxSao7gDmErA3kjk": {
+          "buys": 5,
+          "sells": 8,
+          "pools": [
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
+            "Ckp1kwZqosaLU1h3zWtuaMBubyWM7LX3cxYezRVin7p2",
+            "D1rDVEp78cvBctREKZmpLdRnPNe3Ufmgq6ZjMYye9kmq",
+            "EQcKUXfKugCghU5kLe8vTsF4EnZZZJ2rPXou2RqzTN11",
+            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
+            "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX",
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:37:08+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
         "HGxBHpUsFbN9Mnf78pCNBMkYnYdEQqcensEiBvX3G9AV": {
           "buys": 1,
           "sells": 1,
@@ -168695,6 +168852,39 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "EF3Ny5h6A82fVgkkHWTXp8qMXnu1kyBgd3znbycodfiX": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:36:42+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "94CJX4Up4sJUDhJc2d4RCmHKuRRgcwj57jU1Eyqx6vGm": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:36:42+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "7ftibMSpbo96VQ1UEjtZ5j2iasDbrm9uUNd3twQnGhGK": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:36:42+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "6sGtHKj2YHbZNsJQjk8Afo4sCVjqhJLuPW7Vt5mx8hcb": {
           "buys": 7,
           "sells": 0,
@@ -168741,33 +168931,12 @@
           "two_sided_activity": false
         },
         "8oSD5a9EG933qyuL8YdnSy6YPF7peNiXm7PAx19R1phB": {
-          "buys": 1,
-          "sells": 1,
+          "buys": 2,
+          "sells": 3,
           "pools": [
             "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T15:36:18+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu": {
-          "buys": 20,
-          "sells": 17,
-          "pools": [
-            "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
             "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "HV49ZDgfqzeWF2BFVq4CtcEbrTm6oXGc68MiimWXh5qe",
-            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
-            "Ckp1kwZqosaLU1h3zWtuaMBubyWM7LX3cxYezRVin7p2",
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-            "2B8tftZ5ww8TREMr3pgkgERLNjJyJxEAPWMENViGMsL4",
-            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3",
-            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:36:18+00:00",
           "identity_verified": false,
@@ -168889,6 +169058,17 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "A8A9GoxfmcjY2QAQ8tYS98SqDBF6hUFDmxAKBsLw29sL": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:35:58+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
         "Cp9BcBuXTQat2rGsJrvQLh88RVmbNwwwg4SkovATzsGP": {
           "buys": 2,
           "sells": 0,
@@ -168945,6 +169125,17 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": true
         },
+        "5Lur3gBKJCroKGBwi2NyUc7XoJCWczSbebsu7cpQgKpg": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:35:34+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "3kjzSEb8wSkVbQLpadJRkjQ9rSwFXsHqaWN3H5wVVFdw": {
           "buys": 0,
           "sells": 1,
@@ -168952,6 +169143,39 @@
             "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
           ],
           "last_seen": "2026-10-17T15:35:26+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "A1A1bDGXpu6ew8n3fgrzQfZW33cP4vVzAnhTeJJqe1uw": {
+          "buys": 11,
+          "sells": 4,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:35:24+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "C2dVe8Khri4GRvHZs9cpWN73Hpdp7BAdXw3KsYSRahmy": {
+          "buys": 2,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:35:21+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "9XKZQJRLNZr937Pb4FpAwFVhUZwK2eMce1ScuVHWn8zk": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+          ],
+          "last_seen": "2026-10-17T15:35:21+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -169033,6 +169257,61 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "5quywfSNAbL1sFQiT5Dyy7MHaA65eFdeQmGhQiTR8FoV": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:33:43+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "ATxToSApFMKUWDdaCPoVi18SRwfLaStnrAdwGT1ap2ev": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:30:19+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "HYEuFrEshx2rVhLj3trU7WsCnw3y3zb3Ns4bXoFjFcb": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:30:19+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa": {
+          "buys": 1621,
+          "sells": 2392,
+          "pools": [
+            "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
+            "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
+            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
+            "9t1H1uDJ558iMPNkEPSN1fqkpC4XSPQ6cqSf6uEsTfTR",
+            "2AXXcN6oN9bBT5owwmTH53C7QHUXvhLeu718Kqt8rvY2",
+            "HktfL7iwGKT5QHjywQkcDnZXScoh811k7akrMZJkCcEF",
+            "9n3dSLrERZQp95dHXywft7xV8D8xnGFLaUHtEhQVaXaC",
+            "Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw",
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "DSUvc5qf5LJHHV5e2tD184ixotSnCnwj7i4jJa4Xsrmt",
+            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:29:10+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
         "v1mXYAxwEE1BwcPm4dyyiXvN295nyGUGb73MBJGx1Rg": {
           "buys": 0,
           "sells": 1,
@@ -169040,6 +169319,41 @@
             "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
           ],
           "last_seen": "2026-10-17T15:28:41+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "HuTshmtwcQkWBLzgW3m4uwcmik7Lmz4YFpYcTqMJpXiP": {
+          "buys": 0,
+          "sells": 3,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:28:36+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "En3NPq8o9Cynf1Q3eP69AqZmPKmBaDugYnE832o2YuzP": {
+          "buys": 2,
+          "sells": 2,
+          "pools": [
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:28:35+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "RustUSBDaDcRRbT8JRmJ8GpomiXiMdgt3iYwbA59xvB": {
+          "buys": 0,
+          "sells": 2,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:28:35+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -169077,21 +169391,16 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "CreQJ2t94QK5dsxUZGXfPJ8Nx7wA9LHr5chxjSMkbNft": {
-          "buys": 45,
-          "sells": 44,
+        "CodeSYDfrMqGgsdR6kbR4cygPSgWcmi7ysUoiYL62XHT": {
+          "buys": 0,
+          "sells": 2,
           "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "GjvW8JQSpKG5ogjyD3zozfaeJSShTajS5ZFrexT8L12k",
-            "Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw",
-            "EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx",
-            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
-            "93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu"
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:28:10+00:00",
           "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
         },
         "21HPtgxxAYGqagDMSg5gtsKxouXUbRwivUqJyLdNf121": {
           "buys": 0,
@@ -169160,6 +169469,22 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "H4arxkST9m8UaASkLxEKrAT7RrfvayBBWV9oYpVkXZDb": {
+          "buys": 28,
+          "sells": 11,
+          "pools": [
+            "81GpCm4d13y8TozYtThabuSCLQN2o3bbrvDogXFPn8sA",
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "HktfL7iwGKT5QHjywQkcDnZXScoh811k7akrMZJkCcEF",
+            "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:27:00+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
         "5TNiBhfFqYdXqJez4HER3egRokhJQCnnXMdXmday9nLM": {
           "buys": 1,
           "sells": 0,
@@ -169183,15 +169508,16 @@
           "two_sided_activity": false
         },
         "F34Pd6DgZKE6iRDe5CRLauHSaonkqxZHv9dSjsR7syJd": {
-          "buys": 1,
-          "sells": 0,
+          "buys": 2,
+          "sells": 2,
           "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:26:27+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
+          "two_sided_activity": true
         },
         "FqojC24nUn3x6oMQC2ypBHmtH7rFAnKS6DvwsJoCMaiv": {
           "buys": 0,
@@ -169300,9 +169626,8 @@
         },
         "9nXDunV8eNvYSVys7JSBkm2hz9Q79Q3EYeko19srVeMC": {
           "buys": 35,
-          "sells": 90,
+          "sells": 100,
           "pools": [
-            "J3b6dvheS2Y1cbMtVz5TCWXNegSjJDbUKxdUVDPoqmS7",
             "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
             "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
             "6e3jZLtf4tQbWZm3f7A66jF8tfZn6MRQVrbDFgcNWarA",
@@ -169313,7 +169638,8 @@
             "DSUvc5qf5LJHHV5e2tD184ixotSnCnwj7i4jJa4Xsrmt",
             "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
             "EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:25:05+00:00",
           "identity_verified": false,
@@ -169463,6 +169789,63 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "CtUppVZrxmwc496WnhuyeRRNdptpecMhRyYovwS9AxLA": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:22:29+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "FXtZnq76c4pcszVjtSg758VeZv45GTskMu11twPbQZuc": {
+          "buys": 2,
+          "sells": 0,
+          "pools": [
+            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:22:21+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "moodt1QXNtbmiheUJr9EGfch7h5mTxcWqCLyzXxWNu6": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:22:05+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "freeupq4fM9nSdZ5Q52AjSUp5NQ1UXC3y3y9rZVEByC": {
+          "buys": 6,
+          "sells": 1,
+          "pools": [
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:22:04+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "2gF2drQYrkXJGXCAgkubt4jD38QkfcC6q9MdoRfW6JYG": {
+          "buys": 3,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:22:04+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "2KaovxavDFPFrJ47GHPyAF7FD284xAiD4bKig2nq2zNh": {
           "buys": 1,
           "sells": 0,
@@ -169529,11 +169912,27 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "6LkZgN5kFWFSzmV3gW2yku8ddSHvbV9p2nCuphSaUo85": {
-          "buys": 1,
+        "DAqCpTpQN1JNCDYLXWir28q1J2eXSufiNNADsSnUQTBZ": {
+          "buys": 30,
           "sells": 0,
           "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
+            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
+            "EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx",
+            "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
+            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:21:25+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": false
+        },
+        "6LkZgN5kFWFSzmV3gW2yku8ddSHvbV9p2nCuphSaUo85": {
+          "buys": 2,
+          "sells": 0,
+          "pools": [
+            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:21:13+00:00",
           "identity_verified": false,
@@ -169561,6 +169960,51 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
+        },
+        "6AGp6zbGNuyZpmzeswv9KCNU15Rf37UQDqDqFAeHmS8d": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:21:00+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "8NQ32SyFKD1d5kenq4oM8Da6C6J9TQSMW1uAgFRveEQr": {
+          "buys": 3,
+          "sells": 0,
+          "pools": [
+            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:57+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "ENY9JreWWWtq8jSKfLtXpzjBteknLPdahPCwG7ZCVbJe": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:57+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "AaPc5Brm7MdbujLTUdTkx8ytjK9KEKXD1ZoLKTZH6jnn": {
+          "buys": 3,
+          "sells": 2,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:57+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
         },
         "ETpYJhAN9kCQ61UgRZHSjQDsv1G3zTb4DkA1iP7wrE5B": {
           "buys": 0,
@@ -169607,6 +170051,29 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "GLiCiNEnku3pQsmkVkRvnDLbfUN9BWbsrPDWLdPaADng": {
+          "buys": 1,
+          "sells": 2,
+          "pools": [
+            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:28+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "FamRs7QWQMTjJQW8ac1awRx1KqazCxjdaoZ9uiwM3zrp": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:28+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "7A9ds4xSHgSs4Twkm4r6usaQtyhHoqmA2mF3XCZoBedu": {
           "buys": 0,
           "sells": 1,
@@ -169620,9 +170087,10 @@
         },
         "CqrYNsKr6VPZMfhJbARC9HDgVT4ncjJBTDArdgVNccrc": {
           "buys": 0,
-          "sells": 1,
+          "sells": 2,
           "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
+            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:20:21+00:00",
           "identity_verified": false,
@@ -169673,6 +170141,42 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "GJvewfRjqTUPtx6WsBSUnaFbdgXwgXnWfpDyLm65T4YA": {
+          "buys": 1,
+          "sells": 6,
+          "pools": [
+            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
+            "93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu",
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:10+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "HhQHiaywyhXU9JzR8uemvkqdvHC7gQ94NzvqHDRvc8zv": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:07+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "FrhLfj81LRpMR3EwSSCGPzHmxsnoq8h628ne68vK5oMN": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:20:06+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "C2Hyh1JR3pZnLNbXNZa2R6JUFiBcwVtPjHYRYHJn2bpG": {
           "buys": 0,
           "sells": 1,
@@ -169680,6 +170184,42 @@
             "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
           ],
           "last_seen": "2026-10-17T15:19:05+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "CatyeC3LgBxub7HcpW2n7cZZZ66CUKdcZ8DzHucHrSiP": {
+          "buys": 3,
+          "sells": 4,
+          "pools": [
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "EQcKUXfKugCghU5kLe8vTsF4EnZZZJ2rPXou2RqzTN11",
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:18:35+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
+        "888ke21B17KFQVpQNSjFBDs4vD5F4ZaarQovMJ3A4iFJ": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:18:34+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "GghFuAAhjtmnZZiNk96soZ7EL5Me9RyUgRcunPKKsdhy": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:18:11+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -169790,6 +170330,17 @@
             "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
           ],
           "last_seen": "2026-10-17T15:16:29+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "5jahCqsAv9MSDeoE8sAhY2HP1dakWTW2zcpxe63nYsUq": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:16:18+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -169938,20 +170489,6 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": true
         },
-        "DAqCpTpQN1JNCDYLXWir28q1J2eXSufiNNADsSnUQTBZ": {
-          "buys": 29,
-          "sells": 0,
-          "pools": [
-            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
-            "EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx",
-            "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
-          ],
-          "last_seen": "2026-10-17T15:14:55+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": false
-        },
         "CF6KsnLsQq62LvYBLh9WjWSfkR2H8v2YdgLcywwoZNXi": {
           "buys": 0,
           "sells": 1,
@@ -169963,11 +170500,45 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "GQzbfpZsAqLAbQ6NomhCCrDjMv3DYPLtPmhGGkwW1oRj": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:14:11+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
         "8sVHWUMiPxgRFebz5hEJJSJmRTRWWWn33S2cwc2ii9cf": {
           "buys": 0,
           "sells": 1,
           "pools": [
             "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
+          ],
+          "last_seen": "2026-10-17T15:14:06+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "94SNzaYenw8QximymQEZZYyFqfu49x9DeUQQPdfCNWtx": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:14:06+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "3nLh14fRyZr1EBpp7jJqwBqKt8uLBFZ1rTmVTfLvnkfj": {
+          "buys": 2,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T15:14:06+00:00",
           "identity_verified": false,
@@ -169981,17 +170552,6 @@
             "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U"
           ],
           "last_seen": "2026-10-17T15:13:46+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "8NQ32SyFKD1d5kenq4oM8Da6C6J9TQSMW1uAgFRveEQr": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
-          ],
-          "last_seen": "2026-10-17T15:13:43+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -170042,17 +170602,6 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": true
-        },
-        "G7m3Y1eL4whGEUA1pcTZhiRZ7dkGZjAwTkg3BYFP9xw6": {
-          "buys": 2,
-          "sells": 0,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T15:13:20+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
         },
         "8izdQNdZ9KhrPWXzibPvK821QThyGhUhGoWMCkdUJMAz": {
           "buys": 1,
@@ -170294,6 +170843,17 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "8Xo7so2GbfBXWb1Z2tdscAx4raMtypMEMjpKRoVo3CS7": {
+          "buys": 2,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T15:08:12+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "GEtwfLJUkcBHJsULXMc14UyU44joFT4yhYSSj68RxF3k": {
           "buys": 1,
           "sells": 1,
@@ -170391,35 +170951,6 @@
             "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U"
           ],
           "last_seen": "2026-10-17T15:06:23+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "4XBqViD1XYF1qHrErrsXBzDrCapvP9fEFX4LPjXZi9YU": {
-          "buys": 7,
-          "sells": 12,
-          "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
-            "Ckp1kwZqosaLU1h3zWtuaMBubyWM7LX3cxYezRVin7p2",
-            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T15:06:01+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
-        },
-        "GLiCiNEnku3pQsmkVkRvnDLbfUN9BWbsrPDWLdPaADng": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T15:06:01+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -170593,28 +171124,6 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "FkaLnX17cXZGyeu3kZGdHCNdFMJJzBrPPYVvd18B3MZp": {
-          "buys": 572,
-          "sells": 615,
-          "pools": [
-            "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-            "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
-            "2AXXcN6oN9bBT5owwmTH53C7QHUXvhLeu718Kqt8rvY2",
-            "DSUvc5qf5LJHHV5e2tD184ixotSnCnwj7i4jJa4Xsrmt",
-            "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
-            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
-            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
-            "81GpCm4d13y8TozYtThabuSCLQN2o3bbrvDogXFPn8sA",
-            "Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T15:03:25+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
-        },
         "94wzkshHyEivmQXp7iZqeKWt2RqUq6z4qXQv2DwVvTdq": {
           "buys": 0,
           "sells": 1,
@@ -170625,28 +171134,6 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
-        },
-        "MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa": {
-          "buys": 1615,
-          "sells": 2388,
-          "pools": [
-            "EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx",
-            "BofA2ViUSudPBTUms2KRuG6AHNeMawjNfwqTJDgx5BKW",
-            "3ndjN1nJVUKGrJBc1hhVpER6kWTZKHdyDrPyCJyX3CXK",
-            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
-            "9t1H1uDJ558iMPNkEPSN1fqkpC4XSPQ6cqSf6uEsTfTR",
-            "2AXXcN6oN9bBT5owwmTH53C7QHUXvhLeu718Kqt8rvY2",
-            "HktfL7iwGKT5QHjywQkcDnZXScoh811k7akrMZJkCcEF",
-            "9n3dSLrERZQp95dHXywft7xV8D8xnGFLaUHtEhQVaXaC",
-            "Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw",
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "DSUvc5qf5LJHHV5e2tD184ixotSnCnwj7i4jJa4Xsrmt",
-            "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp"
-          ],
-          "last_seen": "2026-10-17T15:02:59+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
         },
         "EbdyCY2kkqgfYqguu4AWku2QEGRyGzVGpqc9KDaQFFNN": {
           "buys": 0,
@@ -170815,17 +171302,6 @@
         "GRCeWk1ya5bPN3QLmvgVLnXMAsdtajR25NMK4WsE7i47": {
           "buys": 1,
           "sells": 0,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T15:01:47+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "freeupq4fM9nSdZ5Q52AjSUp5NQ1UXC3y3y9rZVEByC": {
-          "buys": 0,
-          "sells": 1,
           "pools": [
             "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
           ],
@@ -171093,6 +171569,50 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "4CEVMuAMZeiBNvbiLwMZfFL8TYiLmLBEx2CW2WNw1vGA": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:58:16+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "Fr28ctYujMBmvn3VCMkYAuUHEEE9X2DWnrEYcuDFEXSL": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:58:03+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "FTuqW6J148wdknkPvm2EVSJ1EFt4aDhjAYzv6rdjuCRi": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:57:58+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "CPnKUPRLeuTP27mZixRUKyBmfoqwtWGJGzDgUgepjMsS": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:57:57+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "5cjFXH75DHjVNBmRDiyrnJgtAv6XuErSJAMVigr2atf3": {
           "buys": 0,
           "sells": 1,
@@ -171138,6 +171658,39 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "GdRSPexhxbQz5H2zFQrNN2BAZUqEjAULBigTPvQ6oDMP": {
+          "buys": 1,
+          "sells": 3,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:57:47+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
+        "3F59zfHQWZCYYGbJViWmmLthhnn642J7V8JDpq8N4dpZ": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:57:46+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "8vwmLqHsc2HfTQzPH6fjvfm1fYf7SRzxJfuGHy1ce1r8": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:57:43+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
+        },
         "C8P8sN4Z3GXrJouaCSYcbewHWppNq8LvzXXGmbHj1yAB": {
           "buys": 1,
           "sells": 0,
@@ -171149,6 +171702,17 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "5Up2GR9f2jAeR4zWRx3kZcyWcSc54Bneq1wr9XjZBS5p": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:57:37+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "63XM4ZP3Zqerz9qSMWN5KAHPjXnRPB3PM86t3WKVGtmG": {
           "buys": 0,
           "sells": 1,
@@ -171156,17 +171720,6 @@
             "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
           ],
           "last_seen": "2026-10-17T14:57:22+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "FXtZnq76c4pcszVjtSg758VeZv45GTskMu11twPbQZuc": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U"
-          ],
-          "last_seen": "2026-10-17T14:57:18+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -171403,24 +171956,6 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "R32xAccFis3YzBzGwZ1C4QkGiehLxSao7gDmErA3kjk": {
-          "buys": 5,
-          "sells": 7,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-            "Ckp1kwZqosaLU1h3zWtuaMBubyWM7LX3cxYezRVin7p2",
-            "D1rDVEp78cvBctREKZmpLdRnPNe3Ufmgq6ZjMYye9kmq",
-            "EQcKUXfKugCghU5kLe8vTsF4EnZZZJ2rPXou2RqzTN11",
-            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
-            "zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX",
-            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
-          ],
-          "last_seen": "2026-10-17T14:52:59+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
-        },
         "DeqPz8G4i94CP9cZezZ8worzY8caesP9nCHpPqMZAM9K": {
           "buys": 0,
           "sells": 1,
@@ -171487,19 +172022,6 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
-        },
-        "CatyeC3LgBxub7HcpW2n7cZZZ66CUKdcZ8DzHucHrSiP": {
-          "buys": 3,
-          "sells": 3,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "EQcKUXfKugCghU5kLe8vTsF4EnZZZJ2rPXou2RqzTN11",
-            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
-          ],
-          "last_seen": "2026-10-17T14:52:46+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
         },
         "3nsE96JdiFJXDj4UkDcMrCge1wrWejERPHvrehLkvQ1B": {
           "buys": 2,
@@ -171702,6 +172224,17 @@
             "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
           ],
           "last_seen": "2026-10-17T14:50:25+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "33UWupqZP2fWE1hiomyZCrzyq3MMbzpL8vXDioKL9iqX": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:50:24+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -172527,9 +173060,10 @@
         },
         "8xp17GMvryXqBRJ3nkk5pJzjmr8X7UN3jenYag1Y3ADU": {
           "buys": 0,
-          "sells": 1,
+          "sells": 2,
           "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
+            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
           "last_seen": "2026-10-17T14:41:37+00:00",
           "identity_verified": false,
@@ -172635,6 +173169,17 @@
             "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
           ],
           "last_seen": "2026-10-17T14:41:09+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "91bbW2X1hMXv2DQEbbvQebD8UARnMbvgowQVEoUBmTrB": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:41:06+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -172879,6 +173424,17 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "DgWCNwj6at3hx6uUBRKp1dhbUtGBi4nuXxgkqS8GhAhs": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:38:36+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
         "8ryctvNwpJTuuap3wuNTfcyEx4DjSuXvhGXSDHNaU8sQ": {
           "buys": 0,
           "sells": 1,
@@ -173000,6 +173556,17 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": true
+        },
+        "MenuxY5yMzJkeKZTvDTcovjh4fuJHMHhJyjJ5v5LzG6": {
+          "buys": 1,
+          "sells": 0,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:37:25+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
         },
         "BZ2x7NFmKUSwSK7mnrPTc9XAvr6UwcoS2GcZEQYoTVuq": {
           "buys": 1,
@@ -173144,18 +173711,6 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "En3NPq8o9Cynf1Q3eP69AqZmPKmBaDugYnE832o2YuzP": {
-          "buys": 1,
-          "sells": 1,
-          "pools": [
-            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
-          ],
-          "last_seen": "2026-10-17T14:35:12+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
         "Go8dMup1rrrAbch8mVzmcUHNmCbUtV8pojuBv87SkQdj": {
           "buys": 27,
           "sells": 7,
@@ -173174,17 +173729,6 @@
           "identity_verified": false,
           "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
           "two_sided_activity": true
-        },
-        "GQzbfpZsAqLAbQ6NomhCCrDjMv3DYPLtPmhGGkwW1oRj": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
-          ],
-          "last_seen": "2026-10-17T14:35:11+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
         },
         "Hg4XkCLw3KEkj6sM4j8P8NyhC6iH28JUBwfNbEaCJZnK": {
           "buys": 0,
@@ -173425,6 +173969,28 @@
             "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
           ],
           "last_seen": "2026-10-17T14:32:26+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "9XnoYobFS4yS9XzPVT7BYKRawhJa6HxjvxBpYdwH5s4B": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:31:34+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": false
+        },
+        "7ecfgpvHbNbxQVinwokGGhJdimHhTKshSvueRNj3mvhk": {
+          "buys": 0,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:31:27+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -173851,6 +174417,19 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": true
         },
+        "FtFtF8iamFC3gCv5VYUTBd1G4r1XEc1TbcHyuy6hkJPQ": {
+          "buys": 3,
+          "sells": 0,
+          "pools": [
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:26:49+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": false
+        },
         "B4VmMBXTpbiMf37rgfr37eL4VpBknBxvuYPAgYETof2U": {
           "buys": 1,
           "sells": 0,
@@ -173946,18 +174525,6 @@
             "4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8"
           ],
           "last_seen": "2026-10-17T14:26:01+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "FtFtF8iamFC3gCv5VYUTBd1G4r1XEc1TbcHyuy6hkJPQ": {
-          "buys": 2,
-          "sells": 0,
-          "pools": [
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
-            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
-          ],
-          "last_seen": "2026-10-17T14:25:52+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
@@ -174364,21 +174931,6 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "H4arxkST9m8UaASkLxEKrAT7RrfvayBBWV9oYpVkXZDb": {
-          "buys": 27,
-          "sells": 11,
-          "pools": [
-            "81GpCm4d13y8TozYtThabuSCLQN2o3bbrvDogXFPn8sA",
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "HktfL7iwGKT5QHjywQkcDnZXScoh811k7akrMZJkCcEF",
-            "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:22:25+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
-        },
         "6AiKtviixtjutFQqDCvFowARMC5X1jrN9zHBSv72MRXJ": {
           "buys": 1,
           "sells": 0,
@@ -174570,6 +175122,20 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
+        "CYa4bLwboipDtag3dRVowqyD8uXswijKgbUpt65GBmQK": {
+          "buys": 25,
+          "sells": 20,
+          "pools": [
+            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+            "FjuBy7jjf9DXj9d3R7cHpvcnoFW2iQxf7F7P3vqx4Jza",
+            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C",
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:20:09+00:00",
+          "identity_verified": false,
+          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
+          "two_sided_activity": true
+        },
         "BKrwKzH55doBfP6edisVHW8GZC1D7tzToq88EYdNEXYk": {
           "buys": 0,
           "sells": 1,
@@ -174695,19 +175261,6 @@
           "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
           "two_sided_activity": true
         },
-        "CYa4bLwboipDtag3dRVowqyD8uXswijKgbUpt65GBmQK": {
-          "buys": 24,
-          "sells": 20,
-          "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-            "FjuBy7jjf9DXj9d3R7cHpvcnoFW2iQxf7F7P3vqx4Jza",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:19:22+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
-        },
         "BFQD3Mtdyw171TxkRRuHSkgVkWJsVCYJRFhNFRcHMJAy": {
           "buys": 0,
           "sells": 10,
@@ -174763,16 +175316,27 @@
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
         },
-        "C2dVe8Khri4GRvHZs9cpWN73Hpdp7BAdXw3KsYSRahmy": {
-          "buys": 1,
-          "sells": 0,
+        "9oyGAvGzDBF6gGEkzNYUMVGbjzLDwERavL6XXcGXpnzy": {
+          "buys": 0,
+          "sells": 1,
           "pools": [
-            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
           ],
-          "last_seen": "2026-10-17T14:18:53+00:00",
+          "last_seen": "2026-10-17T14:19:06+00:00",
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
+        },
+        "Fjy4KRsKZmQ2WktYspAfnChWTiY41pNgiKEwDE1QXPbA": {
+          "buys": 1,
+          "sells": 1,
+          "pools": [
+            "3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
+          ],
+          "last_seen": "2026-10-17T14:19:02+00:00",
+          "identity_verified": false,
+          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
+          "two_sided_activity": true
         },
         "dCCoPJNnAUNw1SQUPxdALXjdcdLoiqoZwpJFKCkdoFv": {
           "buys": 1,
@@ -175043,19 +175607,6 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
-        },
-        "GJvewfRjqTUPtx6WsBSUnaFbdgXwgXnWfpDyLm65T4YA": {
-          "buys": 1,
-          "sells": 5,
-          "pools": [
-            "AsSyvUnbfaZJPRrNh3kUuvZTeHKoMVWEoHz86f4Q5D9x",
-            "93tjgwff5Ac5ThyMi8C4WejVVQq4tuMeMuYW1LEYZ7bu",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:16:50+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
         },
         "F7PBKCHgHj2kGsPXWCPxnvi2S4cxP2fnENb3Y1yu9auK": {
           "buys": 6,
@@ -175394,805 +175945,9 @@
           "identity_verified": false,
           "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
           "two_sided_activity": false
-        },
-        "HR9U8aKvinaK3x6BfewwBuHj8422Sf7EsCAit3oUH8ou": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8"
-          ],
-          "last_seen": "2026-10-17T14:13:23+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "4bjsSpTCd28chbmMtKqfVfBbZihunjv5cr476BJN8jsv": {
-          "buys": 1,
-          "sells": 1,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T14:13:14+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "A8JStPEVDWWLQWFrjkucVEYciFxLVUZ1Lu1UzzsjX6Ac": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T14:13:13+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "6pmpBZfrvpZkjH6cFGnD9KAXYCMmppc8TeuUuoRrkaTn": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8"
-          ],
-          "last_seen": "2026-10-17T14:13:03+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "J84DuQUeYmvocUHWmX3X9ZEkQsdePkWyEpW6tc9PtEjb": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T14:12:58+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "EVvU5FPQeHdrnCkDRcwmKwWFpqPrLf5qnUqyyvn7fJn6": {
-          "buys": 2,
-          "sells": 1,
-          "pools": [
-            "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:12:45+00:00",
-          "identity_verified": false,
-          "attribution": "MULTI_POOL_OR_ROUTER_POSSIBLE",
-          "two_sided_activity": true
-        },
-        "Eg3zsQCJ9KpyUJJ1pQX3f6Lo7NojnZ8PG18dJTd5TtFh": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:12:43+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "8wmPjPW2KXKdLdvD7J4JCW2FG9VD5TAYQBqHkVrdVwji": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
-          ],
-          "last_seen": "2026-10-17T14:12:32+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "AJNHX8BdW3zbxawhgAKeQB9DMa5DqtezhZRyeGu1arHi": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:12:30+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "13cLF4ZHH7X977o5kdXJ3t6dCdetcijEcNm34s6d4r3W": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
-          ],
-          "last_seen": "2026-10-17T14:12:29+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "HqfPNvTgrXZc5sg396aphfy3nPPmAioG11qgpFYWb8np": {
-          "buys": 2,
-          "sells": 1,
-          "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
-          ],
-          "last_seen": "2026-10-17T14:12:13+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "3eUuE4B9SN7Mtrf6cPXprs14UapCw6eRb219t8sTBfTF": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8"
-          ],
-          "last_seen": "2026-10-17T14:12:07+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "FCcH6NowSESDgEQGcx3TdND6Gs8V1ean7xC77ZNn56Te": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:11:39+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "6m4kJBAJGAe89jKYusrygj1Dm3FEuY2zXRehQKCejygx": {
-          "buys": 0,
-          "sells": 2,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:11:38+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "9sDm3CwM3fUtYg4zfPRFLfk3ZnYjjLyzmSJDP5MUEaGu": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:11:36+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "HyBPUAFC2E2e2pKzb98a5daaf9pAvF3Ckz9YVU4xjJGp": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:11:22+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "9GyN1fDcvahVgUhbyZ9sMGh81xEmqQRVoRxaxhz9YyLC": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
-          ],
-          "last_seen": "2026-10-17T14:10:57+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "5UzPesqwYLN2MNKTCCT3gw1GXbM4UCN6Mvyf8K2Knet5": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV"
-          ],
-          "last_seen": "2026-10-17T14:10:54+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "51w8zErjmA4XcR7Zsv7odbFutUXCCzZ41hPtub2H2TMZ": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:10:45+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "4JV7BZMuQLQXyYmca5HxUcZkQ5hXBDRdN34pk4bizyXf": {
-          "buys": 0,
-          "sells": 2,
-          "pools": [
-            "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-            "4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8"
-          ],
-          "last_seen": "2026-10-17T14:10:39+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "EXutzMobPcRzP93QEUeyoZUjJqgXfSoptUELL3YZM1Cd": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T14:10:23+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "5xoQ3xNqvyaB995HK8ktiGFRbCj6wk9Y9iZAGL4tQWCT": {
-          "buys": 1,
-          "sells": 1,
-          "pools": [
-            "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E"
-          ],
-          "last_seen": "2026-10-17T14:10:22+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "CzYQ2kFnBxsNEt9Zy34vQ3n5fSDhvA4o4XaTnq1rLvyr": {
-          "buys": 2,
-          "sells": 1,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:10:19+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "D8pBNrTqzgr6FNWg5umqXcG32UkiBYr5vR71GTRMfujZ": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
-          ],
-          "last_seen": "2026-10-17T14:10:15+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "25dfwF2fxsmYv5QpwV69jeNkCEBtgtShQkxeQ9C8hwGZ": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
-          ],
-          "last_seen": "2026-10-17T14:10:07+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "6ZRx8AGjX4sy5pcSoBDfJ81ezwA1rFHiuKy6NcbM8tzc": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:10:07+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "qRksMrg839YBb89V58Q7Up2ukpa3qGVjpyYwdntHwUD": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:10:05+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "JBW22ksM9MMZhkfvxRUgsVvSh1eNZCUfDuFjckGQESwp": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:10:04+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "GL8gf7VZjLYvX7k7AuR1YTtvTxsCGqZTYJqxaUauA7JV": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8"
-          ],
-          "last_seen": "2026-10-17T14:09:50+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "Cd4vGZAm5S7UtK1bkecQtcVUsZ24iSaPjqUstMxExTj5": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:47+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "Avj1JMngnhQBDA2g8Z59BfEj6jGosXypPLsXGV4jHvAS": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
-          ],
-          "last_seen": "2026-10-17T14:09:46+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "BARTu4HQQpMArS3FCEk1JAeSsRErDCJq9nkte5DnPsGb": {
-          "buys": 2,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:43+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "BTUm4tLhRK3MbFw14NXmQacoLBoUXri3EYFE8RxFLyCV": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
-          ],
-          "last_seen": "2026-10-17T14:09:31+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "DsaXmWpiaKJ2v2FnqSH3ZTrtt9eCMfGAPsUUvSQbACgN": {
-          "buys": 1,
-          "sells": 1,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:30+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "8bPdnMdNgUPFrSJofun4efk1dcitwgVjLEiyS4kgbjH3": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj"
-          ],
-          "last_seen": "2026-10-17T14:09:27+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "BdAkX8pAZnHY3g7ced2myNbzip6sKjcXcji395LNPTj": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:18+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "FnH4p39W5wLqbqGbjqDQtsGEqjQA46dqMK5HgVNHCkj9": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
-          ],
-          "last_seen": "2026-10-17T14:09:17+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "77777nPhGvFUVAj6uq8MGyLneBt4SMwCScYZDzzztdsa": {
-          "buys": 3,
-          "sells": 0,
-          "pools": [
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:09:15+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "FBi88guYAyt6zSxxtGEShCGMmFxAp88nQot1N7iFQ9v": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:09:15+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "4DjTYc4cW3KgF49SzkfNfHr8w8PcYBBTPqfMywvGrrW9": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:09+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "6mHSGKpAZvrZFY6gFk7iHunKrFaDra2RP8BM6aqcrLPk": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:03+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "56K24oPG4kgAg3HbpGTHv1qsUAAffDJY863n3JmBH3oh": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:02+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "EhifHf5eFG1B8kvQGchWQGEckexVpoqeWMRvuL8quSJp": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:09:00+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "4B8srvotmWddTZuMt4RrBQrnx1sQj2Z7FaXgLbWvpVdd": {
-          "buys": 7,
-          "sells": 1,
-          "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-            "2TAgfogn8JRwwTnsGKUa6WUT5Xdv1iMEzfEDMor68X9C"
-          ],
-          "last_seen": "2026-10-17T14:08:57+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "AiZx1eKbqhZ6Z1udHxGqnmi1CSWbMDmVHBZxGLWToCaE": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
-          ],
-          "last_seen": "2026-10-17T14:08:43+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "3K7XMbqvFTKT211Dqu8tXC1iK5vmQQ2MZp5mxSdEzWvx": {
-          "buys": 1,
-          "sells": 1,
-          "pools": [
-            "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y"
-          ],
-          "last_seen": "2026-10-17T14:08:42+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": true
-        },
-        "5yUpQZrZbykx9pAA2MfSw8jyHfPJYPPutC2kcPWEhQwR": {
-          "buys": 0,
-          "sells": 2,
-          "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
-          ],
-          "last_seen": "2026-10-17T14:08:35+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "CqEwndkS1xsKmrxrdjNv5BomaDhNXuiQV8R1MQ3xdPxL": {
-          "buys": 2,
-          "sells": 0,
-          "pools": [
-            "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E"
-          ],
-          "last_seen": "2026-10-17T14:08:35+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "3BXMcyg3FK3H8J1izVmipqgEew27sg3czjiTGk8jv1n3": {
-          "buys": 0,
-          "sells": 1,
-          "pools": [
-            "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
-          ],
-          "last_seen": "2026-10-17T14:08:30+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
-        },
-        "HMe5zRnABjEU3mRvics2yQVmUtovGGd4RrGtHkQaNSHL": {
-          "buys": 1,
-          "sells": 0,
-          "pools": [
-            "2jAq7KMy4eqxex1DQHo1nSybEv2yTY94dUDKmvZ2yUb3"
-          ],
-          "last_seen": "2026-10-17T14:08:29+00:00",
-          "identity_verified": false,
-          "attribution": "UNVERIFIED_TRANSACTION_ORIGIN",
-          "two_sided_activity": false
         }
       },
       "activity_seen": [
-        "jM77ontqAqofFv7PytSzV6fe2TMai9jjfpHGme8uHKbq7QDH8FK7xQZa86ASF2MiK8qo2m87THW4ZdU1FWwpqT7:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3wPxp5KpEa5aof49rsbzJ5hedBtkhBrb3XHaRMFJoiGLHoSrutKihhD2q8xCSSdc2eTaz1TrdrSjjDfYgNbG1Pqc:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "59htJxsDwtNnjqRE7jtpnX6it1sEzrLnEeRmVpHebViTbzYJpAB7WpUbDzPjKrxxmL7yhPFYyWdAUtebsgDhyQhw:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2M7LtqfDRFQAxekz1rmvTRjJSXwD6N8x9t3681sFFofdfdmyYDviRVrjh1bnrbuHwBCd1uJ9CQRnb9j5tPxkgW4Y:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "23cEWasCeLXDqeQWLzrFc8wfTBjTJhHKBGmFy75viuHrLuwwSXD1dw6TPEc2MPopqUsw7NayLXSYvxHPDZVHmUkV:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4wHv455oTz3to3pkyYBvxugxwgjT8wHoHBDV1fqmXeyP1fb9iERv6AmvwH2ZFwYxCYPSTKBfVkJouzR1WdvhwCJG:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "26MynTyVpLUiizTn66WXgTjamknTYemRrSJJp5qe6cX3NgCKyntudNSXiR3dmKrTe6c5nJKmno4Kvr1LutNBFsdi:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2vmZD4SbYwDu8YrybDe1vVvPffbiK1mUrZmsJuCBfbJmA8vmyLsyzxYnZrEBH7RRNWthgT7voDLJgq95BkUJyFtC:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3BxBrWSmsZzWqbhFBvPMakbiHejy9Lcdr8gfdYTuNHpcyswZ6eJFujwsUnoX57ABKtMeVBYwn3ps5GsUb48p3GC8:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3FzvCrE1zFMs8UeL21HN66F6CnPCZvfmWNYQxkrt36YpLN7nhcaRKWzzWzoEKL99RAEoN5cmKCvzjhnR2MLZiSfU:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "55XJWZv48ReNGAYT8TZPoQzrMAcsgdff4cK1AdDfEmx5jCNGDuBiaHCXmxr2vmXDFE3y8ruehS1gzwpXCiCHMb36:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2qRyCaCyvh5zZXb3WPWTyP7yuu6Lx5V2vbdmDqb3TiFnFgxnCCFPVo4c1Ks4bkTFMqsXEKNbP6SAPr1AVybh3vx7:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2tZ3p2YpCS9BMyDCknxW4ZfnquQgbbHpsJ65Y5PW8miyVoeagbLCJurmDKe4xbpD7FiRJrkmLA87kasY4SenPttk:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "s1GYyLa4CaW7gC5V13gMnYdNkwkgtR2Rkm6Qd1vB2KSzm9NqE5kFJptP2rHu426aaEBJYpUWR53gCJ14ng85JZn:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "61GdA4nqusdQXuMrQJGNVvcH1LTs6BUgTSHorTzMQkYbJD93cDPUrhUgP6em4X1n79wraFxQLBfiE8shEsRqutpN:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "cbKDWi1Bg55xnAUdt8oEHR8xrvs5ipcG4b98Tfx9ZPhWb8RDeXAX2knhKrbr4gbghcZRDZL88o2jcVXdev2Qbvw:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "6452pDSmUH53pEZcz1w2CHyeS3WQqdZ5JpXHucvtbht2iuohcZewyLuEgTvRR6TPierD51N4zJAG6E99kW79KRuF:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5vCi5J33bhRZYvW7Ck8Podbfq4zHJ5pomA2Jr3yossQHytwJWX7nSYfTekbw47d7YrA7PTpiaQxNEd5GBFfbkyK4:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5KK6fBA3j1BXK2XhmWXdo1J9AY7ocy388QQnkWv482kWHzWeviopd9ibURKWyArL8PyzX5nTqxn5pzd4LD6Rc3Yg:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "38ZvRFu2BriHvJTuGYVWwgaDmCSvG2rWeaf5yx8BCdwUYgibYoYNFJgxuB8FLTQpjpx9kZ6hHzb8MQbAkTubZjeX:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "31MrQyL787oVWDw5dVe7RR8z8N3Who93uMWJ6TMNzdufXGerDMntE67uTMyJvTMDiaQcy1RptASrXSAeUpRnRUia:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2eifT1yseqLU3x8UorAjcKjafsuBfZJGPTRrmjntgSqbtvabuc2xBVim2JgoHEMG1UNyWz7p9A8aCechJjubQQt7:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2QvDv4kd2kt3SyCXMdZMYNEM8o9qyotsFPC7nJCRBWrAE2DYGrV8HMEW1bmZd3dCdPdkyJGWLcPDV8Tt6ruqScXk:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4PiLyND4bC5GR8s5SFZt3i98EkJnHn7FrBbYfPwzVuMMYWjKE2vuC5GmcQ13sBM4kbVsLRoGihzb9QPketuEQzg3:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3SBDiAsQ5Tr8tydpsn7yYzSu3JhRoKodsQttH8dKGHRRS9as78gdonNTSQarrTGpYMwU32h3s8B6CKWktja6Kece:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3e4o8EPdyFau5SK7rxmXsVskE4ogqum2tXxZB7wgQi3gHhbhpPZiifseZ87j1oMwhvopNyAEfzLnhUprcAkixV6q:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3AgsDyqeZdDuqK5Vq7meMwvivCBC199s374tmBxgTMCrnHwycpmKVTxbLsV5hmzC93GUwVKSAfbEyuYUmAm2GXCm:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3hgtJrDADMHN5sBTbqFQp3guZwnBEe2fYVGdgWqiNWiEKUuU8oFrHnp5WiXJzvxYz39oaRw3m4zCEtTap7GTLinZ:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4YX2kpWSDJh1P9U9R6mumfv5s4QHCmJ8z3DYNgM1wf1bSiSqv5xj7N4tCFW8wma19RRTCuGNrriEoqj3XLR3eRzS:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3zVsVSt6v6m9Cd78bqLNtBWG1Kw4DimYcmnJBY5uru1BCyENu91v2sxY4mXgPjAVbpX2LxS4JqmCn1upb9X4RMRT:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3dVeNeExEBcBUhzaqTt5pnvrcoSescmUjQ4B7tEKzQHbr4oNTM5LiMhA3cxmMXa81DMyeeXDjk5j3wds5D2Zw6i2:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2vuTSzwsbMFwMNkA4QhvBru1P4RdbTfPaEdDBjhrFswpVFS1XvY3pTsCp9Sjh5Q5V2xnAubMENJ6TcgtvV4deQe7:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4wikWYSZBxjJkAqgaLhRLwcKgpr8JPgNHr7nfYT961g419jUHNhtvy1o69p9GBgugYXrGkj7BhZnHwbU6xAVoTxU:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "27rfejY8GS4PRzbqfVGGuRQERrq6TsJUjoFnfdmAAYqjTdgR8A68Fky5ciVtHwozzaP1RRZNpKykXqXupVPUWEy9:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5p3fQxFS1wfMi2oJkr6ueBos4TMUUQzBT7zFs6h8m3iXUg6sgPg5qx2d2DZMVVjw6EvKS1CHNvtvxuhtPQZfAsU:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4J45Z591fXgau6vn8v4Sr6WYWZ3Nthj8M1MVcB7xYY5TzgNAcxtUh3GgScHdwxuVRdJoVWTYS6TriS4zG6MMwnkB:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5K9nGA1FjMf3j5NDAC2e1MsZU3nKWwBS7hhYqi4L291HMVJgkk6P9jZJr8sDDgCDx78ABq5uyXgRoSPXVsU7zWUp:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2qkZ8hrrAir5SHqH3aq9SGPEdveHmtMLgsaLMPEwDKNqveFKSPJ2YoKNjPkHAKL6i7A9huFZSzrUnpR1B9yBgN2h:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5a9eADPnf7oURibDju85uXjD5uJrisnT7zusmkcitKuX5GphvZQXuS813e4K2AgR1vKD8CZcyJTtySPuidAmWmBn:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5zdGRY4K9MVn8evDAPTeGx7CuAKa9CbmJjP72Qc8pFMWhX85TrWje82FWe25LUr6SAZEEZ1miLbVx6e8hXFHcre8:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5Ly55vPNPb6stbSjjkSV37W6ZkhiAYsso8egLVzDDqr21Bz7nT2gvryYZn77uYwwzBWyszfWW7ncqntYwDMghTmr:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3ejsHDREtaSoUMMJX5A7r5Uy17aHXBJL8CiQnsdn59vSuiQEGqz52XLwzrbR5iYc3MaER4bLnVxujrzWtDZzWX6N:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4kvWJpyHVYHW5sBHmStCynWSBntEiHb3npmTG1J9hVLtLkjcCLYiJpsaQdXKkma618HzrAZc3cuNJ4Pp6kB1524:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2re7PddVYFGRekB3wQPVwVF6c5DSAikQbJh2WCXcSoxS1XFX7kW2jyDbarcCSv5WfULXwJ5aHkvz5N1etxqq5P5d:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "79CotpRXJQSGfe4JbFwRNedYpCu4Xfs7j72gBAYukaGecf7QjvsugwGFiU9YBYSoFxSaXz6SZxycmbHfbzBoyrQ:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5PeEEXvRAKTzhLS9byvtmqJAp2P6uUpAfV8dJSZkPJt8agTZP1DqJFKxCmEe4tJL1pBPZip78PGxYahJdqxy398f:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2dNycaNN6jQ5UJNY9LCMUtU48Q2HtYiRmLexStB3LFKVyoYANNkxkXpopHEzQ8MovMgSbL3ztXDqXEH9j8H1iaYv:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5Yxyw5cdB1CC5hK99bmH83oWqk4ch1EgUEeoP2hH4Pnh1PACaAxLscphNtSMFHsVoajMTP8ywGjsLdgvt18JrnvV:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4CudQGMuCD3Xv3RrywxEkgEp67L3YUAC6ZH2Pd6iy3n6Vz3BTLX2oiGVXwyfhA5C9i6DeYA59mmAHE8Q4E6MtvC:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4c7Jx1tudHkvYhhJeYK5UrH7vbyiQ5zX6mqfdbirSbWapdr2TvVFn4JTB72f6js3SDeRvW6KYABZjNBMaPhqhJnk:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2LW2T7gY9wGfB6bb6FPkdC5uMw76mT425fLcSTfsHEy9wL1cBLif1D1fCP4t7b9mMum57sc5YnBy1WZP61b39Qxr:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4fLfMuAYvR8fmtv2JiJb7Hv9xiBYVpKNCDTNwuc8hrh1GHGBvJS4m4anQMKcfMEe6FT3pBr6jxRsrsrjKABhfsER:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "HUJ24BrfhvXQE1UY6XHHam7HSjnZYbXKP9KnD28Ckk1vNUpqgsLntDzpGchsfynwcnsFSZhH7N5gQRm3WtEa2fr:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "66d6JciF8zmvxK879Gbfr3kkeh6Vvqkkh8FPensbQMbFZrKJB1AQbr3pKF95WuHUPE6tAVy2vvZenQFa6yiyh3Dk:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3pFtq31Z6trLSZnDrRv18ekYF3tV56KHzfkAivHU3WoMLXdppFmeVZJNYvvjjcx2d6YZBKnLzC2BDrNr3M9tptL1:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3kSWJQRVQbRJD9atVE6JfpDu1N9YVNUPvQoNhvPNpCrMYDhDtSmukidhjJ4n7SuQks9nb2fFLqNdRpazHxbCAPuP:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3igtYU18vDB6oeCg84RdzMRZQesqYtXirXF4epzbTrqi1BaS9FqdZHeZ9wV8Qqtps4QwpS3Gvci7eujonvNvRotE:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2SL4sg1XjDPXivA2uW3diuWdoEufc32dw5NKn1ZqENoZapAwaJfX6ndGV5LfJR2iky1RBbXf2muVvbTCeQbD3rtB:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "e1mZUSUX8Ba7yYV9b5UgarxsLHAECyTAbww3ADXsebgC9ET7biedwnBQyzEguGXzYriuwQLarqfBPTAF46eBEsd:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5uofaNYT7HcyfiMgtA6YmDNUJejDzD6AQH7G1M1GAoPFwW6423KQSNVKbGxQoaMz5Gm6DwK1mNt8kfxnafbWwrxp:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5gX94WxNjWKcRLEkFbUaHGshywCKfD34fDM9uedZKjLwD1oqbZWJN9kt4wXaur8xL1PmNTK9n2CthLe6FrQzs11C:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3iDWy6tUShcQFkTGRL3EwHQKaYp6FMfKaycyfg9fvT9B2nxSjrhHQrPvf4swTHx1mwjFdcoBejbkoPEXyhTeSUfp:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "w1D6S9vZTEis4ujMYShE7wokWe5CdANakwnPa7iLqyszhyU7uJWV6bPVPNwbtXLow7A1uLAdN5jrRyBZ9gYQXby:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2bN8ySR8z5odJnRVKViMY1EKHpR5fPKjmEUw2MBCcbPhMFuRN3PEr2XpTWZE6sHuyUMafU1yE7QKPR9JZjasZYVN:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "25R1xapRJZ7hKCDKsp7YFFFuR1J68zo2mnPZXsb2QcfioPHYu7Kzj5kr1ZKK27SQpgjzq1QTJiU4iZdq8RDkEYzG:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "hurTxUEm4riUsnzQUYQQt4VkxMjBgbJQWJ95iNyNvPzDGcgxAEQdLm9Gu4rkxxCs838dHsNN7J5BUnVwagrSzVH:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5UAfhWtaspNnYHiU6GJAhLz6h1DEook8uPYfuAhP7BAc7mxEoBBP4TzUARfEUCz1MxiTZrcG43Nfchk1hGDnekYc:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "T545DWmwL3WJ64nBUWtBZkTvG3TA7PL8mBSQUxwQUQ38TtCGxWYnUmTDNRJiqiMkwvD45KAkgnvR47DBguDYRDK:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "PucQ4Fgor7Y2yPJxtKfDVQqnvZ5a1JvPSKFKdKKrgJ5qSA9GYPCnBeBLC3nJ9VTya5Yn6id43fXapa2qT5fYbA5:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4gx3NRxFZ9kwmzriCBj9wex7dcKN1B3DTVKzAuZdYpzUo2VdPhzWYGknTedH4Y9UxZVLYnpcNKWmZNpp1LXavuyp:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4wLoVpHS5gWm88SwYuqPUcAoNkv6wv8gUbgcTvfc88FeTaY2VoZ8SDR9cd8GrDriEg4VE7pp1GudrWw5eLAGB3Qj:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3MESKDBh9xmhdy8bx1EGBXGkdHRyUPkTrbTRTCdds37JuLhEMeWBY8Nk3htkKpNXtWLJACMQPzFLjbRu9xjTt9ZN:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "e8dK2t1Gfdn2iDiyKR4HvtmFggsvDFQRT5t2w4UDTVvWbk286LP17DLeGSM5pCKJbrkkCcJ8x2wpRR5MpJGKkJ1:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4Z1Nk1V3TLn6J4cEthot3SL9gqxA1VnGyMN5TfwuGHk1V63vt3LonGppHG6EsyD8RqfMJK4LDebPifyYaup86B7j:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "51xXJwoq7FNnAGBbPvYtsA9PSQ5qRQn9Wb1i67QX37i1p8Vp14Yx1fFDH4jtdjfr28AakJwqKoHdD3GDU2HwvpzY:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "32gh9L6C2qgCwXQ3M1c1RStTJkBUM3HeYaNizWoggqgpeYE7QTUveq7Xm5yJYjj9mCS2cQH7b316rZa3tvCy5Aqi:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4A2gy4TpZFDdge9CJZVR2wmn51Z3kxg6s5tWR5ocyR9udq115q8gwL3PL89wPxTJv7HT6jMqB4dui4QCVqY85Peb:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "57koDhVpSmof3ruSR1aNjD1CNpBqpCKm3jN2B9QTkyDXSj8Dpc5bZ3CDzSrYaDFCEfsgaiA4oSGoxwaa4xWyBBvj:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "PJvc9R9qyoSXAkFrD5uefoKgjw4rgfALfjxSrzLDiX3t8drAZwL1hoXhs2veiQ6jjLqY5kp9GPyawS1zsxVu23v:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3FsXYm2AR5BBh9k1Mt9WcCquRscVBpj4hzaE5zhVg8o8VZV7tX4198y6aezGatXhJG6i2nqtYa8JgNvnCr1AE2Gh:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2togFrFTfqF1t37Zwb4iy9fyFoXev5ycrBnD3WbzD5q5D7LXUqE51SNwn3yaYnCuFNbj4Qi9yVY5BwuChZ6as5Lr:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "58rU7Bw4TtZvTSLfFFXCAdCbJSnivj3z79DaRkM4n9avQNHNPHcVzQwmq58Ee1QYAHhx1knVM6jXt1EyqPkgfYuV:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4DxBzCR2N4b9K6cnzJKG1K99qbf9BXn23xfW3gdFdjpx3idarSvjbwn5p6FjzmWGBmVJuneKjN8SzGNAZCCcxZEr:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3C2EFKPQq76gCV3nt1PJw5NGH1ZJwG1dfc7WpN51PUvU49P1dpz5tMMy8XKQgxJZtYesi4rzT7Q8YnLmYNFMZxt3:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "qRSYTLnqnhiyw78WUroqSZnpHdiFJUK8JXLTxa4xazmEzLDtg1vBAfetMBy7n4uPWoc6LtTeLN5fwdXGEGqW7Ly:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5E5akp1dcD4bWpDViQeEEE215W7T23bBSboL719hzDUxzMZQqpcoXTjvwZomTmff3uXZJNESBDARUYaAP3TSsjuw:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4MpW9gBRRS5itSCEzK4GyGQV2roambM4QWHFRbQgBC65MWTjZoKbtDtRns7Pdc9ZvyzhAY1bs9rxABMQUBKhPNkj:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2k38AYbG3uaeV8jiTm35VMUHGeMHxLu7JBX8rFKjv6xVMV5qTduqoWn9T74ySCV8V8J76WLwAQzQvJCDAFAJ1NZh:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2roStAFep62pDbJnmKx2gLWi8iobpN6M6j6cagJLudLnkGiH7CcTGQbGswqhTYx4xmZbqiicbazMR2tKionPDP7z:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5qs1LZoKqFoHhSWRZqetTfPfwtETdnXsMFCR21YoE4YTJAcPHYgXmXPzwBmaAUvvdUbea7kPqHe4ysBysoQCuPZ8:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2wtjrBN6GMcEyPG27zK5KNVVGprkFkazd7bGGqZBacExwQtN4dfeM46mWBK89eWL59rBwqqy6H3EGSYxRyPFNUKy:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3DRehMxgPWynABC7oQxqKEHooqnQn2MMP1vZzqiVrmfuCy7K2PmxqmQj15sN1SzDJox5dPxEZQotKBxjbd9yU2d2:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3DG7NsPv4dKGEMye7Kssg6FLuYj7YGFVQSik84dgTrkPDqPwcKDy5Vg2LjXY5uHcLgwDFoz3dWAz1QdKW9nL9bn5:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2yLBwtSA7KaZeXfjuJeX7ENJ9w8pgwcBComcKcXPgQSq2gr8nPxj7fyPzAYLh3d2GrDVSpShMZFsVf6afqXfhzai:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2NxcLz6ZxoGLcxLRHN6xCLQcd4PpZwCrUt3urA55E4F8JVPpomqpfYuwGszvnHDdtP4qARY2BdYPDYFzonxhZK73:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "yerN6qLxosD55NkwPNmSFM2XRp1z4LZzLs1cGh5ipTchWxk5kTgTUbvnzgVBorZpHNeJDYnpHm6TbCFVCHbojTg:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5zSXmRZPWoT8rvRyBQeU4wCjeCMVibjgeUDxeRsUVYP9drxsJnxFSoBWBLhFJ5nuWnBMD8P11yifDeNcwdkqDDot:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "tiJSm96H6T9EDMyLvii16YLu8icCDP4yKmQsZX5HxF1NoRP3AntN8VAtCc3XVxNauuokuhR9fq4wfdq4Yx3Gq1m:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "63KAoXzi14q2NDSLQm5CChhSMfL5vTDBxopk6ekDj3XAozcr5nEVJJrDQNbK3bPoa3jeREC8deR8gzoZ44MN9hJw:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5aVQeUNVoxgUAH6761pqUBxULFVfzts57adsEhRoHG3qAuwHdbbeYuwxJnJpWv1s3W1mfW7Mx4cpxzBz4Q9JfMcF:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4qGE2L459YBrisNJTaPm5zXuK25thr3Ad91keA1UN78AwrnPq9xVhTNhMdccJnKPLVoYeSjh6kruUDBywoXWVRYv:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "44pvHT9tkQqdHWj6vxdHDWuaLDmyFWMQGXRNwotXaAEo3nxFytAonS6KZntdSBvyLdBnGYZnyMpF9jkkB7USrLyS:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2zs34YQxDnbRzNF7EHyAFnNPwouMD8ZwG9znGRYKjrdP2MCvG6v2ZSTjp1sZ7kVRgTX5KNJ1DxRSDb5QyiWqgK1C:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "sE6rmJax4Kfbiv4xMZ8tFqVM4arsMbDQow3aixDTu1ZqjkYCtnXesmxas8uAH3DiUCcaMpzhnV3TYm1jdhJB7CG:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2BrwwnpWN2tmw44GnJB9Ukkvz22fA79ieWPeY61dkUmwhi2mrMtgFBoQuRXsv1p1dcgMWSufFSW9B9jUyjWSFb4q:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "99YGm3uW1oPutg3LxdGRgv8ZWyByBNavUaqSMQkVp4TaKVC3kSvJjpr3YvoV3YG1fejQubUeLyMV1H3hCSVdXPD:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2X8q4mXbyWM1QgCS8SuEZmGxBC2ynoNe7q3xbgwMN1Ar8ahJ7Gipwt1zLkXZJwoszZMxMQiNeqKg9ZkoA6v3Phc8:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "31VqeUphWy4B5oy4HxfxjPe9EGafFmrZa1xTVBMjat46D6g2ueBRtCoT4V6aNBbSYuCz7fexbLUBy6K3UMcNPfj6:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2pXt6v28BUjy4nqWerRZAK5V8mcZwrWTB7UxaJaHZm1nsJ5ojyHFxuZBcB6KLTNYzAGhzU9JZyhNQY7GE4SsJbok:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3ucuqsUDystSRP4jgdnpcBDiJNYEyzvTZ1t4PS5hh3pdFreJPhvL8GVcdPxKEBBuVPz67XvXxBN6pWxCZwc9EP5f:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "37cP3HDPBpkDB14LcsUHKcGLNFyoQ9L1SGCu8JZthzqGikpXiUHWnVw7dKpUcN9f3c7L2KSP2zHsBHZvDbsyiRTS:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4odJgN7PnqxnY7XGfewfqMsv1GG5jwP6t6saKygsYXCiitAuYgbHaj6zNiEdmFjrVexpsxEy979brDWhswKxqFsH:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4jkTqELRLrWwjiQ8bF68R69FE8zDPKQge1RrLacK5M2njFVm5Sy7PHcLUzdF65yGeYrEhdKEYSe8xJSPtmZfXkGE:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3gRGY3iwTLgB9sLeRBHDrkpkhFihk9nNgUXgYCwwvcytr6X9nAPgRZyZHUrNPEGcUPw3dSz43Uqz98UXQQwEqDgw:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2gNg3cWVrer8GcBd6X92AoAq9AujrxmPRMdKTJE4J9vrVp9vFy4kvrVVFGD4iLPn8Bb1ZG9CpgZDCxivNsdV2xbv:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5Mo2jx7zTTTGj8po5HHoD5VjisTqbP3m4osuU5GzGLGfw2ANdaoHtQW1GACGNrFvG3CZe9ibCHSNzHLLLn1hUkeg:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4FyUgEzkGoiG59DHCuJnJSNf9BzXnad8vtbKa2bdVc4YH9MBzMGsUPzknwNG7KnoXSkxwSbfzC7Q4XwA6X3oCTj6:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5qg4wbCHRqbKiXM82FxcVVeiGZMW8ah9yP12nBtnjNKxdpFnNmXULG6o16oMNaBA1P8f6zugzvxugJgyGYkPpjUr:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "XeXcUYa6XrC3qjjRwLJhWRKmMPcTYjkyWeqTLttwhdD3qzhuWYiJSTpXXZz9pJMi3vauwvTjQNhWqPq54AhFNA2:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2rbD22piDUYTeDpgg3y118ZoRGif9ew61pVGuCwgVHUwKuMEbESBYp1S5HFjCdCetGNpeNvCcwjWWSHtLnhb1qVF:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "M1JuAGkZqsiPxN8344xV2o4VgjD5jHmLLSKdpqu3pZRSTcTqQSbHqJHSSuJfe7fSypuG2mxmFCzyTPphJ6mXLeo:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "41vJaS4robWjCgM8f2UgjGi3ei3ERkiMUCJpjWRADf8vLkjQ1A8KiH2doaSH4eWEcN9nmWpeJWJgbFpdc2gS2mqd:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3eqkVPGeEwGT5heF5bMVQr1f1zdzTZU3k4yMJyooj9zJ6j45cZ3eannM6mD51Hi714RvE7dhbvmGjwvbcXfsW7SR:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3ikJAS9dCTQDHQHs9fLMUyxSLwxio43gBETyiiv1GC4gbEjPNCk8GNH4PNorHi2wjVeWwKxHbBXoGPBHsaJ3XGUR:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "U7LsNuxNPNraU7igRta1eeyB1pgD1jA483ibTTF2FpNfj5PdumMkP4TvRihQD9x9eB3WjibchiD1KbGkn68b6tm:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4nKZN7sXg478Htm6dkVVPRgsK9nEcGEhRmzUG9hLKvadh5znFrhLPCHs7EnEobevXZ6ZMEpskxuFgJYi7VYnVRcq:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "2hWJC5JzojtA9xCEXaePGUhuQgofxo7PmYdGNFF2Su3D6NcTLciPjntyMUNmdrXgr9A9kKnK6BvDK3iN9A2Qu7N3:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5L6RUaGnBV9jQGa6tsxjrzPgVikQogWWuKo1gbkWV6YnT4PPGpjX2pPX8tohnZq9KcesGwk4kJ9qznvG3qVLUxwk:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3VotsFQY14FWWeV2p2dqMkV6JQEniFhBdBjMcn3uBncsmxyh9ZPGJmYRF1hhD3bo82VK3z8QmsYrTndhgBCZAjbg:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4LCaT4ohjmcxt8oqroVd6fE1T4VRdMhvtuMPkDFMhmAKz3R3Gu358U9WDEyjWj77Ju32gAW8JUUSX8G2HijYveTu:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3tvsWiZZ1jM5uodcW4Lz53F5yY1DaAVhcAx8z2Vhj6AzTKjW1wkU4YjvwBbjMvHN6RxuheEdCUtBKHUkS4Ru7iSp:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "dfUfrBTLUkLbv3t1U1ywJbqFMXH12DyM4f7McnGNHyUxGCpjQJsV4upeeu8EdRtoC2bidvdk6vVEsUdpCodxJkM:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "3PivHQijK9FdWyQdVuMv2Jt93cox8uPruijqfGjw4Kmz34GMDkHaJyPMPcJ566GNYjFws98q29VoWTAo1SGY3mky:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "3UFck4RkzfewvYXx2vC1dNAeJtyL5qpqMzTBCqBFdSWxMmiQTX1TA2YtMtrYNgtmrVUWLFK9fxAq5KUeYBnnyTax:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "3fAkR1FkwJJfrVCmMGyo7jAAjJrCFHhsbgM2LKNBJefYyhPL7ma87xCYiLaPFCjkyqRS2mz41dbwFE9A54ko8xWa:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "61Y8EACmnTked26dG34vwTUubdZVtSaFGVYmnD76AtFXVksY7ZiEpq6GprdfEjTU7HDqgiruUAQbKK8pusp15akd:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5y5mJHopLazdLyLQWh2ez2kiyAvLZqgoej8ofK46eaYkmTLULojxARAuwjv6AiAQYUZmooYzTfaF45N97bFYEory:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5wHmcvvajSBQWbLAQm2hXBjBgXKhe1LkguUbg8GSM6zwqSFNRRi7rBbDbU3RAZAu6v6RwxpJZM2x5GRNWTNNipxQ:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4JPGmsQSooih2aoxhGGV1aEjdrATgaS6gxfD4VhN6EzdmHkwdT6pRCqboCtQgReD85myt4AeAsgUVrQD8WFJGjF8:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5aCgEcCDhnqhDTJpq9rGUt8pVigHLtsDosxeTuUYbhSeXNKVmGmPmVfEzqV1fDYBnNaisGhsxhnbqMCPHXg3eBNW:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "24NGq4t35q1Y8zHPJXkx4EEK2WGTr1AF4XtVWDx6eoQxAGU74WDqWvPWDp44WsX4mz8YpLe91uRXELjyc4z7nbzA:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "55ChsEXGfNP6J2PiTqCNJV1xCti9tb1VSxq2dinyHLrwG9F9iGGi8PfwgbaLga1i8WD9rG5T9mspJnMJhzAvMZre:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "52utdbsyDnqKeiFpmB3khetg83fSYsQq6YFt7B6bd5QHgG9H6LUtFeZ2Ekc1bk5LS6C2EzhN8ntFHHkk2A6jba7w:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "2isBpTYhWAjbx5WZ2vEwcrf1HyL2yDXkCKY4jiJakry6aNMevCAfpzTHCQTybkAaccyatyBtZRTkpPDk5BDzMcR1:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "4DDMG3AVbeFECqCCLNdufGxXugJ1j9nimPhH9EfZWgqJ2Khj3UCwWXTLfbGw2tEgKtv1Abd9chpoaHAmQqQvExJx:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "3B5u4FsEAKvfJpotHkjRX48sB3RvrFG9E5fHCvuauDFkGUxujy6Gz4y9ctDis141Ysd6pD7pQcrQXJVRwLyb8dEB:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "5VHCBPLkiKrJq7CNcbdBvmfYVhmPHTWYaaq57PppbKY9SRYR9ZJfcVw6QQhoprUnAjDsZaCyngmU7ZrpUYdGLSyj:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "5m2VJXcajmKECGJM1mUZwggddufx9gbnrT1sEc4WBdfpamVYcFumeo5x5AfuQiDAnGj1zLH6QRJWegRiiEYmL3u:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "5zesq74KWkHspQfZ7Qd7RAPtyASFKWtygh61w9MRgGdzLGRVxP8ZJPy8577FCpKAiciuxRT7hHJVMUMwHEmx8JQb:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "4N2YQpe38B2A24Mij1qzWfEaGZSYbJF2FYeskr8egdmGZY6iiESb1WPpEDm7g1aoKCfoB6x9r7qzc7PXo1J7hVuE:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "4TxTXMMkWK5jndfmsYACKysN7G6JC8FtoPwLLyExd3Vg4j5naf8A6gev8aRAHMJABwDr1czB6FfaXMPmZxuNjgnw:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "TJ43CVR95nQtsiCuHjg26W2RCABvKUVC9Epv22PVwijdPdFb4PX4ZQd7nPBsj8iq1a7qEqwaaBzztvw8YZ1MRw6:sell:EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-        "3wFMEKWwEw1HHzXn4zv3rVi6HMPhqYVUwgpW8wSeuQx1hP66ovzj93HyCkgzRMgUhd8iaRp8CQzn6d993v39CLoz:buy:EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-        "2ptLX2FoSZcZTEVVQR5RXPfSYyhahdcEHu4ytCrtETKTe7nmrmDjq2F6wqfcUAutjHQfSFFA9QXfGdzJg9GkFGUJ:sell:EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U",
-        "5aKTy6VPmBLGGctvtpvTo2NTHoMJ36BYKkFFhQWiN5UJKAgktq8KgGWzAYFpr4Qw63c2SgzefYnYuERh3FLsGH57:sell:2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-        "4sob96DayQkU3DXmqtuso79PTc35P2dMqopTNmULaWX27qg1xXnBVA2iX6ZiNK1S42v1e9kUp1ygKNoGr9Bjoti1:sell:2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-        "2kGoqi5k1Bey4MjNVNCzgP7gUU8MzEuibmTnVEL53CwcGyfu9U8Qo7W6GiTJNVCTZYqXjwAUcyShWXpR4Nr7v5wq:buy:2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-        "5f2rmgqFhdgt5SJvQ7kVCExXCy7qGeudmz2qCH73DTiP7M4DpGB8Ra3Lr5DbcM7ngEV7RJnRerx37j6EeJQLUFCJ:sell:2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-        "qANv2SefrvyyScTbL7YmQsghLdhyzk2eLAnQ34NjvATXQAUsGfxH3J7Ad16b6UvuQjpoUgYZXnjVETBwCCoJv2v:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "657syouYpKX8wXbjCSR83Y6LbZJvZwhpHmz6n5mNrg77sTaCYFVmPU8NKjoqG9ZcFZXVZLaHMowvD2TFMGu5ysyF:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4dkf5esQiVHXFVwf63iW4HeHRybCw3C7MiVQGzou1U7V4nj3vJpGXXrbuYQve9XvnUqQVt7Dg2zPwWo7FRJPx7Rb:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "25iuycZapEyivFnSDgms7xPKryvsiEPJAKqGUCYqEsVfSYZGXyxXZiLCLyCaZ18yxNqF45vSQ7FBZAS1YXAwRcs7:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "4vTg5KevEot59FoL7gpQ68XNm1KkyFfywUb3yNep46XyQo5DMF417WAGiTfS5vhPmKZu164jDBDQj3XqpcepEX7N:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "47EwCVGnaT3BnAxwUg6Pt3wkrU9P6NjKHLpxCpTLnqp2TLbgTpocCyPVuDjoVA9EVriAMXnF3faU2T3EPxxMeUcd:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "JpvuaA16vmAQsKkWyGwyzmjc74Dcov6SGCePZRPHz6RxXcXT8XQ9XgUmyk6BHj1FukPLV7FGuN2auY1KZtkDSK7:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5kvKhLyEionhXiAtuBpZjYxVoeK2KCSEFgTZSbRy5rFkRS3RGHgjmS8mWvzZEAuq1gGHJnAxoLipToS8CYwYRxWG:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5oYFGBpETBAv41Z9z6w95zr5UHB5jwK4D2D1ii8j2WgrwM3eWwfQ8PwjJ3MnjoT7gttinazcg4fPbRYrumkF55cn:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3yktZmUSUSwYVtM9uVJCMhyfCKc6mJxBSaQANdhBpHXAehk5YMvYvvvtZeZBJsR2cpUVKyxQ1GpCsXKrBoddkoGn:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3YNHFYB3iBnjDETaboTcDZkzGQfU21KwCqKwMKwVCR4eTqd7JiZFZsFSQQNgT5pRRvRJ5g8nog14zK848NFm8PCT:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3VwkC78QJXgw5F3mrTz7sM9wtQrmBqZJ4rbSN3JJVYwVp6WqXgA7Wz2FTSMuquU5PKfTpZHX4Vw4MvKoofGdZVNw:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "47SzySdDF7xYH3u7j3DidPdpwoFGHgYZiwiiURnUdeSUe5tGpGwYX2ZxgBDKA3AZDXKQ4eoYxWUhWL31YrjrMGWf:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5WNB4suNpqP7a61jwb7xwN1965gtvtpHuPj9UnpjBQzTgTMAFBJZFK8UT8UMinirtQtCGcFqAT6tM3XpgddsAfmx:sell:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "5tfEugJamnsFEZJZ3vTYLF2Avyui4Db6hw9qh6nf6wYAwcrLQSiKdDnNXTmPu65Y569HtStYC48sV5EQbP89iYbj:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "3hZj2dyQHziBevwhhgtVmS8iMGuLzqCwvNZjs87BMorrNnsEXFY8EPgvnDv4HSa5ibrPN1QaFL49JekmutVQcycS:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
-        "ZFvAC7ncSS2YzK2GtNoms5revad4atKbxpBxwSSa2FAZRtMPFA82hD7wiwb7L4HBtpb6NABUQoKy22dMVEVKoNW:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "36ythHU6wsnaiXyXsutxsWYpEaeZmivBJWLoFUFLLqCndV4szz8tCzC33a2QcxU7BTXeQwFc5NLEoTHXGnB9pnNM:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "yjkVob6MTavaHF6oVetsQx5nMAquoKmxPFxaWaLrKomDiDwC4ynXsno6WN8E9ANWgL5z5nSAGVjNzpNqrqYqKu3:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "5Ghj2kjmWswoyrAwanBBwc3Jkuf1C5McVa4ZWaKhj4Q5QjqcbnBQS9xUoEmGXdq51dLD93nK42zztQQJPZgMw9X7:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3GuYx9vYVbtdNVsvMzvM36HzibKnZyZS2fZB1ZMX4mq9eWBnKRXQeuNUv6QCtHtC3Cx8QF5MaX6FDDvDjZnS5XoG:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "Z2LbPfRHZxYFvaqnAsqqUCessE8EGdbGjibWLrhaQUtwkF88N2gGPdWdqyyVegBX9NjrexAbGm6Ydgfu2aMLM5q:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "5KAT1uK5cY2XDzmCeHU18fgd33HLqWwsg7xbC4SMVomGjnMFv9BXG7w2ibcXCKSAqznFNNq258gpcRRigraMgEiw:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "4go3f1tHukmyaTGnPntBk1HZc24zUkEGRj7PU6epd1W7byHaFDzMfue4ZGBcfSb93bBc1LjJrYu5SyGVYPG9HzfD:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3Y8g7s5RKXWDABn5VDQFBHwd5ZJnf2FMmcCLdiBxbL5an3bMGfWrgCjVFxmngVPcN1HgF72pV4oARqo4AypNJm5Q:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "BTFT5Ny1rzuAGtBRoZuwySvJDZDZdmQkMHoBMQNDEPo9MHX2uraqpVtgAHZB7G3HVX1h7gCKwfCikrqzQFMQo8Z:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "59xptyrAgxhPftCTsVb9k5ZZkaTsqZJWznp1Dgs1W7cTzzsNBiDbativoGwCymc35pc6Q5r5Bt4wX86dTL4zmErG:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "551daXNMSwiRH4LQAb92XVzUZZ3evaMNRVceU5muMepshwBhr5TkG9xckN5NYELbCwAQfzdrijghS8giHJUJXkvM:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "4JGzL451io7obkYjMdQLyafmzrHMhj6vyyVcMaiHiKcpaxnG2j8BpLq9ki4hwSLWqKmP3usioFGNC5ZuyHLSHJCt:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "32CmUbx6B5PUUjt8giTWG1j5cjRwpsmAuetLU9vuh5547zUS1var6LeebW83z24vTXYF97QrvLdfifnT52ZfgXcc:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "51pgQV9EGa2yYzgue1QtDn53iwW1BggZ4Cr5w5VRYthhrMQhvEiKDzvfxttXMbnh5QZVqVCbS1qsMhWaMbzu98LQ:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "29DY1uPspTcCYoMdQyZay1DuQKhBX1iLez2z7T11fnj1LTXKXMmpCeYKwJ9s7UCR1HF6pn2WxWG472HhS7D3EBNq:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "gE6RVF8xC8MPoJDQgh72L3EXdWvmq6d2ygtMwodb5xWvvmH7GbJE6fnQ8Rvk3jKywL3eRBo4mtTJgGiW38qag1C:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "8wKdVVRSHaYM1tv9dFViyumaUvAJ3njxET71W7FkfFVVwsgBTBkEDULXbPhwvXLnTUEPCbsSqrcSHdLsnT92kpj:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "1a6iyhSwBrXCPJXX6h36oMRrgSkjzB4EtdwzPdGZCpPg2E7raqMsCSD14wFaU8S3wBAiYZByKd61kuUo85KLctr:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "5NtGwKdhwsKM6CnhmQKYroJJud2Tb7bromLaQHu73PgoTQExUEmm9aGvUwfcPf3cjdpMFjjXq9oGwPcCuQ7HcdXr:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "61BVrmVzMFqv9xKWgHjnT7oEduK2QMnvh7hVxE7NVWifRba7A53QfK3ufCMftP6yHj53GzpgLDeZj69TEn21dmpo:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "bhGYFKBfdK2nq7y2Zg1g6HSQ4XkNg9WEMzX261SYr3y1LUhJqdXggsBa8id5evAnX3djFtXJPhhGeoy63YcmGGT:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "4XTENtmiudGZ9JLgbW3RiULiZfETJ3sDbgZ4YR9L5tCaCRkAxzqQRMRmyWp3ezKd5quPnNhgrb7BYX3ZPmoVdjmD:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "2y1S8VSudbV9TyaQScYo2FAAhexC3D55iGtL5bB6smeEjBxBhbDRtVLjMooSfyKUQ8Ey8aNzm3MuKULDdKtrJuRn:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3fDYvzov8dXu4GbJX69hifiaGLnYhDA11GgYLaHYKZD5iJjuDHLtVePefrvaTaHHn35wXKw8yqDVmhVDnBvTft1f:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3w1yF1dpaqHCpjyYXqJAmEhWRt7Fj4JJvYseNzPhqDis3NAAm5ziWvVbdrsfeEnv1SUkQxAFU24C3M38MNhiUDi1:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "RkBx1rE1hPwgqbTd7ZPNMu7XaySeXQUU1xhJy3XVmAC8A51PbASn2v1ysWB6ksFzBknF8pwdCsH9EnAf2wAFTMP:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "56SSoAzaSLbVmH6qBC1eXDXEqRfdCxMBMMooUJ7rxux2mdEMxVvYUHQ5pWbtcPYiMULNWUoj4mnGp9hYbBjEioaY:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3SomWVHpKRv1NCoKNcwVFk9au54wdK6QhM9soUTZiiUCnoq7zGFsVorRMRYPFZjSkHRdW6hnSRSfGrNFX48nkBc4:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "42V5vMygKQQQYKCwZLovmUEee18SndBanG8yGaKQ64VzTe1Ehxs4RjYSLPbUeU7RQsr3K6Ks79cePcbwAPvMUt29:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "5YyuBimqw2QLZnmCEF8W2VJRTSaqXGDb6aax2g76X969vS1rTLsSa3ZzkcaVsQh7zNGhcjm6SKNzfgXqGayoLPLA:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3WTMFNP57tUo8ZBmDkhNsNEncf9M1QHAqpiyfKC7SkWUmb3LTnNuv4M5uuEuSsTVPwG5sY4h975rmTknAYJS9CNB:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "5F37M847jgSFJSD4vcWQWomcYeoNao4MhwiLtpdJ8ZCS3ocMdCFy7hJgCK7kCwCGEAkW2RFs6g6swVtm53DqyMVX:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "64v9rjZG9wK5ctTqfma8bLEzmYER2tv7gsHKpykdnt7G9RcLKr17XGLPFKa5h7Xia4kXHyV2w9fttw89X8WPeBae:buy:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "4WTo4VMiMTTzKaVz4RPwpC8FLiqioqsmR6Y1jkjgskwCKgPUEQBsa9Qdue5ABBovXq1eBEU6jh7bwurPoTubRC8A:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "3MaVSqVMrxXtG2YZJrjRHwk8JxsSdWu6oK5bpm1Jf42ogFx38YRps8LaAnettq7frLBCsNAjpqh6EKDmNChkUVqD:sell:4xp7kN4nVt19caq4kM629vL8vJEqpSFVdZAh27wvYPh8",
-        "25MojVeFhX2TNBvGGbiHGAfncZBfHYrLVNvccteWckDns7VbLa4aDmEB77F8zBnQEyiU2ZwiixRz7DEtkoXY3Qty:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "cWBYZc8NF6zQ1Ax3oqBnpAUcCVV2BL1sweuiAdBTYaAmU3q8YXeae7N954B9gaddXtbnkapr8JyyoyxF2viTvxW:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5QnX5Dz3c4dvjCskxsUWUYcoDffCpJKGnD8oa1Ek52C5L7cGeNFEhakBkyEkSJg1GWbMNiw3b1aMbinceacXtEyC:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "2MK3uH5VrCStLKAawdXH2uxdnhx7UNN7iRwGgDUNg7EQqP4pwutcouUek1RqG8hSDdbPwZRMRmcUDx985vuMvA7g:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "oHiSj8cLLnW7coFhzLQ6KQpuv78s7cGhqSSaYvc6v6w6tshq6Joyhpv8aGyL22ipR9hmsueD6rd9gikBiVG712o:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "2KRVXhZFR3MVMBBShJyy4xqfsgsNZrQg8ejuQa5tiFXuuZ6hCrMFvMbKD9p69FTVi1GV7nhNb7x23Wg1RRAfFMqh:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "2WMpxMU5ZMhniWHq5y5uFbMSC8JAEQUXM9i3vAZtgWPxoNZBzo1haFrFehi2eEcUznRcgXfAFx3ACoTWRdsRLiVt:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4TWB5jzzLt3gyFJxC3iUrzrCJsm4KQB6ywm1BMfWY9LxGTTcUpti2fZFe4gMuW7x6wfq1CXhZLWpuezbtwQAgT73:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "67CvtxCb6p52qKDcpfZyDQwpvVPE1omEjLExRUgPpdcUCeEHfTZKeKtVMxbUcCUXm44agwpQrWMwxTjgJ63w2vqe:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "59sitqAUWif3UKm3XviiKXY33fXcpEhGN7DAZwHmkeXqXcZPCxePr2s5oFqQvg7g5V5RmMnx5vyvZGt5F3iGVd7p:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4FDphfwz38dpwXSMQ1jApeqmJ5jakWtgxWcaud3fqy3vbpV4LnFMz47wER9JBqhxNamFQZVb6vNvYC9TjCcY1gXm:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4LMQ9CXLMMWg86tZ9aGpbyfugFxtLVWoAMF6ij5Wk4mHKekcpRWkVMjXNC6gW8s3uYWDSswaJEXsnWFG7kWdz3pH:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4E2VHV48Pmg5BMYjR5zuwbfrAMUc12BX9hm7RuS4TNHjo6K7tfbDH67NNkkYiHQ45nyp6nreFPCn5w59psvFTKR7:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5PpsvmAvYxtVUmyxTimbYv8PVRTKPrikJ7FneQQdpD7j8CD1NfkFV9wTz6Wm1Y5zcVZUtmK7qRyWnbQqMVrCkmbW:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "47VyhPjrxoijwSCBLDQXfqQCUC1mSgwd9iHjvfAkibdHJRjWxWtdxS3TCpeddUktgtaZ1R11VYasWPywow2tNZbz:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5Qq4znqqpxV4hETXqn6ZCBDrXZoZLJW5goi8j1SKhVefeuT4uC6k9V6VVUKJ2qaQXr5FPgGSnkAewUfumVoE4uMj:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "525iY11ujDg62ZWaqh4VauqSGePZz8s6tmgMxyWaNieNVZxdQcU7XThWZ8VH7f3seSTteWEE3acgsGmqJqthRZbq:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4wepaVv76ftq76C1D6oR1SKQaUrMqHc1qGd3iTkfrwmCYRP2d13t6N4W7VaXezG1GR6PkLLPLk7M7GW2J9w42iHF:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "4tGRPa1zC5iLzwtugY16APyPgt8Cnu6MiozJoJnn3dDnWFmaQmKMvezrLs5MW2XeeBH9xSu7wmnzbDrkPV8sXzDZ:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "3N7PNkeya7umCp23HVYhvSqzQxFpnxvj7Riv46tpMA41qHzdgS8qArADHJgS6shfJCWyP94mCXvqQsqAcgZgCrbD:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "2tP1S2EDAS4mEhd5EG7d3EyJK6me4d24kinYhDAuxjcThbNhdams3NEt73uMJadjZgnJ8t87Ess6do1eSe9STwv7:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5Q64devAx7aabqibwx6JJjjwYVHhBbWNqDJtee7RbGiGuoA31yLiujkQmBgZFqcHzagPHmjy3e8YMb67UwQ5JsyF:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "2h6qieiTVPB93bsVJKieWvrfN76EEmqiY1fmA6m1CPSjXjoP1bkQ5WbXs2pQgaQNMC8PjVjmmeZr7v3vc83oygsW:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "UELpvncGpwGgW7Jff31iKiunTH916gvHzLGQbHVu8yfM6jfEdzVhRs4MpgcF1xb76dFo9vroEbxE8SP15Fsx2iV:sell:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "59Jhcv7bLUuJnT9iD7RESmDwWedk81JkVEwJ1N3LBsYV5wYmoAAccm1cAZvPWs2hPjpNQLQpMgqhFQ99sx3Zjfzu:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "5mZs9EU2JGx253dQdaznKQ6oq1y9R4uji8w2AUyXEvWVHX3vQBzAKzeVuBjz1JV9Gz4YqQdxyFm4Nqbm1ATRk12S:buy:Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y",
-        "31VqS3DQST9zWEXmEmr8SpDtAUvY43M4Bi3RVeMXPnaeHssyLm9hFufSZ6RwpgeHF9wCVfoeJvU8Q1W8pfWjAody:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "4XFQUFniNdDxfuEgkMBbxhGxszDQChaQXkpCPkRGySPwtP8EPjK6js4bHcBXtemtbc2quLVTLqVVUakTkfnSX6qP:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "2bq3zgBqqEWkx4i7Uj2fmEQoTqyLsX5fDMU6oon8ydNTqScdi5LNdqyWTNy8hY4E4HZpsMM1jzYoLpHuFbmN51K4:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
         "QL4YmDsD26oXJmLsh6ggc5JEfW6ph4oB7cY8KFeZL27XxUdRr8Bm5rS3QYWKrcDDDkiGiZzDE33RB2Pw4RvcN3U:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
         "3woePxrmEsXYNR3B2syeu2dCFYyHq3Ran1fjPVcBKPqf4Gg4QX23eQ5woA1pbycAk4AzF8qdKNUDtsvNxjvGVZh6:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
         "4JSiXauYTR9TqrDT3HYq5nVNteAUKuNZg22vv1mo68wYdLf3tkG9628nb8JQFWtuUuN1mJLRJqymi7V9GNL3oPcB:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
@@ -179453,7 +179208,246 @@
         "5YmHHzfSB3hmNwuL3uSsNqZfbzRsfaNmbLi4ZZ91BtzFiZHpTWmtpkiTUg5WJ65mWCJneV6ZjnQUhoEv8VkgZ3JL:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
         "5eZJsWqBA59R4TwSm2brbGaodWCr7h9tKgWDLSxswCRdFLeECZfehaMth6QpcAHYVBE7qbH3pKEg4ECoiZVKhk7z:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
         "Wc6wLaU6MeB8NUA6gasnv3zA32b6KQcT1MNnBoyk2QEYthpdkL9orvfe2B5nnvV9t9tJkXCpPrTNYhbv2RmDNtY:sell:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
-        "4YGw63ZnmYYk3oLvzz1B1CA8nZd89wWEzs4HjQabcfEw4boPGAyJdrMA1SkMYt7LFRvjg4tpdK8Z1ao7MEzsoHWC:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf"
+        "4YGw63ZnmYYk3oLvzz1B1CA8nZd89wWEzs4HjQabcfEw4boPGAyJdrMA1SkMYt7LFRvjg4tpdK8Z1ao7MEzsoHWC:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
+        "oB5UvSeAXFRS9W8EZGW7QTat3NTU7HSb1bRknpC2fVrMBSygGMV33EsEEZAhL5yXsaDeYp5m8UrBKpNy7RCkyAu:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "eRAgEDBrJWuhai9BKJdPY3dGKBkYzcu3mZMmXAGDphRETsKsTQBXEVDRSWiXFx3vMe1PCjM5refFyzxST9u36yS:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "5ijRp2ZEWsryz1jyd5oKkkBq7fQ3zWLfBrrx18Lsuy3YDtLVwPdAoUbWThFo8aNekjuMDdgWTu5uFhfG3tA6cnjE:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "5cULycWB11XczPVmSRRPq6VrcSnGWwh13TMBVtdVXBZcQdFDZaYfQfW2bzDrjdJxdExknoA9UrCTKS9hU9cUznWh:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "4XH49H4ERxhLeu23jXqt5gb28tifmKSjxQkzRpK9SvU3kBgE3Jk8Hct1TGyoSYm2yhCCgJJEsnCnC1E8EknhTXJ9:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "6gSg6aLQk4GkF76zi7MGnZV9DWFkWT2a4o2fE7CPscWozHVVXucEbQjWCTXXnA7jyt9N6JiDDxqepPpCNJES7PR:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "2P87um6YHara2XXhe4cPz6H96H8bekZG47eEcK6qxY5LdGFwPK9T4kfqP9XUeaeRLB2oeuAYeHormzBiTatnfsKC:buy:HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        "3Qwp74XruVfXLkibaTDNeQP1M1p7NS8H4uwonoA6HwwDUynonuv8b7xFqnkPqgJYkNTsmG9g6Ugo9Q5ZYtCXeXmG:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "22AzC7dUxGSCGtVR5hhyzaoZKnbbTnmd4edzTHHk5XJbehd38efnCYmrLG1XPqiNZ1X75MBTiV3vmVhS7AWDXdct:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5aKsyZ8wBSaA9JffFUPnmUwbF5tatdFKVBavQAkEhGpk9w1uUdLmanPVJGDqmeSEeUm95zMwejpfBKQLSwdh6Q5V:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4E5TYnBrJPtYijFGC7MLNiSU4NtjabAgGuZpkE9M7oh95DmuD9PVt1p3E27WF1CXt5wDSJCecN9DDtEHT3cYwhxp:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "442i4akk374Gf9bnnhP8ysuDYqExy3ztJf3DVcDDrbRLa4KcoYA6huLWuZ74tAw6R7Vv8ngZSQkkFqb3M8egswB7:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "DaP4Tb71mDMoUB9uA1cUQRqKnPNExkynFvZnux8FKMvshi9rvmbQR7nGmiYuuij21tpqoiXFxq97AAi7G39N2Pe:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "UZgzvqv76zkPwSVixsKZzQSJuDPCWovcaQjaDSvZf8LiWMe7fcnQVutk4rYJGEN32BJuA82JBqz3au5wd7dK95u:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4Khm1dj44ynTYAdpaWTPQQWqUK7cRWTnpHzHbjwihx4KVkWbEYu99KtU2EnSAukgSvfAUntoXeCN6hyRFK8FbxKZ:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5Ah9uLVcwiCNRVFXZ7SiqnMx2xkoALWXnrMh9D7ttmJuzzZHv252KwaSYPgy2UHrzD2TECq5jtgPEkZAVE7qiL9Y:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2nTuwW4ynuBaNCpqz5DPkCDTgedvjuFjaJfxAmxcnPXm6J7VMvevpL4PvBarTLxJJJYqGvxxQJL9j7S5p29D5KiN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "JWvYpCvPyLPS75p8KVctvnadEPdCQCT7pbwf7CN9Ls8oFNoGjv1aKKJY2i685ixTPU6hiF1nR4Khp55rNpgoMBr:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4nzeu1AYFa5T2ZyaVa1PNTKmemxYPq2CyRYUBFcQXtXmizCPpKPmCbgUZVUo55nLjXQD4i4TbtnHF3Yq7FDVeKuw:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2fYbVxXsPU9RkPLaeiYDQipqqdf2ya9k5UsCVa9SxeZnCXGPgKqKdn2YAwtQzGCQJ9EpBzRGqJEduYgS97KHYiRz:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "32Jczd9gEh32Rjh3yqc7GdCm3frGPWA5ccURkinQKNDiBtAMUSBwsVSrqwimnfQeQHeL6W1AaM3WfeSeuQXdZyZm:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3a1iDc5Uj517r7Ph7JSsVXBaTyLfe6UPta9bkymNJVFxg6fR78id2cTHPph8Jshy6RcYUXhXughZpWpvk14uN9TU:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4P52PRCEZfupngyiVVg4M8gx8hm1ZryYREQytm5REqbH31LvrmhFWYG9AcwyTqQ5yc8UHQc3y8n6nTweUYkm6bew:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2q4jp7Qjt4e6xd55jc3ab1tjof2cBJtb7MEZfRRgiKTBxVnAkwEuvTXmBLAtS4r7BgBd6BPX3UBYbxHPrRmLQTop:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5ZAuNtW6By6DHr3qqYhZhicHcCQaxqvjL9mZULKc6YEuFRQbMXZY1Bfu5SN7xjHBXfcWzbQzvUo654w1NghxPYt:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4iJjSonPF9Ysx3RZCEDawZTMDg1rGocKRCUr16mPjxJwmfVknXnkbbykfFBXfseHLqhT7fwphuM8XoLsewJZ3LVJ:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "24Fmc5kgPWCBdqDSzHZiMziJPXGA6QvcLxxBTbtRVVkYgX9VFVEEYoRC6Xz61yhMpAs1nDoWF8UjS4Cz7qFUkycD:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "anQTwuZQydp53VuJDhkaNgyhuV8P41nuB23s1kdLFc99eBRsaWmnkSBwBhRZisK7rhmztD69qBYiWBgkoDc8Pvb:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2m3dbhSraV5rTJmsCuas9xuqEvcJbxNPkdLkpuHmrj4Hj4aY1Dq5d9WpcPJkq8Zs3cUEiwhD4DH6ecNxzqrmydFh:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3tKJyUxLj4zscDeLuWvHX3NfojVnRMG8oTs7dVhuvgrw71QCfFzRLn8eproKxqP4TQq45LXq3C2HPsRkWvLe6MeW:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "55ymzFpPKT68QHbNBpsuRuXtoweCDwGCYhjikMhTfb3Vy8HwNftCdjuXXW66cXUThp7REgG4DHY66MBndEDQbDg6:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "ASBb9gydsvFJzzgREDmNqdmB4QXdCGfXXW5Yt63U7L7edysS6UYnHw1BpnNFoosPoWg5qCF2Pr7nA1if2uSxgtN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3jEXYEo4az6f9C445KyGsg3MjHXYKATUHTz84pJsXW8o4F7AwrFFHoNV1XSAh4jc6fr3SaWr2k8SAZ4rSJ22z7kZ:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4ic3BUZsYp7uxV6DW4nr4zKJ5kzdTNjCEPyozmrgcVYzzsFZJ6suJvqh7e9vW3f3zehLbmqef79gvb2YgnHtwBYy:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2wVUE9qEFwnHnGbSWwCzfqXv3Feqqp4nd6u8q2bqvy8BYLPZhLojwbRpaQE1z1xZzPouYAuQDW9QzBC1f8rgzv4v:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5HmUP7qVKuNn9PMK8RKAZpmJKYk9YMHKD5Ug3uuJAKRowaBMNtaNfTgJbGyD7gFtrFfqoquPDcVWSx2hMTjrvoVX:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "52MJ8FPzGAPAdfH9oMKbSkUxo3iBrJZ9ikNoCgsyFVgwMLJDzpQ71kTKhVRkC3VTk8WCseGvyHh8sf5XXxoDXVmk:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2ELNoavirVj1Gao4nDWu7KTnNYpA4aNe6xbUZishd7XwVmvuyoAEawzNLSWkN9bfT45RWbCQyXMbcgsyycYVnasd:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5GMhNBN7eMmaaM17ZPodnW6NfVcv1MEmaVPtQoWd2wb2iAsLaExZ7UAvZpAr5AqWrHkbbsrbHxkUCBPtFisbok1j:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4gdCiPtvJRFekTD8mRaLj1mEtjLT7T3NMrGcfSUwc3Ev8zcUf5Gogcq5n2sMzq1Xefs9P4D9fwNEne7QvKKy8V1z:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5jHakYsYDByUZz6cVytCTTXtRKLP1UeWCHQt4V9y9CAehZPZhk1nWDwhhnBrreBi2QcFKq3EH9dTmzMtd2Xk9cYY:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "65JVfAr8USigMu2xKeaJZaKpzdCti6R6uFwNZcB2jtzEjAmX8ESohGWccCUw6xMvf51bJ4PsPoAEaAUKNaczZ5de:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3aUfHXo8ZDsDXDnHXGgg1VVENBbmAxuz88JfC2dhTK6NH6NWiZoYNwbbYcqJuZ4BWNbMJQa84tboAXNmHd3QpDZQ:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2vpYYCKHe5Du2QMCd9ttwLeWTR5VsAYbyvZc6on1vAwV73iT91mNuNmnqoDpJxfJpBMF6G6m9sSQ82pqfLXp4Q9S:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2Dk4Nb4cg9iXAumsC8eXZUyeBXxm4Tqh2tQwQa5ebXzGLcdsb2fRjyZdmE25c9eLKZ2NHb4mACMb5JvWGv8VetN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4GU4yUZ2CHfcwuWzMVYntkoNgPuuJrvz1HCTwujTmGV1wgXWfimJGkyAenHLcQWqTaN26wPjauiP5MaT1YMBio6h:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3xeHHgnm6gnKGJBfnt1WhwzCgjiKC8rQY7CR3kkR6aeWBCeE8gwFiiQNC5xnYtiGypFtdvhweUMRxSseDfzGrHTp:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2PXbwzH6xWEnVnNqJHohfd5sDkAfCPy4dVEiSEBk4NukD4rfjPC4zauQH4nZLHWzQ3eNC6aAkMdZsDYzanqq2BHH:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3wV4rXL1UUgAs25fB4b5TR1YUbNCwHfWNqhsA49GK8NJvFRTBgdRpbQjHyjdASewuNt8uwrfdUVbGjrWGkNskdk8:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "22Ro4dVxNfs7BGkbqg1zdRj4Y3niqrch5ufuVECJMn8wezdk1J9q7tWXdvSPTZbwdZ3aoe4APoTnSs5v7XiiiWg9:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5ZeGzRXXuwVJxAcRYuqQfWz3RPT823hf8buq4qMw7iDMmxxHNBP6f7kYGExdmEphpPjq9tfHnzuPkUEL7ZFYEce9:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "51Q7sDh1KVMAws7zYLFtjwgmEnZQ4dGgjJnjN7npNtJFWLGyfXSGvaYdCGPDPYz9w3ZKN6FkqwumQzgBKSHGjH5X:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2SgUxmFrvtAyGCEzpNKG8obkk6Xq8K9YQwkKCRQgjGksgPhgggoWTsXzd5hDFXZAfgb5i8bgnEcz4mhcyJJPuh3:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5B6XszLodYvVFRZAbrN537q4iARX1ngGaq1vzHvSivvnLRszi5PcnGEmZQi9fhwBxKmXDFQEiqyVNTRoFLvB6ess:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3CrhPB7j8pgN2LFTLU2n9Dm7iS1b775gKK1WNfhFfp1nJ6q8uY9EVu3yPXcFzckpfFsirnQmbQAsbCeq9szFhYwk:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "33358iEKSHt2Ko3vTGgyh3zbDK5jwTuyAyAkHRHJ4UudG4qKEkQco28td158NA87N9UMJ6gqQsco9C6jb2JBw6no:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "54yrabSx6ZeXq3eFEVS52oMkLt5udW17PQ8y5ZfBtvWzmM82U5BHEYSv7gpfuxSCUGLZuHxzNwYkDHMA2HMpW74F:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3xxxzoPMgbt3xLjhYB1C563QUsmTF1MWjHLuR3RTvDdpw2o4dgfo9mMiapS9FwQCggsJDtPR47FLUJuAQXpgELoL:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "mNCdLyMAzbtJZ8Do38E5P3wrAkQimsYjDNtXx7Q5VGaEyJvw7AFQYdU535FeFpRMAtkZR9wPSXaTjDiwT8HQQwM:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4CV23PumK2SiR3X6dm79Z9sfhRXz7RYoqaJcst8Y4kkLauzLosRwrkZnrLFdNuFdVoSxmB6kp8PLrUdKcnqgZxPg:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3G7XxNoSqNFMXCxYfVj9aUNdEvNjD6ZF8jTU9GYvunBheauYZrC1yfadSJeci7eWLyG6Y6U8sdMtMUQrs8Xyof7V:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "Gx78YdRcQTsKTbgENs1a92tLfYqzKcZu2W6CZzgPQVXtcTAgikGH4nB3V8se6PA5UZY2FEa7YyAyxqqP94xnc4T:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4NQMLdU6Y4ES9QQJNMen3QgkNorbPgihuujz7ebUf8PQbhWiTedcpuZ6a2296RJ7WmgECnrQor5qxVGJn8JjQVEH:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5mMuVf7zVTJHktdYUTqD7THZywRME1qBZ51p4GHY63DxLFPorhT8cnxQbDCL7DLvWe6eyefaVkatiPHDaU9ZMgYi:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "pgx3aRNjTF3dyL2ELGAX2FDZ3qYUwg9H9aAbtZeCwVDrT8bEJ56eAywPwuRMuNLbigjGKeq49mvj6YH81wWbW7v:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4tCkvq477LchdNMB9mLN3fUriywsy2PfqvfzY7weq6ZPzH6MnbqPZTGdjLhprf8cJ4sYHVzDJRbbAbKw2umpVh5i:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "31NXEJX6Qr7Xu2LHSw5doBZAQu9Fp3aZuGB5HouhgMbsT42DmtktQzYj2M86zyuU5cv19opwHk6zBehRQH2ds245:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2V2a3jGXjrjp78edYFd2X7PnZQBu8HzBmkoR3GjYe1qDzCpsHKucrJnixUKbTGHLDrC2shkMzXBBKGU9hDRVqbm1:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4jXsTvMR7dQETGtRTYaqxjizXvJaT23XKocZkvWyZ1eF8wdE6ZLZjvMUYZ3CqHmChn597jp2bHFfsRTKvaR1d46X:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2zza4ARcZHfqnzdYwnBpVMruYXXCJRWvmTrEuiSF9tASRNTGCUFWtoAihQBYFchKwSCyp4kPNyHzhTU11TRFZeVW:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2AiaNAK3n2xewWMYMjqVUHiB8yyA3MjuFokb5QNSpgy8bVkWM2AFEtemh8LdAUYKLKt3HiK1WwVYNqXHf3VQjD2Y:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "33j5ZmCihHAXJVuLDUDMUrfWSGqpJMBXPa9y7ybqaQNeXzt5WaR427WwxRXgTffqGWXgQQGb33NULVLkTrS27t13:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "BZrBT4JAQ1Fdg6rB4nx8kjqEg37Zs9zfB4cLZdXWuFpnxcFKi59zYPhrMTgnbqn2TjkcUPK1kPdhMLNP82MfLfs:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5DVWsyD99DNdc5Pz3FZtHPjhsATNX2QPeYyTarpcde2ZbNiJ2iTuyr75FzRZSFyeyERqJx5SMKQ2fhF5wJEbkJ2w:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "65Hstu8uxk7Xfx9f2w82HHS5DYGNRAk7sqtsR1vJHpuuH1Yubca1UY3wdMLjubGeM7H1WzWAiwNnwVWLvbNxVLVK:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2vBzGR8sTHV9iLXCYdN1Us6UUP1gTE7DtMUnQzARWfEhRRbzLVeuD3QCVWwtQWdX4CWsXFCtjCPqW2VkirPfRM7v:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "SXGFFFQjwMZCwtDKsmXoZV4AKgitmMFa9xEkSM2VgEPrpnNMKML9BVEmf4jVfogW4roCh2fAByAmMEAzrRzm5Ug:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "pznLtctpk4jBSC7K55ycpSEF71R5P24LWJLM4ocNMCGXQV3Cz6i88Xa8P7KRtizDMA72NhZHvkGGgBqYNQnaR3S:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "YFMUYCDLE2X6SRWgAT7PzLkLVVm3V2vhrmAw4zVNXGF7XCg5tGHYq6AhA6b4LqBCZoVqK87NoVvKd7mZtRgWyBt:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "rC7Hui4rHuXNyLsqbDHi6W7UmjRdUoWD26aMHhNP8xipy39PbVEp6qxbdQM31uS4gGibNdvae4Wtj9VPNXtKWm1:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "mGz9EHSs1sthZn3aPucroeRF64TU9ncAGFumyc4Sp7RABYcij4McqYkUsnyXwqJpiLvNWfrtLGMuzcBwMGZrsqL:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "jt7tjWRLCErCqkMHBxykjDSfseBJrzJJH6Rzy2XwXhJvmdPShSQt3GasDuMjvLc4RqpZMBmHKL116CKu9iwCngZ:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5WpgbgkuZn6U8z2rUHcLPLnz4b6aK4eB2pLwmUDfSv4NveDaKpY8yyyYpbEuYMxDNqSAH4zakLqGFc2dRPoTiV4d:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5QTtTL7CQYTPW5aybkGgr3Mb4LLpNG84gKyCmiCQN3zWc1RGHY8knu2MdstjBXurKvnTfUz5AiF23QUmtFMz43Ag:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5cNVteNaTEXbTAXJwXnY2Nve7eLeEBWAu1EPWk1HP7fijvyABHxSXz6PHLk9QgBUeREv6izJDudA6y7yrPZ9bo4R:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5bPQcqrFZ8SPynMFjenkxhuG474r27mHvCaPAc5wFg9XtsboEttG2faUzwQsQqAfLrHcUT1gNPgLXCtvRVy7Bbrx:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4zoCgioBisL2HMcDxsYwMGgNZoRqvb23hD9EEDY8A1SadAFhXwjLwUSpqTco3mRqJ1YqegrdzUUmTQCuyvsoo2L9:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3Cmmj7AtPdyYPcPvrp4zsZdSfwBtAps7c1Nk9Vre6cDQjJ9HRqNG9YvbHrXmDFt682MW6NyPtdQvs2LNR77bspYy:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "39v3JydQadRGS62AJuU8tmbbEjkSHcqjf67egyXur1Gnj73uqTr2Q8WiVogEgAREzdnJEhyU9Mfb8ZfR968cDTWV:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2j5eDhBsRxRsNhuab2KyvffP8y8yUnqCdpjPTLgUiEXPhQ4HBQtxy9Sj3K6MuwxEYBYoFW81bqiNcH1pSttaD9Sk:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4S4Q1cLLtgXSYs6TuSKpMSjB1wcAMvjBpbSLBV1FCn26xqdXm1gKGx48gWgHcv5HVbQruXtidDoy8kquj69traQG:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5UYkAwfc3vCyXKcz5Dc4owCeW648UTPRsjXpmb21NM7egJc4ocga3CCGrDzFgqZgHkwHjrkp4dWoXi1F2imJ6Ren:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "279ZCyX2nbTZ1vWDCTPNGXKKda9uaQULjtpPBcegydqrvGQThrLwTQh1oJswME86dRxx12hdkKCnHF6x4QuhpxWa:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "218ZTuRCiawFYjASXeYaZk9Mwsbo3JL7h26p8ZzWjVSD685hj54eJNW8H6aW3L2SrSEbA8bJMsUHQaz9ys27hJuZ:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3VacjH7vGM2ycwfriyLAQMoiMDoZSAP7fg83m4WRo3LQQNcC5xTA7LX4ufFa2JcAgvhAi9PhSYb6jS5iBxwCRzAG:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "Aqad9zw5Y6np6dZwkkfYZUrrcY52tFo9WLfWaE3ArS2Rtuc2JnLyBkPnEDLPbyeTFtqNjk2CF6ReME13vL2a3VB:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5DgcmTfjRCuKKep7KK4CEGSBz6u8cLWsoRv4khDFdMghFDoQoyGE493ookpWL931nrQ22rhx9rgLkfDn7Me5emMZ:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3z7m2NctAdautKvar96ySnAGgtrpA2wx7rMtm8ggV5RnUtHEqwFn1oRxE9ixowZChRiQkBmzAW7PeNT8db4hnrdR:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3BAKwySTREzMmJzMM2YWEiSVxv9o1qWGCfY3jLJBKttcSBVEmsXkeQoGraFvjQA3ZX8qb2YwkkenfmPRzuf1J1vc:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "65fnhGWcV78Uo2KoeV74s65VeFquTjyKKVcFRF82NoDtxiKu5uJaeSY5VvCSHCCX8rYSyiaF7w2gAiBbUyT9yLQY:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "41LnJ4y6oaT9AsyBesjtuJ7UiawhoGMMje9XqGB97xJggiYKwyTN4FnC82DawyztFyuvKeJCENRn59sykM9RBCXc:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5Nhhb1i76nqvfbBsf8RjGEpvannVZ4pB45oAJT1sGx5yuqY7fiqG6ZqJL8WDqapyFSABBh6ZjkDCd2Ypn6yzKqPe:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2grz98x8coXc9exNL4oJZ2tbeDxgfmZZ6v57TDVEi956S175fyqDoe7dQSMErTrMezHgYyGdxv6YnLnw9pJMBJZp:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "32DFrSKD59XsMtdAyRjZR3VCJF28u64mtUNobB2hath9yBd66XeaAoFCgtSnyLigrxD3witzewyZ34BoHrVtxCgX:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4DR4RtNMfEFWqwrjqgo3mqWwvWodM3JaXhK2xwXEDzLH91gNFcDqcp5kF9bdhbRyH53NqSpSMkr62Lcx3Jy4LFji:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3DD7bzTjMetnbZ6rQ7Rv9dReTm9QutafbtLxMFkrN2oX8X6VzoNMjcTCjkEFeybLZ8zJKqqfck4hTgHQTEZMWKim:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "22Njc7DY2vRQCoq6TQ5HCNikq5fxZBVqNWAywEHFSaDXXSfysjHJB7ZmLSqq6CSTrrra3wQ6qVHvKPsEURGfi1wf:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3e31hCshHPvHtJZECgK33HcA1rut9cPM4Gqb2GVgUhpvmohsELQC7gUco99ym74AoZFySeHXu5seJQyvHqr1NQgN:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "MKdVAuPbxkok4co7bM6LRzuEkFnyJJ2ueZSxXTE5s9xPxf22AqXbYRefMoD5dbC2rxQfWuZniYg1qse7eohGNrV:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2tnkh6JgMm3CoK7xtxEjxL46vfU2rf3yCVquSYyf5eJCX7ivXHgeM6zCabpXwvwwRFKy8cCpyckPYRUrifkvwUH1:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4LDgHTrY5feqh3xRKZ4CNcSmJoJW46fe9eY9ST8v9CjGtVBWczFg1hCoYigfF2RrjALonK6G1ii29DrZohbpbTys:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3vfoNbZghNUnG7Ys5YY6u7KfLoWmpJ77jrHg4n7JWWU2RRPDs8yfvzSM7hE1xg4rWo4Bi5HMM2PLpiPjHzdmsSUV:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4PovtDHf6zXMqndkDhBwHCYJzKuSKgxZNuNwQ7uNTYjDg9DwqiFnkF6umEvzkSBp7n7wab19KAwyWUTVnAwwf7BR:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4RQWGYtYEDGQJz1ibyFasBipApHFcUTnMDFHAwZP1GP5iecLbq7yeMDhiVq69ADezHmo8srJFbiDWCr7VfYDGbQL:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5q7zKpjeyEB7eFtAharkVw7h5iwJCfEzHdVHy1aSrdpSwic2euVQSJaw1TL1vq39MyBX4W7c3TauqVzCyBdXNzNR:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5P8HnXqcxwNFSD81azayQoexXPn5ATMaBVSp4eb4nGZ2ia4hNtBg7cnqua33v5aCJcDkv3WhPkSWiPJdnt1UKEx5:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4dKstQiHGmep3K914cjBjwBvdJj278F7Q19GcYSMVc4u7koTRGDgiDeM64fozvVTvfse9Cz67MyRN8HefzbLoSGy:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3DhsJH9wUYLwprDh2qCwFhkZioo29Bdmc5Fv64HffAUWQSUsNU75fTVpuV6K2RrJ6BSKvrGduRaniaAvX75yZ2wd:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3APQLnF1mGxWdwY3UaWgH5cWedZJmB17DpTyvRpLH5uUJwQHdoW7bW2CKiLdE6kJHFRazjqnFS1u7X268kVdHBYS:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2Evqianxx9fh6D5WkDAgLyGfAoBwTfQRQDyfWjSmWxgHU5GR13dEMPorBQL12GquXwTSUvDx3zy7o4SmAJcQ496w:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5jgq5AEyQod2GhFBuHPYDEvGu28mwqB6yE7BvRgYYqrGsT9hdYSf1rSRazA1ziFjbhxeY2G4oexMNTKuKCeatdYE:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4aeyqxoGUENafDbsAdkY1ZHhubHsmKMKyYmGya6CDiZtJSZWAiGGAqK4NhgGVXiLLbKtm5mhmQdaYTZtA6qiq5p7:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3pmN7is7Pqqtny1qW6AfCnyf7zLXMTxewhdS4oB7nzwpL5XZpkN7H2tswAfQpVLRN1CdxdZLpPo7odv6u7zA3g7m:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4KHpV11FeJfQUmaZvsJ2MZrxMze1AscHc63D69tURHsWPRyrXpCPWpDFLAa1jeaQTqzExbMfWcmXUCP8SLSCPJxg:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "cjuRVSkhRiGx4jg2QjD814Gz8XCfhQoPyqwVZyZPNAq4uuykLpMKHYizjxjyqkKT1yQwf41pXHUr3MzfjDBHxrN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5EZRMpmLmgJVE2RJR87ybsBErDEJnvSecPqt1jKKKyQfGA7vAHcyAgmADtsA6ppiLnuZYMNVVzhd4hBSJPbnpesX:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4yRDN8by5w1gHkAky8bKsutFkowQtqYsqD13NXPCADQtuppcEe6LjT9pu92rKRw5MqzYwKx8sGL6AmBsN3q9yHaG:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "41s5EJQenCqicNpQ5LFgP9KrKdwB9hqURtq9Mx7q3dex7N4rgqV7dS6doYJYUWRYKDwLAeLXYSaW5BqRX4HCKh1m:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3FLA6su9Y7A7DoGX3PZxyahSgZnwxJbvSJnd7Lvba976B6HdMW2VDrYWUDdh8F8vHtjByTYLHaTS96eiFwi6mZdN:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3cmp8n5DcvT47iweQZiDwCQQhqHpNu3k8h2dnr32pDmiFRHEjzC1s1REk8fre2yMoh8edBYRa5A2xtDmUVN981u9:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "1cmcQSiom3arfoKetE6h58W1f2CzSCU6GEw97QVMacGK3kTcepxpYwx3a4pft9yLiDqgFjh9jtnA7uy8561JdpF:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5huPDHSr8MCG75CvMfJYhBeTAh9t25EUMR3xid2WGZJX2cq2mYh3onacXxZum4FVtxF1idBRiJywfEcqh7q5Vjuu:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4a8gtUXHqU2joLXJaDKrqf3feXuYSqqa8uS1YLiKMXgYrkkpH6ui8F7ZDsvdyp94bKEKcWTSweeQ7YJYExSznB69:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5UnHYbDEK19GtyM5wpsuXyvKmG6ZnPjD1grqRpySYnLaPzMX9NPGCJyYu3MBu9idzNDBR3mUWPvy94uxEWisrKdh:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5yiSYhf5P5z5updNgHSVauwTGgz2wBr3L7AkkfHJFisj3PqWgGZ8ymcrb34DLTmd2wyCBKRiestpGT9nbRMT7UKW:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2iCWM2CQ2ZmofM9LdKsk13KGms77V7rxwoQmntZmregwYNeb9oaf2KQsiZoU6aVjpYEYttcWHD2i726jkrhanfHx:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5NNkJepUSXuHChRH7ggGPmqFw6XCVaGEgH8m8xKPgTLvGiz5vAMbH4WdSWSKF8PpDMX4i2EkwNBpQnsnE6ke8dTL:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5QNgNfNHAC3ZupKGhRpdffFebgfG8XoQnsNAeLmydZrVJsLh5HPQx2sqCQai6c3eoAXgaHCoUPLs81Pm7Yj74v8Z:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3jsQcGDozkZCQ8Pys7iX9pp5PX2dH34fBbtHXAUdoNYr3zQekkXXEsDpU2WT3ygjDq3EK3A2pTLuvVsncDNLYvXT:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3guzzwWprq1WstFT65z92ghrjcLczMyoRac1bCcWoto12FeGevHw5rfUtdaX6mVPTpD8gqABnaEtHTsqMDa1eZvX:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "nuYR7Q9cHKQvmomcQ68cB96Ve5f1qoLqhGLMvEtq39woiLPn7xDucR6p7bbCe8uQ2mqnQGsuccPQ9dPogo3i8cH:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "mjHNRfgveoS5CgQt3Cx5irBbwgmfiMAmC9XNCqXyfin9yrzXbEuTK4J7qzmYyg5U4pDgzcHXoJoBPHuzKFLycFy:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "KrEvBbVVZCp4WUgMSvZ5XFKyz93FTyef243SznC8R6Ve7hUc3ZFMmrGKUnmsUeahgy3iuJ4CEw1Fv1vnC894BmK:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5XBgh6uGSyTPrBvQMLqKF2AbtemCvZeqSYreaSKWtJpzUovqQz3yo683XYsQ41wWkEiJSDBAbTxsa8bHrwtBRLzm:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "32HotPCnx3ZZFYEirZz5Lz5NPzQCxYYYe1xtFi11CPNdf5AfR6Fmm2aDyM4LDYS2TBEr1uRXAhTErViqcsY7wEm8:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2YkUWJLBBTztyQ8rE4iYNvyFjNZQmmozPSLtgsY6ZKQSbzti9mRBKELvhbAbziHw1DSbqkhYwgEncUQNJ39DiccC:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2kNtBXycqC7qZW68oawuNR64aT8kf6LrNtEvzVou24swAN3ZHgchmTP8eVWj2GJLZkpipq8zrWDgs8aJVKhUr8F8:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2ufHxsHPMFk837oMwYimzeHLpTVUGXX9YmhxrMg1DPBcunKo2W1dLVyCHbsDYXgrfi4x3w7trHJbYatdnGvYujpB:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "58v2c8TqHS3x4dUMup6VtcWe9yZTzJ6QQ1jbwW5VSF7JCN4mzTq36FVzcSNqp9hEPwHYDU4Hbgjss6QtA5WAYrh9:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "53nmYKYjUtj2eCPdobnfW68daAJCzDMgRfUB5QaBGAkoFUPRz5z3NyxpWTZv88EvcVotwXmKBbEUP7hKKYZqaYpR:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4rRzKzJvKcZhDpNifypaJC6M4aZjVeHgC5eSYyjzrfwJo61AkujSRM7bEw1sFh7LwuhLcyh55g1i1XcPJkXYtGm6:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4FrAH84RAnemvxvtBrLvFiP8PvBSCDXSL38pj7KgKirM4pdfTKbAbcoitCxaJS2KvNaKmJorPjXxVB3fgXdxHztD:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2ECF889mwRLghbKNmJMGKCQccTwwAZCo1xPRV68fLdL4xraJuyNgGRJVxxinJZovXCJH9sBwK55j4PjsrPGexH7f:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2hM1hxqiyQdksfgKSFvWkjsnqixfYLTSo29cPZEw9SbNbn264as8ZP68r1odvZbeRariDip37wgtRNzTgokRvQcy:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "xz468v945Ds1cMP4TcGQTERCxSPtSprReXdCG3qAdQweR6xunuD8A6xUBiNNiKk4aEGgvSDLg6szaqv9qqASvvS:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5ABQ5sdeBS5V2Zf2KrkgVgegKYjAn7DRitHYL7brSwS42qeBzKbqnjn2nGrDZ1ARwMcPSzwy2PmMGwCizQ3H4Y3y:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4Rk4GAzoJ9Uamix7pUqpRXUCokuHwEynAnjz1kckcTJpx2EqyfinYNkpwtU4aU4mM8sZ4eS9iCht8v4PG5kxu9z9:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "XLTqG1PPu9ttAFdQySnwAvuxgsAUHBaRHNKH4MKKttPKDThvQZabJphBSJX5CG4qaJ7dEEbXxnQWitrUvGnbnoA:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4CPWVE1c4xHpeLsBX5s52VRYo9tZZUppPLbhGnNfUdzWNqmTUG7L69VJhfQjRBjRkk4S8tJjKPQLUrhzbZP4Haui:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2vc7ddWHA7Lb94kxM2s77juaZPN74suD87QebsppmmK67kAievER8mSgQR9R228ptQx9wVNTRZRVjFK2rnHKnJh:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "ot4g3cMt7WMKV1rrb2rLxgnaGAWKQhmcD4GDgLuZoZ716VvAJ3cEWpi1m9B6EEi2uPLAqb1UMD4jZwXxLqnxzVB:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "65QML4Li7wSNDQUMkZWRZHwpibMy4CumpCw6DcawhFZxnVDpzR8HXgND12oJ3WRM9XVxgug3RbDrDcFvtJKAYdt7:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5eu7dbrb6BMFf7thmZFsdtbbFK2oBPd3UPQccdqC37pVvDrmifygzdj1WyZbmRjWDuEf4PcX2UYfpveZb48KkwoC:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3k6gRRSSJazmv9rvmaWa7pzBSGjj6ZFxebrZ9A3FWXQEfgy9jrMXnqVdMRai41tbonJd7qwdXbCtoqBhASu2c1QD:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4tzSgAdNF2YJdmCasRGuy3XFqD9BWxmBcNsy42WqBfr6Sm53FeamSz79EFosj2pcf4LdFXWvto4TEzP3kKJ5JjVy:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2CqC8GRxDF9LzAWAMhjh3sYhKDShLRWoLGGBHzSqLzeDv481vsu4MFNJKun1hqi3yZBVJzacjJ7QdqwzmsUTmJpX:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "25qV6QbmbmszxE8xQuN8H4erHKYdn45zEvRLDxzvx5yzf62nSMhJM94HvyE5BFuAqgauiDeAFLj5QU2QoExtwNpg:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2DUrze4EnPCKHsMwJ7hUJC5NyLWWi9WqtfLyKY2xA6dMYTL62oYsyTvwuNgH5UKp3TyWEqUF1MoQWSf9V62xUrjS:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "HrRpA9cszT3cP5831hsJbqA9gfxBV5x8YZ6Fe9i5EWLUmin65uGjzuhu8XsMzPZ89ZQSwGD2WuD7uHiRxswqu94:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5jWE2LJvAtVZZsEShWdokPGG6kZJU4XAFs5xvJedETu6QoGY6ErnCHUMUHdLphNb6DHt9AJENKA8uxiAJVzvbX1E:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4k8eNQQz6cNDTG19v4xkyHAZYKQDNWrdsbQEHLyHHYhCdBB5T3dKbYmaXCrxbzWobeEwmZHh3CYcq11UuMb2auZ3:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3Tz5PD4x4UbikiBY6qcEfAaKBpnDz67odXYoFaMaDG3JQvCXtDepyJCggST45qFq6w35CrqVAw4HHHoduMdAUSAy:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "a5JyaTK4bTm8veMzvGAwCNYhdsHZfqZta9NshMvFnG8XQ5VDim42kuZ713tvFhRu1Nf4H8X4vqibX7fbnirK2r3:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2dEWmveeb1xJFy86yk9cGpUPzWB1jjRagsJo2PHfJ1vsXoPwtrXWCWrQk8i9nYQyDRE6YwgVctUDxfyxcB1MNmBE:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3goV6JmmHyc6XCcsbmKqUFPhoQBaZ3n5hesngfB8dbrNmiqzQWDG87DKYq2eJ9HMuzoHtntY7tvvJ4ALbqS9poYJ:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "53JaUczTffxTSXAx7cqr6m4W5fQ47MBw8G2BvS3wf3yLhzvNXXPPZ7yh9pKKgmYnyzwxm5pYDhorqK2pJCeFfkfv:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4bc4tSwfxWCVf86DEtXw8g3qYXUKwKFz28BSBjWmfJfyEqwaX2kfsrqB19WmEmTMkxj9FnnyotzRUgYKGfXFCND5:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3v3R6RdhFQMvQymFb4usDtvBk2e3AeyTyr6brmTmsHiTRoNtmyeNjtpFbpxHqF2DkwuHnHnsNNEXtqwZkUNrovge:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5goApKwXoEWKjr8aVw4ZDMXAKCVPScYvmH1Y4rxXS7VqMqYYPBYewfCpC5crYXGuqcBAKKmEQNSZj1FEtLVWx9HR:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3nzmW5QG6Vhc51di2RknEYSSJhP6mmfoeCmG6epUV3rnWxykEwPV2xbcokqSJa95PTwmANu6AYPZ9KqfbeaLLeSe:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "29sMXpfLZ9WaM9z3P6qxbAHtBp9HzGaRT9SpbEw3YuzH6LReTRhBuRcw1fNyaRDqr3cKXmLrRVr1PcJ3BqHPmmRd:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3n5xGfpy84f67kiUgkGwa42Rwzu45fHMXLZgwZnxM9r1SQjTgikCeM9qe5pXm6xwH92mBEzz3AkvfJdqZg6b5Zbs:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "352hZJa4dyeX33cpjzm3NDaagk9t1DqQZtb5UVnjYT4RTuXo5Zf216Z8bFSE6w5neFU75aMV1sx7uYowB6MBiobJ:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "AYG5558NxBFbzfeMXqPEwoXSH3G9HjTxvYCwj5aXKCYTx2QFV3c6n8uHWYQHPCGJ64LvrMvjcXDuySsriJJk3es:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "58XH5p1BFUmhUu1PDRTWMvJVUXG5eTx1x8gcyiLVQ1hVD8jwXH36XvnZunDNR3FsHxWq73mFYq2f5PVMBs5PqcUR:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "C6jEjSvqx3R8ug2nfH2tZUAy589MWF7rv3Epdc5sfCGCq2rnZSexksTfjuqgGbgUk5c67m24LbRmYCc9nkJDcA3:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4Qf6izXwiLAfhXMoP2cjrMdQz1U2gd8naHXNjEubG7Tvq4WNSJcEPiSaggxrpLLF8XHcF7qoPoBZzKovFMqHhQGc:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3m7F6WygMGW6AimFPVmyhANQkKZveBLiEWv2DdkVF6D4MvQygPmSFJE9tvomUPahZnsML5tqE9aDcaV1LuE935PG:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5ZLkkK9TTgNzbSK44NPqThhsd758VvHhFhEhz9LR2enBPcicqAsgdh96EXUHkcFLKFtavfWY1EBXxbhndzdWAjmp:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "tajfTmSG2BkcoERue1xxdGR8uCVCzhAGiA3hJFHmMgdiQz1vQR4cyXrfFcZKyuXpzme4JUmFSSCVvxBSi91WUzA:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3wetZktCW6BR2guuzzCEFUAUsraxgsvH1bRHYxUhBkX7svZz2Lve419JhqWFcENnu7CCQW1NLMqKroUCSCVGAJz:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3btYDemQZHTNhoCpJMcsJFAF5SU1osVMpf4kSrpbxFiTWXpUZh4w9WiCWxqkkbhKVv7ux2d4HUDus7MNWg3ev7zn:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3ZETjEh9U9Qy4yLKM4tfN1kL5ZSpzev1V9DSiEzP8wgpKrn9m8EBMpZRypNAfAhN2PDjH3d5hDdpNRKeB6aFAkg5:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5n9qv7ZjaroBKvX4QSQoveRXhiM1x7qa2Q5D7FMq2Y5RYQAenFacst2t8Z2GjQDH5VWUqkb3L6hbj4pvnY3hghdk:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2iE7ZWmKPUeeq7aMWTrQWjBZ48apLFzfV4oi9wzuMXwNShxVXbipF2tP4dJ9ivEdRe4SmkGh6JKoMmgSXauPgzbY:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5jhiYpmYP5MFZH8TcV4eyLn9qADHpmJPY49afcV1yX323YywEzULUivYZFnZ8RQLLLXN3npTyWwbQaXKsiGQ7nHM:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5cRaaYRHxAWtq3LXDoYR6v6mUd9b2MjxxHmiYWtPcMPLRztgV84q5Q2CtzBU33eGoFypxYYxXXmjPCseC1YRgYmz:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5At9EpiSyxJrhfCcqCUSS1CPpn8bmPvucSKnpFSijcWwnwvpnbyaeCzaA4vH8SJaE5UXL38Advh2wZDa2CEwai2b:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "YUe7rDSPN6J4jJBmeoL2FwkQUTRpavn2z6ZFstJWhBEYze1zT8gXQbDF6NYj6Qy4cYioUmcGfXLzmhXQrLHJgQE:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4GsF9m7mG2DLtwfCWV67Ev4puZgh3wdrgDBgeYtkeVsC6cG1srDNpdcXwZ1mBqJA8gCeeAAHMcRhnN5wawHD3q6F:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4fM9Dr3FHJhV66GkyetLigXwW9bAvECw4fDQwRSmGhsKJDwHGPBF86bJAB1uvxvKepC9QZYPhhpdugCLmS8KLgb:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3bk3Kts9r5K9SGycgpixYXiYiAdm26VjBRvGvh5xqwcUvr999HCHeZ294ccxnuhosEJEPCdn8RKNfnXQ1VdLjWWU:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5eiLngZ2AFxuP1YSmDQBtZngYp7AjqPhxf8H66MMvpbLKQvv4GaMXSg2U1d71JaAu9kY9hNvjJkFm1h5BTtfC8jN:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "QCRLA9nwJGS6f27kbfAb77uK1PUZWZxrQTA2a7LSwvKkDPF9kSDGmFekxwZWi52k8joSBs881XgH6Npm2Mq6AYx:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "idUgqxVEb83tVpgwg7Htg4iT3PL5ErogT3Bg5j9d9TK9ToZVTvosnhNQy3CjbnP1yp8EXWRbqGykwa4C7Ve654n:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "dZroiiwBpZtqkMzYQaMxRrRH1WxRcMhzDSCMHonwAfpjFXmKALHtBcuSGDcBRdKDSSNJLqpfAeMZ9c4KU3v7mtA:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3dZH7qo8RAoqWNwN5QjN6agpfsLD9V6DzVKFgDnbgS2AdKrRpLa1GRnvhQjkuu1Kum1bK5dQ91qbzZE9TxQDDHv8:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "xyDMwZRB3FjoBMdLVYGVPhAFAGhmhqrGaTWwqFHZ3Khab6RGK9LaEFimfyz66g9P2thuqsbcFrPhyY19ifG7NdE:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5LAZbhoNWAWCEEWaNyYff3oEXXEsgESDCpE3EUjkTnivUABPWwCTz1zgGXveVDpgUVpoovGDh172P95HG1mg4qLG:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "PgyQUSs7QAAw1H9qPSLZogd16Ts64hRFKi6w3SvGtxTEDJrP7UNy4TngmRbeeoWu18XaJ7yxeVyzZ4VBXYx6S2w:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4LLCTFCK7FinmhVsLoDPFrB8fN9nWHu3MWTdGSijygbEWNuusJ5Ck7CwQDECxNwH9JqAGj1oba98jQtMXtpSGNJy:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "HJCufc8WFvv7hJbeyNKySQsppFUuQwGy7uaRUyot3d4eWXahd9TmksHpot81uCNqu8RKVzLsuBn8JSoUoJjSjXi:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "225j6NTNyMd6Ks2H3vKd6MS2h8fJppjZEHzFQ5qxXNwCZVmrGTNC9G3fphRZffVXtFFYXF7orNV9BgCgfsKagbiD:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3RqkBy2neXF3CNx64rAFDvnUpsHuQXonbajP3s3sqfNx22LqUMCny5atjQvyq8bz7YAXEiYBuE42BX8fyvPxKxJw:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "X7ApabNY4rCc73rStuvoccMu4HxUUgBRCPunffmU2yb5Uf8sZBCXGgjqDt9Yv3QPwXbngxvymq9XTuYEAZVL9wu:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2a4vXiENz4PuxvJGwtTXmM5fcSjCgMYtdELA9MaVqfQ4CvvyF7Fma7P6mqGqZo1GUud7TDGwWJc3V7cPLYfJM6Tz:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "Qr44Jdx395iZGTsyDLYtSEQHius3Ubtss8N8h2NaissrHXApEuzZaVC5j18rGzNt1asbaURm97KMu9rcy96HtGg:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5JtswaRSowvtsCruDtArR8aPAb7hmVFiBd74N4nxNdy1UK7eaMLoxaNEWofHC5C4HKFnQmcbn252xvzP9RoZwKZB:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3tmSqpJCX67QMkS3GpQanJnMacggXBaQvnPjGdCjeVmpJiQ6pdWk1hhazBfWhk8NoDvSrvjvv1jdYMpCodhxJGDa:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2qzyGTbpU3kADXPe3xHy3NwvRAnBdQJzyL45riHkbZrvrRcLrL1fGuby3Em4EY4cWzrp8VRKoW3jqBAB7Z7f6NhM:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "jfvEZvUZbrGES3mBSYn8eNpSUBmeFE9EjGXX21CvZKa17wKhYyuVvHEur7imXpdKkH4YYPvgtggAmHhqZaeeW1u:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5WJCTPrkes3TvspHndgDkutNSmnd3Lb2VXkJDP1ivs6gTPSmPfQiqE94Xhmn5oq2ZaTS4A54evsk6kffdgNRHupm:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4f5YrDDDvNsYjWzKWv1yPyVmCnMxwDiCTtYzvk8ezKfQJQgfNSbtyi6nmAhnrv9CqKCY9BC6if74agkgRdrZJori:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "8i1hFKsh8ovr2P13XsWjaLbGg5hsXgbze9XjWJZZxN6APk2XWUb6J8kWVX2UbquRerDuKxQBfT7k29A29dQNaS7:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3r2LzZukE7udFihkT9VMevt4p6VPG8x5buzLQLMuZw7vvxo65mCfoKfVzSk6sRpRYJiDiCbQ4MFk68nm4mdXWxNV:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5MBhYbXvnz6qh5n4Rwi7D6u6bVdE3ctqK6oAU2wjJjN8huGUMkmYRuPGqBe4rG6fXxgbLjgWSHaR6bnUtfv9Kt7M:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4FW4SPK6kxe9JBZvp7VF8UvUcUM8dcyFtd4JieJzFpyZ2ACxNSZKTB1nkzW4xcGf352KjY1rWX7Zn7zkvVrLeM1a:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2VPryuWNqMNQnUYT6YnZVAchkE17ZCsKDHi2unZ45hx4TdxqkQv2Xr1gX2cw4fyK5Ddj3fZgSqmnGdZEimUBquAr:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2qrnz1amTdATwiG64616byEyctnkJHAinH39D4SLUiqWcYfrcA7cbDSsRPBmJLtBdUwowxXmBg8bRTskLzCajLqw:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3YaUsqjCwdh4nFjFoZBzHUeiwi5tAUpRMzXVnfTKEb3MQK2zToDTgwUbmqcfeeRuRgWvAZv9r2mxKPyaKuV6HLPM:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "b1DdTS44CpAK4aJb78jjQZiMr7M49WsbXbnSb64iPjRVzNreRfBqbPSv8epguLdHsNw2uXPHndcs1rSjuCy1YFg:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5i6tokTWHhANxo5DmDaUawpjoqn8hwMEd6Cuu3ggHrsufxTwdtLCrCRve4dJv9KLrD6FHf7YYUKx7A3mGfhsjEx9:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "4M7hfcJMKpYYqKtT4eL3PGHiemvzGo6jHTEitUhdadE5bsYUBxPM8D37eav43TpxxUK81w8kw1QpcQoBMN1aJ7UN:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2MSycWFDMpRMRiRpuzsHHHi52dEsD2sgJKuRFQNyS2pvpFV24ocTizA55A3aysHTqDCbxBmbokJpqti8EEgnP5qs:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2a1UnXXuzwHfqpT3QfS6HNGLDRbaFCshmf3Y7ya7rR4e2LPQ8xCHRkcf8yujTPu8SeCFseZRLkVfy7LQQGctv8Qw:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "5Kxbw4wYfZgefsiLQp6kJtagjZWYFsGV5hmEV6bjwpvrp1pcdXQkyJfgssPQkiqnaMHXgqyA3c1PrAp9zhnXW8P6:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2vUGKK9kCouq2LgXsCvBpZ4JVECC8PpMsmuvcyCsAYdBbURsQZdhEF41Lrv76JTW7i5B9FDW6Jp7DgjbRiH5Ytsv:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "3SYmdWXFGLjq2jrRfqHF6RVqzfBQFXuivhtU81RFNxtFKNWg7RgPKJ3PfigqG8XnsVJdcLcAeojEqjsyagqpBg4Q:sell:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9",
+        "2a5vd9MDLr8PFcWBnQuf8PhYJCBQxMLqksgmvZiN7ajpQsG5VgvFAESjSKhiiW8SS7jD9gvF8iUoPh3PxD4hnYbD:buy:3C5YE97HADPDxZehYq9Cis8AXr9aNyrUsczKzE1nDbW9"
       ],
       "flow_followups": [
         {
@@ -179612,7 +179606,7 @@
               "quote_return_pct": -0.3838
             }
           },
-          "mfe_pct": 0.0,
+          "mfe_pct": 0.2720039011356201,
           "mae_pct": -0.3838273762745592,
           "wallet_profit_verified": false
         }
@@ -182860,7 +182854,7 @@
         }
       },
       "status": "UNPROVEN",
-      "last_run": "2026-10-17T15:39:08+00:00",
+      "last_run": "2026-10-17T15:43:58+00:00",
       "exit_diagnostics": {
         "12% paper stop loss": {
           "closed": 23,
@@ -183209,8 +183203,8 @@
           "first_observed_at": "2026-10-17T11:29:03+00:00",
           "mfe_pct": 0.0007,
           "mae_pct": -3.9213,
-          "samples": 50,
-          "last_observed_at": "2026-10-17T15:39:08+00:00"
+          "samples": 51,
+          "last_observed_at": "2026-10-17T15:43:58+00:00"
         },
         "actual:2Ci8Fn1JUNmd3D42cRrVA2Af5tsJZDiUtvoLAMkRedtvypffhdmoEuidCmVGi6iedFfcwMtS9Rqe2qYafVY3d7cU:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
           "signal_id": "2Ci8Fn1JUNmd3D42cRrVA2Af5tsJZDiUtvoLAMkRedtvypffhdmoEuidCmVGi6iedFfcwMtS9Rqe2qYafVY3d7cU:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
@@ -183227,8 +183221,8 @@
           "first_observed_at": "2026-10-17T13:49:04+00:00",
           "mfe_pct": 1.0049,
           "mae_pct": -0.9505,
-          "samples": 22,
-          "last_observed_at": "2026-10-17T15:39:08+00:00"
+          "samples": 23,
+          "last_observed_at": "2026-10-17T15:43:58+00:00"
         },
         "quality:udnCLiKywN78GycpbusojwAp4A7xmQRkG535ji4VEFkbc4NrSasjeb7QzfWYkMLdM4VXtffAmZi6UQYQnpA9tNg:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj": {
           "signal_id": "udnCLiKywN78GycpbusojwAp4A7xmQRkG535ji4VEFkbc4NrSasjeb7QzfWYkMLdM4VXtffAmZi6UQYQnpA9tNg:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
@@ -183236,8 +183230,8 @@
           "first_observed_at": "2026-10-17T14:49:04+00:00",
           "mfe_pct": 2.6797,
           "mae_pct": 0.0,
-          "samples": 10,
-          "last_observed_at": "2026-10-17T15:39:08+00:00"
+          "samples": 11,
+          "last_observed_at": "2026-10-17T15:43:58+00:00"
         },
         "momentum:5H9UMah59Ys2jCcw38e8qSJwdsuQE9tumcvwgkdb6s7RqhEFCXjuVm9j5oQCfYViXGtbcq3cTVg5pKWbuVKDn5LZ:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3": {
           "signal_id": "5H9UMah59Ys2jCcw38e8qSJwdsuQE9tumcvwgkdb6s7RqhEFCXjuVm9j5oQCfYViXGtbcq3cTVg5pKWbuVKDn5LZ:buy:HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3",
@@ -183245,8 +183239,8 @@
           "first_observed_at": "2026-10-17T15:14:06+00:00",
           "mfe_pct": 0.0,
           "mae_pct": -1.1869,
-          "samples": 5,
-          "last_observed_at": "2026-10-17T15:39:08+00:00"
+          "samples": 6,
+          "last_observed_at": "2026-10-17T15:43:58+00:00"
         },
         "actual:55cz8KKZYyLcVmmLNhKJWZTg9X2NEADXrvSuKgZMg1dutLobgTEF1T6BJnVxcHi9t29hoGg8bHL3EeAwrhcZxPqX:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
           "signal_id": "55cz8KKZYyLcVmmLNhKJWZTg9X2NEADXrvSuKgZMg1dutLobgTEF1T6BJnVxcHi9t29hoGg8bHL3EeAwrhcZxPqX:buy:AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf",
@@ -183293,181 +183287,7 @@
         "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
         "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U": "8hnMfF4XL717GVwzDmvqjJvULozKW6w7BhHFABjvHje4"
       },
-      "assessments": {
-        "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "token-wide history cooldown"
-          ],
-          "history": {
-            "closed": 7,
-            "wins": 0,
-            "losses": 7,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -6.1944,
-            "avg_pnl_gbp": -0.8849,
-            "mean_net_roi_pct": -8.778,
-            "conservative_mean_roi_95_pct": -13.443,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 6.1944,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 6.1944,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 7,
-            "distinct_pools": 1,
-            "distinct_signals": 7,
-            "conservative_mean_95_gbp": -1.3552,
-            "loss_streak": 7,
-            "shrunk_roi_pct": -3.6146,
-            "cooldown_until": "2026-10-17T20:28:58+00:00"
-          },
-          "selection_score": -3.6146,
-          "technical": {
-            "change_5m_pct": 5.526,
-            "change_1h_pct": 11.646,
-            "volume_pace_ratio": 0.5696407607039378,
-            "buy_count_share": 0.519723865877712
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T15:39:07.577279+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "hourly volume fading versus daily pace",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.6334,
-            "avg_pnl_gbp": -0.6334,
-            "mean_net_roi_pct": -6.309,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.6334,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.6334,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -0.5735,
-            "cooldown_until": "2026-10-17T10:34:04+00:00"
-          },
-          "selection_score": -0.5735,
-          "technical": {
-            "change_5m_pct": 0.995,
-            "change_1h_pct": -3.061,
-            "volume_pace_ratio": 0.12014859657964388,
-            "buy_count_share": 0.42495784148397975
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T15:39:07.577279+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
-          "version": 1,
-          "allowed": true,
-          "reasons": [],
-          "history": {
-            "closed": 2,
-            "wins": 0,
-            "losses": 2,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.5527,
-            "avg_pnl_gbp": -0.2763,
-            "mean_net_roi_pct": -2.753,
-            "conservative_mean_roi_95_pct": -6.138,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.5527,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.5527,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 2,
-            "distinct_pools": 1,
-            "distinct_signals": 2,
-            "conservative_mean_95_gbp": -0.6163,
-            "loss_streak": 2,
-            "shrunk_roi_pct": -0.4588,
-            "cooldown_until": "2026-10-17T14:04:03+00:00"
-          },
-          "selection_score": -0.4588,
-          "technical": {
-            "change_5m_pct": 6.21,
-            "change_1h_pct": 22.68,
-            "volume_pace_ratio": 0.8787849537805632,
-            "buy_count_share": 0.5528188286808976
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T15:39:07.577279+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        },
-        "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd": {
-          "version": 1,
-          "allowed": false,
-          "reasons": [
-            "positive 5m and 1h momentum required",
-            "sell-dominated transaction count"
-          ],
-          "history": {
-            "closed": 1,
-            "wins": 0,
-            "losses": 1,
-            "win_rate_pct": 0.0,
-            "win_rate_wilson_lower_pct": 0.0,
-            "net_gbp": -0.2621,
-            "avg_pnl_gbp": -0.2621,
-            "mean_net_roi_pct": -2.611,
-            "conservative_mean_roi_95_pct": null,
-            "gross_wins_gbp": 0,
-            "gross_losses_gbp": 0.2621,
-            "profit_factor": 0.0,
-            "max_drawdown_gbp": 0.2621,
-            "distinct_exit_days": 1,
-            "distinct_wallets": 1,
-            "distinct_pools": 1,
-            "distinct_signals": 1,
-            "conservative_mean_95_gbp": null,
-            "loss_streak": 1,
-            "shrunk_roi_pct": -0.2374,
-            "cooldown_until": "2026-10-17T05:38:55+00:00"
-          },
-          "selection_score": -0.2374,
-          "technical": {
-            "change_5m_pct": -0.732,
-            "change_1h_pct": -1.329,
-            "volume_pace_ratio": 0.7750681369443356,
-            "buy_count_share": 0.3034330011074197
-          },
-          "news": {
-            "status": "OK",
-            "checked_at": "2026-10-17T15:39:07.577279+00:00",
-            "risk_off": false,
-            "evidence": []
-          }
-        }
-      },
+      "assessments": {},
       "counters": {},
       "status": "UNPROVEN",
       "policy": {
@@ -183478,101 +183298,8 @@
         "positive_exposure_requires_oos": true,
         "automatic_shadow_promotion": false
       },
-      "last_run": "2026-10-17T15:39:08.368923+00:00",
-      "pool_reports": {
-        "Fk5MuGv2H3Qpt6AxdhS2KHgDL2os424BvfEoqFNTdv9Y": {
-          "closed": 7,
-          "wins": 0,
-          "losses": 7,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -6.1944,
-          "avg_pnl_gbp": -0.8849,
-          "mean_net_roi_pct": -8.778,
-          "conservative_mean_roi_95_pct": -13.443,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 6.1944,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 6.1944,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 7,
-          "distinct_pools": 1,
-          "distinct_signals": 7,
-          "conservative_mean_95_gbp": -1.3552,
-          "loss_streak": 7,
-          "shrunk_roi_pct": -3.6146,
-          "cooldown_until": "2026-10-17T20:28:58+00:00"
-        },
-        "EzJV2yGpbS3VM5qWmgqYQ4GPVi77LdhwgFhAy6u4ts1U": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.6334,
-          "avg_pnl_gbp": -0.6334,
-          "mean_net_roi_pct": -6.309,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.6334,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.6334,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -0.5735,
-          "cooldown_until": "2026-10-17T10:34:04+00:00"
-        },
-        "AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf": {
-          "closed": 2,
-          "wins": 0,
-          "losses": 2,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.5527,
-          "avg_pnl_gbp": -0.2763,
-          "mean_net_roi_pct": -2.753,
-          "conservative_mean_roi_95_pct": -6.138,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.5527,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.5527,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 2,
-          "distinct_pools": 1,
-          "distinct_signals": 2,
-          "conservative_mean_95_gbp": -0.6163,
-          "loss_streak": 2,
-          "shrunk_roi_pct": -0.4588,
-          "cooldown_until": "2026-10-17T14:04:03+00:00"
-        },
-        "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd": {
-          "closed": 1,
-          "wins": 0,
-          "losses": 1,
-          "win_rate_pct": 0.0,
-          "win_rate_wilson_lower_pct": 0.0,
-          "net_gbp": -0.2621,
-          "avg_pnl_gbp": -0.2621,
-          "mean_net_roi_pct": -2.611,
-          "conservative_mean_roi_95_pct": null,
-          "gross_wins_gbp": 0,
-          "gross_losses_gbp": 0.2621,
-          "profit_factor": 0.0,
-          "max_drawdown_gbp": 0.2621,
-          "distinct_exit_days": 1,
-          "distinct_wallets": 1,
-          "distinct_pools": 1,
-          "distinct_signals": 1,
-          "conservative_mean_95_gbp": null,
-          "loss_streak": 1,
-          "shrunk_roi_pct": -0.2374,
-          "cooldown_until": "2026-10-17T05:38:55+00:00"
-        }
-      },
+      "last_run": "2026-10-17T15:43:58.956493+00:00",
+      "pool_reports": {},
       "forward_pending": [
         {
           "signal_id": "udnCLiKywN78GycpbusojwAp4A7xmQRkG535ji4VEFkbc4NrSasjeb7QzfWYkMLdM4VXtffAmZi6UQYQnpA9tNg:buy:3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj",
@@ -185505,7 +185232,7 @@
       "forward_description": "Forward sampled quote cohorts, one per pool/hour; costs 1% each side; not strategy P&L or causal proof; no automatic promotion."
     },
     "primary_provider_v1": {
-      "requests": 5,
+      "requests": 0,
       "spacing_seconds": 3.1,
       "budget_seconds": 70,
       "http_status": 429,
@@ -186217,7 +185944,7 @@
       "equity_usd": 1979.355924399658,
       "peak_equity_usd": 2004.3313262807205,
       "max_drawdown_pct": 1.246071522885761,
-      "cycles": 226,
+      "cycles": 227,
       "rules": {
         "paper_only": true,
         "max_positions": 1,
@@ -186232,67 +185959,15 @@
         "promotion": "Never automatically replaces the original account"
       },
       "feed": {
-        "at": "2026-10-17T15:40:10.606000+00:00",
-        "eligible": 32,
+        "at": "2026-10-17T15:45:06.213000+00:00",
+        "eligible": 30,
         "scanned": 6,
         "requests": 7,
         "errors": {},
         "provider": "Kraken public futures",
         "max_requests": 7
       },
-      "candidates": [
-        {
-          "symbol": "PF_FILUSD",
-          "setup": "momentum_short",
-          "direction": -1,
-          "regime": "ACTIVE_TREND",
-          "learning": {
-            "status": "COLLECTING",
-            "adjustment": 0.0,
-            "observations": 12,
-            "days": 1
-          },
-          "score": 1.87667,
-          "cost_qualified": true,
-          "feedback": {
-            "allowed": true,
-            "paused": false,
-            "cooldown": false,
-            "recovery": {
-              "allowed": true,
-              "status": "ACTIVE",
-              "evaluated": 0
-            },
-            "closed": 1,
-            "edge": -0.05426972080302744,
-            "reinforced": false,
-            "risk_multiplier": 1.0,
-            "learned": {
-              "status": "COLLECTING",
-              "adjustment": 0.0,
-              "observations": 12,
-              "days": 1
-            }
-          },
-          "features": {
-            "at": "2026-10-17T15:40:00+00:00",
-            "close": 1.0884,
-            "previous": 1.0939,
-            "atr": 0.004564285714285766,
-            "ema_fast": 1.0943171733727828,
-            "ema_slow": 1.10431444823115,
-            "r1h": -0.02385650224215241,
-            "r15m": -0.005664169559656429,
-            "volume_ratio": 2.247264695501691,
-            "fade_volume_ratio": 8.266123178290243,
-            "pump": 0.008599838753023281,
-            "drawdown": 8.215962441314431,
-            "peak_age": 15,
-            "lower_closes": false
-          },
-          "rejection_reason": "DAILY_LIMIT"
-        }
-      ],
+      "candidates": [],
       "news_allows_entry": true,
       "day": "2026-10-17",
       "day_start_equity": 1995.5853857211644,
@@ -186348,7 +186023,7 @@
           }
         }
       },
-      "last_run": "2026-10-17T15:40:11.265212+00:00",
+      "last_run": "2026-10-17T15:45:06.642047+00:00",
       "entry_status": "DAILY_CAP",
       "policy_registered_at": "2026-10-17T08:00:08.448086+00:00",
       "cost_hurdle_rejections": 1,
@@ -186784,6 +186459,10 @@
             "5m": {
               "net_roi_pct": 0.11946,
               "at": "2026-10-17T15:20:13.160814+00:00"
+            },
+            "30m": {
+              "net_roi_pct": 0.40235,
+              "at": "2026-10-17T15:45:06.642047+00:00"
             }
           }
         },
@@ -186831,9 +186510,9 @@
           "mean_net_roi_pct": -0.3642
         },
         "30m": {
-          "priced": 16,
+          "priced": 17,
           "missing": 0,
-          "mean_net_roi_pct": -0.1737
+          "mean_net_roi_pct": -0.1398
         },
         "60m": {
           "priced": 16,
@@ -186897,19 +186576,21 @@
     "retired_shadow_strategies": {}
   },
   "cycle_health": {
-    "screened_pass": 4,
+    "screened_pass": 0,
     "screened_unavailable": 0,
     "screened_rejected_or_unavailable": 0,
-    "trade_feeds_sampled": 3,
-    "trade_feeds_unavailable": 1,
-    "candidate_pools": 4,
-    "errors_this_cycle": 1,
+    "trade_feeds_sampled": 0,
+    "trade_feeds_unavailable": 0,
+    "candidate_pools": 0,
+    "errors_this_cycle": 3,
     "error_messages": [
-      "trades 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd/trades: HTTP Error 429: Too Many Requests; retry at 2026"
+      "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-17T15:44:07.554111+00:00; retry at 2026-10-17T15:44:07.554111+00:00",
+      "mark 2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary rate limit for /networks/solana/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd: Primary provider cooling down until 2026-10-17T15:44:07.5",
+      "mark AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf: Primary rate limit for /networks/solana/pools/AQN7UkKYSnaZns61dVW2Q6hQmm7WiFSAyjBon6FVwhGf: Primary provider cooling down until 2026-10-17T15:44:07.5"
     ],
     "partial_screening_only": false,
-    "partial_trade_feeds_only": true,
-    "rate_limit_errors": 1,
+    "partial_trade_feeds_only": false,
+    "rate_limit_errors": 0,
     "screening_http_statuses": []
   }
 }
