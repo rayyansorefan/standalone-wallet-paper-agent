@@ -4,6 +4,7 @@ on:
     paths:
       - 'agent/**'
       - 'docs/index.html'
+      - 'docs/trade-history.js'
       - 'tests/**'
       - 'infra/**'
       - '.github/workflows/**'
@@ -12,6 +13,7 @@ on:
     paths:
       - 'agent/**'
       - 'docs/index.html'
+      - 'docs/trade-history.js'
       - 'tests/**'
       - 'infra/**'
       - '.github/workflows/**'
@@ -30,6 +32,10 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Google scheduler tests
         run: node infra/google_apps_script/test.mjs
+      - name: Trade history dashboard regression tests
+        run: |
+          node --check docs/trade-history.js
+          node --test tests/trade_history.test.cjs
       - name: Check dashboard JavaScript syntax
         run: |
           python - <<'PY'
