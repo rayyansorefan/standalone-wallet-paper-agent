@@ -270,19 +270,29 @@ def context_adjustment(book, setup, regime):
                'net_roi_pct' in r.get('outcomes',{}).get('60m',{})]
     days = len({t[:10] for t,_ in rows})
     if len(rows) < 20 or days < 7:
-        return {'status':'COLLECTING', 'adjustment':0., 'observations':len(rows), 'days':days}
-    values = [v for _,v in rows]
-    n = len(values)
-    mean = sum(values)/n
-    std = math.sqrt(sum((v-mean)**2 for v in values)/(n-1))
-    uncertainty = 1.96*std/math.sqrt(n)
+        return {'status':'COLLECTING', 'adjustment':0., 'observations':len(rows),
+                'independent_day_clusters':days,'effective_sample_size':days,
+                'confidence':'INSUFFICIENT_DAILY_CLUSTERS','days':days}
+    # White paper D03: correlated tokens in the same broad market move
+    # are NOT independent observations. Give each UTC observation day
+    # one equal-weighted cluster, not N-times weight for N correlated coins.
+    groups={}
+    for at,value in rows:
+        groups.setdefault(at[:10],[]).append(value)
+    values=[sum(xs)/len(xs) for _,xs in sorted(groups.items())]
+    n=len(values)  # independent day clusters, NOT raw signal count
+    mean=sum(values)/n
+    std=math.sqrt(sum((v-mean)**2 for v in values)/(n-1))
+    uncertainty=1.96*std/math.sqrt(n)
     if mean + uncertainty < 0:
         status, adjustment = 'NEGATIVE_FORWARD', -1.
     elif mean - uncertainty > 0:
         status, adjustment = 'POSITIVE_FORWARD', .5
     else:
         status, adjustment = 'INCONCLUSIVE', 0.
-    return {'status':status, 'adjustment':adjustment, 'observations':n,
+    return {'status':status, 'adjustment':adjustment,
+            'observations':len(rows),'independent_day_clusters':n,
+            'effective_sample_size':n,'confidence':'PROVISIONAL_DAILY_CLUSTER_APPROXIMATION',
             'days':days, 'mean_net_roi_pct':round(mean,4),
             'uncertainty_95_pct':round(uncertainty,4)}
 
