@@ -197,7 +197,7 @@ class WinnerManagement(unittest.TestCase):
             self.assertEqual(core.reinforce_open_winners(self.state,{POOL:1.12},{POOL:T},T,{POOL},set()),0)
         self.assertEqual(len(pos['recent_marks']),1)
 
-    def test_six_hour_stop_and_twelve_percent_loss_remain_independent_protections(self):
+    def test_six_hour_limit_and_four_point_five_net_stop_both_remain(self):
         s=copy.deepcopy(self.state)
         core.maintain_positions(s,{POOL:.85},T)
         self.assertEqual(len(s['closed']),1)
@@ -218,25 +218,71 @@ class WinnerManagement(unittest.TestCase):
               {POOL:T+dt.timedelta(minutes=2)},T+dt.timedelta(minutes=2),{POOL},set()),0)
 
 
-    def test_three_declining_fresh_prices_cut_loser_before_twelve_percent_threshold(self):
-        for k,px in enumerate((.99,.97,.95)):
-            core.maintain_positions(self.state,{POOL:px},T+dt.timedelta(minutes=5*k))
-            if k<2:
-                self.assertEqual(len(self.state['positions']),1)
+    def test_two_percent_net_loss_triggers_warning_but_does_not_exit(self):
+        core.maintain_positions(self.state,{POOL:.999},T)
+        self.assertEqual(len(self.state['positions']),1)
+        pos=self.state['positions'][0]
+        self.assertLessEqual(pos['last_net_roi_pct'],-2.)
+        self.assertEqual(pos['position_action'],'LOSS_WARNING')
+        self.assertTrue(pos['loss_warning_active'])
+        self.assertEqual(pos['first_loss_warning_at'],T.isoformat(timespec='seconds'))
+        self.assertEqual(len(self.state['closed']),0)
+        alerts=[x for x in self.state['decisions'] if x['action']=='PAPER_LOSS_WARNING']
+        self.assertEqual(len(alerts),1)
+        self.assertIn('2%',alerts[0]['reason'])
+
+    def test_repeated_two_percent_warning_is_not_logged_every_five_minutes(self):
+        for i,price in enumerate((.999,.995,.98)):
+            core.maintain_positions(self.state,{POOL:price},T+dt.timedelta(minutes=5*i))
+        self.assertEqual(len(self.state['positions']),1)
+        self.assertEqual(sum(d['action']=='PAPER_LOSS_WARNING' for d in self.state['decisions']),1)
+
+    def test_four_point_five_exit_triggers_on_first_observation_without_waiting(self):
+        core.maintain_positions(self.state,{POOL:.974},T)
         self.assertEqual(len(self.state['positions']),0)
         self.assertEqual(len(self.state['closed']),1)
-        self.assertIn('early loss exit',self.state['closed'][0]['exit_reason'])
-        self.assertGreater(self.state['closed'][0]['roi_pct'],-12)
+        closed=self.state['closed'][0]
+        self.assertLessEqual(closed['roi_pct'],-4.5)
+        self.assertIn('4.5% observed net paper stop loss',closed['exit_reason'])
+        self.assertEqual(sum(d['action']=='PAPER_LOSS_WARNING' for d in self.state['decisions']),1)
 
-    def test_isolated_loss_never_causes_unconfirmed_early_exit(self):
-        core.maintain_positions(self.state,{POOL:.96},T)
+    def test_loss_below_four_point_five_does_not_close_without_other_reason(self):
+        core.maintain_positions(self.state,{POOL:.975},T)
         self.assertEqual(len(self.state['positions']),1)
         self.assertEqual(len(self.state['closed']),0)
+        self.assertGreater(self.state['positions'][0]['last_net_roi_pct'],-4.5)
+        self.assertTrue(self.state['positions'][0]['loss_warning_active'])
 
-    def test_early_loss_requires_real_five_minute_spacing(self):
-        for k,px in enumerate((.99,.97,.95)):
-            core.maintain_positions(self.state,{POOL:px},T+dt.timedelta(minutes=k))
+    def test_four_point_five_exit_does_not_require_three_falling_marks(self):
+        # 2 ticks just one minute apart are not momentum evidence; hard stop
+        # still executes as soon as -4.5% NET is observed.
+        core.maintain_positions(self.state,{POOL:1.},T)
+        core.maintain_positions(self.state,{POOL:.974},T+dt.timedelta(minutes=1))
+        self.assertEqual(len(self.state['positions']),0)
+        self.assertEqual(len(self.state['closed']),1)
+        self.assertIn('4.5%',self.state['closed'][0]['exit_reason'])
+
+    def test_gap_loss_exits_at_observed_price_not_invented_stop_level(self):
+        core.maintain_positions(self.state,{POOL:.90},T)
+        self.assertEqual(len(self.state['closed']),1)
+        close=self.state['closed'][0]
+        self.assertLess(close['roi_pct'],-4.5)
+        self.assertEqual(close['exit_price_usd'],.90)
+        self.assertAlmostEqual(close['net_pnl_gbp'],10*.90*.99-10.1,places=3)
+
+    def test_missing_quote_never_fakes_a_stop_execution(self):
+        core.maintain_positions(self.state,{},T)
+        self.assertEqual(len(self.state['closed']),0)
         self.assertEqual(len(self.state['positions']),1)
+        self.assertEqual(self.state['positions'][0]['position_action'],'UNPRICED_HOLD')
+        self.assertEqual(sum(d['action']=='PAPER_LOSS_WARNING' for d in self.state['decisions']),0)
+
+    def test_warning_clears_on_recovery_without_forcing_exit(self):
+        core.maintain_positions(self.state,{POOL:.999},T)
+        core.maintain_positions(self.state,{POOL:1.01},T+dt.timedelta(minutes=5))
+        self.assertEqual(len(self.state['positions']),1)
+        self.assertFalse(self.state['positions'][0]['loss_warning_active'])
+        self.assertEqual(len(self.state['closed']),0)
 
 if __name__=='__main__':
     unittest.main()
