@@ -142,6 +142,18 @@ class BroadDiscovery(unittest.TestCase):
         self.assertEqual(set(requested),{mint1,mint2})
         self.assertTrue(all(core.eligible(x) for x in rows))
 
+    def test_rate_limit_stops_optional_discovery_requests_immediately(self):
+        seen=[]
+        def get(path):
+            seen.append(path)
+            raise RuntimeError('DEX_DISCOVERY_RATE_LIMITED')
+        rows,h=discover(get=get,now=NOW)
+        self.assertEqual(rows,[])
+        self.assertTrue(h['rate_limited'])
+        self.assertEqual(len(seen),1)
+        self.assertEqual(h['search_requests'],0)
+        self.assertEqual(h['batch_requests'],0)
+
     def test_no_rugcheck_bypass_on_promotion_and_bad_provider_data(self):
         def get(path):
             if 'token-profiles' in path:raise TimeoutError('offline')
