@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
-from agent import core
+from agent import core, decision
 from agent.opportunity_discovery import choose_pair,discover
 
 NOW=dt.datetime(2026,10,17,19,tzinfo=dt.timezone.utc)
@@ -34,6 +34,72 @@ def gecko_pool(address,mint):
 
 
 class BroadDiscovery(unittest.TestCase):
+    def test_pending_forward_mints_precede_watchlist_without_stale_prices(self):
+        pending_mint, watched_mint = 'Z'*32, 'Y'*32
+        state=core.blank_state()
+        state['watched_pools']=[{'pool':'W'*32,'mint':watched_mint}]
+        state['research']={'decision_v1':{
+            'pool_mints':{'P'*32:pending_mint},
+            'forward_pending':[{'token':'P'*32}]}}
+        self.assertEqual(core.pending_forward_mints(state),[pending_mint])
+        prior=core.pending_forward_mints(state)+[
+            p['mint'] for p in state['watched_pools']]
+        seen=[]
+        def get(path):
+            if '/latest/dex/search?' in path:return {'pairs':[]}
+            if '/token-' in path:return []
+            if '/tokens/v1/' in path:
+                seen.extend(path.rsplit('/',1)[1].split(','))
+                return []  # Missing refresh remains missing; never use old price.
+            self.fail(path)
+        rows,health=discover(get=get,now=NOW,prior_mints=prior)
+        self.assertEqual(seen[:2],[pending_mint,watched_mint])
+        self.assertEqual(rows,[])
+        self.assertEqual(health['prior_mints_refreshed'],0)
+
+    def test_live_cycle_prioritizes_pending_mint_and_publishes_refresh_metrics(self):
+        now=dt.datetime.now(core.UTC)
+        pending_pool,pending_mint,watched_mint='P'*32,'Z'*32,'Y'*32
+        state=core.blank_state()
+        state['last_run']=(now-dt.timedelta(minutes=5)).isoformat()
+        state['watched_pools']=[{'pool':'W'*32,'mint':watched_mint}]
+        state['research']={'news_v1':{
+            'status':'OK','checked_at':now.isoformat(),'risk_off':False}}
+        book=decision.initialize(state,now)
+        book['pool_mints'][pending_pool]=pending_mint
+        book['forward_pending']=[{
+            'token':pending_pool,'at':now.isoformat(),'price':1.,
+            'accepted_by_policy':False,'outcomes':{},'signal_technical':{}}]
+        refreshed=dict(pool='Q'*32,mint=pending_mint,name='TEST/SOL',
+            liquidity_usd=300000.,volume_24h_usd=450000.,price_usd=1.25,
+            age_hours=120.,change_24h_pct=1.,change_1h_pct=1.,change_5m_pct=0.,
+            volume_1h_usd=30000.,buys_1h=80.,sells_1h=60.)
+        captured={}
+        def broad(**kwargs):
+            captured.update(kwargs)
+            return [refreshed],{'raw_token_mints':2,'qualified_pairs':1,
+                'prior_mints_requested':2,'prior_mints_refreshed':1,
+                'search_requests':4,'search_rows_examined':0,
+                'search_queries':['A','B','C','D'],'errors':[]}
+        def backend(endpoint,params=None):
+            if endpoint.endswith('/trending_pools'):return {'data':[]}
+            if endpoint.endswith('/trades'):return {'data':[]}
+            raise AssertionError(endpoint)
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'state.json';core.save(state,path)
+            with (mock.patch.object(core,'api',side_effect=backend) as provider,
+                  mock.patch('agent.opportunity_discovery.discover',side_effect=broad),
+                  mock.patch('agent.news.refresh'),mock.patch('agent.strategies.run'),
+                  mock.patch('agent.whales.whale_cycle')):
+                provider.__name__='api'
+                result=core.run_cycle(fetch=provider,path=path,screen_token=lambda _:True)
+        self.assertEqual(captured['prior_mints'][:2],[pending_mint,watched_mint])
+        health=result['cycle_health']
+        self.assertEqual(health['discovery_pending_signal_mints_prioritized'],1)
+        self.assertEqual(health['discovery_pending_signal_mints_refreshed'],1)
+        self.assertEqual(result['cash_gbp'],2000)
+        self.assertEqual(result['closed'],[])
+
     def test_only_supported_fresh_valid_sol_pools_are_candidates(self):
         p=ds_pair(MINTS[0],POOL_IDS[0])
         item=choose_pair(p,NOW)

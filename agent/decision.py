@@ -23,8 +23,12 @@ def remember(state, pools, current):
     for p in (state.get('research') or {}).get('pool_observations', []) + list(pools):
         if p.get('mint') and p.get('pool'):
             d['pool_mints'][p['pool']] = p['mint']
-    # Retain aliases referenced by actual history, plus recent discovered pools.
+    # Retain aliases referenced by actual history, pending forward evidence,
+    # plus recent discovered pools. Pending rows need their canonical mint only
+    # until the fixed 5/30/60m horizons finish; never reconstruct it later.
     keep = {t['token'] for t in state.get('closed', []) + state.get('positions', [])}
+    keep.update(row.get('token') for row in d.get('forward_pending', [])
+                if isinstance(row, dict) and row.get('token'))
     keep.update(p['pool'] for p in pools)
     d['pool_mints'] = {k:v for k,v in d['pool_mints'].items() if k in keep}
 
