@@ -11,6 +11,8 @@ def publish_json(state, path='docs/state.json'):
     # Public repository: wallet sender addresses and trading history are visible.
     # The full deduplication list is unnecessary for the chart and is excluded.
     public={k:v for k,v in state.items() if k not in {'seen_trades'}}
+    from .profitability import diagnostic
+    public['profitability_diagnostics']=diagnostic(state.get('closed',[]))
     tmp=dst.with_suffix('.tmp')
     tmp.write_text(json.dumps(public,ensure_ascii=False,allow_nan=False,indent=2),encoding='utf8')
     tmp.replace(dst)
@@ -86,6 +88,7 @@ def compact_health(state):
     Missing fields remain explicitly unknown; a completed cycle is not proof of
     healthy feeds or profitable trading.
     """
+    from .profitability import diagnostic
     research=state.get('research') or {}
     main_health=state.get('cycle_health') or {}
     primary=research.get('primary_provider_v1') or {}
@@ -141,6 +144,7 @@ def compact_health(state):
                    'last_run':futures.get('last_run'),
                    'closed':len(futures.get('closed') or []),
                    'wins':(futures.get('summary') or {}).get('wins')},
+        'profitability_diagnostics':diagnostic(closed),
         'original':{'closed':len(closed),
                     'open_positions':len(opened),
                     'performance':_original_performance(state,opened,closed)},

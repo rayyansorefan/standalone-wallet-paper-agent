@@ -49,7 +49,10 @@ class SchedulingTests(unittest.TestCase):
             self.assertEqual(saved['starting_gbp'], 2000)
             self.assertEqual(saved['execution']['event'], 'schedule')
             self.assertEqual(saved['execution']['run_id'], '123')
-            self.assertEqual(json.loads(feed.read_text()), {k: v for k, v in saved.items() if k != 'seen_trades'})
+            from agent.profitability import diagnostic
+            published=json.loads(feed.read_text())
+            self.assertEqual(published.pop('profitability_diagnostics'),diagnostic(saved['closed']))
+            self.assertEqual(published, {k: v for k, v in saved.items() if k != 'seen_trades'})
             self.assertFalse(scheduled.should_run(saved, self.current + dt.timedelta(seconds=30)))
 
     def test_missing_account_cannot_be_restarted(self):

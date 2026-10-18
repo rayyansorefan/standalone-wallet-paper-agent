@@ -116,6 +116,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   <p id="strategy-overview-shadows">Wallet and whale shadow experiments run separately. They are not additional funded portfolios.</p>
   <p id="strategy-overview-health">Data validity and latest execution are shown above. Failed strategies remain archived for audit, not displayed as winners.</p>
 </section>
+<p class="small" id="cost-attribution">Current-policy cost attribution awaits recorded closes.</p>
 <section class="panel" id="forward-experiment"><h2>Prospective strategy comparison · separate USD simulations</h2>
 <p id="paired-status" class="small">Not registered yet · no demonstrated improvement.</p>
 <div class="tablewrap"><table><thead><tr><th>Arm</th><th>Closes / wins</th><th>Net P&amp;L</th><th>Profit factor</th><th>Entry control</th></tr></thead><tbody id="paired-rows"></tbody></table></div>
@@ -276,6 +277,8 @@ $('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('
 $('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
 document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
 function render(s){state=s;health(s);
+ const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
+ document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
  const paired=s.research?.forward_experiment_v1?.summary;
  document.getElementById('paired-status').textContent=paired ? paired.status+' · last observation '+paired.last_run+' · challenger equity difference $'+paired.delta_equity_usd+' · ends '+paired.end_at : 'Not registered yet · no demonstrated improvement.';
  const rows=document.getElementById('paired-rows');rows.replaceChildren();
