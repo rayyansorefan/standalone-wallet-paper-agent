@@ -170,6 +170,12 @@ def compact_health(state):
                                    'excluded_historical_or_unfeatured',
                                    'historical_audit','reports','warning',
                                    'automatic_promotion')},
+        'gbp_quote_ta':{k:v for k,v in
+                         (research.get('gbp_quote_ta_v1') or {}).items()
+                         if k in ('version','registered_at','hypothesis_sha256',
+                                  'status','cycles','total_marks','reset_gaps',
+                                  'reports','automatic_promotion',
+                                  'paper_entries_allowed','evidence_note')},
         'original':{'closed':len(closed),
                     'open_positions':len(opened),
                     'performance':_original_performance(state,opened,closed)},
