@@ -632,6 +632,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     fresh_prices = {token:price for token,price in prices.items()
                     if token in quote_times and 0 <= (current-quote_times[token]).total_seconds() <= MAX_TRADE_AGE_SECONDS}
     observe_forward(state, new_events, fresh_prices, current)
+    # Independent, predeclared forward quote comparisons; no allocation access,
+    # extra market-data calls, or changes to ongoing futures experiments.
+    from .gbp_signal_lab import safe_update as update_gbp_signal_lab
+    update_gbp_signal_lab(state, current)
     research_cycle(state, candidate_pools, prices, new_events, current)
     sells_in_cycle = conflicting_keys(new_events)
     # Process sells before buys, then prioritise profitable token histories.
