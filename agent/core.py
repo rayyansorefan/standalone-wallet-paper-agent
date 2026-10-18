@@ -174,7 +174,12 @@ def extract_event(raw, pool):
     if (not isinstance(wallet, str) or not SOL_ADDRESS.fullmatch(wallet) or not txid
             or kind not in {'buy','sell'} or not ts or not usd or usd < MIN_TRADE_USD): return None
     return dict(id=txid + ':' + kind + ':' + pool['pool'], wallet=wallet, kind=kind,
-                usd=usd, timestamp=ts, token=pool['pool'], pool_name=pool['name'])
+                usd=usd, timestamp=ts, token=pool['pool'], pool_name=pool['name'],
+                # Preserve signal-time pool context for the prospective evidence
+                # journal. These values are already present in the fetched pool
+                # row; carrying them adds no request and must never be backfilled.
+                liquidity_usd=pool.get('liquidity_usd'),
+                age_hours=pool.get('age_hours'))
 
 
 def equity(state, prices):
