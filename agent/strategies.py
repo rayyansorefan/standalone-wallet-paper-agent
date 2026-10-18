@@ -140,6 +140,8 @@ def features(raw, now):
     baseline = sum(b[5] for b in bars[-23:-3])/20
     return dict(at=dt.datetime.fromtimestamp(bars[-1][0]+300,UTC).isoformat(),
                 close=closes[-1], previous=closes[-2], atr=atr,
+                previous_fast=ema(closes[:-1],6),
+                previous_low=bars[-2][3], previous_high=bars[-2][2],
                 ema_fast=ema(closes,6), ema_slow=ema(closes,20),
                 r1h=closes[-1]/closes[-13]-1, r15m=closes[-1]/closes[-4]-1,
                 volume_ratio=vol/baseline if baseline else 0,
@@ -206,7 +208,7 @@ def news_allowed(state, now):
                 not news.get('risk_off'))
 
 
-def advance(state, now, quotes, indicators, eligible):
+def advance(state, now, quotes, indicators, eligible, candidate_filter=None):
     b = initialize(state,now)
     # Do not allow historic strategy evidence to certify the new policy.
     # Original and challenger balances, trade records and open positions survive.
@@ -287,6 +289,8 @@ def advance(state, now, quotes, indicators, eligible):
         if not cost_ok:
             b['cost_hurdle_rejections'] += 1
         for setup,direction,base_score in setups_now:
+            if candidate_filter is not None and not candidate_filter(setup,direction,f,q):
+                continue
             memory=feedback(b,setup,symbol,now)
             regime=market_regime(f)
             learned=context_adjustment(b,setup,regime)
@@ -396,7 +400,12 @@ def run(state, now=None, fetch=get):
     try:
         quotes, indicators, eligible=market(b,now,fetch)
         b.pop('error',None)
-        return advance(state,dt.datetime.now(UTC) if live_clock else now,quotes,indicators,eligible)
+        observed_at=dt.datetime.now(UTC) if live_clock else now
+        result=advance(state,observed_at,quotes,indicators,eligible)
+        # Isolated prospective experiment reuses this exact quote batch: no extra API calls.
+        from .forward_experiment import safe_advance
+        safe_advance(state,observed_at,quotes,indicators,eligible)
+        return result
     except Exception as exc:
         b.update(status='DATA_UNAVAILABLE',last_run=now.isoformat(),error=str(exc)[:160])
         return b

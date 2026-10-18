@@ -116,6 +116,10 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   <p id="strategy-overview-shadows">Wallet and whale shadow experiments run separately. They are not additional funded portfolios.</p>
   <p id="strategy-overview-health">Data validity and latest execution are shown above. Failed strategies remain archived for audit, not displayed as winners.</p>
 </section>
+<section class="panel" id="forward-experiment"><h2>Prospective strategy comparison · separate USD simulations</h2>
+<p id="paired-status" class="small">Not registered yet · no demonstrated improvement.</p>
+<div class="tablewrap"><table><thead><tr><th>Arm</th><th>Closes / wins</th><th>Net P&amp;L</th><th>Profit factor</th><th>Entry control</th></tr></thead><tbody id="paired-rows"></tbody></table></div>
+<p class="small">Same observed prices and costs; challenger requires a completed-bar pullback and reclaim. $40 loss budget per arm, 28-day fixed trial. No automatic promotion or allocation increase. These results do not recover losses in the original accounts.</p></section>
 <section class="panel" id="trade-history" aria-labelledby="history-title">
   <div class="panelhead">
     <div><h2 id="history-title">Trade history</h2>
@@ -271,7 +275,12 @@ hint.textContent=history.length+' priced snapshots · Last recorded equity '+mon
 $('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
 $('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
 document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
-function render(s){state=s;health(s);let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
+function render(s){state=s;health(s);
+ const paired=s.research?.forward_experiment_v1?.summary;
+ document.getElementById('paired-status').textContent=paired ? paired.status+' · last observation '+paired.last_run+' · challenger equity difference $'+paired.delta_equity_usd+' · ends '+paired.end_at : 'Not registered yet · no demonstrated improvement.';
+ const rows=document.getElementById('paired-rows');rows.replaceChildren();
+ for(const [name,m] of Object.entries(paired?.arms||{})){const tr=document.createElement('tr');for(const value of [name,m.closed+' / '+m.wins,'$'+m.net_usd,m.profit_factor??'—',m.entry_block||'Existing risk gates']){const td=document.createElement('td');td.textContent=value;tr.appendChild(td);}rows.appendChild(tr);}
+let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
 $('equity').textContent=eq===null?'UNAVAILABLE':money(eq);$('totalPnl').textContent=gross===null?'—':money(gross,true);$('totalPnl').className='value '+color(gross);$('return').textContent=gross===null?'No complete portfolio valuation':pct(gross/(num(s.starting_gbp)||2000)*100)+' versus starting capital';$('realized').textContent=money(realized,true);$('realized').className='value '+color(realized);$('open').textContent=(s.positions||[]).length;$('closed').textContent=(s.closed||[]).length+' closed · '+wins+' wins';$('positionCount').textContent=(s.positions||[]).length+' POSITIONS';
 $('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCount').textContent=Object.keys(s.observed||{}).length;$('stale').textContent=s.stale_signals||0;$('priced').textContent=(s.snapshots||[]).filter(x=>num(x.equity_gbp)!==null).length;$('errors').textContent=s.cycle_health?.errors_this_cycle??(s.errors||[]).filter(e=>e.at&&s.last_run&&Math.abs(new Date(e.at)-new Date(s.last_run))<=120000).length;
 table('positions',s.positions||[],[
