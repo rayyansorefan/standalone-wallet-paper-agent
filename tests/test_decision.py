@@ -164,6 +164,9 @@ class FullPolicyCycle(unittest.TestCase):
         self.assertTrue(s['positions'][0]['entry_assessment']['allowed'])
         self.assertEqual(s['positions'][0]['notional_gbp'],10)
         self.assertEqual(len(s['research']['decision_v1']['forward_pending']),1)
+        frozen=s['research']['decision_v1']['forward_pending'][0]['signal_technical']
+        self.assertEqual(frozen['liquidity_usd'],400000)
+        self.assertGreaterEqual(frozen['age_hours'],24)
 
     def test_sell_precedes_earlier_cross_wallet_buy_then_cooldown_blocks(self):
         s=self.run_cycle(sell=True)
