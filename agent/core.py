@@ -420,7 +420,12 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             discovery_health['gecko_extra_page_deferred']=True
         try:
             from .opportunity_discovery import discover
-            extra,report=discover()
+            # Preserve ONLY mint identities from previously eligible pools.
+            # Re-fetch prices/metrics each cycle; no stale quotes are promoted.
+            prior=[p.get('mint') for p in state.get('watched_pools',[])
+                   if isinstance(p,dict) and p.get('mint')]
+            extra,report=discover(prior_mints=prior,
+                                  search_cursor=int(state.get('completed_cycles',0)))
             pools.extend(extra)
             discovery_health.update(report)
             discovery_health['mode']='gecko_plus_free_dex_batch'
@@ -674,6 +679,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         # A 100-candidate ceiling is NOT 100 detailed checks: report each tier.
         'discovery_search_rows_examined': discovery_health.get('search_rows_examined',0),
         'discovery_search_requests': discovery_health.get('search_requests',0),
+        'discovery_search_queries': discovery_health.get('search_queries',[]),
+        'discovery_prior_mints_requested': discovery_health.get('prior_mints_requested',0),
+        'discovery_prior_mints_refreshed': discovery_health.get('prior_mints_refreshed',0),
         'discovery_coverage_target': MAX_POOL_CANDIDATES,
         'discovery_coverage_shortfall': max(0,MAX_POOL_CANDIDATES-len(candidate_pools)),
         'detailed_trade_feed_coverage_pct': round(100*sampled_feeds/len(candidate_pools),1) if candidate_pools else 0,
