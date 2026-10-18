@@ -95,7 +95,7 @@ class CompactHealth(unittest.TestCase):
 
     def test_invalidated_forward_epoch_is_published_without_private_books(self):
         s=core.blank_state()
-        s['research']['forward_experiment_epochs_v1']=[{
+        s.setdefault('research',{})['forward_experiment_epochs_v1']=[{
             'version':'paired-pullback-1',
             'registered_at':'2026-10-18T07:44:16+00:00',
             'invalidated_at':'2026-10-18T08:28:46+00:00',
