@@ -30,6 +30,7 @@ MAX_MAIN_TRADE_FEEDS_PER_CYCLE = 6
 DEFAULT_MAIN_TRADE_FEEDS_PER_CYCLE = 4
 MAX_POOL_CANDIDATES = 100
 MAX_SECURITY_SCREENS_PER_CYCLE = 10
+SECURITY_PROVIDER_BACKOFF_MINUTES = 15
 MAX_GECKO_PAGE = 5
 
 
@@ -570,32 +571,71 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     budget_deferred=0
     uninspected_candidates=0
     security_checks=0
+    security_slots=0
+    security_backoff_deferred=0
+    security_provider=(state['research'].setdefault('security_provider_v1',{})
+                       if production else {})
+    security_retry=parse_time(security_provider.get('retry_at'))
+    security_backoff_active=bool(
+        production and security_retry and current<security_retry)
+    security_circuit_opened=False
+    if security_backoff_active:
+        errors.append('token security provider backoff active until '
+                      +security_retry.isoformat())
     attempted_feeds=0
     primary_cooldown_deferred=0
     for pool in ordered_pools:
         # Scan broad, validate a bounded rotating slice; never create 100+
         # expensive Rugcheck network calls or assume unscreened == PASS.
-        if production and security_checks>=MAX_SECURITY_SCREENS_PER_CYCLE:
+        if production and security_slots>=MAX_SECURITY_SCREENS_PER_CYCLE:
             uninspected_candidates+=1
             continue
-        security_checks+=1
+        security_slots+=1
         mint = pool.get('mint', '')
-        try:
-            assessment = screen_token(mint)
-            # Backwards compatibility for injected Boolean test screeners.
-            if isinstance(assessment, bool):
-                assessment = {'allowed': assessment,
-                              'status': 'PASS' if assessment else 'REJECTED',
-                              'reason': 'legacy or mock screening verdict'}
-            if not isinstance(assessment, dict):
-                raise ValueError('security checker returned invalid result')
-            status = assessment.get('status')
-            if (status not in ('PASS', 'REJECTED', 'UNAVAILABLE') or
-                    (status == 'PASS') != (assessment.get('allowed') is True)):
-                raise ValueError('security checker returned contradictory status')
-        except Exception:
+        deferred_security=bool(
+            production and (security_backoff_active or security_circuit_opened))
+        if deferred_security:
             assessment = {'allowed': False, 'status': 'UNAVAILABLE',
-                          'reason': 'security checker exception or malformed result'}
+                          'reason': 'security provider circuit open; retry deferred'}
+            security_backoff_deferred+=1
+        else:
+            security_checks+=1
+            try:
+                assessment = screen_token(mint)
+                # Backwards compatibility for injected Boolean test screeners.
+                if isinstance(assessment, bool):
+                    assessment = {'allowed': assessment,
+                                  'status': 'PASS' if assessment else 'REJECTED',
+                                  'reason': 'legacy or mock screening verdict'}
+                if not isinstance(assessment, dict):
+                    raise ValueError('security checker returned invalid result')
+                status = assessment.get('status')
+                if (status not in ('PASS', 'REJECTED', 'UNAVAILABLE') or
+                        (status == 'PASS') != (assessment.get('allowed') is True)):
+                    raise ValueError('security checker returned contradictory status')
+            except Exception:
+                assessment = {'allowed': False, 'status': 'UNAVAILABLE',
+                              'reason': 'security checker exception or malformed result'}
+            if production:
+                if assessment['status'] == 'UNAVAILABLE':
+                    retry=current+dt.timedelta(minutes=SECURITY_PROVIDER_BACKOFF_MINUTES)
+                    security_provider.update(
+                        retry_at=retry.isoformat(),
+                        last_failure_at=current.isoformat(),
+                        last_error=str(assessment.get('reason','unknown'))[:160],
+                        last_http_status=assessment.get('http_status'),
+                        consecutive_failures=int(
+                            security_provider.get('consecutive_failures',0))+1)
+                    security_retry=retry
+                    security_circuit_opened=True
+                else:
+                    security_provider.update(
+                        retry_at=None,
+                        last_available_at=current.isoformat(),
+                        last_error=None,
+                        last_http_status=None,
+                        consecutive_failures=0)
+                    security_retry=None
         verdict = {k: assessment.get(k) for k in
                    ('status', 'reason', 'score_normalised', 'http_status')}
         verdict['mint'] = mint
@@ -606,8 +646,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                          reason='security '+assessment['status'].lower()+': '+str(assessment.get('reason','')))
             if assessment['status'] == 'UNAVAILABLE':
                 unavailable_risk += 1
-                errors.append('token security provider unavailable for '+str(mint)[:44]
-                              +' ('+str(assessment.get('reason','unknown'))+')')
+                if not deferred_security:
+                    errors.append('token security provider unavailable for '+str(mint)[:44]
+                                  +' ('+str(assessment.get('reason','unknown'))+')')
             continue
         screened_pools += 1
         safe_pool_tokens.add(pool['pool'])
@@ -719,8 +760,9 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     # came from unavailable security checks. Other failures remain degraded.
     partial_screening_only = bool(
         unavailable_risk and screened_pools and sampled_feeds and
-        len(errors) == unavailable_risk and
-        all(x.startswith('token security provider unavailable for ') for x in errors))
+        all(x.startswith(('token security provider unavailable for ',
+                          'token security provider backoff active until '))
+            for x in errors))
     partial_trade_feeds_only = bool(
         sampled_feeds and len(errors) > 0 and
         all(x.startswith('trades ') for x in errors))
@@ -734,6 +776,14 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'trade_feed_budget': budget,
         'trade_feeds_provider_cooldown_deferred': primary_cooldown_deferred,
         'security_screened': security_checks,
+        'security_screening_slots_considered': security_slots,
+        'security_provider_backoff_deferred': security_backoff_deferred,
+        'security_provider_backoff_active': bool(
+            production and security_retry and current<security_retry),
+        'security_provider_retry_at': (
+            security_retry.isoformat() if security_retry else None),
+        'security_provider_consecutive_failures': int(
+            security_provider.get('consecutive_failures',0)),
         'unscreened_discovery_candidates': uninspected_candidates,
         'discoveries_eligible_unique': discovery_health['eligible_unique_pools'],
         'discovery_raw_rows': discovery_health['raw_pool_rows'],
