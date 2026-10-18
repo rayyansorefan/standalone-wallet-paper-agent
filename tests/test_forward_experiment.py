@@ -92,7 +92,10 @@ class ForwardExperiment(unittest.TestCase):
         old['invalid_reason']='ECONOMIC_SOURCE_CHANGED_NO_AUTOMATIC_RESTART'
         old['arms']['baseline']['closed']=[{
             'net_usd':-4.81776,'stress_net_usd':-8.332792,
-            'opened_at':NOW.isoformat()}]
+            'opened_at':NOW.isoformat(),
+            'exit_at':(NOW+dt.timedelta(minutes=1)).isoformat(),
+            'setup':'momentum_long','symbol':'X',
+            'version':strategies.VERSION,'risk_usd':5.}]
         old_summary=copy.deepcopy(old['summary'])
         old_source=old['source_sha256']
         new_time=NOW+dt.timedelta(minutes=5)
