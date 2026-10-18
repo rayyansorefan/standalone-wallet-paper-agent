@@ -29,6 +29,14 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 .pill{font-size:10px;font-weight:800;letter-spacing:.5px;border:1px solid #41516a;border-radius:5px;padding:3px 6px;color:#d0dceb}.footer{margin-top:25px;color:#879bb8;font-size:11px;line-height:1.8}.footer strong{color:#c0d2ec}
 #hover{position:absolute;pointer-events:none;display:none;padding:8px 11px;background:#0b1523;border:1px solid #40536f;border-radius:8px;color:white;font-size:12px;box-shadow:0 9px 30px #050b1499;z-index:20}
 #chartHolder{position:relative}
+.scan-funnel{margin-bottom:20px}
+.scan-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.scan-step{background:#101d30;border:1px solid #31445e;border-radius:11px;padding:13px;min-width:0}
+.scan-step strong{display:block;color:#f2f7ff;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums}
+.scan-step span{display:block;color:#a9bdd7;font-size:11px;margin-top:5px}
+.scan-explain{margin:12px 0 0;color:#b8c9de;font-size:12px}
+@media(max-width:850px){.scan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.scan-step strong{font-size:21px}}
 @media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}header{align-items:flex-start}.headRight{justify-content:flex-start}}
 @media(max-width:520px){.container{padding:18px 13px 55px}.metrics{gap:8px}.metric{padding:13px;min-height:100px}.value{font-size:24px}.title{font-size:17px}.brand{align-items:flex-start}.logo{height:38px;width:38px}.panel{padding:14px}.headRight{gap:7px}header{flex-direction:column}.label{font-size:11px}}
 
@@ -102,6 +110,18 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 <!-- UNIFIED_V2_NAV -->
 <nav class="v2-nav" aria-label="Paper dashboard"><span class="v2-mark">PAPER / V4.1</span><a href="#portfolio">Portfolio</a><a href="#strategy-overview">Strategy control</a><a href="#trade-history">Trade history</a><a href="#research-details" data-open-details="research-details">Research details</a><a href="#futures-details" data-open-details="futures-details">Trade details</a></nav>
+
+<section class="panel scan-funnel" aria-labelledby="scan-funnel-title">
+  <div class="panelhead"><div><h2 id="scan-funnel-title">What the engine scanned this cycle</h2><div class="small">Plain-English funnel from broad discovery to detailed evidence</div></div><span class="pill" id="scan-health">WAITING</span></div>
+  <div class="scan-grid">
+    <div class="scan-step"><strong id="scan-rows">—</strong><span>cheap market rows examined</span></div>
+    <div class="scan-step"><strong id="scan-assessed">—</strong><span>genuine candidates assessed</span></div>
+    <div class="scan-step"><strong id="scan-safe">—</strong><span>tokens security-screened</span></div>
+    <div class="scan-step"><strong id="scan-feeds">—</strong><span>detailed trade feeds sampled</span></div>
+    <div class="scan-step"><strong id="scan-qualified">—</strong><span>setups technically qualified</span></div>
+  </div>
+  <p class="scan-explain" id="scan-explain">Waiting for the first saved five-minute cycle. Broad search rows are leads, not fully analysed trades.</p>
+</section>
 
 <div class="metrics" id="portfolio">
 <div class="metric"><div class="label">Marked paper equity</div><div class="value" id="equity">—</div><div class="meta">Not an actual account balance</div></div>
@@ -256,7 +276,12 @@ function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_da
 let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
 el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
 $('statusMessage').textContent=!run?'No market observations have been completed. There are no trading results yet.':age===null?'No verified trade-feed data is available yet; portfolio values may not be current.':age>15?'The underlying market feed is more than 15 minutes old. Data is not current.':s.last_status==='PARTIAL_SCREENING_UNAVAILABLE'?'One or more tokens could not be security-screened and were blocked. Other safe-token trade feeds succeeded; consult the audit for provider errors.':s.last_status==='PARTIAL_TRADE_FEEDS_UNAVAILABLE'?'Some market trade feeds were unavailable, so no trades were copied from those pools. Other safe-token feeds succeeded; coverage was incomplete.':'The research process has checked market data. Values are snapshots, not live quotes.';
-$('updated').textContent='Most recent cycle: '+uk(s?.last_run)+' · Last successful trade-feed fetch: '+uk(s?.last_data_at)+' · Screening: '+(s.cycle_health?.screened_pass??'—')+' passed / '+(s.cycle_health?.screened_unavailable??'—')+' unavailable · Trade feeds: '+(s.cycle_health?.trade_feeds_sampled??'—')+' sampled / '+(s.cycle_health?.trade_feeds_unavailable??'—')+' unavailable · Dashboard checks every 60 seconds.';}
+$('updated').textContent='Most recent cycle: '+uk(s?.last_run)+' · Last successful trade-feed fetch: '+uk(s?.last_data_at)+' · Screening: '+(s.cycle_health?.screened_pass??'—')+' passed / '+(s.cycle_health?.screened_unavailable??'—')+' unavailable · Trade feeds: '+(s.cycle_health?.trade_feeds_sampled??'—')+' sampled / '+(s.cycle_health?.trade_feeds_unavailable??'—')+' unavailable · Dashboard checks every 60 seconds.';
+const ch=s.cycle_health||{},put=(id,v)=>{$(id).textContent=v??'—'};
+put('scan-rows',ch.discovery_search_rows_examined);put('scan-assessed',ch.technical_candidates_assessed??ch.discoveries_eligible_unique??ch.candidate_pools);put('scan-safe',ch.security_screened);put('scan-feeds',ch.trade_feeds_sampled);put('scan-qualified',ch.technical_candidates_qualified);
+$('scan-health').textContent=ch.errors_this_cycle?'CHECK FEEDS':'LATEST CYCLE';
+$('scan-health').className='pill '+(ch.errors_this_cycle?'negative':'positive');
+$('scan-explain').textContent=(ch.discovery_search_rows_examined??'—')+' broad rows were cheap discovery leads, not full analyses. '+(ch.technical_candidates_assessed??ch.discoveries_eligible_unique??ch.candidate_pools??'—')+' genuine candidates were assessed; '+(ch.security_screened??'—')+' received the bounded security screen and '+(ch.trade_feeds_sampled??'—')+' received detailed trade-feed analysis. No trade is implied by being scanned.';}
 function table(id,rows,cols,empty){$(id).innerHTML=rows.length?rows.map(r=>'<tr>'+cols.map(fn=>'<td>'+fn(r)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+safe(empty)+'</td></tr>';}
 function color(n){return n===null?'':n<0?'negative':n>0?'positive':'';}
 function draw(){const svg=$('chart'),s=state;while(svg.firstChild)svg.removeChild(svg.firstChild);points=[];
