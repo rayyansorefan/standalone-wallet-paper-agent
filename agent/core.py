@@ -418,19 +418,32 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 discovery_health['errors'].append('gecko deeper page unavailable')
         else:
             discovery_health['gecko_extra_page_deferred']=True
-        try:
-            from .opportunity_discovery import discover
-            # Preserve ONLY mint identities from previously eligible pools.
-            # Re-fetch prices/metrics each cycle; no stale quotes are promoted.
-            prior=[p.get('mint') for p in state.get('watched_pools',[])
-                   if isinstance(p,dict) and p.get('mint')]
-            extra,report=discover(prior_mints=prior,
-                                  search_cursor=int(state.get('completed_cycles',0)))
-            pools.extend(extra)
-            discovery_health.update(report)
-            discovery_health['mode']='gecko_plus_free_dex_batch'
-        except Exception:
-            discovery_health['errors'].append('optional dex batch discovery unavailable')
+        dex_retry=parse_time(state.setdefault('research',{}).get('dex_discovery_retry_at'))
+        if dex_retry and current<dex_retry:
+            discovery_health['dex_backoff_active']=True
+            discovery_health['mode']='gecko_only_dex_backoff'
+        else:
+            try:
+                from .opportunity_discovery import discover
+                # Preserve ONLY mint identities from previously eligible pools.
+                # Re-fetch prices/metrics each cycle; no stale quotes are promoted.
+                prior=[p.get('mint') for p in state.get('watched_pools',[])
+                       if isinstance(p,dict) and p.get('mint')]
+                extra,report=discover(prior_mints=prior,
+                                      search_cursor=int(state.get('completed_cycles',0)))
+                pools.extend(extra)
+                discovery_health.update(report)
+                discovery_health['mode']='gecko_plus_free_dex_batch'
+                if report.get('rate_limited'):
+                    # Optional DEX discovery must not retry a shared free-IP
+                    # 429 every five minutes and harm the primary paper engine.
+                    state['research']['dex_discovery_retry_at']=(
+                        current+dt.timedelta(minutes=15)).isoformat()
+                    discovery_health['dex_backoff_started']=True
+                else:
+                    state['research'].pop('dex_discovery_retry_at',None)
+            except Exception:
+                discovery_health['errors'].append('optional dex batch discovery unavailable')
     unique={}
     for meta in pools:
         if eligible(meta):
