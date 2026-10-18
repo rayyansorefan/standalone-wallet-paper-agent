@@ -84,7 +84,7 @@ class ForwardExperiment(unittest.TestCase):
         self.assertEqual(t['registered_at'],old)
         self.assertIsNone(t['arms']['baseline']['position'])
 
-    def test_invalidated_epoch_one_is_archived_once_before_separate_epoch_two(self):
+    def test_invalidated_epoch_one_is_archived_once_before_separate_epoch_three(self):
         s,q,f=inputs()
         old=lab.advance(s,NOW,q,f,set(q))
         old['version']=lab.LEGACY_VERSION
@@ -104,7 +104,7 @@ class ForwardExperiment(unittest.TestCase):
         self.assertEqual(archive[0]['summary'],old_summary)
         self.assertEqual(archive[0]['arms']['baseline']['closed'][0]['net_usd'],-4.81776)
         self.assertEqual(current['version'],lab.ACTIVE_VERSION)
-        self.assertEqual(current['predecessor_version'],lab.LEGACY_VERSION)
+        self.assertEqual(current['predecessor_version'],lab.PREVIOUS_VERSION)
         self.assertEqual(current['restart_reason'],
                          'SEPARATE_EPOCH_AFTER_STABLE_SCAN_ENGINEERING')
         self.assertEqual(current['arms']['baseline']['closed'],[])
@@ -112,7 +112,27 @@ class ForwardExperiment(unittest.TestCase):
         lab.advance(s,new_time+dt.timedelta(minutes=5),q,f,set(q))
         self.assertEqual(len(s['research'][lab.ARCHIVE_KEY]),1)
 
-    def test_invalidated_epoch_two_does_not_auto_restart(self):
+    def test_invalidated_epoch_two_with_open_position_waits_until_flat(self):
+        s,q,f=inputs()
+        trial=lab.advance(s,NOW,q,f,set(q))
+        trial['version']=lab.PREVIOUS_VERSION
+        trial['invalidated_at']=NOW.isoformat()
+        trial['invalid_reason']='HELD_CANDLE_COVERAGE_CHANGED'
+        registered=trial['registered_at']
+        self.assertIsNotNone(trial['arms']['baseline']['position'])
+        active=lab.advance(s,NOW+dt.timedelta(minutes=5),q,f,set(q))
+        self.assertEqual(active['version'],lab.PREVIOUS_VERSION)
+        self.assertEqual(active['registered_at'],registered)
+        self.assertNotIn(lab.ARCHIVE_KEY,s['research'])
+        active['arms']['baseline']['position']=None
+        active['arms']['pullback']['position']=None
+        new=lab.advance(s,NOW+dt.timedelta(minutes=10),q,f,set(q))
+        self.assertEqual(new['version'],lab.ACTIVE_VERSION)
+        self.assertEqual(len(s['research'][lab.ARCHIVE_KEY]),1)
+        self.assertEqual(s['research'][lab.ARCHIVE_KEY][0]['version'],
+                         lab.PREVIOUS_VERSION)
+
+    def test_invalidated_epoch_three_does_not_auto_restart(self):
         s,q,f=inputs()
         trial=lab.advance(s,NOW,q,f,set(q))
         trial['invalidated_at']=NOW.isoformat()
