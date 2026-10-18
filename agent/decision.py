@@ -100,6 +100,19 @@ def prepare(state, pools, current):
     d['assessments'] = {p['pool']:assess(state,p,current) for p in pools}
     d['last_run'] = current.isoformat()
     d['pool_reports'] = {p['pool']:history(state,p['pool'],current) for p in pools}
+    # Frozen, separate GBP winner-trait shadow hypothesis; not allocation.
+    from .winner_traits import VERSION as WIN_VERSION, classify, source_hash
+    candidate_hash = source_hash()
+    trial = d.setdefault('winner_traits_v1', dict(
+        version=WIN_VERSION, registered_at=current.isoformat(),
+        source_sha256=candidate_hash, status='COLLECTING', automatic_promotion=False))
+    if trial['source_sha256'] != candidate_hash or trial.get('invalidated_at'):
+        trial.setdefault('invalidated_at', current.isoformat())
+        trial['status'] = 'INVALIDATED'
+        d['winner_traits_candidates'] = {}
+    else:
+        d['winner_traits_candidates'] = {
+            p['pool']: classify(p, d['assessments'][p['pool']]) for p in pools}
     return d
 
 
@@ -147,8 +160,15 @@ def observe_forward(state, events, prices, current):
         price=numeric(prices.get(ev['token']));a=entry_assessment(state,ev,current)
         if price is None or price<=0 or a is None:continue
         if len(pending)>=64:break
-        pending.append(dict(signal_id=ev['id'],token=ev['token'],at=current.isoformat(),price=price,
-                            accepted_by_policy=a['allowed'],reasons=a['reasons'],outcomes={}))
+        record=dict(signal_id=ev['id'],token=ev['token'],at=current.isoformat(),price=price,
+                    accepted_by_policy=a['allowed'],reasons=a['reasons'],outcomes={})
+        trial = d.get('winner_traits_v1') or {}
+        if trial.get('status') == 'COLLECTING':
+            from .winner_traits import VERSION as WIN_VERSION
+            record['winner_traits_version'] = WIN_VERSION
+            record['winner_traits_v1'] = bool(
+                d.get('winner_traits_candidates', {}).get(ev['token'], False))
+        pending.append(record)
     d['forward_outcomes']=done[-500:]
     summary={}
     for accepted in (True,False):
@@ -163,3 +183,8 @@ def observe_forward(state, events, prices, current):
         summary['accepted' if accepted else 'blocked']=result
     d['forward_summary']=summary
     d['forward_description']='Forward sampled quote cohorts, one per pool/hour; costs 1% each side; not strategy P&L or causal proof; no automatic promotion.'
+    trial=d.get('winner_traits_v1')
+    if trial:
+        from .winner_traits import forward_report
+        trial['forward']=forward_report(done+pending,trial['registered_at'])
+        trial['last_run']=current.isoformat()
