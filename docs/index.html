@@ -347,7 +347,7 @@ function simpleOverview(s){
  put('simple-target','Up to '+target+' target · '+(assessed===null?'coverage unknown':Math.max(0,target-assessed)+' below target'));
  put('simple-screened-pass',show(h.screened_pass)+' passed security checks');
  const fs=num(feed.deep_candle_scans)??num(feed.scanned);
- put('simple-pipeline','GBP: '+show(assessed)+' assessed → '+show(h.technical_candidates_qualified)+' met entry criteria → '+show(h.security_screened)+' security checked → '+show(h.trade_feeds_sampled)+' on-chain trade feeds read. Being assessed does NOT mean fully analysed. Futures: '+show(feed.eligible)+' eligible, '+show(fs)+' detailed candle scans.');
+ put('simple-pipeline','GBP: '+show(assessed)+' markets assessed; '+show(h.technical_candidates_qualified)+' met technical entry criteria. Separately: '+show(h.security_screened)+' security checks, '+show(h.trade_feeds_sampled)+' detailed on-chain wallet feeds. These counts are different stages, not one continuous funnel. Futures: '+show(feed.eligible)+' eligible, '+show(fs)+' detailed candle scans.');
  const closed=Array.isArray(s.closed)?s.closed:[],pos=Array.isArray(s.positions)?s.positions:[];
  const wins=closed.filter(x=>num(x.net_pnl_gbp)!==null&&x.net_pnl_gbp>0).length;
  const losses=closed.filter(x=>num(x.net_pnl_gbp)!==null&&x.net_pnl_gbp<0).length;
