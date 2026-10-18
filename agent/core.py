@@ -695,6 +695,12 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'discovery_search_queries': discovery_health.get('search_queries',[]),
         'discovery_prior_mints_requested': discovery_health.get('prior_mints_requested',0),
         'discovery_prior_mints_refreshed': discovery_health.get('prior_mints_refreshed',0),
+        'discovery_dex_backoff_active': discovery_health.get('dex_backoff_active',False),
+        'discovery_dex_rate_limited': discovery_health.get('rate_limited',False),
+        'technical_candidates_assessed': len((research.get('decision_v1') or {}).get('assessments',{})),
+        'technical_candidates_qualified': sum(
+            a.get('allowed') is True for a in
+            (research.get('decision_v1') or {}).get('assessments',{}).values()),
         'discovery_coverage_target': MAX_POOL_CANDIDATES,
         'discovery_coverage_shortfall': max(0,MAX_POOL_CANDIDATES-len(candidate_pools)),
         'detailed_trade_feed_coverage_pct': round(100*sampled_feeds/len(candidate_pools),1) if candidate_pools else 0,
