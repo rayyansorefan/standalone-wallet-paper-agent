@@ -35,6 +35,7 @@ jobs:
       - name: Trade history dashboard regression tests
         run: |
           node --check docs/trade-history.js
+          node --check docs/owner-visuals.js
           node --test tests/trade_history.test.cjs
       - name: Check dashboard JavaScript syntax
         run: |
