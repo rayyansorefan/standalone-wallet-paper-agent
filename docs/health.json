@@ -1,45 +1,45 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-18T09:49:20+00:00",
-  "last_data_at": "2026-10-18T09:49:20+00:00",
-  "cycle": 697,
+  "last_run": "2026-10-18T09:54:13+00:00",
+  "last_data_at": "2026-10-18T09:54:13+00:00",
+  "cycle": 698,
   "status": "OK",
   "cycle_health": {
-    "screened_pass": 5,
+    "screened_pass": 4,
     "screened_unavailable": 0,
-    "screened_rejected_or_unavailable": 5,
+    "screened_rejected_or_unavailable": 6,
     "trade_feeds_sampled": 4,
-    "trade_feeds_budget_deferred": 1,
+    "trade_feeds_budget_deferred": 0,
     "trade_feeds_attempted": 4,
     "trade_feed_budget": 4,
     "trade_feeds_provider_cooldown_deferred": 0,
     "security_screened": 10,
-    "unscreened_discovery_candidates": 49,
-    "discoveries_eligible_unique": 59,
-    "discovery_raw_rows": 94,
-    "discovery_free_batch_tokens": 96,
+    "unscreened_discovery_candidates": 48,
+    "discoveries_eligible_unique": 58,
+    "discovery_raw_rows": 76,
+    "discovery_free_batch_tokens": 97,
     "discovery_search_rows_examined": 120,
     "discovery_search_requests": 4,
     "discovery_search_queries": [
-      "SOL",
-      "USDC",
-      "BONK",
-      "AI"
+      "BTC",
+      "ETH",
+      "WIF",
+      "JUP"
     ],
     "discovery_prior_mints_requested": 55,
     "discovery_prior_mints_refreshed": 54,
     "discovery_dex_backoff_active": false,
     "discovery_dex_rate_limited": false,
-    "technical_candidates_assessed": 59,
-    "technical_candidates_qualified": 8,
+    "technical_candidates_assessed": 58,
+    "technical_candidates_qualified": 13,
     "discovery_coverage_target": 100,
-    "discovery_coverage_shortfall": 41,
-    "detailed_trade_feed_coverage_pct": 6.8,
+    "discovery_coverage_shortfall": 42,
+    "detailed_trade_feed_coverage_pct": 6.9,
     "discovery_errors": [],
     "alternate_quoted_pools": 1,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 59,
+    "candidate_pools": 58,
     "errors_this_cycle": 0,
     "error_messages": [],
     "partial_screening_only": false,
@@ -56,12 +56,12 @@
     "open_with_trailing_protection": 0,
     "open_with_recorded_mark": 4,
     "open_unpriced": 0,
-    "open_loss_warnings": 2,
+    "open_loss_warnings": 1,
     "closed_at_4_5pct_stop": 17,
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-18T09:49:20+00:00",
+    "latest_cycle": "2026-10-18T09:54:13+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -77,22 +77,20 @@
   },
   "primary_provider": {
     "http_status": 200,
-    "requests": 6,
+    "requests": 5,
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-18T09:49:13.181742+00:00"
+    "last_success_at": "2026-10-18T09:54:08.574406+00:00"
   },
   "whale": {
-    "status": "DEGRADED",
-    "last_run": "2026-10-18T09:49:20+00:00",
-    "last_scan_errors": [
-      "fresh supplemental quote missing for G8kgi7aUpeX8EVR8VMkrth9SKEv5BietWC33UjAiiMGh"
-    ]
+    "status": "DEFERRED_PRIMARY_QUOTA",
+    "last_run": "2026-10-18T09:54:13+00:00",
+    "last_scan_errors": []
   },
   "forward_experiment": {
     "status": "INVALIDATED",
-    "last_run": "2026-10-18T09:49:21.396350+00:00",
+    "last_run": "2026-10-18T09:54:13.627293+00:00",
     "registered_at": "2026-10-18T07:44:16.246036+00:00",
     "end_at": "2026-11-15T07:44:16.246036+00:00",
     "source_sha256": "ede6b834745bf8f2371d3d16a52ef9313bd86bb1b29a14f40b53c4229e26221f",
@@ -152,7 +150,7 @@
   "forward_experiment_error": null,
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-18T09:49:21.396350+00:00",
+    "last_run": "2026-10-18T09:54:13.627293+00:00",
     "closed": 16,
     "wins": 3
   },
@@ -258,8 +256,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-18T09:48:46.441Z",
-    "run_id": "39116808815",
+    "scheduled_at": "2026-10-18T09:53:46.119Z",
+    "run_id": "39117130427",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
