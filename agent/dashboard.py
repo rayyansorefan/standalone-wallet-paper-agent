@@ -163,6 +163,14 @@ def compact_health(state):
                             'priority_held_scanned')}},
         'profitability_diagnostics':diagnostic(closed),
         'allocation_guard':research.get('gbp_allocation_guard_v1'),
+        'technical_evidence_lab':{k:v for k,v in
+                            (research.get('technical_evidence_lab_v1') or {}).items()
+                            if k in ('version','registered_at','fingerprint','status',
+                                     'cycles','pending_count','completed_count',
+                                     'eligible_mark_series','screened_pass_mints',
+                                     'new_shadow_signals','reports','note',
+                                     'automatic_promotion','requests_added',
+                                     'pruned_completed','error_type')},
         'gbp_signal_lab':{k:v for k,v in
                           (research.get('gbp_signal_lab_v1') or {}).items()
                           if k in ('version','registered_at','hypothesis_sha256',
