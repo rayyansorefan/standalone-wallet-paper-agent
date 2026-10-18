@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0e1422"><title>Wallet Intelligence · Adaptive Research V3 | Paper Trading</title>
+<meta name="theme-color" content="#0e1422"><title>Paper Trading · Simple Dashboard</title>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#eaf1fc;background:#0d1421;line-height:1.48;font-size:14px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#173252 0%,#0d1421 42%);min-height:100vh}.container{max-width:1240px;margin:auto;padding:28px 24px 80px}
@@ -90,16 +90,73 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 @media(max-width:520px){.strategy-brief table{min-width:390px}.history-controls{align-items:flex-start}.history-actions{width:100%}.history-actions button{flex:1}#history-search{flex:1;max-width:none}}
 
 
+/* The owner-facing view is intentionally small; the original full audit is optional. */
+.simple-title{font-size:22px;font-weight:850;margin:0 0 4px}
+.simple-sub{font-size:12px;color:#a3b7d1;margin:0 0 18px}
+.simple-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 15px}
+.simple-card{border:1px solid #30435c;background:#172339;border-radius:13px;padding:17px;min-width:0}
+.simple-label{font-size:12px;font-weight:650;color:#b0c4df}
+.simple-number{font-size:30px;font-weight:850;letter-spacing:-.8px;font-variant-numeric:tabular-nums;margin:5px 0 2px}
+.simple-caption{font-size:11px;color:#a4b8d0;line-height:1.5}
+.simple-section{margin:0 0 17px}
+.simple-section h2{font-size:16px;margin:0 0 10px}
+.simple-pipeline{padding:14px 16px;background:#142339;border:1px solid #30445d;border-radius:12px;margin-bottom:17px;font-size:12px;color:#c1d3ec;line-height:1.7}
+.simple-pipeline strong{color:#fff}
+.simple-accounts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.simple-account{padding:17px;border:1px solid #30445d;border-radius:13px;background:#172339}
+.simple-account h3{font-size:14px;margin:0 0 8px}
+.simple-account p{font-size:12px;color:#b4c8df;margin:5px 0}
+.simple-account .simple-profit{font-size:25px;font-weight:800;margin:4px 0 8px}
+.simple-health{padding:12px 15px;background:#142339;border:1px solid #30445d;border-radius:11px;color:#c5d8ed;font-size:12px;margin:0 0 18px}
+.simple-trades{padding:15px;background:#172339;border:1px solid #30445d;border-radius:13px;margin-bottom:20px}
+.simple-trades h2{margin:0 0 10px;font-size:15px}
+.simple-trade{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #2c4058;font-size:12px}
+.simple-trade:first-child{border-top:0}
+.simple-trade .simple-trade-label{overflow-wrap:anywhere}
+.simple-trade .simple-trade-pnl{font-variant-numeric:tabular-nums;font-weight:750;white-space:nowrap}
+.legacy-dashboard{margin-top:20px;border:1px solid #30445c;background:#132136;border-radius:13px;padding:0 15px}
+.legacy-dashboard>summary{cursor:pointer;padding:16px 4px;font-size:13px;color:#c6d8ed;font-weight:750}
+.legacy-dashboard[open]{padding-bottom:15px}
+.legacy-dashboard>summary:focus-visible{outline:2px solid #71d2bd}
+@media(max-width:800px){.simple-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.simple-accounts{grid-template-columns:1fr}.simple-number{font-size:25px}.simple-card{padding:13px}}
 /* Whale tables scroll inside their panel on phones rather than crushing columns. */
 #whales table:has(thead){min-width:640px}
 </style>
 </head>
 <body><main class="container">
 <header>
-<div class="brand"><div class="logo">◇</div><div><div class="title">Wallet Intelligence <span style="color:#74d9b7">/ PAPER</span></div><div class="subtitle">Independent Solana wallet-observation experiment · No live capital</div></div></div>
+<div class="brand"><div class="logo">◇</div><div><div class="title">Paper Trading <span style="color:#74d9b7">/ Overview</span></div><div class="subtitle">What the engine scanned, what it traded, and whether it is winning</div></div></div>
 <div class="headRight"><span class="badge" id="freshness">AWAITING FIRST CYCLE</span><span class="badge">PAPER ONLY · £2,000</span><a class="small" href="https://github.com/rayyansorefan/standalone-wallet-paper-agent" target="_blank" rel="noopener">View source ↗</a></div>
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
+
+<!-- OWNER_SIMPLE_OVERVIEW: keep this visible; detailed tables live below in a closed archive. -->
+<section id="simple-overview" aria-label="Trading engine at a glance">
+  <h1 class="simple-title">What happened in the latest scan?</h1>
+  <p class="simple-sub" id="simple-time">Waiting for the latest saved five-minute cycle.</p>
+  <div class="simple-grid">
+    <div class="simple-card"><div class="simple-label">Markets assessed</div><div class="simple-number" id="simple-assessed">—</div><div class="simple-caption" id="simple-target">Target: up to 100 per cycle</div></div>
+    <div class="simple-card"><div class="simple-label">Met entry criteria</div><div class="simple-number" id="simple-qualified">—</div><div class="simple-caption">Technical and history/news rules; not yet trade approval</div></div>
+    <div class="simple-card"><div class="simple-label">Security checked</div><div class="simple-number" id="simple-screened">—</div><div class="simple-caption" id="simple-screened-pass">Rugcheck checks performed</div></div>
+    <div class="simple-card"><div class="simple-label">On-chain feeds read</div><div class="simple-number" id="simple-deep">—</div><div class="simple-caption">Actual detailed wallet-swap analysis</div></div>
+  </div>
+  <div class="simple-pipeline" id="simple-pipeline" role="status">Waiting for verified market coverage.</div>
+  <div class="simple-section"><h2>Trading results</h2>
+    <div class="simple-accounts">
+      <div class="simple-account"><h3>Original account · GBP</h3><div class="simple-profit" id="simple-gbp-pnl">—</div>
+        <p id="simple-gbp-wins">Waiting for closed trades</p><p id="simple-gbp-day">Last 24 hours: —</p><p id="simple-gbp-open">Open positions: —</p>
+      </div>
+      <div class="simple-account"><h3>Futures challenger · USD</h3><div class="simple-profit" id="simple-usd-pnl">—</div>
+        <p id="simple-usd-wins">Waiting for closed trades</p><p id="simple-usd-scan">Detailed futures scans: —</p><p>Separate paper account; not combined with GBP results.</p>
+      </div>
+    </div>
+  </div>
+  <div class="simple-health" id="simple-health">Checking latest engine status…</div>
+  <div class="simple-trades"><h2>Latest five closed GBP trades</h2><div id="simple-recent">Waiting for trade history.</div></div>
+</section>
+<details class="legacy-dashboard" id="advanced-dashboard">
+<summary>Show detailed reports, charts and full trade history</summary>
 <!-- UNIFIED_V2_NAV -->
 <nav class="v2-nav" aria-label="Paper dashboard"><span class="v2-mark">PAPER / V4.1</span><a href="#portfolio">Portfolio</a><a href="#strategy-overview">Strategy control</a><a href="#trade-history">Trade history</a><a href="#research-details" data-open-details="research-details">Research details</a><a href="#futures-details" data-open-details="futures-details">Trade details</a></nav>
 
@@ -240,6 +297,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <!-- UNIFIED_V2_END -->
 </details>
 
+</details>
 <footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
 </main>
 <script src="./trade-history.js"></script>
@@ -252,6 +310,15 @@ const uk=(v)=>{if(!v)return '—';const d=new Date(v);return isNaN(d)?'—':new 
 const short=(s)=>s?(String(s).slice(0,5)+'…'+String(s).slice(-4)):'—';
 const safe=(s)=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state=null, span='all', points=[];
+
+/* Minimal owner view; reads the SAME persisted state as the complete audit. */
+function simpleOverview(s){
+ const put=(id,value)=>{const n=document.getElementById(id);if(n)n.textContent=String(value);};
+ const ch=s.cycle_health||{};
+ const n=x=>typeof x==='number'&&Number.isFinite(x)?x:null;
+ const count=x=>n(x)===null?'—':String(x);
+ const pound=x=>n(x)===null?'—':(x<0?'−£':x>0?'+£':'£')+Math.abs(x).toFixed(2);
+ const dollar=x=>n(x)===null?'—':(x<0?'−
 function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_data_at):null,age=last?(Date.now()-last.getTime())/60000:null,run=s?.last_run?new Date(s.last_run):null;
 let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
 el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
@@ -276,7 +343,1178 @@ hint.textContent=history.length+' priced snapshots · Last recorded equity '+mon
 $('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
 $('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
 document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
-function render(s){state=s;health(s);
+function render(s){state=s;health(s);simpleOverview(s);
+ const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
+ document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
+ const paired=s.research?.forward_experiment_v1?.summary;
+ document.getElementById('paired-status').textContent=paired ? paired.status+' · last observation '+paired.last_run+' · challenger equity difference $'+paired.delta_equity_usd+' · ends '+paired.end_at : 'Not registered yet · no demonstrated improvement.';
+ const rows=document.getElementById('paired-rows');rows.replaceChildren();
+ for(const [name,m] of Object.entries(paired?.arms||{})){const tr=document.createElement('tr');for(const value of [name,m.closed+' / '+m.wins,'$'+m.net_usd,m.profit_factor??'—',m.entry_block||'Existing risk gates']){const td=document.createElement('td');td.textContent=value;tr.appendChild(td);}rows.appendChild(tr);}
+let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
+$('equity').textContent=eq===null?'UNAVAILABLE':money(eq);$('totalPnl').textContent=gross===null?'—':money(gross,true);$('totalPnl').className='value '+color(gross);$('return').textContent=gross===null?'No complete portfolio valuation':pct(gross/(num(s.starting_gbp)||2000)*100)+' versus starting capital';$('realized').textContent=money(realized,true);$('realized').className='value '+color(realized);$('open').textContent=(s.positions||[]).length;$('closed').textContent=(s.closed||[]).length+' closed · '+wins+' wins';$('positionCount').textContent=(s.positions||[]).length+' POSITIONS';
+$('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCount').textContent=Object.keys(s.observed||{}).length;$('stale').textContent=s.stale_signals||0;$('priced').textContent=(s.snapshots||[]).filter(x=>num(x.equity_gbp)!==null).length;$('errors').textContent=s.cycle_health?.errors_this_cycle??(s.errors||[]).filter(e=>e.at&&s.last_run&&Math.abs(new Date(e.at)-new Date(s.last_run))<=120000).length;
+table('positions',s.positions||[],[
+ p=>safe(p.pool_name||'Unknown'),
+ p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',
+ p=>money(p.notional_gbp),
+ p=>{const adds=Array.isArray(p.additions)?p.additions:[];const total=adds.reduce((a,x)=>a+(num(x.notional_gbp)||0),0);return adds.length?safe(adds.length)+' · +'+money(total):'None';},
+ p=>{const mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp),at=p.last_mark_at?Date.parse(p.last_mark_at):NaN;
+  const fresh=Number.isFinite(at)&&Date.now()-at<=15*60000&&Date.now()>=at-30000&&p.position_action!=='UNPRICED_HOLD';
+  const value=fresh&&mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;
+  return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>';},
+ p=>p.highest_net_roi_pct===undefined?'Collecting':safe(p.highest_net_roi_pct)+'%',
+ p=>{const stop=num(p.trailing_stop_price_usd);const action=String(p.position_action||'COLLECTING_MARKS').replaceAll('_',' ');
+  return safe(action)+(stop?' · trailing USD '+safe(stop.toPrecision(6)):' · basic stop / 6h cap');},
+ p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?h.toFixed(1)+' h':'—';}
+],'No open paper positions.');
+table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
+const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedTradeHistoryRender?.(s);window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+document.querySelectorAll('[data-open-details]').forEach(a=>a.addEventListener('click',()=>{const d=document.getElementById(a.dataset.openDetails);if(d)d.open=true;}));
+poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
+})();
+</script>
+
+
+<details class="research-drawer" id="futures-details"><summary>Futures execution detail · open positions, exits, missed winners and learning history</summary>
+<section id="strategies-v1" class="v2-section">
+<div class="v2-head"><div><h2>Two-way paper strategies</h2><p>One independent $2,000 USD challenger: momentum long/short and pump-fade short. The original £2,000 account remains above. Percentage returns have different exposure and costs; these are not equal-risk comparisons.</p></div></div>
+<p id="strategy-status" class="v2-alert">Awaiting first forward scan.</p>
+<div class="table-wrap"><table><thead><tr><th>Equity</th><th>Realised</th><th>Closed / wins</th><th>Profit factor</th><th>Max drawdown</th><th>Cost stress P&amp;L</th></tr></thead><tbody id="strategy-metrics"></tbody></table></div>
+<h3>Current position and selection</h3><p id="strategy-position"></p><p id="strategy-selection"></p>
+<h3>Learning evidence</h3><p id="strategy-learning"></p>
+<h3>Forward outcomes · not executed trades</h3><p id="strategy-forward"></p>
+<div class="table-wrap"><table><thead><tr><th>Observed UTC</th><th>Instrument</th><th>Setup</th><th>Why skipped</th><th>60m net quote return</th></tr></thead><tbody id="strategy-missed"><tr><td colspan="5">Awaiting future observed quotes.</td></tr></tbody></table></div>
+<h3>Recent actions</h3><div class="table-wrap"><table><thead><tr><th>UTC</th><th>Action</th><th>Instrument</th><th>Setup</th><th>Detail</th></tr></thead><tbody id="strategy-events"></tbody></table></div>
+<p>Public Kraken perpetual prices; simulated fills at bid/ask plus 0.10% adverse slippage and 0.05% fee each side. Adverse carry reserve: at least 0.01%/hour, or greater observed absolute funding rate; no funding credits. This is a conservative estimate, not exchange funding settlement. Stress deducts another 0.35% each side. Exits are sampled every five minutes and can gap beyond stops. No paid AI, live orders or automatic promotion.</p>
+</section>
+<script>
+window.unifiedStrategyRender=function(s){
+ const b=s.research?.strategies_v1;if(!b)return;
+ const el=id=>document.getElementById(id), put=(id,v)=>el(id).textContent=v;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const money=v=>'$'+Number(v??0).toFixed(2), summary=b.summary||{};
+ const names=[['momentum_long','Momentum · long'],['momentum_short','Momentum · short'],['pump_fade','Pump fade · short']];
+ const rows=names.map(([name,label])=>{
+   const f=summary.feedback?.[name]||{};
+   const closes=(b.closed||[]).filter(t=>t.setup===name && t.version===b.version);
+   const wins=closes.filter(t=>Number(t.net_usd)>0).length;
+   const decision=f.paused?'PAUSED · losses':f.cooldown?'COOLDOWN':f.recovery?.status==='RECOVERED'?'RECOVERED · monitoring':f.reinforced?'POSITIVE TEST EVIDENCE':'TESTING · unproven';
+   const cls=f.paused?'health-paused':'health-current';
+   return '<tr><td>'+esc(label)+'</td><td class="'+cls+'">'+esc(decision)+'</td><td>'+esc(f.closed??closes.length)+'</td><td>'+esc(closes.length?wins+'/'+closes.length:'—')+'</td></tr>';
+ });
+ el('strategy-overview-rows').innerHTML=rows.join('');
+ const v2=Object.values(s.research?.shadow_reports||{});
+ const v3=Object.values(s.research?.whale_v3?.shadow_reports||{});
+ const allShadows=[...v2,...v3],retired=allShadows.filter(x=>x.status==='RETIRED_NEGATIVE_EVIDENCE').length;
+ put('strategy-overview-shadows', 'Shadow research: '+allShadows.length+' variants · '+retired+' retired on negative evidence · '+(allShadows.length-retired)+' testing/review. No shadow outcomes count as actual portfolio wins.');
+ const whale=s.research?.whale_v3||{};
+ put('strategy-overview-health', 'Futures: '+(b.status||'UNPROVEN')+' · '+(b.entry_status||'—')+' · Whale feed: '+(whale.status||'UNAVAILABLE')+' · research outcomes require forward validation.');
+ const stale=!b.last_run||Date.now()-new Date(b.last_run).valueOf()>1200000;
+ put('strategy-status',(stale?'STALE · ':'')+(b.status||'UNPROVEN')+' · '+(b.entry_status||'')+' · '+(b.last_run||'')+' · '+(b.error||'')+' · '+(b.feed?.scanned||0)+' scanned / '+(b.feed?.eligible||0)+' liquid instruments; '+Object.keys(b.feed?.errors||{}).length+' candle failures');
+ el('strategy-metrics').innerHTML='<tr>'+[money(b.equity_usd),money(summary.net_usd),(summary.closed||0)+' / '+(summary.wins||0),summary.profit_factor==null?'—':Number(summary.profit_factor).toFixed(2),Number(b.max_drawdown_pct||0).toFixed(2)+'%',money(summary.stress_net_usd)].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>';
+ const p=b.position;put('strategy-position',p?(p.direction===1?'LONG ':'SHORT ')+p.symbol+' · '+p.setup+' · net '+money(p.net_usd)+' · stop '+Number(p.stop).toPrecision(6)+' · winner add '+(p.added?'used':'available')+' · quote '+p.marked_at:'Flat; no forced trades.');
+ put('strategy-selection',(b.candidates||[]).map(c=>c.symbol+' '+c.setup+' '+(c.feedback.allowed?'eligible':c.feedback.paused?'setup paused after losses':'cooldown')).join(' | ')||'No qualified candle setup in the scanned universe.');
+ put('strategy-learning',Object.entries(summary.feedback||{}).map(([name,f])=>name+': '+f.closed+' closed, '+(f.paused?'PAUSED':f.reinforced?'validated risk ×1.25':'unproven risk ×1.00')).join(' | ')+' · Registered '+b.registered_at+'. Reinforcement requires 20 training + 10 subsequent validation closures per setup, 14 days, three instruments and positive results excluding the best winner and under cost stress in both splits. One add to an open winner is a separate bounded rule.');
+ const missed=b.missed_winners||{}, forward=b.forward_summary?.['60m']||{}, rec=b.recovery_v1||{};
+ put('strategy-forward',
+     '60-minute observed quotes: '+(forward.priced||0)+' priced, '+(forward.missing||0)+' missing · '
+     +(missed.evaluated||0)+' non-entered setup outcomes, '+(missed.winners||0)+' positive net · '
+     +'These are hypothetical quote observations, NOT executed winning trades. Recovery: '
+     +Object.entries(rec).map(([name,x])=>name+' '+x.status+' ('+(x.evaluated||0)+' retests)').join('; '));
+ const missedRows=missed.top_missed||[];
+ el('strategy-missed').innerHTML=missedRows.length
+     ?missedRows.map(x=>'<tr>'+[
+         x.at,x.symbol,x.setup,x.reason,
+         Number(x.net_quote_roi_pct).toFixed(2)+'% (hypothetical)'
+       ].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')
+     :'<tr><td colspan="5">No verified positive missed 60-minute quote outcomes yet.</td></tr>';
+ el('strategy-events').innerHTML=(b.events||[]).slice(-12).reverse().map(e=>'<tr>'+[e.at,e.action,e.symbol,e.setup,e.reason??(e.net_usd!=null?money(e.net_usd):e.notional_usd!=null?money(e.notional_usd):'')].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('');
+};
+</script>
+</details>
+
+<section id="decisions-v1" class="v2-section"><div class="v2-head"><div><h2>History-aware decisions</h2><p>Losses change entry eligibility across wallets. Positive history changes selection priority; larger allocations still require independent forward validation.</p></div></div>
+<div class="v2-panel"><h3 id="policy-status">Awaiting first policy cycle</h3><p id="policy-news"></p><p id="policy-scope"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Pool</th><th>24h net / closes</th><th>Entry decision</th><th>Technical context</th></tr></thead><tbody id="policy-pools"></tbody></table></div></div>
+<div class="v2-panel"><h3>Forward accepted versus blocked signals</h3><p id="policy-forward"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Cohort</th><th>Horizon</th><th>Priced / missing</th><th>Mean net quote return</th></tr></thead><tbody id="policy-outcomes"></tbody></table></div><p id="policy-headlines"></p></div></section>
+<script>
+window.unifiedDecisionRender=function(s){
+ const d=s.research?.decision_v1,n=s.research?.news_v1||{},get=id=>document.getElementById(id);
+ if(!d)return;
+ get('policy-status').textContent='Active entry policy · registered '+new Date(d.registered_at).toLocaleString('en-GB',{timeZone:'Europe/London'})+' · improvement UNPROVEN';
+ get('policy-news').textContent='News: '+(n.status||'UNAVAILABLE')+' · checked '+(n.checked_at||'never')+' · '+Object.entries(n.sources||{}).map(([k,v])=>k+': '+v.status).join(' · ');
+ get('policy-scope').textContent=n.scope||'No verified news context';
+ const write=(id,rows)=>{const body=get(id);body.replaceChildren();rows.forEach(values=>{const tr=document.createElement('tr');values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});body.appendChild(tr)})};
+ const num=v=>typeof v==='number'?v.toFixed(2):'unavailable';
+ write('policy-pools',Object.entries(d.assessments||{}).map(([pool,a])=>[(s.watched_pools||[]).find(p=>p.pool===pool)?.name||pool,'£'+num(a.history.net_gbp)+' / '+a.history.closed,a.allowed?'Eligible · priority '+num(a.selection_score):a.reasons.join('; '),'5m '+num(a.technical.change_5m_pct)+'% · 1h '+num(a.technical.change_1h_pct)+'% · volume pace '+num(a.technical.volume_pace_ratio)+'x']));
+ get('policy-forward').textContent=(d.forward_description||'')+' Pending: '+(d.forward_pending||[]).length+'. Mature: '+(d.forward_outcomes||[]).length+'.';
+ write('policy-outcomes',Object.entries(d.forward_summary||{}).flatMap(([cohort,values])=>Object.entries(values).map(([h,v])=>[cohort,h,v.priced+' / '+v.missing,num(v.mean_net_quote_roi_pct)+'%'])));
+ get('policy-headlines').textContent=(n.items||[]).map(x=>x.source+': '+x.title+' ('+x.published_at+')').join(' · ')||'No recent relevant headlines in the available sources. Unavailable sources provide no evidence.';
+};
+</script>
+<!-- UNIFIED_V2_JS -->
+<script>
+/* Unified V2: renders from the canonical dashboard's existing state.json fetch. */
+(function () {
+  'use strict';
+  const by = id => document.getElementById(id);
+  const numeric = v => v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v);
+  const number = v => numeric(v) === null ? '—' : Number(v).toLocaleString('en-GB');
+  const gbp = v => numeric(v) === null ? '—' : (Number(v) < 0 ? '−£' : '£') + Math.abs(Number(v)).toLocaleString('en-GB', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const pct = v => numeric(v) === null ? '—' : Number(v).toFixed(2) + '%';
+  const short = v => v ? String(v).slice(0, 6) + '…' + String(v).slice(-4) : '—';
+  const uk = v => {
+    if (!v) return '—';
+    const d = new Date(v);
+    return Number.isFinite(d.valueOf()) ? d.toLocaleString('en-GB', {timeZone: 'Europe/London', dateStyle: 'medium', timeStyle: 'medium'}) : '—';
+  };
+  const td = (text, row, className) => {
+    const node = document.createElement('td');
+    node.textContent = text === null || text === undefined ? '—' : String(text);
+    if (className) node.className = className;
+    row.appendChild(node);
+    return node;
+  };
+  const rows = (id, values, empty, cols) => {
+    const target = by(id);
+    if (!target) return;
+    target.replaceChildren();
+    if (!values.length) {
+      const tr = document.createElement('tr');
+      const cell = td(empty, tr);
+      cell.colSpan = cols;
+      target.appendChild(tr);
+      return;
+    }
+    values.forEach(arr => {
+      const tr = document.createElement('tr');
+      arr.forEach(v => td(v, tr));
+      target.appendChild(tr);
+    });
+  };
+  const value = (id, v) => {const node = by(id); if (node) node.textContent = String(v);};
+  const ratio = (n, total) => !total ? '0%' : Math.round(n * 100 / total) + '%';
+
+  function render(s) {
+    // The public state is not a live broker account. Reject incompatible data.
+    if (!s || s.paper_only !== true || Number(s.starting_gbp) !== 2000) {
+      value('v2-execution-status', 'Account integrity warning: unexpected paper-state schema or starting capital.');
+      return;
+    }
+    const r = s.research || {};
+    const actual = r.actual_report || {};
+    const walletRank = Array.isArray(r.wallet_rankings) ? r.wallet_rankings : [];
+    const reinforced = walletRank.filter(x => String(x.reinforcement_tier || '').startsWith('reinforced'));
+    const closed = Array.isArray(s.closed) ? s.closed : [];
+    const wallets = new Set(closed.map(x => x.wallet).filter(Boolean));
+    const signals = Array.isArray(r.signals) ? r.signals : [];
+    const observations = Array.isArray(r.pool_observations) ? r.pool_observations : [];
+    const shadow = r.shadow_reports || {};
+    const features = r.feature_reports || {};
+    const execution = s.execution || {};
+
+    value('v2-signals', number(signals.length));
+    value('v2-observations', number(observations.length));
+    value('v2-closed-wallets', number(wallets.size));
+    value('v2-reinforced', number(reinforced.length));
+    rows('v2-wallets', walletRank.slice(0, 20).map(x => [short(x.wallet), x.closed ?? 0, gbp(x.net_gbp), pct(x.win_rate_wilson_lower_pct), x.reinforcement_tier || 'exploration']), 'No closed-trade wallet scores have been recorded.', 5);
+
+    const winners = closed.filter(x => numeric(x.net_pnl_gbp) !== null && x.net_pnl_gbp > 0).length;
+    const realized = closed.reduce((sum, x) => sum + (numeric(x.net_pnl_gbp) || 0), 0);
+    rows('v2-actual-metrics', [
+      ['Completed paper trades', number(closed.length)],
+      ['Winning paper trades', number(winners) + ' (' + ratio(winners, closed.length) + ')'],
+      ['Realised net P&L (cost-adjusted)', gbp(realized)],
+      ['Profit factor', numeric(actual.profit_factor) === null ? '—' : Number(actual.profit_factor).toFixed(2)],
+      ['Worst realised drawdown in trade sequence', gbp(actual.max_drawdown_gbp)],
+      ['Conservative mean trade ROI', pct(actual.conservative_mean_roi_95_pct)],
+      ['Distinct exit days', number(actual.distinct_exit_days)]
+    ], 'Waiting for completed trades.', 2);
+    const best = walletRank.reduce((m, x) => Math.max(m, numeric(x.closed) || 0), 0);
+    rows('v2-thresholds', [
+      ['Most closures from one sender', String(best)],
+      ['First wallet sizing tier', 'Legacy quality gates + registered forward validation'],
+      ['Second wallet sizing tier', 'Stronger legacy gates + registered forward validation'],
+      ['Feature reinforcement', '40+ qualified closes / 14+ days, diversity gates'],
+      ['Current reinforced wallets', number(reinforced.length)],
+      ['Upper allocation cap', '1.5% paper equity']
+    ], 'Waiting for reinforcement evidence.', 2);
+    value('v2-learning-verdict', reinforced.length ?
+      (reinforced.length + ' wallet(s) currently satisfy reinforcement rules; this does not establish that profit improvement is causal.') :
+      ('No wallet has qualified for higher allocation. Evidence is still being collected across independent closed paper trades.'));
+    rows('v2-features', Object.entries(features).map(([k, x]) => [k, number(x.closed), gbp(x.net_gbp), pct(x.conservative_mean_roi_95_pct), x.status || 'COLLECTING_EVIDENCE']), 'Not enough instrumented closed trades for feature scoring.', 5);
+
+    rows('v2-shadow', Object.entries(shadow).map(([name, x]) => [name, number(x.closed), number(x.open_positions), gbp(x.net_gbp), numeric(x.profit_factor) === null ? '—' : Number(x.profit_factor).toFixed(2), x.status || 'COLLECTING_EVIDENCE']), 'Shadow experiments have not recorded any results.', 6);
+    const events = [
+      ...(Array.isArray(r.reinforcement_events) ? r.reinforcement_events : []).map(x => ({...x, action: 'REINFORCEMENT', details: (x.from_tier || 'exploration') + ' → ' + (x.to_tier || 'unknown') + ' · ' + (x.evidence || '')})),
+      ...(Array.isArray(r.events) ? r.events : []).map(x => ({...x, details: x.reason || (numeric(x.net_pnl_gbp) !== null ? gbp(x.net_pnl_gbp) : 'signal lag ' + (x.signal_lag_seconds ?? '—') + 's')}))
+    ].sort((a, b) => (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0)).slice(0, 65);
+    const evaluation = r.evaluation_v1 || {};
+    value('evaluation-status', 'Profitability UNPROVEN · Evaluation '+(evaluation.status||'UNPROVEN')+(evaluation.last_error?' · '+evaluation.last_error:'')+' · Registered ' + uk(evaluation.registered_at) + ' · ' + number(evaluation.validated_reports || 0) + ' validated cohorts · ' + number(evaluation.positive_reinforcement_events || 0) + ' positive sizing events · ' + number(evaluation.sampled_adverse_selection?.tracked_entries || 0) + ' entries with subsequent sampled quotes');
+    rows('evaluation-reports', Object.entries(evaluation.reports || {}).filter(([key]) => !key.startsWith('wallet:')).slice(0,20).map(([key,x])=>[key, (x.training?.closed||0)+' / '+(x.training?.days||0), (x.validation?.closed||0)+' / '+(x.validation?.days||0), pct(x.validation?.daily_cluster_lower_pct), pct(x.validation?.cost_stress?.['2pct_each_side_mean_roi_pct']), x.status||'UNPROVEN']), 'No registered forward outcomes yet.', 6);
+    rows('evaluation-exits', Object.entries(evaluation.exit_diagnostics || {}).map(([key,x])=>[key,x.closed||0,gbp(x.net_gbp),pct(x.cost_stress?.['2pct_each_side_mean_roi_pct'])]), 'No exit diagnostic data.', 4);
+    rows('v2-events', events.map(x => [uk(x.at), x.action || '—', x.strategy || short(x.wallet) || short(x.token), x.details || '—']), 'No research or reinforcement events recorded.', 4);
+
+    const validRun = /^\d{8,15}$/.test(String(execution.run_id || ''));
+    const external = execution.event === 'workflow_dispatch' && execution.scheduler === 'google-apps-script';
+    const google = external && !!execution.trigger_uid && !!execution.scheduled_at && validRun;
+    const native = execution.event === 'schedule';
+    const schedulerLabel = google ? 'Google Apps Script · unattended API dispatch' : native ? 'GitHub native scheduled trigger' : external ? 'Google fallback · incomplete execution provenance' : (execution.scheduler || 'Not independently identified');
+    const age = s.last_data_at ? (Date.now() - new Date(s.last_data_at).getTime()) / 60000 : Infinity;
+    const fresh = age >= 0 && age <= 20 && s.last_status === 'OK';
+    value('v2-execution-status', fresh ?
+      ('Market feed OK · ' + schedulerLabel + ' · observation ' + uk(s.last_data_at)) :
+      ('FEED / SCHEDULER NEEDS CHECK · latest data ' + uk(s.last_data_at) + ' · engine state ' + (s.last_status || 'UNKNOWN')));
+    const statusNode = by('v2-execution-status');
+    statusNode.className = 'v2-alert' + (fresh ? '' : ' v2-negative');
+    rows('v2-provenance', [
+      ['Paper account initialised', uk(s.initialized_at)],
+      ['Starting balance', gbp(s.starting_gbp)],
+      ['Completed main cycles', number(s.completed_cycles)],
+      ['Latest run (UK)', uk(s.last_run)],
+      ['Scheduler provenance', schedulerLabel],
+      ['GitHub event', execution.event || '—'],
+      ['Trigger UID', execution.trigger_uid || '—'],
+      ['Scheduled UTC', execution.scheduled_at || '—'],
+      ['GitHub run ID', validRun ? execution.run_id : 'Unverified']
+    ], 'No scheduler metadata.', 2);
+    const runNode = by('v2-run-link');
+    if (runNode) runNode.remove();
+    if (validRun) {
+      const link = document.createElement('a');
+      link.id = 'v2-run-link';
+      link.className = 'v2-link';
+      link.href = 'https://github.com/rayyansorefan/standalone-wallet-paper-agent/actions/runs/' + execution.run_id;
+      link.rel = 'noopener noreferrer';
+      link.target = '_blank';
+      link.textContent = 'View latest GitHub execution ↗';
+      by('v2-run-link-wrap').appendChild(link);
+    }
+    rows('v2-research-health', [
+      ['Research module', r.version ? 'Adaptive v' + r.version : 'Not yet present'],
+      ['Research status', r.last_status || 'NOT AVAILABLE'],
+      ['Market-feed status', s.last_status || 'UNKNOWN'],
+      ['Last research update (UK)', uk(r.last_run)],
+      ['Shadow open positions', number((r.shadow_positions || []).length)],
+      ['Recorded research errors this cycle', number((r.cycle_errors || []).length)],
+      ['Actual positions', number((s.positions || []).length)],
+      ['Actual completed trades', number(closed.length)]
+    ], 'No research telemetry.', 2);
+    value('v2-checked', 'One JSON source for both views · Browser rendered ' + uk(new Date().toISOString()) + ' · Refresh every 60 seconds.');
+  }
+  window.unifiedResearchRender = render;
+  window.unifiedResearchFailure = function (error) {
+    value('v2-execution-status', 'DATA FETCH FAILED · ' + String(error?.message || error).slice(0, 140));
+    const el = by('v2-execution-status');
+    if (el) el.className = 'v2-alert v2-negative';
+  };
+}());
+
+</script>
+
+<!-- WHALE_V3_JS -->
+<script>
+/* WHALE_V3_RENDER: shares the existing state.json fetch and refresh. */
+(()=>{'use strict';
+  const byId=id=>document.getElementById(id);
+  const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=(value,sign='£')=>Number.isFinite(Number(value))&&value!==null ? sign+Number(value).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  const uk=value=>{if(!value)return '—';let d=new Date(value);return Number.isFinite(d.valueOf())?new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d):'—';};
+  const short=value=>value?String(value).slice(0,5)+'…'+String(value).slice(-4):'—';
+  const rowTable=(id,rows,cols,empty)=>{const target=byId(id);if(!target)return;target.innerHTML=rows.length?rows.map(record=>'<tr>'+cols.map(f=>'<td>'+f(record)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+esc(empty)+'</td></tr>';};
+  const metric=(id,value)=>{const el=byId(id);if(el)el.textContent=String(value);};
+  const amountColor=num=>Number(num)>0?'positive':Number(num)<0?'negative':'';
+  window.unifiedWhaleFailure=function(error){const el=byId('v3-status');if(el){el.textContent='DATA FETCH FAILED · '+String(error?.message||error).slice(0,140);el.className='v2-alert v2-negative';}};
+  window.unifiedWhaleRender=function(s){
+    try{
+      const w=s?.research?.whale_v3;
+      const banner=byId('v3-status');
+      if(!w){if(banner){banner.textContent='Whale Intelligence has not yet been deployed or has not completed its first cycle. The original V2 trading engine remains separate.';banner.className='v2-alert';}return;}
+      const sc=w.scanner||{}, reports=w.shadow_reports||{},flows=w.recent_flows||[], profiles=w.sender_profiles||{},senderReports=w.sender_shadow_reports||{};
+      const recentRun=w.last_run?new Date(w.last_run):null;
+      const minutes=recentRun?((Date.now()-recentRun.valueOf())/60000):Infinity;
+      const stale=!Number.isFinite(minutes)||minutes<0||minutes>20;
+      if(banner){banner.className='v2-alert';banner.textContent='V3 '+(w.status||'UNKNOWN')+(stale?' · STALE research':' · latest research '+uk(w.last_run))+' · Transaction senders are unverified. No automatic promotion into the £2,000 account.';}
+      metric('v3-large',sc.large_flows??0);
+      metric('v3-very-large',sc.very_large_flows??0);
+      metric('v3-senders',Object.keys(profiles).length);
+      metric('v3-closed',(w.shadow_closed||[]).length);
+      rowTable('v3-strategies',Object.entries(reports).map(([strategy,data])=>({strategy,...data})),[
+        x=>esc(x.strategy.replaceAll('_',' ')),x=>esc(x.closed??0),x=>esc(x.open_positions??0),
+        x=>'<span class="'+amountColor(x.net_gbp)+'">'+esc(money(x.net_gbp))+'</span>',
+        x=>esc(money(x.net_gbp_at_2pct_each_side)),x=>esc(money(x.net_gbp_at_5pct_each_side)),
+        x=>esc(((Number(x.allocation_fraction_of_original_equity)||0)*100).toFixed(2)+'%'),
+        x=>esc(x.status||'COLLECTING_EVIDENCE')], 'Research collecting its first closed outcomes');
+      const ranked=Object.entries(profiles).map(([wallet,x])=>({wallet,...x})).sort((a,b)=>(Number(b.buy_volume_usd)||0)-(Number(a.buy_volume_usd)||0)).slice(0,15);
+      rowTable('v3-wallets',ranked,[x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',x=>esc(x.buys||0),x=>esc(x.sells||0),x=>esc(money(x.buy_volume_usd,'$')),
+        x=>esc(senderReports[x.wallet]?.closed??0),
+        x=>'<span class="'+amountColor(senderReports[x.wallet]?.net_gbp||0)+'">'+esc(money(senderReports[x.wallet]?.net_gbp??0))+'</span>'], 'No candidate senders sampled yet');
+      rowTable('v3-open',(w.shadow_positions||[]).slice(0,10),[
+        x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),x=>esc(money(x.notional_gbp)),
+        x=>x.last_mark_price_usd?esc(Number(x.last_mark_price_usd).toPrecision(6)):'UNPRICED'], 'No whale shadow positions yet');
+      rowTable('v3-flows',flows.slice(-18).reverse(),[
+        x=>esc(uk(x.at)),x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',
+        x=>esc(x.pool_name||short(x.token)),x=>esc(x.kind),x=>esc(money(x.usd,'$')),x=>esc(x.sender_identity||'UNVERIFIED')], 'No qualifying whale-sized transactions sampled yet');
+      rowTable('v3-exits',(w.shadow_closed||[]).slice(-12).reverse(),[
+        x=>esc(uk(x.exit_at)),x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),
+        x=>'<span class="'+amountColor(x.net_pnl_gbp)+'">'+esc(money(x.net_pnl_gbp))+'</span>',x=>esc(x.exit_reason)], 'No forward whale exits yet');
+      rowTable('v3-followups',[...(w.flow_outcomes||[]),...(w.flow_followups||[])].slice(-12).reverse(),[x=>esc(short(x.wallet)),x=>esc(short(x.token)),...['5m','30m','60m'].map(k=>x=>x.marks?.[k]?esc(Number(x.marks[k].quote_return_pct).toFixed(2)+'%'):'UNAVAILABLE')],'No later forward observations yet');
+      rowTable('v3-health',[
+        ['V3 research last run',uk(w.last_run)],['V3 status',w.status||'UNKNOWN'],
+        ['Supplemental Solana pools',sc.additional_pools??0],
+        ['Rotating pool inventory',sc.inventory_pools??0],
+        ['Sampled transaction-origin addresses',Object.keys(w.sampled_activity||{}).length],
+        ['Multi-pool origins · owner unresolved',Object.values(w.sampled_activity||{}).filter(x=>x.attribution==='MULTI_POOL_OR_ROUTER_POSSIBLE').length],
+        ['Research requests / cycle cap',(w.scan_metrics?.requests??0)+' / 4'],
+        ['Discovery cache hits',w.scan_metrics?.cache_hits??0],
+        ['Deferred research requests',w.scan_metrics?.deferred??0],
+        ['Supplemental quote source',w.scan_metrics?.quote_provider||'geckoterminal'],
+        ['Provider circuits',Object.entries(w.provider_health||{}).map(([k,v])=>k+': '+(v.retry_at?'cooldown until '+v.retry_at:'available')).join('; ')||'Not sampled'],
+        ['Observed flow follow-ups',(w.flow_followups||[]).length+' pending / '+(w.flow_outcomes||[]).length+' completed; quote returns, not wallet profit'],
+        ['Fresh supplemental quote pools',w.scan_metrics?.quote_pools??0],
+        ['Supplemental trade feeds read',w.scan_metrics?.trade_feeds??0],
+        ['Last supplemental market data',uk(w.last_market_data_at)],
+        ['Research elapsed seconds',w.scan_metrics?.elapsed_seconds??'—'],
+        ['Primary-provider window wait seconds',w.scan_metrics?.primary_window_wait_seconds??0],
+        ['Shadow strategies','large_repeat, very_large, accumulation'],
+        ['Fresh large-flow observations',sc.fresh_signals??0],
+        ['Current scan errors',(w.last_scan_errors||[]).slice(-2).join('; ')||'None'],
+        ['Verified whale owners','None — attribution not established'],
+        ['Actual paper account changed by V3','No — research and shadow simulations only']
+      ].map(([name,value])=>({name,value})),[x=>esc(x.name),x=>esc(x.value)],'No V3 health evidence');
+    }catch(error){const banner=byId('v3-status');if(banner)banner.textContent='Whale V3 dashboard rendering unavailable: '+String(error.message).slice(0,100);}
+  };
+})();
+
+</script>
+</body></html>
+:x>0?'+
+function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_data_at):null,age=last?(Date.now()-last.getTime())/60000:null,run=s?.last_run?new Date(s.last_run):null;
+let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
+el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
+$('statusMessage').textContent=!run?'No market observations have been completed. There are no trading results yet.':age===null?'No verified trade-feed data is available yet; portfolio values may not be current.':age>15?'The underlying market feed is more than 15 minutes old. Data is not current.':s.last_status==='PARTIAL_SCREENING_UNAVAILABLE'?'One or more tokens could not be security-screened and were blocked. Other safe-token trade feeds succeeded; consult the audit for provider errors.':s.last_status==='PARTIAL_TRADE_FEEDS_UNAVAILABLE'?'Some market trade feeds were unavailable, so no trades were copied from those pools. Other safe-token feeds succeeded; coverage was incomplete.':'The research process has checked market data. Values are snapshots, not live quotes.';
+$('updated').textContent='Most recent cycle: '+uk(s?.last_run)+' · Last successful trade-feed fetch: '+uk(s?.last_data_at)+' · Screening: '+(s.cycle_health?.screened_pass??'—')+' passed / '+(s.cycle_health?.screened_unavailable??'—')+' unavailable · Trade feeds: '+(s.cycle_health?.trade_feeds_sampled??'—')+' sampled / '+(s.cycle_health?.trade_feeds_unavailable??'—')+' unavailable · Dashboard checks every 60 seconds.';}
+function table(id,rows,cols,empty){$(id).innerHTML=rows.length?rows.map(r=>'<tr>'+cols.map(fn=>'<td>'+fn(r)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+safe(empty)+'</td></tr>';}
+function color(n){return n===null?'':n<0?'negative':n>0?'positive':'';}
+function draw(){const svg=$('chart'),s=state;while(svg.firstChild)svg.removeChild(svg.firstChild);points=[];
+const data=(s?.snapshots||[]).filter(x=>num(x.equity_gbp)!==null&&!isNaN(new Date(x.at)));let cut=span==='1d'?Date.now()-86400000:span==='7d'?Date.now()-604800000:0;const history=data.filter(x=>new Date(x.at).getTime()>=cut).slice(-400);const hint=$('chartNote');
+svg.setAttribute('viewBox','0 0 850 260');const ns='http://www.w3.org/2000/svg';const el=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.appendChild(n);return n};
+if(history.length<2){hint.textContent='Awaiting at least two successfully priced observations in this period.';el('text',{x:425,y:125,fill:'#95a9c6','text-anchor':'middle','font-size':14},'No verified progression data yet');return;}
+let values=history.map(x=>Number(x.equity_gbp)),lo=Math.min(...values),hi=Math.max(...values),pad=Math.max(1,(hi-lo)*.2);lo-=pad;hi+=pad;
+let left=72,right=836,top=16,bottom=224;for(let i=0;i<4;i++){let y=top+(bottom-top)*i/3,v=hi-(hi-lo)*i/3;el('line',{x1:left,y1:y,x2:right,y2:y,class:'gridline'});el('text',{x:60,y:y+4,class:'axis','text-anchor':'end'},'£'+v.toFixed(0));}
+let t0=new Date(history[0].at).getTime(),t1=new Date(history.at(-1).at).getTime();if(t0===t1)t1=t0+1000;
+points=history.map(x=>({x:left+(new Date(x.at).getTime()-t0)/(t1-t0)*(right-left),y:top+(hi-x.equity_gbp)/(hi-lo)*(bottom-top),raw:x}));
+const poly=points.map(x=>x.x.toFixed(1)+','+x.y.toFixed(1)).join(' ');
+el('line',{x1:left,y1:bottom,x2:right,y2:bottom,stroke:'#35455c'});
+el('polyline',{points:poly,fill:'none',stroke:'#65dab0','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});
+el('circle',{cx:points.at(-1).x,cy:points.at(-1).y,r:5,fill:'#68e6b8',stroke:'#0d1421','stroke-width':2});
+el('text',{x:left,y:248,class:'axis'},uk(history[0].at));el('text',{x:right,y:248,class:'axis','text-anchor':'end'},uk(history.at(-1).at));
+hint.textContent=history.length+' priced snapshots · Last recorded equity '+money(history.at(-1).equity_gbp)+'. Gaps reflect unavailable pricing or missed cycles.';}
+$('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
+$('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
+document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
+function render(s){state=s;health(s);simpleOverview(s);
+ const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
+ document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
+ const paired=s.research?.forward_experiment_v1?.summary;
+ document.getElementById('paired-status').textContent=paired ? paired.status+' · last observation '+paired.last_run+' · challenger equity difference $'+paired.delta_equity_usd+' · ends '+paired.end_at : 'Not registered yet · no demonstrated improvement.';
+ const rows=document.getElementById('paired-rows');rows.replaceChildren();
+ for(const [name,m] of Object.entries(paired?.arms||{})){const tr=document.createElement('tr');for(const value of [name,m.closed+' / '+m.wins,'$'+m.net_usd,m.profit_factor??'—',m.entry_block||'Existing risk gates']){const td=document.createElement('td');td.textContent=value;tr.appendChild(td);}rows.appendChild(tr);}
+let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
+$('equity').textContent=eq===null?'UNAVAILABLE':money(eq);$('totalPnl').textContent=gross===null?'—':money(gross,true);$('totalPnl').className='value '+color(gross);$('return').textContent=gross===null?'No complete portfolio valuation':pct(gross/(num(s.starting_gbp)||2000)*100)+' versus starting capital';$('realized').textContent=money(realized,true);$('realized').className='value '+color(realized);$('open').textContent=(s.positions||[]).length;$('closed').textContent=(s.closed||[]).length+' closed · '+wins+' wins';$('positionCount').textContent=(s.positions||[]).length+' POSITIONS';
+$('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCount').textContent=Object.keys(s.observed||{}).length;$('stale').textContent=s.stale_signals||0;$('priced').textContent=(s.snapshots||[]).filter(x=>num(x.equity_gbp)!==null).length;$('errors').textContent=s.cycle_health?.errors_this_cycle??(s.errors||[]).filter(e=>e.at&&s.last_run&&Math.abs(new Date(e.at)-new Date(s.last_run))<=120000).length;
+table('positions',s.positions||[],[
+ p=>safe(p.pool_name||'Unknown'),
+ p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',
+ p=>money(p.notional_gbp),
+ p=>{const adds=Array.isArray(p.additions)?p.additions:[];const total=adds.reduce((a,x)=>a+(num(x.notional_gbp)||0),0);return adds.length?safe(adds.length)+' · +'+money(total):'None';},
+ p=>{const mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp),at=p.last_mark_at?Date.parse(p.last_mark_at):NaN;
+  const fresh=Number.isFinite(at)&&Date.now()-at<=15*60000&&Date.now()>=at-30000&&p.position_action!=='UNPRICED_HOLD';
+  const value=fresh&&mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;
+  return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>';},
+ p=>p.highest_net_roi_pct===undefined?'Collecting':safe(p.highest_net_roi_pct)+'%',
+ p=>{const stop=num(p.trailing_stop_price_usd);const action=String(p.position_action||'COLLECTING_MARKS').replaceAll('_',' ');
+  return safe(action)+(stop?' · trailing USD '+safe(stop.toPrecision(6)):' · basic stop / 6h cap');},
+ p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?h.toFixed(1)+' h':'—';}
+],'No open paper positions.');
+table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
+const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedTradeHistoryRender?.(s);window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+document.querySelectorAll('[data-open-details]').forEach(a=>a.addEventListener('click',()=>{const d=document.getElementById(a.dataset.openDetails);if(d)d.open=true;}));
+poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
+})();
+</script>
+
+
+<details class="research-drawer" id="futures-details"><summary>Futures execution detail · open positions, exits, missed winners and learning history</summary>
+<section id="strategies-v1" class="v2-section">
+<div class="v2-head"><div><h2>Two-way paper strategies</h2><p>One independent $2,000 USD challenger: momentum long/short and pump-fade short. The original £2,000 account remains above. Percentage returns have different exposure and costs; these are not equal-risk comparisons.</p></div></div>
+<p id="strategy-status" class="v2-alert">Awaiting first forward scan.</p>
+<div class="table-wrap"><table><thead><tr><th>Equity</th><th>Realised</th><th>Closed / wins</th><th>Profit factor</th><th>Max drawdown</th><th>Cost stress P&amp;L</th></tr></thead><tbody id="strategy-metrics"></tbody></table></div>
+<h3>Current position and selection</h3><p id="strategy-position"></p><p id="strategy-selection"></p>
+<h3>Learning evidence</h3><p id="strategy-learning"></p>
+<h3>Forward outcomes · not executed trades</h3><p id="strategy-forward"></p>
+<div class="table-wrap"><table><thead><tr><th>Observed UTC</th><th>Instrument</th><th>Setup</th><th>Why skipped</th><th>60m net quote return</th></tr></thead><tbody id="strategy-missed"><tr><td colspan="5">Awaiting future observed quotes.</td></tr></tbody></table></div>
+<h3>Recent actions</h3><div class="table-wrap"><table><thead><tr><th>UTC</th><th>Action</th><th>Instrument</th><th>Setup</th><th>Detail</th></tr></thead><tbody id="strategy-events"></tbody></table></div>
+<p>Public Kraken perpetual prices; simulated fills at bid/ask plus 0.10% adverse slippage and 0.05% fee each side. Adverse carry reserve: at least 0.01%/hour, or greater observed absolute funding rate; no funding credits. This is a conservative estimate, not exchange funding settlement. Stress deducts another 0.35% each side. Exits are sampled every five minutes and can gap beyond stops. No paid AI, live orders or automatic promotion.</p>
+</section>
+<script>
+window.unifiedStrategyRender=function(s){
+ const b=s.research?.strategies_v1;if(!b)return;
+ const el=id=>document.getElementById(id), put=(id,v)=>el(id).textContent=v;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const money=v=>'$'+Number(v??0).toFixed(2), summary=b.summary||{};
+ const names=[['momentum_long','Momentum · long'],['momentum_short','Momentum · short'],['pump_fade','Pump fade · short']];
+ const rows=names.map(([name,label])=>{
+   const f=summary.feedback?.[name]||{};
+   const closes=(b.closed||[]).filter(t=>t.setup===name && t.version===b.version);
+   const wins=closes.filter(t=>Number(t.net_usd)>0).length;
+   const decision=f.paused?'PAUSED · losses':f.cooldown?'COOLDOWN':f.recovery?.status==='RECOVERED'?'RECOVERED · monitoring':f.reinforced?'POSITIVE TEST EVIDENCE':'TESTING · unproven';
+   const cls=f.paused?'health-paused':'health-current';
+   return '<tr><td>'+esc(label)+'</td><td class="'+cls+'">'+esc(decision)+'</td><td>'+esc(f.closed??closes.length)+'</td><td>'+esc(closes.length?wins+'/'+closes.length:'—')+'</td></tr>';
+ });
+ el('strategy-overview-rows').innerHTML=rows.join('');
+ const v2=Object.values(s.research?.shadow_reports||{});
+ const v3=Object.values(s.research?.whale_v3?.shadow_reports||{});
+ const allShadows=[...v2,...v3],retired=allShadows.filter(x=>x.status==='RETIRED_NEGATIVE_EVIDENCE').length;
+ put('strategy-overview-shadows', 'Shadow research: '+allShadows.length+' variants · '+retired+' retired on negative evidence · '+(allShadows.length-retired)+' testing/review. No shadow outcomes count as actual portfolio wins.');
+ const whale=s.research?.whale_v3||{};
+ put('strategy-overview-health', 'Futures: '+(b.status||'UNPROVEN')+' · '+(b.entry_status||'—')+' · Whale feed: '+(whale.status||'UNAVAILABLE')+' · research outcomes require forward validation.');
+ const stale=!b.last_run||Date.now()-new Date(b.last_run).valueOf()>1200000;
+ put('strategy-status',(stale?'STALE · ':'')+(b.status||'UNPROVEN')+' · '+(b.entry_status||'')+' · '+(b.last_run||'')+' · '+(b.error||'')+' · '+(b.feed?.scanned||0)+' scanned / '+(b.feed?.eligible||0)+' liquid instruments; '+Object.keys(b.feed?.errors||{}).length+' candle failures');
+ el('strategy-metrics').innerHTML='<tr>'+[money(b.equity_usd),money(summary.net_usd),(summary.closed||0)+' / '+(summary.wins||0),summary.profit_factor==null?'—':Number(summary.profit_factor).toFixed(2),Number(b.max_drawdown_pct||0).toFixed(2)+'%',money(summary.stress_net_usd)].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>';
+ const p=b.position;put('strategy-position',p?(p.direction===1?'LONG ':'SHORT ')+p.symbol+' · '+p.setup+' · net '+money(p.net_usd)+' · stop '+Number(p.stop).toPrecision(6)+' · winner add '+(p.added?'used':'available')+' · quote '+p.marked_at:'Flat; no forced trades.');
+ put('strategy-selection',(b.candidates||[]).map(c=>c.symbol+' '+c.setup+' '+(c.feedback.allowed?'eligible':c.feedback.paused?'setup paused after losses':'cooldown')).join(' | ')||'No qualified candle setup in the scanned universe.');
+ put('strategy-learning',Object.entries(summary.feedback||{}).map(([name,f])=>name+': '+f.closed+' closed, '+(f.paused?'PAUSED':f.reinforced?'validated risk ×1.25':'unproven risk ×1.00')).join(' | ')+' · Registered '+b.registered_at+'. Reinforcement requires 20 training + 10 subsequent validation closures per setup, 14 days, three instruments and positive results excluding the best winner and under cost stress in both splits. One add to an open winner is a separate bounded rule.');
+ const missed=b.missed_winners||{}, forward=b.forward_summary?.['60m']||{}, rec=b.recovery_v1||{};
+ put('strategy-forward',
+     '60-minute observed quotes: '+(forward.priced||0)+' priced, '+(forward.missing||0)+' missing · '
+     +(missed.evaluated||0)+' non-entered setup outcomes, '+(missed.winners||0)+' positive net · '
+     +'These are hypothetical quote observations, NOT executed winning trades. Recovery: '
+     +Object.entries(rec).map(([name,x])=>name+' '+x.status+' ('+(x.evaluated||0)+' retests)').join('; '));
+ const missedRows=missed.top_missed||[];
+ el('strategy-missed').innerHTML=missedRows.length
+     ?missedRows.map(x=>'<tr>'+[
+         x.at,x.symbol,x.setup,x.reason,
+         Number(x.net_quote_roi_pct).toFixed(2)+'% (hypothetical)'
+       ].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')
+     :'<tr><td colspan="5">No verified positive missed 60-minute quote outcomes yet.</td></tr>';
+ el('strategy-events').innerHTML=(b.events||[]).slice(-12).reverse().map(e=>'<tr>'+[e.at,e.action,e.symbol,e.setup,e.reason??(e.net_usd!=null?money(e.net_usd):e.notional_usd!=null?money(e.notional_usd):'')].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('');
+};
+</script>
+</details>
+
+<section id="decisions-v1" class="v2-section"><div class="v2-head"><div><h2>History-aware decisions</h2><p>Losses change entry eligibility across wallets. Positive history changes selection priority; larger allocations still require independent forward validation.</p></div></div>
+<div class="v2-panel"><h3 id="policy-status">Awaiting first policy cycle</h3><p id="policy-news"></p><p id="policy-scope"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Pool</th><th>24h net / closes</th><th>Entry decision</th><th>Technical context</th></tr></thead><tbody id="policy-pools"></tbody></table></div></div>
+<div class="v2-panel"><h3>Forward accepted versus blocked signals</h3><p id="policy-forward"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Cohort</th><th>Horizon</th><th>Priced / missing</th><th>Mean net quote return</th></tr></thead><tbody id="policy-outcomes"></tbody></table></div><p id="policy-headlines"></p></div></section>
+<script>
+window.unifiedDecisionRender=function(s){
+ const d=s.research?.decision_v1,n=s.research?.news_v1||{},get=id=>document.getElementById(id);
+ if(!d)return;
+ get('policy-status').textContent='Active entry policy · registered '+new Date(d.registered_at).toLocaleString('en-GB',{timeZone:'Europe/London'})+' · improvement UNPROVEN';
+ get('policy-news').textContent='News: '+(n.status||'UNAVAILABLE')+' · checked '+(n.checked_at||'never')+' · '+Object.entries(n.sources||{}).map(([k,v])=>k+': '+v.status).join(' · ');
+ get('policy-scope').textContent=n.scope||'No verified news context';
+ const write=(id,rows)=>{const body=get(id);body.replaceChildren();rows.forEach(values=>{const tr=document.createElement('tr');values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});body.appendChild(tr)})};
+ const num=v=>typeof v==='number'?v.toFixed(2):'unavailable';
+ write('policy-pools',Object.entries(d.assessments||{}).map(([pool,a])=>[(s.watched_pools||[]).find(p=>p.pool===pool)?.name||pool,'£'+num(a.history.net_gbp)+' / '+a.history.closed,a.allowed?'Eligible · priority '+num(a.selection_score):a.reasons.join('; '),'5m '+num(a.technical.change_5m_pct)+'% · 1h '+num(a.technical.change_1h_pct)+'% · volume pace '+num(a.technical.volume_pace_ratio)+'x']));
+ get('policy-forward').textContent=(d.forward_description||'')+' Pending: '+(d.forward_pending||[]).length+'. Mature: '+(d.forward_outcomes||[]).length+'.';
+ write('policy-outcomes',Object.entries(d.forward_summary||{}).flatMap(([cohort,values])=>Object.entries(values).map(([h,v])=>[cohort,h,v.priced+' / '+v.missing,num(v.mean_net_quote_roi_pct)+'%'])));
+ get('policy-headlines').textContent=(n.items||[]).map(x=>x.source+': '+x.title+' ('+x.published_at+')').join(' · ')||'No recent relevant headlines in the available sources. Unavailable sources provide no evidence.';
+};
+</script>
+<!-- UNIFIED_V2_JS -->
+<script>
+/* Unified V2: renders from the canonical dashboard's existing state.json fetch. */
+(function () {
+  'use strict';
+  const by = id => document.getElementById(id);
+  const numeric = v => v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v);
+  const number = v => numeric(v) === null ? '—' : Number(v).toLocaleString('en-GB');
+  const gbp = v => numeric(v) === null ? '—' : (Number(v) < 0 ? '−£' : '£') + Math.abs(Number(v)).toLocaleString('en-GB', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const pct = v => numeric(v) === null ? '—' : Number(v).toFixed(2) + '%';
+  const short = v => v ? String(v).slice(0, 6) + '…' + String(v).slice(-4) : '—';
+  const uk = v => {
+    if (!v) return '—';
+    const d = new Date(v);
+    return Number.isFinite(d.valueOf()) ? d.toLocaleString('en-GB', {timeZone: 'Europe/London', dateStyle: 'medium', timeStyle: 'medium'}) : '—';
+  };
+  const td = (text, row, className) => {
+    const node = document.createElement('td');
+    node.textContent = text === null || text === undefined ? '—' : String(text);
+    if (className) node.className = className;
+    row.appendChild(node);
+    return node;
+  };
+  const rows = (id, values, empty, cols) => {
+    const target = by(id);
+    if (!target) return;
+    target.replaceChildren();
+    if (!values.length) {
+      const tr = document.createElement('tr');
+      const cell = td(empty, tr);
+      cell.colSpan = cols;
+      target.appendChild(tr);
+      return;
+    }
+    values.forEach(arr => {
+      const tr = document.createElement('tr');
+      arr.forEach(v => td(v, tr));
+      target.appendChild(tr);
+    });
+  };
+  const value = (id, v) => {const node = by(id); if (node) node.textContent = String(v);};
+  const ratio = (n, total) => !total ? '0%' : Math.round(n * 100 / total) + '%';
+
+  function render(s) {
+    // The public state is not a live broker account. Reject incompatible data.
+    if (!s || s.paper_only !== true || Number(s.starting_gbp) !== 2000) {
+      value('v2-execution-status', 'Account integrity warning: unexpected paper-state schema or starting capital.');
+      return;
+    }
+    const r = s.research || {};
+    const actual = r.actual_report || {};
+    const walletRank = Array.isArray(r.wallet_rankings) ? r.wallet_rankings : [];
+    const reinforced = walletRank.filter(x => String(x.reinforcement_tier || '').startsWith('reinforced'));
+    const closed = Array.isArray(s.closed) ? s.closed : [];
+    const wallets = new Set(closed.map(x => x.wallet).filter(Boolean));
+    const signals = Array.isArray(r.signals) ? r.signals : [];
+    const observations = Array.isArray(r.pool_observations) ? r.pool_observations : [];
+    const shadow = r.shadow_reports || {};
+    const features = r.feature_reports || {};
+    const execution = s.execution || {};
+
+    value('v2-signals', number(signals.length));
+    value('v2-observations', number(observations.length));
+    value('v2-closed-wallets', number(wallets.size));
+    value('v2-reinforced', number(reinforced.length));
+    rows('v2-wallets', walletRank.slice(0, 20).map(x => [short(x.wallet), x.closed ?? 0, gbp(x.net_gbp), pct(x.win_rate_wilson_lower_pct), x.reinforcement_tier || 'exploration']), 'No closed-trade wallet scores have been recorded.', 5);
+
+    const winners = closed.filter(x => numeric(x.net_pnl_gbp) !== null && x.net_pnl_gbp > 0).length;
+    const realized = closed.reduce((sum, x) => sum + (numeric(x.net_pnl_gbp) || 0), 0);
+    rows('v2-actual-metrics', [
+      ['Completed paper trades', number(closed.length)],
+      ['Winning paper trades', number(winners) + ' (' + ratio(winners, closed.length) + ')'],
+      ['Realised net P&L (cost-adjusted)', gbp(realized)],
+      ['Profit factor', numeric(actual.profit_factor) === null ? '—' : Number(actual.profit_factor).toFixed(2)],
+      ['Worst realised drawdown in trade sequence', gbp(actual.max_drawdown_gbp)],
+      ['Conservative mean trade ROI', pct(actual.conservative_mean_roi_95_pct)],
+      ['Distinct exit days', number(actual.distinct_exit_days)]
+    ], 'Waiting for completed trades.', 2);
+    const best = walletRank.reduce((m, x) => Math.max(m, numeric(x.closed) || 0), 0);
+    rows('v2-thresholds', [
+      ['Most closures from one sender', String(best)],
+      ['First wallet sizing tier', 'Legacy quality gates + registered forward validation'],
+      ['Second wallet sizing tier', 'Stronger legacy gates + registered forward validation'],
+      ['Feature reinforcement', '40+ qualified closes / 14+ days, diversity gates'],
+      ['Current reinforced wallets', number(reinforced.length)],
+      ['Upper allocation cap', '1.5% paper equity']
+    ], 'Waiting for reinforcement evidence.', 2);
+    value('v2-learning-verdict', reinforced.length ?
+      (reinforced.length + ' wallet(s) currently satisfy reinforcement rules; this does not establish that profit improvement is causal.') :
+      ('No wallet has qualified for higher allocation. Evidence is still being collected across independent closed paper trades.'));
+    rows('v2-features', Object.entries(features).map(([k, x]) => [k, number(x.closed), gbp(x.net_gbp), pct(x.conservative_mean_roi_95_pct), x.status || 'COLLECTING_EVIDENCE']), 'Not enough instrumented closed trades for feature scoring.', 5);
+
+    rows('v2-shadow', Object.entries(shadow).map(([name, x]) => [name, number(x.closed), number(x.open_positions), gbp(x.net_gbp), numeric(x.profit_factor) === null ? '—' : Number(x.profit_factor).toFixed(2), x.status || 'COLLECTING_EVIDENCE']), 'Shadow experiments have not recorded any results.', 6);
+    const events = [
+      ...(Array.isArray(r.reinforcement_events) ? r.reinforcement_events : []).map(x => ({...x, action: 'REINFORCEMENT', details: (x.from_tier || 'exploration') + ' → ' + (x.to_tier || 'unknown') + ' · ' + (x.evidence || '')})),
+      ...(Array.isArray(r.events) ? r.events : []).map(x => ({...x, details: x.reason || (numeric(x.net_pnl_gbp) !== null ? gbp(x.net_pnl_gbp) : 'signal lag ' + (x.signal_lag_seconds ?? '—') + 's')}))
+    ].sort((a, b) => (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0)).slice(0, 65);
+    const evaluation = r.evaluation_v1 || {};
+    value('evaluation-status', 'Profitability UNPROVEN · Evaluation '+(evaluation.status||'UNPROVEN')+(evaluation.last_error?' · '+evaluation.last_error:'')+' · Registered ' + uk(evaluation.registered_at) + ' · ' + number(evaluation.validated_reports || 0) + ' validated cohorts · ' + number(evaluation.positive_reinforcement_events || 0) + ' positive sizing events · ' + number(evaluation.sampled_adverse_selection?.tracked_entries || 0) + ' entries with subsequent sampled quotes');
+    rows('evaluation-reports', Object.entries(evaluation.reports || {}).filter(([key]) => !key.startsWith('wallet:')).slice(0,20).map(([key,x])=>[key, (x.training?.closed||0)+' / '+(x.training?.days||0), (x.validation?.closed||0)+' / '+(x.validation?.days||0), pct(x.validation?.daily_cluster_lower_pct), pct(x.validation?.cost_stress?.['2pct_each_side_mean_roi_pct']), x.status||'UNPROVEN']), 'No registered forward outcomes yet.', 6);
+    rows('evaluation-exits', Object.entries(evaluation.exit_diagnostics || {}).map(([key,x])=>[key,x.closed||0,gbp(x.net_gbp),pct(x.cost_stress?.['2pct_each_side_mean_roi_pct'])]), 'No exit diagnostic data.', 4);
+    rows('v2-events', events.map(x => [uk(x.at), x.action || '—', x.strategy || short(x.wallet) || short(x.token), x.details || '—']), 'No research or reinforcement events recorded.', 4);
+
+    const validRun = /^\d{8,15}$/.test(String(execution.run_id || ''));
+    const external = execution.event === 'workflow_dispatch' && execution.scheduler === 'google-apps-script';
+    const google = external && !!execution.trigger_uid && !!execution.scheduled_at && validRun;
+    const native = execution.event === 'schedule';
+    const schedulerLabel = google ? 'Google Apps Script · unattended API dispatch' : native ? 'GitHub native scheduled trigger' : external ? 'Google fallback · incomplete execution provenance' : (execution.scheduler || 'Not independently identified');
+    const age = s.last_data_at ? (Date.now() - new Date(s.last_data_at).getTime()) / 60000 : Infinity;
+    const fresh = age >= 0 && age <= 20 && s.last_status === 'OK';
+    value('v2-execution-status', fresh ?
+      ('Market feed OK · ' + schedulerLabel + ' · observation ' + uk(s.last_data_at)) :
+      ('FEED / SCHEDULER NEEDS CHECK · latest data ' + uk(s.last_data_at) + ' · engine state ' + (s.last_status || 'UNKNOWN')));
+    const statusNode = by('v2-execution-status');
+    statusNode.className = 'v2-alert' + (fresh ? '' : ' v2-negative');
+    rows('v2-provenance', [
+      ['Paper account initialised', uk(s.initialized_at)],
+      ['Starting balance', gbp(s.starting_gbp)],
+      ['Completed main cycles', number(s.completed_cycles)],
+      ['Latest run (UK)', uk(s.last_run)],
+      ['Scheduler provenance', schedulerLabel],
+      ['GitHub event', execution.event || '—'],
+      ['Trigger UID', execution.trigger_uid || '—'],
+      ['Scheduled UTC', execution.scheduled_at || '—'],
+      ['GitHub run ID', validRun ? execution.run_id : 'Unverified']
+    ], 'No scheduler metadata.', 2);
+    const runNode = by('v2-run-link');
+    if (runNode) runNode.remove();
+    if (validRun) {
+      const link = document.createElement('a');
+      link.id = 'v2-run-link';
+      link.className = 'v2-link';
+      link.href = 'https://github.com/rayyansorefan/standalone-wallet-paper-agent/actions/runs/' + execution.run_id;
+      link.rel = 'noopener noreferrer';
+      link.target = '_blank';
+      link.textContent = 'View latest GitHub execution ↗';
+      by('v2-run-link-wrap').appendChild(link);
+    }
+    rows('v2-research-health', [
+      ['Research module', r.version ? 'Adaptive v' + r.version : 'Not yet present'],
+      ['Research status', r.last_status || 'NOT AVAILABLE'],
+      ['Market-feed status', s.last_status || 'UNKNOWN'],
+      ['Last research update (UK)', uk(r.last_run)],
+      ['Shadow open positions', number((r.shadow_positions || []).length)],
+      ['Recorded research errors this cycle', number((r.cycle_errors || []).length)],
+      ['Actual positions', number((s.positions || []).length)],
+      ['Actual completed trades', number(closed.length)]
+    ], 'No research telemetry.', 2);
+    value('v2-checked', 'One JSON source for both views · Browser rendered ' + uk(new Date().toISOString()) + ' · Refresh every 60 seconds.');
+  }
+  window.unifiedResearchRender = render;
+  window.unifiedResearchFailure = function (error) {
+    value('v2-execution-status', 'DATA FETCH FAILED · ' + String(error?.message || error).slice(0, 140));
+    const el = by('v2-execution-status');
+    if (el) el.className = 'v2-alert v2-negative';
+  };
+}());
+
+</script>
+
+<!-- WHALE_V3_JS -->
+<script>
+/* WHALE_V3_RENDER: shares the existing state.json fetch and refresh. */
+(()=>{'use strict';
+  const byId=id=>document.getElementById(id);
+  const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=(value,sign='£')=>Number.isFinite(Number(value))&&value!==null ? sign+Number(value).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  const uk=value=>{if(!value)return '—';let d=new Date(value);return Number.isFinite(d.valueOf())?new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d):'—';};
+  const short=value=>value?String(value).slice(0,5)+'…'+String(value).slice(-4):'—';
+  const rowTable=(id,rows,cols,empty)=>{const target=byId(id);if(!target)return;target.innerHTML=rows.length?rows.map(record=>'<tr>'+cols.map(f=>'<td>'+f(record)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+esc(empty)+'</td></tr>';};
+  const metric=(id,value)=>{const el=byId(id);if(el)el.textContent=String(value);};
+  const amountColor=num=>Number(num)>0?'positive':Number(num)<0?'negative':'';
+  window.unifiedWhaleFailure=function(error){const el=byId('v3-status');if(el){el.textContent='DATA FETCH FAILED · '+String(error?.message||error).slice(0,140);el.className='v2-alert v2-negative';}};
+  window.unifiedWhaleRender=function(s){
+    try{
+      const w=s?.research?.whale_v3;
+      const banner=byId('v3-status');
+      if(!w){if(banner){banner.textContent='Whale Intelligence has not yet been deployed or has not completed its first cycle. The original V2 trading engine remains separate.';banner.className='v2-alert';}return;}
+      const sc=w.scanner||{}, reports=w.shadow_reports||{},flows=w.recent_flows||[], profiles=w.sender_profiles||{},senderReports=w.sender_shadow_reports||{};
+      const recentRun=w.last_run?new Date(w.last_run):null;
+      const minutes=recentRun?((Date.now()-recentRun.valueOf())/60000):Infinity;
+      const stale=!Number.isFinite(minutes)||minutes<0||minutes>20;
+      if(banner){banner.className='v2-alert';banner.textContent='V3 '+(w.status||'UNKNOWN')+(stale?' · STALE research':' · latest research '+uk(w.last_run))+' · Transaction senders are unverified. No automatic promotion into the £2,000 account.';}
+      metric('v3-large',sc.large_flows??0);
+      metric('v3-very-large',sc.very_large_flows??0);
+      metric('v3-senders',Object.keys(profiles).length);
+      metric('v3-closed',(w.shadow_closed||[]).length);
+      rowTable('v3-strategies',Object.entries(reports).map(([strategy,data])=>({strategy,...data})),[
+        x=>esc(x.strategy.replaceAll('_',' ')),x=>esc(x.closed??0),x=>esc(x.open_positions??0),
+        x=>'<span class="'+amountColor(x.net_gbp)+'">'+esc(money(x.net_gbp))+'</span>',
+        x=>esc(money(x.net_gbp_at_2pct_each_side)),x=>esc(money(x.net_gbp_at_5pct_each_side)),
+        x=>esc(((Number(x.allocation_fraction_of_original_equity)||0)*100).toFixed(2)+'%'),
+        x=>esc(x.status||'COLLECTING_EVIDENCE')], 'Research collecting its first closed outcomes');
+      const ranked=Object.entries(profiles).map(([wallet,x])=>({wallet,...x})).sort((a,b)=>(Number(b.buy_volume_usd)||0)-(Number(a.buy_volume_usd)||0)).slice(0,15);
+      rowTable('v3-wallets',ranked,[x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',x=>esc(x.buys||0),x=>esc(x.sells||0),x=>esc(money(x.buy_volume_usd,'$')),
+        x=>esc(senderReports[x.wallet]?.closed??0),
+        x=>'<span class="'+amountColor(senderReports[x.wallet]?.net_gbp||0)+'">'+esc(money(senderReports[x.wallet]?.net_gbp??0))+'</span>'], 'No candidate senders sampled yet');
+      rowTable('v3-open',(w.shadow_positions||[]).slice(0,10),[
+        x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),x=>esc(money(x.notional_gbp)),
+        x=>x.last_mark_price_usd?esc(Number(x.last_mark_price_usd).toPrecision(6)):'UNPRICED'], 'No whale shadow positions yet');
+      rowTable('v3-flows',flows.slice(-18).reverse(),[
+        x=>esc(uk(x.at)),x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',
+        x=>esc(x.pool_name||short(x.token)),x=>esc(x.kind),x=>esc(money(x.usd,'$')),x=>esc(x.sender_identity||'UNVERIFIED')], 'No qualifying whale-sized transactions sampled yet');
+      rowTable('v3-exits',(w.shadow_closed||[]).slice(-12).reverse(),[
+        x=>esc(uk(x.exit_at)),x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),
+        x=>'<span class="'+amountColor(x.net_pnl_gbp)+'">'+esc(money(x.net_pnl_gbp))+'</span>',x=>esc(x.exit_reason)], 'No forward whale exits yet');
+      rowTable('v3-followups',[...(w.flow_outcomes||[]),...(w.flow_followups||[])].slice(-12).reverse(),[x=>esc(short(x.wallet)),x=>esc(short(x.token)),...['5m','30m','60m'].map(k=>x=>x.marks?.[k]?esc(Number(x.marks[k].quote_return_pct).toFixed(2)+'%'):'UNAVAILABLE')],'No later forward observations yet');
+      rowTable('v3-health',[
+        ['V3 research last run',uk(w.last_run)],['V3 status',w.status||'UNKNOWN'],
+        ['Supplemental Solana pools',sc.additional_pools??0],
+        ['Rotating pool inventory',sc.inventory_pools??0],
+        ['Sampled transaction-origin addresses',Object.keys(w.sampled_activity||{}).length],
+        ['Multi-pool origins · owner unresolved',Object.values(w.sampled_activity||{}).filter(x=>x.attribution==='MULTI_POOL_OR_ROUTER_POSSIBLE').length],
+        ['Research requests / cycle cap',(w.scan_metrics?.requests??0)+' / 4'],
+        ['Discovery cache hits',w.scan_metrics?.cache_hits??0],
+        ['Deferred research requests',w.scan_metrics?.deferred??0],
+        ['Supplemental quote source',w.scan_metrics?.quote_provider||'geckoterminal'],
+        ['Provider circuits',Object.entries(w.provider_health||{}).map(([k,v])=>k+': '+(v.retry_at?'cooldown until '+v.retry_at:'available')).join('; ')||'Not sampled'],
+        ['Observed flow follow-ups',(w.flow_followups||[]).length+' pending / '+(w.flow_outcomes||[]).length+' completed; quote returns, not wallet profit'],
+        ['Fresh supplemental quote pools',w.scan_metrics?.quote_pools??0],
+        ['Supplemental trade feeds read',w.scan_metrics?.trade_feeds??0],
+        ['Last supplemental market data',uk(w.last_market_data_at)],
+        ['Research elapsed seconds',w.scan_metrics?.elapsed_seconds??'—'],
+        ['Primary-provider window wait seconds',w.scan_metrics?.primary_window_wait_seconds??0],
+        ['Shadow strategies','large_repeat, very_large, accumulation'],
+        ['Fresh large-flow observations',sc.fresh_signals??0],
+        ['Current scan errors',(w.last_scan_errors||[]).slice(-2).join('; ')||'None'],
+        ['Verified whale owners','None — attribution not established'],
+        ['Actual paper account changed by V3','No — research and shadow simulations only']
+      ].map(([name,value])=>({name,value})),[x=>esc(x.name),x=>esc(x.value)],'No V3 health evidence');
+    }catch(error){const banner=byId('v3-status');if(banner)banner.textContent='Whale V3 dashboard rendering unavailable: '+String(error.message).slice(0,100);}
+  };
+})();
+
+</script>
+</body></html>
+:'
+function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_data_at):null,age=last?(Date.now()-last.getTime())/60000:null,run=s?.last_run?new Date(s.last_run):null;
+let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
+el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
+$('statusMessage').textContent=!run?'No market observations have been completed. There are no trading results yet.':age===null?'No verified trade-feed data is available yet; portfolio values may not be current.':age>15?'The underlying market feed is more than 15 minutes old. Data is not current.':s.last_status==='PARTIAL_SCREENING_UNAVAILABLE'?'One or more tokens could not be security-screened and were blocked. Other safe-token trade feeds succeeded; consult the audit for provider errors.':s.last_status==='PARTIAL_TRADE_FEEDS_UNAVAILABLE'?'Some market trade feeds were unavailable, so no trades were copied from those pools. Other safe-token feeds succeeded; coverage was incomplete.':'The research process has checked market data. Values are snapshots, not live quotes.';
+$('updated').textContent='Most recent cycle: '+uk(s?.last_run)+' · Last successful trade-feed fetch: '+uk(s?.last_data_at)+' · Screening: '+(s.cycle_health?.screened_pass??'—')+' passed / '+(s.cycle_health?.screened_unavailable??'—')+' unavailable · Trade feeds: '+(s.cycle_health?.trade_feeds_sampled??'—')+' sampled / '+(s.cycle_health?.trade_feeds_unavailable??'—')+' unavailable · Dashboard checks every 60 seconds.';}
+function table(id,rows,cols,empty){$(id).innerHTML=rows.length?rows.map(r=>'<tr>'+cols.map(fn=>'<td>'+fn(r)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+safe(empty)+'</td></tr>';}
+function color(n){return n===null?'':n<0?'negative':n>0?'positive':'';}
+function draw(){const svg=$('chart'),s=state;while(svg.firstChild)svg.removeChild(svg.firstChild);points=[];
+const data=(s?.snapshots||[]).filter(x=>num(x.equity_gbp)!==null&&!isNaN(new Date(x.at)));let cut=span==='1d'?Date.now()-86400000:span==='7d'?Date.now()-604800000:0;const history=data.filter(x=>new Date(x.at).getTime()>=cut).slice(-400);const hint=$('chartNote');
+svg.setAttribute('viewBox','0 0 850 260');const ns='http://www.w3.org/2000/svg';const el=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.appendChild(n);return n};
+if(history.length<2){hint.textContent='Awaiting at least two successfully priced observations in this period.';el('text',{x:425,y:125,fill:'#95a9c6','text-anchor':'middle','font-size':14},'No verified progression data yet');return;}
+let values=history.map(x=>Number(x.equity_gbp)),lo=Math.min(...values),hi=Math.max(...values),pad=Math.max(1,(hi-lo)*.2);lo-=pad;hi+=pad;
+let left=72,right=836,top=16,bottom=224;for(let i=0;i<4;i++){let y=top+(bottom-top)*i/3,v=hi-(hi-lo)*i/3;el('line',{x1:left,y1:y,x2:right,y2:y,class:'gridline'});el('text',{x:60,y:y+4,class:'axis','text-anchor':'end'},'£'+v.toFixed(0));}
+let t0=new Date(history[0].at).getTime(),t1=new Date(history.at(-1).at).getTime();if(t0===t1)t1=t0+1000;
+points=history.map(x=>({x:left+(new Date(x.at).getTime()-t0)/(t1-t0)*(right-left),y:top+(hi-x.equity_gbp)/(hi-lo)*(bottom-top),raw:x}));
+const poly=points.map(x=>x.x.toFixed(1)+','+x.y.toFixed(1)).join(' ');
+el('line',{x1:left,y1:bottom,x2:right,y2:bottom,stroke:'#35455c'});
+el('polyline',{points:poly,fill:'none',stroke:'#65dab0','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});
+el('circle',{cx:points.at(-1).x,cy:points.at(-1).y,r:5,fill:'#68e6b8',stroke:'#0d1421','stroke-width':2});
+el('text',{x:left,y:248,class:'axis'},uk(history[0].at));el('text',{x:right,y:248,class:'axis','text-anchor':'end'},uk(history.at(-1).at));
+hint.textContent=history.length+' priced snapshots · Last recorded equity '+money(history.at(-1).equity_gbp)+'. Gaps reflect unavailable pricing or missed cycles.';}
+$('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
+$('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
+document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
+function render(s){state=s;health(s);simpleOverview(s);
+ const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
+ document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
+ const paired=s.research?.forward_experiment_v1?.summary;
+ document.getElementById('paired-status').textContent=paired ? paired.status+' · last observation '+paired.last_run+' · challenger equity difference $'+paired.delta_equity_usd+' · ends '+paired.end_at : 'Not registered yet · no demonstrated improvement.';
+ const rows=document.getElementById('paired-rows');rows.replaceChildren();
+ for(const [name,m] of Object.entries(paired?.arms||{})){const tr=document.createElement('tr');for(const value of [name,m.closed+' / '+m.wins,'$'+m.net_usd,m.profit_factor??'—',m.entry_block||'Existing risk gates']){const td=document.createElement('td');td.textContent=value;tr.appendChild(td);}rows.appendChild(tr);}
+let snapshot=s.snapshots?.at(-1),eq=snapshot?num(snapshot.equity_gbp):null,realized=(s.closed||[]).reduce((a,p)=>a+(num(p.net_pnl_gbp)||0),0),gross=eq===null?null:eq-(num(s.starting_gbp)||2000);const wins=(s.closed||[]).filter(p=>num(p.net_pnl_gbp)>0).length;
+$('equity').textContent=eq===null?'UNAVAILABLE':money(eq);$('totalPnl').textContent=gross===null?'—':money(gross,true);$('totalPnl').className='value '+color(gross);$('return').textContent=gross===null?'No complete portfolio valuation':pct(gross/(num(s.starting_gbp)||2000)*100)+' versus starting capital';$('realized').textContent=money(realized,true);$('realized').className='value '+color(realized);$('open').textContent=(s.positions||[]).length;$('closed').textContent=(s.closed||[]).length+' closed · '+wins+' wins';$('positionCount').textContent=(s.positions||[]).length+' POSITIONS';
+$('cycles').textContent=s.completed_cycles||s.snapshots?.length||0;$('walletCount').textContent=Object.keys(s.observed||{}).length;$('stale').textContent=s.stale_signals||0;$('priced').textContent=(s.snapshots||[]).filter(x=>num(x.equity_gbp)!==null).length;$('errors').textContent=s.cycle_health?.errors_this_cycle??(s.errors||[]).filter(e=>e.at&&s.last_run&&Math.abs(new Date(e.at)-new Date(s.last_run))<=120000).length;
+table('positions',s.positions||[],[
+ p=>safe(p.pool_name||'Unknown'),
+ p=>'<span class="code" title="'+safe(p.wallet||'')+'">'+safe(short(p.wallet))+'</span>',
+ p=>money(p.notional_gbp),
+ p=>{const adds=Array.isArray(p.additions)?p.additions:[];const total=adds.reduce((a,x)=>a+(num(x.notional_gbp)||0),0);return adds.length?safe(adds.length)+' · +'+money(total):'None';},
+ p=>{const mark=num(p.last_mark_price_usd),entry=num(p.entry_price_usd),cost=num(p.cost_gbp),at=p.last_mark_at?Date.parse(p.last_mark_at):NaN;
+  const fresh=Number.isFinite(at)&&Date.now()-at<=15*60000&&Date.now()>=at-30000&&p.position_action!=='UNPRICED_HOLD';
+  const value=fresh&&mark&&entry&&cost?p.notional_gbp*mark/entry*.99-cost:null;
+  return '<span class="'+color(value)+'">'+(value===null?'UNPRICED':money(value,true))+'</span>';},
+ p=>p.highest_net_roi_pct===undefined?'Collecting':safe(p.highest_net_roi_pct)+'%',
+ p=>{const stop=num(p.trailing_stop_price_usd);const action=String(p.position_action||'COLLECTING_MARKS').replaceAll('_',' ');
+  return safe(action)+(stop?' · trailing USD '+safe(stop.toPrecision(6)):' · basic stop / 6h cap');},
+ p=>{const h=p.opened_at?(Date.now()-new Date(p.opened_at).getTime())/3600000:NaN;return Number.isFinite(h)?h.toFixed(1)+' h':'—';}
+],'No open paper positions.');
+table('decisions',(s.decisions||[]).slice(-70).reverse(),[d=>safe(uk(d.at)),d=>'<span class="pill">'+safe(d.action)+'</span>',d=>'<span class="code" title="'+safe(d.wallet||'')+'">'+safe(short(d.wallet))+'</span>',d=>'<span class="truncate" title="'+safe(d.reason||'')+'">'+safe(d.reason||'')+'</span>'],'No qualified wallet signals or paper decisions recorded.');
+const wallets=Object.entries(s.observed||{}).map(([wallet,x])=>{const closed=(s.closed||[]).filter(c=>c.wallet===wallet),profit=closed.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);return {wallet,seen:x.count||0,closed:closed.length,profit};}).sort((a,b)=>b.closed-a.closed||b.seen-a.seen).slice(0,10);
+table('wallets',wallets,[x=>'<span class="code" title="'+safe(x.wallet)+'">'+safe(short(x.wallet))+'</span>',x=>safe(x.seen),x=>safe(x.closed),x=>'<span class="'+color(x.profit)+'">'+money(x.profit,true)+'</span>'],'No wallet candidate data yet.');draw();window.unifiedTradeHistoryRender?.(s);window.unifiedStrategyRender?.(s);window.unifiedDecisionRender?.(s);if(typeof window.unifiedResearchRender==='function')window.unifiedResearchRender(s);if(typeof window.unifiedWhaleRender==='function')window.unifiedWhaleRender(s);}
+async function poll(){let check=$('lastBrowserCheck');check.textContent=' · Last browser check: '+uk(new Date().toISOString());try{const r=await fetch('./state.json?stamp='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const s=await r.json();if(s.paper_only!==true)throw new Error('Non-paper data rejected');render(s);}catch(e){window.unifiedResearchFailure?.(e);window.unifiedWhaleFailure?.(e);$('freshness').className='badge bad';$('freshness').textContent='FEED UNAVAILABLE';$('statusTitle').textContent='Dashboard cannot fetch its observation feed';$('statusMessage').textContent='Could not fetch state.json ('+String(e.message).slice(0,140)+'). This page is not evidence that the agent is running.';}}
+document.querySelectorAll('[data-open-details]').forEach(a=>a.addEventListener('click',()=>{const d=document.getElementById(a.dataset.openDetails);if(d)d.open=true;}));
+poll();setInterval(poll,60000);setInterval(()=>{if(state)health(state)},15000);
+})();
+</script>
+
+
+<details class="research-drawer" id="futures-details"><summary>Futures execution detail · open positions, exits, missed winners and learning history</summary>
+<section id="strategies-v1" class="v2-section">
+<div class="v2-head"><div><h2>Two-way paper strategies</h2><p>One independent $2,000 USD challenger: momentum long/short and pump-fade short. The original £2,000 account remains above. Percentage returns have different exposure and costs; these are not equal-risk comparisons.</p></div></div>
+<p id="strategy-status" class="v2-alert">Awaiting first forward scan.</p>
+<div class="table-wrap"><table><thead><tr><th>Equity</th><th>Realised</th><th>Closed / wins</th><th>Profit factor</th><th>Max drawdown</th><th>Cost stress P&amp;L</th></tr></thead><tbody id="strategy-metrics"></tbody></table></div>
+<h3>Current position and selection</h3><p id="strategy-position"></p><p id="strategy-selection"></p>
+<h3>Learning evidence</h3><p id="strategy-learning"></p>
+<h3>Forward outcomes · not executed trades</h3><p id="strategy-forward"></p>
+<div class="table-wrap"><table><thead><tr><th>Observed UTC</th><th>Instrument</th><th>Setup</th><th>Why skipped</th><th>60m net quote return</th></tr></thead><tbody id="strategy-missed"><tr><td colspan="5">Awaiting future observed quotes.</td></tr></tbody></table></div>
+<h3>Recent actions</h3><div class="table-wrap"><table><thead><tr><th>UTC</th><th>Action</th><th>Instrument</th><th>Setup</th><th>Detail</th></tr></thead><tbody id="strategy-events"></tbody></table></div>
+<p>Public Kraken perpetual prices; simulated fills at bid/ask plus 0.10% adverse slippage and 0.05% fee each side. Adverse carry reserve: at least 0.01%/hour, or greater observed absolute funding rate; no funding credits. This is a conservative estimate, not exchange funding settlement. Stress deducts another 0.35% each side. Exits are sampled every five minutes and can gap beyond stops. No paid AI, live orders or automatic promotion.</p>
+</section>
+<script>
+window.unifiedStrategyRender=function(s){
+ const b=s.research?.strategies_v1;if(!b)return;
+ const el=id=>document.getElementById(id), put=(id,v)=>el(id).textContent=v;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const money=v=>'$'+Number(v??0).toFixed(2), summary=b.summary||{};
+ const names=[['momentum_long','Momentum · long'],['momentum_short','Momentum · short'],['pump_fade','Pump fade · short']];
+ const rows=names.map(([name,label])=>{
+   const f=summary.feedback?.[name]||{};
+   const closes=(b.closed||[]).filter(t=>t.setup===name && t.version===b.version);
+   const wins=closes.filter(t=>Number(t.net_usd)>0).length;
+   const decision=f.paused?'PAUSED · losses':f.cooldown?'COOLDOWN':f.recovery?.status==='RECOVERED'?'RECOVERED · monitoring':f.reinforced?'POSITIVE TEST EVIDENCE':'TESTING · unproven';
+   const cls=f.paused?'health-paused':'health-current';
+   return '<tr><td>'+esc(label)+'</td><td class="'+cls+'">'+esc(decision)+'</td><td>'+esc(f.closed??closes.length)+'</td><td>'+esc(closes.length?wins+'/'+closes.length:'—')+'</td></tr>';
+ });
+ el('strategy-overview-rows').innerHTML=rows.join('');
+ const v2=Object.values(s.research?.shadow_reports||{});
+ const v3=Object.values(s.research?.whale_v3?.shadow_reports||{});
+ const allShadows=[...v2,...v3],retired=allShadows.filter(x=>x.status==='RETIRED_NEGATIVE_EVIDENCE').length;
+ put('strategy-overview-shadows', 'Shadow research: '+allShadows.length+' variants · '+retired+' retired on negative evidence · '+(allShadows.length-retired)+' testing/review. No shadow outcomes count as actual portfolio wins.');
+ const whale=s.research?.whale_v3||{};
+ put('strategy-overview-health', 'Futures: '+(b.status||'UNPROVEN')+' · '+(b.entry_status||'—')+' · Whale feed: '+(whale.status||'UNAVAILABLE')+' · research outcomes require forward validation.');
+ const stale=!b.last_run||Date.now()-new Date(b.last_run).valueOf()>1200000;
+ put('strategy-status',(stale?'STALE · ':'')+(b.status||'UNPROVEN')+' · '+(b.entry_status||'')+' · '+(b.last_run||'')+' · '+(b.error||'')+' · '+(b.feed?.scanned||0)+' scanned / '+(b.feed?.eligible||0)+' liquid instruments; '+Object.keys(b.feed?.errors||{}).length+' candle failures');
+ el('strategy-metrics').innerHTML='<tr>'+[money(b.equity_usd),money(summary.net_usd),(summary.closed||0)+' / '+(summary.wins||0),summary.profit_factor==null?'—':Number(summary.profit_factor).toFixed(2),Number(b.max_drawdown_pct||0).toFixed(2)+'%',money(summary.stress_net_usd)].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>';
+ const p=b.position;put('strategy-position',p?(p.direction===1?'LONG ':'SHORT ')+p.symbol+' · '+p.setup+' · net '+money(p.net_usd)+' · stop '+Number(p.stop).toPrecision(6)+' · winner add '+(p.added?'used':'available')+' · quote '+p.marked_at:'Flat; no forced trades.');
+ put('strategy-selection',(b.candidates||[]).map(c=>c.symbol+' '+c.setup+' '+(c.feedback.allowed?'eligible':c.feedback.paused?'setup paused after losses':'cooldown')).join(' | ')||'No qualified candle setup in the scanned universe.');
+ put('strategy-learning',Object.entries(summary.feedback||{}).map(([name,f])=>name+': '+f.closed+' closed, '+(f.paused?'PAUSED':f.reinforced?'validated risk ×1.25':'unproven risk ×1.00')).join(' | ')+' · Registered '+b.registered_at+'. Reinforcement requires 20 training + 10 subsequent validation closures per setup, 14 days, three instruments and positive results excluding the best winner and under cost stress in both splits. One add to an open winner is a separate bounded rule.');
+ const missed=b.missed_winners||{}, forward=b.forward_summary?.['60m']||{}, rec=b.recovery_v1||{};
+ put('strategy-forward',
+     '60-minute observed quotes: '+(forward.priced||0)+' priced, '+(forward.missing||0)+' missing · '
+     +(missed.evaluated||0)+' non-entered setup outcomes, '+(missed.winners||0)+' positive net · '
+     +'These are hypothetical quote observations, NOT executed winning trades. Recovery: '
+     +Object.entries(rec).map(([name,x])=>name+' '+x.status+' ('+(x.evaluated||0)+' retests)').join('; '));
+ const missedRows=missed.top_missed||[];
+ el('strategy-missed').innerHTML=missedRows.length
+     ?missedRows.map(x=>'<tr>'+[
+         x.at,x.symbol,x.setup,x.reason,
+         Number(x.net_quote_roi_pct).toFixed(2)+'% (hypothetical)'
+       ].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')
+     :'<tr><td colspan="5">No verified positive missed 60-minute quote outcomes yet.</td></tr>';
+ el('strategy-events').innerHTML=(b.events||[]).slice(-12).reverse().map(e=>'<tr>'+[e.at,e.action,e.symbol,e.setup,e.reason??(e.net_usd!=null?money(e.net_usd):e.notional_usd!=null?money(e.notional_usd):'')].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('');
+};
+</script>
+</details>
+
+<section id="decisions-v1" class="v2-section"><div class="v2-head"><div><h2>History-aware decisions</h2><p>Losses change entry eligibility across wallets. Positive history changes selection priority; larger allocations still require independent forward validation.</p></div></div>
+<div class="v2-panel"><h3 id="policy-status">Awaiting first policy cycle</h3><p id="policy-news"></p><p id="policy-scope"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Pool</th><th>24h net / closes</th><th>Entry decision</th><th>Technical context</th></tr></thead><tbody id="policy-pools"></tbody></table></div></div>
+<div class="v2-panel"><h3>Forward accepted versus blocked signals</h3><p id="policy-forward"></p><div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Cohort</th><th>Horizon</th><th>Priced / missing</th><th>Mean net quote return</th></tr></thead><tbody id="policy-outcomes"></tbody></table></div><p id="policy-headlines"></p></div></section>
+<script>
+window.unifiedDecisionRender=function(s){
+ const d=s.research?.decision_v1,n=s.research?.news_v1||{},get=id=>document.getElementById(id);
+ if(!d)return;
+ get('policy-status').textContent='Active entry policy · registered '+new Date(d.registered_at).toLocaleString('en-GB',{timeZone:'Europe/London'})+' · improvement UNPROVEN';
+ get('policy-news').textContent='News: '+(n.status||'UNAVAILABLE')+' · checked '+(n.checked_at||'never')+' · '+Object.entries(n.sources||{}).map(([k,v])=>k+': '+v.status).join(' · ');
+ get('policy-scope').textContent=n.scope||'No verified news context';
+ const write=(id,rows)=>{const body=get(id);body.replaceChildren();rows.forEach(values=>{const tr=document.createElement('tr');values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});body.appendChild(tr)})};
+ const num=v=>typeof v==='number'?v.toFixed(2):'unavailable';
+ write('policy-pools',Object.entries(d.assessments||{}).map(([pool,a])=>[(s.watched_pools||[]).find(p=>p.pool===pool)?.name||pool,'£'+num(a.history.net_gbp)+' / '+a.history.closed,a.allowed?'Eligible · priority '+num(a.selection_score):a.reasons.join('; '),'5m '+num(a.technical.change_5m_pct)+'% · 1h '+num(a.technical.change_1h_pct)+'% · volume pace '+num(a.technical.volume_pace_ratio)+'x']));
+ get('policy-forward').textContent=(d.forward_description||'')+' Pending: '+(d.forward_pending||[]).length+'. Mature: '+(d.forward_outcomes||[]).length+'.';
+ write('policy-outcomes',Object.entries(d.forward_summary||{}).flatMap(([cohort,values])=>Object.entries(values).map(([h,v])=>[cohort,h,v.priced+' / '+v.missing,num(v.mean_net_quote_roi_pct)+'%'])));
+ get('policy-headlines').textContent=(n.items||[]).map(x=>x.source+': '+x.title+' ('+x.published_at+')').join(' · ')||'No recent relevant headlines in the available sources. Unavailable sources provide no evidence.';
+};
+</script>
+<!-- UNIFIED_V2_JS -->
+<script>
+/* Unified V2: renders from the canonical dashboard's existing state.json fetch. */
+(function () {
+  'use strict';
+  const by = id => document.getElementById(id);
+  const numeric = v => v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v);
+  const number = v => numeric(v) === null ? '—' : Number(v).toLocaleString('en-GB');
+  const gbp = v => numeric(v) === null ? '—' : (Number(v) < 0 ? '−£' : '£') + Math.abs(Number(v)).toLocaleString('en-GB', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const pct = v => numeric(v) === null ? '—' : Number(v).toFixed(2) + '%';
+  const short = v => v ? String(v).slice(0, 6) + '…' + String(v).slice(-4) : '—';
+  const uk = v => {
+    if (!v) return '—';
+    const d = new Date(v);
+    return Number.isFinite(d.valueOf()) ? d.toLocaleString('en-GB', {timeZone: 'Europe/London', dateStyle: 'medium', timeStyle: 'medium'}) : '—';
+  };
+  const td = (text, row, className) => {
+    const node = document.createElement('td');
+    node.textContent = text === null || text === undefined ? '—' : String(text);
+    if (className) node.className = className;
+    row.appendChild(node);
+    return node;
+  };
+  const rows = (id, values, empty, cols) => {
+    const target = by(id);
+    if (!target) return;
+    target.replaceChildren();
+    if (!values.length) {
+      const tr = document.createElement('tr');
+      const cell = td(empty, tr);
+      cell.colSpan = cols;
+      target.appendChild(tr);
+      return;
+    }
+    values.forEach(arr => {
+      const tr = document.createElement('tr');
+      arr.forEach(v => td(v, tr));
+      target.appendChild(tr);
+    });
+  };
+  const value = (id, v) => {const node = by(id); if (node) node.textContent = String(v);};
+  const ratio = (n, total) => !total ? '0%' : Math.round(n * 100 / total) + '%';
+
+  function render(s) {
+    // The public state is not a live broker account. Reject incompatible data.
+    if (!s || s.paper_only !== true || Number(s.starting_gbp) !== 2000) {
+      value('v2-execution-status', 'Account integrity warning: unexpected paper-state schema or starting capital.');
+      return;
+    }
+    const r = s.research || {};
+    const actual = r.actual_report || {};
+    const walletRank = Array.isArray(r.wallet_rankings) ? r.wallet_rankings : [];
+    const reinforced = walletRank.filter(x => String(x.reinforcement_tier || '').startsWith('reinforced'));
+    const closed = Array.isArray(s.closed) ? s.closed : [];
+    const wallets = new Set(closed.map(x => x.wallet).filter(Boolean));
+    const signals = Array.isArray(r.signals) ? r.signals : [];
+    const observations = Array.isArray(r.pool_observations) ? r.pool_observations : [];
+    const shadow = r.shadow_reports || {};
+    const features = r.feature_reports || {};
+    const execution = s.execution || {};
+
+    value('v2-signals', number(signals.length));
+    value('v2-observations', number(observations.length));
+    value('v2-closed-wallets', number(wallets.size));
+    value('v2-reinforced', number(reinforced.length));
+    rows('v2-wallets', walletRank.slice(0, 20).map(x => [short(x.wallet), x.closed ?? 0, gbp(x.net_gbp), pct(x.win_rate_wilson_lower_pct), x.reinforcement_tier || 'exploration']), 'No closed-trade wallet scores have been recorded.', 5);
+
+    const winners = closed.filter(x => numeric(x.net_pnl_gbp) !== null && x.net_pnl_gbp > 0).length;
+    const realized = closed.reduce((sum, x) => sum + (numeric(x.net_pnl_gbp) || 0), 0);
+    rows('v2-actual-metrics', [
+      ['Completed paper trades', number(closed.length)],
+      ['Winning paper trades', number(winners) + ' (' + ratio(winners, closed.length) + ')'],
+      ['Realised net P&L (cost-adjusted)', gbp(realized)],
+      ['Profit factor', numeric(actual.profit_factor) === null ? '—' : Number(actual.profit_factor).toFixed(2)],
+      ['Worst realised drawdown in trade sequence', gbp(actual.max_drawdown_gbp)],
+      ['Conservative mean trade ROI', pct(actual.conservative_mean_roi_95_pct)],
+      ['Distinct exit days', number(actual.distinct_exit_days)]
+    ], 'Waiting for completed trades.', 2);
+    const best = walletRank.reduce((m, x) => Math.max(m, numeric(x.closed) || 0), 0);
+    rows('v2-thresholds', [
+      ['Most closures from one sender', String(best)],
+      ['First wallet sizing tier', 'Legacy quality gates + registered forward validation'],
+      ['Second wallet sizing tier', 'Stronger legacy gates + registered forward validation'],
+      ['Feature reinforcement', '40+ qualified closes / 14+ days, diversity gates'],
+      ['Current reinforced wallets', number(reinforced.length)],
+      ['Upper allocation cap', '1.5% paper equity']
+    ], 'Waiting for reinforcement evidence.', 2);
+    value('v2-learning-verdict', reinforced.length ?
+      (reinforced.length + ' wallet(s) currently satisfy reinforcement rules; this does not establish that profit improvement is causal.') :
+      ('No wallet has qualified for higher allocation. Evidence is still being collected across independent closed paper trades.'));
+    rows('v2-features', Object.entries(features).map(([k, x]) => [k, number(x.closed), gbp(x.net_gbp), pct(x.conservative_mean_roi_95_pct), x.status || 'COLLECTING_EVIDENCE']), 'Not enough instrumented closed trades for feature scoring.', 5);
+
+    rows('v2-shadow', Object.entries(shadow).map(([name, x]) => [name, number(x.closed), number(x.open_positions), gbp(x.net_gbp), numeric(x.profit_factor) === null ? '—' : Number(x.profit_factor).toFixed(2), x.status || 'COLLECTING_EVIDENCE']), 'Shadow experiments have not recorded any results.', 6);
+    const events = [
+      ...(Array.isArray(r.reinforcement_events) ? r.reinforcement_events : []).map(x => ({...x, action: 'REINFORCEMENT', details: (x.from_tier || 'exploration') + ' → ' + (x.to_tier || 'unknown') + ' · ' + (x.evidence || '')})),
+      ...(Array.isArray(r.events) ? r.events : []).map(x => ({...x, details: x.reason || (numeric(x.net_pnl_gbp) !== null ? gbp(x.net_pnl_gbp) : 'signal lag ' + (x.signal_lag_seconds ?? '—') + 's')}))
+    ].sort((a, b) => (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0)).slice(0, 65);
+    const evaluation = r.evaluation_v1 || {};
+    value('evaluation-status', 'Profitability UNPROVEN · Evaluation '+(evaluation.status||'UNPROVEN')+(evaluation.last_error?' · '+evaluation.last_error:'')+' · Registered ' + uk(evaluation.registered_at) + ' · ' + number(evaluation.validated_reports || 0) + ' validated cohorts · ' + number(evaluation.positive_reinforcement_events || 0) + ' positive sizing events · ' + number(evaluation.sampled_adverse_selection?.tracked_entries || 0) + ' entries with subsequent sampled quotes');
+    rows('evaluation-reports', Object.entries(evaluation.reports || {}).filter(([key]) => !key.startsWith('wallet:')).slice(0,20).map(([key,x])=>[key, (x.training?.closed||0)+' / '+(x.training?.days||0), (x.validation?.closed||0)+' / '+(x.validation?.days||0), pct(x.validation?.daily_cluster_lower_pct), pct(x.validation?.cost_stress?.['2pct_each_side_mean_roi_pct']), x.status||'UNPROVEN']), 'No registered forward outcomes yet.', 6);
+    rows('evaluation-exits', Object.entries(evaluation.exit_diagnostics || {}).map(([key,x])=>[key,x.closed||0,gbp(x.net_gbp),pct(x.cost_stress?.['2pct_each_side_mean_roi_pct'])]), 'No exit diagnostic data.', 4);
+    rows('v2-events', events.map(x => [uk(x.at), x.action || '—', x.strategy || short(x.wallet) || short(x.token), x.details || '—']), 'No research or reinforcement events recorded.', 4);
+
+    const validRun = /^\d{8,15}$/.test(String(execution.run_id || ''));
+    const external = execution.event === 'workflow_dispatch' && execution.scheduler === 'google-apps-script';
+    const google = external && !!execution.trigger_uid && !!execution.scheduled_at && validRun;
+    const native = execution.event === 'schedule';
+    const schedulerLabel = google ? 'Google Apps Script · unattended API dispatch' : native ? 'GitHub native scheduled trigger' : external ? 'Google fallback · incomplete execution provenance' : (execution.scheduler || 'Not independently identified');
+    const age = s.last_data_at ? (Date.now() - new Date(s.last_data_at).getTime()) / 60000 : Infinity;
+    const fresh = age >= 0 && age <= 20 && s.last_status === 'OK';
+    value('v2-execution-status', fresh ?
+      ('Market feed OK · ' + schedulerLabel + ' · observation ' + uk(s.last_data_at)) :
+      ('FEED / SCHEDULER NEEDS CHECK · latest data ' + uk(s.last_data_at) + ' · engine state ' + (s.last_status || 'UNKNOWN')));
+    const statusNode = by('v2-execution-status');
+    statusNode.className = 'v2-alert' + (fresh ? '' : ' v2-negative');
+    rows('v2-provenance', [
+      ['Paper account initialised', uk(s.initialized_at)],
+      ['Starting balance', gbp(s.starting_gbp)],
+      ['Completed main cycles', number(s.completed_cycles)],
+      ['Latest run (UK)', uk(s.last_run)],
+      ['Scheduler provenance', schedulerLabel],
+      ['GitHub event', execution.event || '—'],
+      ['Trigger UID', execution.trigger_uid || '—'],
+      ['Scheduled UTC', execution.scheduled_at || '—'],
+      ['GitHub run ID', validRun ? execution.run_id : 'Unverified']
+    ], 'No scheduler metadata.', 2);
+    const runNode = by('v2-run-link');
+    if (runNode) runNode.remove();
+    if (validRun) {
+      const link = document.createElement('a');
+      link.id = 'v2-run-link';
+      link.className = 'v2-link';
+      link.href = 'https://github.com/rayyansorefan/standalone-wallet-paper-agent/actions/runs/' + execution.run_id;
+      link.rel = 'noopener noreferrer';
+      link.target = '_blank';
+      link.textContent = 'View latest GitHub execution ↗';
+      by('v2-run-link-wrap').appendChild(link);
+    }
+    rows('v2-research-health', [
+      ['Research module', r.version ? 'Adaptive v' + r.version : 'Not yet present'],
+      ['Research status', r.last_status || 'NOT AVAILABLE'],
+      ['Market-feed status', s.last_status || 'UNKNOWN'],
+      ['Last research update (UK)', uk(r.last_run)],
+      ['Shadow open positions', number((r.shadow_positions || []).length)],
+      ['Recorded research errors this cycle', number((r.cycle_errors || []).length)],
+      ['Actual positions', number((s.positions || []).length)],
+      ['Actual completed trades', number(closed.length)]
+    ], 'No research telemetry.', 2);
+    value('v2-checked', 'One JSON source for both views · Browser rendered ' + uk(new Date().toISOString()) + ' · Refresh every 60 seconds.');
+  }
+  window.unifiedResearchRender = render;
+  window.unifiedResearchFailure = function (error) {
+    value('v2-execution-status', 'DATA FETCH FAILED · ' + String(error?.message || error).slice(0, 140));
+    const el = by('v2-execution-status');
+    if (el) el.className = 'v2-alert v2-negative';
+  };
+}());
+
+</script>
+
+<!-- WHALE_V3_JS -->
+<script>
+/* WHALE_V3_RENDER: shares the existing state.json fetch and refresh. */
+(()=>{'use strict';
+  const byId=id=>document.getElementById(id);
+  const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=(value,sign='£')=>Number.isFinite(Number(value))&&value!==null ? sign+Number(value).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  const uk=value=>{if(!value)return '—';let d=new Date(value);return Number.isFinite(d.valueOf())?new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d):'—';};
+  const short=value=>value?String(value).slice(0,5)+'…'+String(value).slice(-4):'—';
+  const rowTable=(id,rows,cols,empty)=>{const target=byId(id);if(!target)return;target.innerHTML=rows.length?rows.map(record=>'<tr>'+cols.map(f=>'<td>'+f(record)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+esc(empty)+'</td></tr>';};
+  const metric=(id,value)=>{const el=byId(id);if(el)el.textContent=String(value);};
+  const amountColor=num=>Number(num)>0?'positive':Number(num)<0?'negative':'';
+  window.unifiedWhaleFailure=function(error){const el=byId('v3-status');if(el){el.textContent='DATA FETCH FAILED · '+String(error?.message||error).slice(0,140);el.className='v2-alert v2-negative';}};
+  window.unifiedWhaleRender=function(s){
+    try{
+      const w=s?.research?.whale_v3;
+      const banner=byId('v3-status');
+      if(!w){if(banner){banner.textContent='Whale Intelligence has not yet been deployed or has not completed its first cycle. The original V2 trading engine remains separate.';banner.className='v2-alert';}return;}
+      const sc=w.scanner||{}, reports=w.shadow_reports||{},flows=w.recent_flows||[], profiles=w.sender_profiles||{},senderReports=w.sender_shadow_reports||{};
+      const recentRun=w.last_run?new Date(w.last_run):null;
+      const minutes=recentRun?((Date.now()-recentRun.valueOf())/60000):Infinity;
+      const stale=!Number.isFinite(minutes)||minutes<0||minutes>20;
+      if(banner){banner.className='v2-alert';banner.textContent='V3 '+(w.status||'UNKNOWN')+(stale?' · STALE research':' · latest research '+uk(w.last_run))+' · Transaction senders are unverified. No automatic promotion into the £2,000 account.';}
+      metric('v3-large',sc.large_flows??0);
+      metric('v3-very-large',sc.very_large_flows??0);
+      metric('v3-senders',Object.keys(profiles).length);
+      metric('v3-closed',(w.shadow_closed||[]).length);
+      rowTable('v3-strategies',Object.entries(reports).map(([strategy,data])=>({strategy,...data})),[
+        x=>esc(x.strategy.replaceAll('_',' ')),x=>esc(x.closed??0),x=>esc(x.open_positions??0),
+        x=>'<span class="'+amountColor(x.net_gbp)+'">'+esc(money(x.net_gbp))+'</span>',
+        x=>esc(money(x.net_gbp_at_2pct_each_side)),x=>esc(money(x.net_gbp_at_5pct_each_side)),
+        x=>esc(((Number(x.allocation_fraction_of_original_equity)||0)*100).toFixed(2)+'%'),
+        x=>esc(x.status||'COLLECTING_EVIDENCE')], 'Research collecting its first closed outcomes');
+      const ranked=Object.entries(profiles).map(([wallet,x])=>({wallet,...x})).sort((a,b)=>(Number(b.buy_volume_usd)||0)-(Number(a.buy_volume_usd)||0)).slice(0,15);
+      rowTable('v3-wallets',ranked,[x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',x=>esc(x.buys||0),x=>esc(x.sells||0),x=>esc(money(x.buy_volume_usd,'$')),
+        x=>esc(senderReports[x.wallet]?.closed??0),
+        x=>'<span class="'+amountColor(senderReports[x.wallet]?.net_gbp||0)+'">'+esc(money(senderReports[x.wallet]?.net_gbp??0))+'</span>'], 'No candidate senders sampled yet');
+      rowTable('v3-open',(w.shadow_positions||[]).slice(0,10),[
+        x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),x=>esc(money(x.notional_gbp)),
+        x=>x.last_mark_price_usd?esc(Number(x.last_mark_price_usd).toPrecision(6)):'UNPRICED'], 'No whale shadow positions yet');
+      rowTable('v3-flows',flows.slice(-18).reverse(),[
+        x=>esc(uk(x.at)),x=>'<span class="code" title="'+esc(x.wallet)+'">'+esc(short(x.wallet))+'</span>',
+        x=>esc(x.pool_name||short(x.token)),x=>esc(x.kind),x=>esc(money(x.usd,'$')),x=>esc(x.sender_identity||'UNVERIFIED')], 'No qualifying whale-sized transactions sampled yet');
+      rowTable('v3-exits',(w.shadow_closed||[]).slice(-12).reverse(),[
+        x=>esc(uk(x.exit_at)),x=>esc(x.strategy),x=>esc(x.pool_name||short(x.token)),
+        x=>'<span class="'+amountColor(x.net_pnl_gbp)+'">'+esc(money(x.net_pnl_gbp))+'</span>',x=>esc(x.exit_reason)], 'No forward whale exits yet');
+      rowTable('v3-followups',[...(w.flow_outcomes||[]),...(w.flow_followups||[])].slice(-12).reverse(),[x=>esc(short(x.wallet)),x=>esc(short(x.token)),...['5m','30m','60m'].map(k=>x=>x.marks?.[k]?esc(Number(x.marks[k].quote_return_pct).toFixed(2)+'%'):'UNAVAILABLE')],'No later forward observations yet');
+      rowTable('v3-health',[
+        ['V3 research last run',uk(w.last_run)],['V3 status',w.status||'UNKNOWN'],
+        ['Supplemental Solana pools',sc.additional_pools??0],
+        ['Rotating pool inventory',sc.inventory_pools??0],
+        ['Sampled transaction-origin addresses',Object.keys(w.sampled_activity||{}).length],
+        ['Multi-pool origins · owner unresolved',Object.values(w.sampled_activity||{}).filter(x=>x.attribution==='MULTI_POOL_OR_ROUTER_POSSIBLE').length],
+        ['Research requests / cycle cap',(w.scan_metrics?.requests??0)+' / 4'],
+        ['Discovery cache hits',w.scan_metrics?.cache_hits??0],
+        ['Deferred research requests',w.scan_metrics?.deferred??0],
+        ['Supplemental quote source',w.scan_metrics?.quote_provider||'geckoterminal'],
+        ['Provider circuits',Object.entries(w.provider_health||{}).map(([k,v])=>k+': '+(v.retry_at?'cooldown until '+v.retry_at:'available')).join('; ')||'Not sampled'],
+        ['Observed flow follow-ups',(w.flow_followups||[]).length+' pending / '+(w.flow_outcomes||[]).length+' completed; quote returns, not wallet profit'],
+        ['Fresh supplemental quote pools',w.scan_metrics?.quote_pools??0],
+        ['Supplemental trade feeds read',w.scan_metrics?.trade_feeds??0],
+        ['Last supplemental market data',uk(w.last_market_data_at)],
+        ['Research elapsed seconds',w.scan_metrics?.elapsed_seconds??'—'],
+        ['Primary-provider window wait seconds',w.scan_metrics?.primary_window_wait_seconds??0],
+        ['Shadow strategies','large_repeat, very_large, accumulation'],
+        ['Fresh large-flow observations',sc.fresh_signals??0],
+        ['Current scan errors',(w.last_scan_errors||[]).slice(-2).join('; ')||'None'],
+        ['Verified whale owners','None — attribution not established'],
+        ['Actual paper account changed by V3','No — research and shadow simulations only']
+      ].map(([name,value])=>({name,value})),[x=>esc(x.name),x=>esc(x.value)],'No V3 health evidence');
+    }catch(error){const banner=byId('v3-status');if(banner)banner.textContent='Whale V3 dashboard rendering unavailable: '+String(error.message).slice(0,100);}
+  };
+})();
+
+</script>
+</body></html>
+)+Math.abs(x).toFixed(2);
+ const ukTime=t=>{if(!t)return 'Unknown';const d=new Date(t);return isNaN(d)?'Unknown':d.toLocaleString('en-GB',{timeZone:'Europe/London',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'});};
+ const assessed=n(ch.technical_candidates_assessed)??n(ch.discoveries_eligible_unique);
+ const qualified=n(ch.technical_candidates_qualified);
+ const screened=n(ch.security_screened);
+ const feeds=n(ch.trade_feeds_sampled);
+ const target=n(ch.discovery_coverage_target)??100;
+ put('simple-time','Latest completed cycle '+count(s.completed_cycles)+' · '+ukTime(s.last_run)+' · Refreshes every 60 seconds');
+ put('simple-assessed',count(assessed));
+ put('simple-qualified',count(qualified));
+ put('simple-screened',count(screened));
+ put('simple-deep',count(feeds));
+ put('simple-target','Target: up to '+target+' eligible markets; '+(assessed===null?'actual coverage unavailable':Math.max(0,target-assessed)+' below target'));
+ put('simple-screened-pass',count(ch.screened_pass)+' passed security checks');
+ const futures=s.research?.strategies_v1||{};
+ const feed=futures.feed||{};
+ const eligible=n(feed.eligible),scanned=n(feed.deep_candle_scans)??n(feed.scanned);
+ put('simple-pipeline',
+   'GBP: '+count(assessed)+' assessed → '+count(qualified)+' met entry criteria → '+count(screened)+' security checked → '+count(feeds)+' on-chain trade feeds read. '
+   +'These are different stages; being assessed does NOT mean fully analysed. '
+   +'Futures: '+count(eligible)+' eligible instruments, '+count(scanned)+' detailed candle scans this cycle.');
+ const closed=Array.isArray(s.closed)?s.closed:[];
+ const wins=closed.filter(x=>n(x.net_pnl_gbp)!==null&&x.net_pnl_gbp>0).length;
+ const losses=closed.filter(x=>n(x.net_pnl_gbp)!==null&&x.net_pnl_gbp<0).length;
+ const realised=closed.reduce((a,x)=>a+(n(x.net_pnl_gbp)||0),0);
+ const day=closed.filter(x=>{const d=Date.parse(x.exit_at);return Number.isFinite(d)&&d<=Date.now()&&Date.now()-d<=86400000;});
+ const dayPnl=day.reduce((a,x)=>a+(n(x.net_pnl_gbp)||0),0);
+ put('simple-gbp-pnl',pound(realised)+' realised');
+ put('simple-gbp-wins',closed.length+' closed · '+wins+' wins / '+losses+' losses');
+ put('simple-gbp-day','Last 24 hours: '+day.length+' closed · '+pound(dayPnl));
+ put('simple-gbp-open','Open positions: '+count(Array.isArray(s.positions)?s.positions.length:null));
+ const summary=futures.summary||{};
+ const fclosed=n(summary.closed),fwins=n(summary.wins);
+ put('simple-usd-pnl',dollar(n(summary.net_usd))+' realised');
+ put('simple-usd-wins',count(fclosed)+' closed · '+count(fwins)+' wins');
+ put('simple-usd-scan',count(scanned)+' detailed candle scans of '+count(eligible)+' eligible instruments');
+ const age=s.last_run?Date.now()-Date.parse(s.last_run):Infinity;
+ const fresh=age>=-60000&&age<=20*60000;
+ const faults=(n(ch.errors_this_cycle)||0)+(n(ch.rate_limit_errors)||0);
+ put('simple-health',!fresh?'ENGINE STATUS: STALE — latest cycle '+ukTime(s.last_run):
+   faults?'ENGINE STATUS: CHECK REQUIRED — '+faults+' feed/rate-limit issues in latest cycle':
+   'ENGINE STATUS: Running · '+count(s.completed_cycles)+' saved cycles · no reported market-feed errors this cycle. Paper only; profitability is not guaranteed.');
+ const container=document.getElementById('simple-recent');
+ if(container){
+   container.replaceChildren();
+   const recent=closed.slice(-5).reverse();
+   if(!recent.length){container.textContent='No closed trades yet.';}
+   for(const t of recent){
+     const line=document.createElement('div');line.className='simple-trade';
+     const label=document.createElement('span');label.className='simple-trade-label';
+     label.textContent=(t.pool_name||t.symbol||'Token')+' · '+ukTime(t.exit_at);
+     const profit=document.createElement('span');profit.className='simple-trade-pnl';
+     profit.textContent=pound(n(t.net_pnl_gbp));
+     if(n(t.net_pnl_gbp)!==null)profit.classList.add(t.net_pnl_gbp<0?'negative':'positive');
+     line.append(label,profit);container.appendChild(line);
+   }
+ }
+}
+
+function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_data_at):null,age=last?(Date.now()-last.getTime())/60000:null,run=s?.last_run?new Date(s.last_run):null;
+let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
+el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
+$('statusMessage').textContent=!run?'No market observations have been completed. There are no trading results yet.':age===null?'No verified trade-feed data is available yet; portfolio values may not be current.':age>15?'The underlying market feed is more than 15 minutes old. Data is not current.':s.last_status==='PARTIAL_SCREENING_UNAVAILABLE'?'One or more tokens could not be security-screened and were blocked. Other safe-token trade feeds succeeded; consult the audit for provider errors.':s.last_status==='PARTIAL_TRADE_FEEDS_UNAVAILABLE'?'Some market trade feeds were unavailable, so no trades were copied from those pools. Other safe-token feeds succeeded; coverage was incomplete.':'The research process has checked market data. Values are snapshots, not live quotes.';
+$('updated').textContent='Most recent cycle: '+uk(s?.last_run)+' · Last successful trade-feed fetch: '+uk(s?.last_data_at)+' · Screening: '+(s.cycle_health?.screened_pass??'—')+' passed / '+(s.cycle_health?.screened_unavailable??'—')+' unavailable · Trade feeds: '+(s.cycle_health?.trade_feeds_sampled??'—')+' sampled / '+(s.cycle_health?.trade_feeds_unavailable??'—')+' unavailable · Dashboard checks every 60 seconds.';}
+function table(id,rows,cols,empty){$(id).innerHTML=rows.length?rows.map(r=>'<tr>'+cols.map(fn=>'<td>'+fn(r)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="quiet">'+safe(empty)+'</td></tr>';}
+function color(n){return n===null?'':n<0?'negative':n>0?'positive':'';}
+function draw(){const svg=$('chart'),s=state;while(svg.firstChild)svg.removeChild(svg.firstChild);points=[];
+const data=(s?.snapshots||[]).filter(x=>num(x.equity_gbp)!==null&&!isNaN(new Date(x.at)));let cut=span==='1d'?Date.now()-86400000:span==='7d'?Date.now()-604800000:0;const history=data.filter(x=>new Date(x.at).getTime()>=cut).slice(-400);const hint=$('chartNote');
+svg.setAttribute('viewBox','0 0 850 260');const ns='http://www.w3.org/2000/svg';const el=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.appendChild(n);return n};
+if(history.length<2){hint.textContent='Awaiting at least two successfully priced observations in this period.';el('text',{x:425,y:125,fill:'#95a9c6','text-anchor':'middle','font-size':14},'No verified progression data yet');return;}
+let values=history.map(x=>Number(x.equity_gbp)),lo=Math.min(...values),hi=Math.max(...values),pad=Math.max(1,(hi-lo)*.2);lo-=pad;hi+=pad;
+let left=72,right=836,top=16,bottom=224;for(let i=0;i<4;i++){let y=top+(bottom-top)*i/3,v=hi-(hi-lo)*i/3;el('line',{x1:left,y1:y,x2:right,y2:y,class:'gridline'});el('text',{x:60,y:y+4,class:'axis','text-anchor':'end'},'£'+v.toFixed(0));}
+let t0=new Date(history[0].at).getTime(),t1=new Date(history.at(-1).at).getTime();if(t0===t1)t1=t0+1000;
+points=history.map(x=>({x:left+(new Date(x.at).getTime()-t0)/(t1-t0)*(right-left),y:top+(hi-x.equity_gbp)/(hi-lo)*(bottom-top),raw:x}));
+const poly=points.map(x=>x.x.toFixed(1)+','+x.y.toFixed(1)).join(' ');
+el('line',{x1:left,y1:bottom,x2:right,y2:bottom,stroke:'#35455c'});
+el('polyline',{points:poly,fill:'none',stroke:'#65dab0','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});
+el('circle',{cx:points.at(-1).x,cy:points.at(-1).y,r:5,fill:'#68e6b8',stroke:'#0d1421','stroke-width':2});
+el('text',{x:left,y:248,class:'axis'},uk(history[0].at));el('text',{x:right,y:248,class:'axis','text-anchor':'end'},uk(history.at(-1).at));
+hint.textContent=history.length+' priced snapshots · Last recorded equity '+money(history.at(-1).equity_gbp)+'. Gaps reflect unavailable pricing or missed cycles.';}
+$('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
+$('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
+document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
+function render(s){state=s;health(s);simpleOverview(s);
  const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
  document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
  const paired=s.research?.forward_experiment_v1?.summary;
