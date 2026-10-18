@@ -171,6 +171,12 @@ def compact_health(state):
                                    'historical_audit','reports','retained_forward_signal_count',
                                    'retention_overflow','retention_conflict','warning',
                                    'automatic_promotion')},
+        'gbp_holdout_lab':{k:v for k,v in
+                           (research.get('gbp_holdout_lab_v1') or {}).items()
+                           if k in ('version','registered_at','hypothesis_sha256',
+                                    'status','cycles','post_registration_observations',
+                                    'reports','automatic_promotion',
+                                    'paper_entries_allowed','evidence_note')},
         'gbp_quote_ta':{k:v for k,v in
                          (research.get('gbp_quote_ta_v1') or {}).items()
                          if k in ('version','registered_at','hypothesis_sha256',
