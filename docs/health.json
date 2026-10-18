@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-18T06:54:15+00:00",
-  "last_data_at": "2026-10-18T06:54:15+00:00",
-  "cycle": 662,
+  "last_run": "2026-10-18T06:59:13+00:00",
+  "last_data_at": "2026-10-18T06:59:13+00:00",
+  "cycle": 663,
   "status": "OK",
   "cycle_health": {
     "screened_pass": 9,
@@ -15,14 +15,14 @@
     "trade_feed_budget": 4,
     "trade_feeds_provider_cooldown_deferred": 0,
     "security_screened": 10,
-    "unscreened_discovery_candidates": 1,
-    "discoveries_eligible_unique": 11,
-    "discovery_raw_rows": 23,
+    "unscreened_discovery_candidates": 0,
+    "discoveries_eligible_unique": 10,
+    "discovery_raw_rows": 22,
     "discovery_free_batch_tokens": 49,
     "discovery_errors": [],
     "alternate_quoted_pools": 0,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 11,
+    "candidate_pools": 10,
     "errors_this_cycle": 0,
     "error_messages": [],
     "partial_screening_only": false,
@@ -39,12 +39,12 @@
     "open_with_trailing_protection": 0,
     "open_with_recorded_mark": 1,
     "open_unpriced": 0,
-    "open_loss_warnings": 0,
+    "open_loss_warnings": 1,
     "closed_at_4_5pct_stop": 13,
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-18T06:54:15+00:00",
+    "latest_cycle": "2026-10-18T06:59:13+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -63,17 +63,17 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-18T06:54:08.770166+00:00"
+    "last_success_at": "2026-10-18T06:59:09.155982+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_QUOTA",
-    "last_run": "2026-10-18T06:54:16+00:00",
+    "last_run": "2026-10-18T06:59:13+00:00",
     "last_scan_errors": []
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-18T06:54:16.960981+00:00",
-    "closed": 15,
+    "last_run": "2026-10-18T06:59:13.776518+00:00",
+    "closed": 16,
     "wins": 3
   },
   "original": {
@@ -115,8 +115,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-18T06:53:46.121Z",
-    "run_id": "39105660304",
+    "scheduled_at": "2026-10-18T06:58:46.155Z",
+    "run_id": "39105955326",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
