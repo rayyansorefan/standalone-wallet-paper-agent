@@ -96,6 +96,8 @@ class ForwardExperiment(unittest.TestCase):
             'exit_at':(NOW+dt.timedelta(minutes=1)).isoformat(),
             'setup':'momentum_long','symbol':'X',
             'version':strategies.VERSION,'risk_usd':5.}]
+        for arm in old['arms'].values():
+            arm['position']=None
         old_summary=copy.deepcopy(old['summary'])
         old_source=old['source_sha256']
         new_time=NOW+dt.timedelta(minutes=5)
