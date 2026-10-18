@@ -36,7 +36,7 @@ class TechnicalLab(unittest.TestCase):
         self.assertAlmostEqual(row["outcomes"]["5m"]["net_quote_roi_pct"],
                                100*(1.05*.99/1.01 - 1),places=4)
         self.assertNotIn("30m",row["outcomes"])
-        ta.update(s, {}, NOW+dt.timedelta(minutes=220))
+        ta.update(s, {}, NOW+dt.timedelta(minutes=240))
         self.assertEqual(row["outcomes"]["30m"]["status"],"MISSING_FRESH_MARK")
         self.assertEqual(row["outcomes"]["60m"]["status"],"MISSING_FRESH_MARK")
         self.assertEqual(b["reports"]["sampled_quote_control"]["30m"]["missing"],1)
