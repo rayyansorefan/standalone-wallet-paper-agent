@@ -139,6 +139,17 @@ def compact_health(state):
                  'last_run':whale.get('last_run'),
                  'last_scan_errors':[str(x)[:160] for x in whale.get('last_scan_errors',[])[-3:]]},
         'forward_experiment':(research.get('forward_experiment_v1') or {}).get('summary'),
+        'forward_experiment_archive':[{
+            'version':row.get('version'),
+            'registered_at':row.get('registered_at'),
+            'archived_at':row.get('archived_at'),
+            'invalidated_at':row.get('invalidated_at'),
+            'invalid_reason':row.get('invalid_reason'),
+            'archive_reason':row.get('archive_reason'),
+            'source_sha256':row.get('source_sha256'),
+            'summary':row.get('summary')
+        } for row in (research.get('forward_experiment_epochs_v1') or [])[-10:]
+          if isinstance(row,dict)],
         'forward_experiment_error':research.get('forward_experiment_error'),
         'futures':{'status':futures.get('status'),
                    'last_run':futures.get('last_run'),

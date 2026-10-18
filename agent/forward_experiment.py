@@ -9,6 +9,9 @@ import hashlib
 from pathlib import Path
 
 KEY = 'forward_experiment_v1'
+ARCHIVE_KEY = 'forward_experiment_epochs_v1'
+ACTIVE_VERSION = 'paired-pullback-2'
+LEGACY_VERSION = 'paired-pullback-1'
 DAYS = 28
 LOSS_BUDGET_USD = 40.
 
@@ -74,14 +77,34 @@ def advance(state, now, quotes, indicators, eligible):
     # Work on a private copy: a failed arm never commits a half-paired cycle.
     trial = copy.deepcopy(research.get(KEY))
     digest = source_hash()
+    # The first registered epoch was correctly invalidated when later coverage
+    # work changed its frozen economic source. Preserve it verbatim as evidence
+    # and begin one separately versioned epoch against the now-stable source.
+    # Never auto-roll an invalidated epoch 2 (or later) after future drift.
+    if (trial and trial.get('version') == LEGACY_VERSION and
+            trial.get('invalidated_at')):
+        archives = research.setdefault(ARCHIVE_KEY,[])
+        identity = (trial.get('version'),trial.get('registered_at'),
+                    trial.get('source_sha256'))
+        if not any((row.get('version'),row.get('registered_at'),
+                    row.get('source_sha256')) == identity for row in archives
+                   if isinstance(row,dict)):
+            archived = copy.deepcopy(trial)
+            archived['archived_at'] = now.isoformat()
+            archived['archive_reason'] = 'FROZEN_SOURCE_INVALIDATED'
+            archives.append(archived)
+            research[ARCHIVE_KEY] = archives[-10:]
+        trial = None
     if trial is None:
-        trial = dict(version='paired-pullback-1', registered_at=now.isoformat(),
+        trial = dict(version=ACTIVE_VERSION, registered_at=now.isoformat(),
                      end_at=(now+dt.timedelta(days=DAYS)).isoformat(),
                      source_sha256=digest, paper_only=True, arms={}, cycles=0,
                      loss_budget_usd=LOSS_BUDGET_USD, automatic_promotion=False,
                      hypothesis='Completed-bar pullback/reclaim admission improves net results versus existing futures rules on the same feed.',
                      baseline='Fresh isolated replica of momentum-fade-2, including its existing feedback; NOT the historical GBP account.',
                      comparison='Equal $2000 simulated starts, same quote batch, existing fees/slippage/carry/exits/risk, only entry filter differs.',
+                     predecessor_version=LEGACY_VERSION,
+                     restart_reason='SEPARATE_EPOCH_AFTER_STABLE_SCAN_ENGINEERING',
                      max_duration_days=DAYS)
         for name in ('baseline','pullback'):
             trial['arms'][name]=engine.initialize({},now)

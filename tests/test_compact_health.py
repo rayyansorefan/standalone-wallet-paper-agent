@@ -93,6 +93,27 @@ class CompactHealth(unittest.TestCase):
         self.assertFalse(p['last_6h']['data_available'])
         self.assertIsNone(p['last_24h']['closed'])
 
+    def test_invalidated_forward_epoch_is_published_without_private_books(self):
+        s=core.blank_state()
+        s.setdefault('research',{})['forward_experiment_epochs_v1']=[{
+            'version':'paired-pullback-1',
+            'registered_at':'2026-10-18T07:44:16+00:00',
+            'invalidated_at':'2026-10-18T08:28:46+00:00',
+            'archived_at':'2026-10-18T12:30:00+00:00',
+            'invalid_reason':'ECONOMIC_SOURCE_CHANGED_NO_AUTOMATIC_RESTART',
+            'archive_reason':'FROZEN_SOURCE_INVALIDATED',
+            'source_sha256':'frozen-hash',
+            'arms':{'baseline':{'private':'do-not-publish'}},
+            'summary':{'status':'INVALIDATED',
+                       'arms':{'baseline':{'closed':1,'net_usd':-4.81776}}}
+        }]
+        body=json.dumps(dashboard.compact_health(s))
+        archive=json.loads(body)['forward_experiment_archive']
+        self.assertEqual(len(archive),1)
+        self.assertEqual(archive[0]['version'],'paired-pullback-1')
+        self.assertEqual(archive[0]['summary']['arms']['baseline']['closed'],1)
+        self.assertNotIn('do-not-publish',body)
+
     def test_healthy_cycle_does_not_resurface_old_errors(self):
         s=core.blank_state()
         s.update(last_status='OK',errors=[{'at':'yesterday','error':'old 429'}])
