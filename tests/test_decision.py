@@ -21,6 +21,17 @@ def trade(i,pnl=-1,minutes=10,token='pool'):
 
 
 class Decisions(unittest.TestCase):
+    def test_pending_forward_pool_keeps_mint_alias_until_outcome_finishes(self):
+        s,m=fixture()
+        decision.remember(s,[m],NOW)
+        book=s['research']['decision_v1']
+        book['forward_pending']=[{'token':'pool'}]
+        decision.remember(s,[],NOW+dt.timedelta(minutes=5))
+        self.assertEqual(book['pool_mints'],{'pool':'mint'})
+        book['forward_pending']=[]
+        decision.remember(s,[],NOW+dt.timedelta(minutes=65))
+        self.assertEqual(book['pool_mints'],{})
+
     def test_cross_wallet_loss_reentry_block_and_expiry(self):
         s,m=fixture();s['closed']=[trade(1)]
         decision.prepare(s,[m],NOW)
