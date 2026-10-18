@@ -313,12 +313,48 @@ let state=null, span='all', points=[];
 
 /* Minimal owner view; reads the SAME persisted state as the complete audit. */
 function simpleOverview(s){
- const put=(id,value)=>{const n=document.getElementById(id);if(n)n.textContent=String(value);};
- const ch=s.cycle_health||{};
- const n=x=>typeof x==='number'&&Number.isFinite(x)?x:null;
- const count=x=>n(x)===null?'—':String(x);
- const pound=x=>n(x)===null?'—':(x<0?'−£':x>0?'+£':'£')+Math.abs(x).toFixed(2);
- const dollar=x=>n(x)===null?'—':(x<0?'−
+ const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=String(v);};
+ const h=s.cycle_health||{},f=s.research?.strategies_v1||{},feed=f.feed||{};
+ const num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
+ const show=v=>num(v)===null?'—':String(v);
+ const cash=(v,sign)=>num(v)===null?'—':(v<0?'-':v>0?'+':'')+sign+Math.abs(v).toFixed(2);
+ const stamp=v=>v?new Date(v).toLocaleString('en-GB',{timeZone:'Europe/London',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+ const assessed=num(h.technical_candidates_assessed)??num(h.discoveries_eligible_unique);
+ const target=num(h.discovery_coverage_target)??100;
+ put('simple-time','Cycle '+show(s.completed_cycles)+' · '+stamp(s.last_run)+' UK · browser refreshes every 60 seconds');
+ put('simple-assessed',show(assessed));put('simple-qualified',show(h.technical_candidates_qualified));
+ put('simple-screened',show(h.security_screened));put('simple-deep',show(h.trade_feeds_sampled));
+ put('simple-target','Up to '+target+' target · '+(assessed===null?'coverage unknown':Math.max(0,target-assessed)+' below target'));
+ put('simple-screened-pass',show(h.screened_pass)+' passed security checks');
+ const fs=num(feed.deep_candle_scans)??num(feed.scanned);
+ put('simple-pipeline','GBP: '+show(assessed)+' assessed → '+show(h.technical_candidates_qualified)+' met entry criteria → '+show(h.security_screened)+' security checked → '+show(h.trade_feeds_sampled)+' on-chain trade feeds read. Being assessed does NOT mean fully analysed. Futures: '+show(feed.eligible)+' eligible, '+show(fs)+' detailed candle scans.');
+ const closed=Array.isArray(s.closed)?s.closed:[],pos=Array.isArray(s.positions)?s.positions:[];
+ const wins=closed.filter(x=>num(x.net_pnl_gbp)!==null&&x.net_pnl_gbp>0).length;
+ const losses=closed.filter(x=>num(x.net_pnl_gbp)!==null&&x.net_pnl_gbp<0).length;
+ const sum=xs=>xs.reduce((a,x)=>a+(num(x.net_pnl_gbp)||0),0);
+ const day=closed.filter(x=>{const t=Date.parse(x.exit_at);return Number.isFinite(t)&&t<=Date.now()&&Date.now()-t<=86400000;});
+ put('simple-gbp-pnl',cash(sum(closed),'£')+' realised');
+ put('simple-gbp-wins',closed.length+' closed · '+wins+' wins / '+losses+' losses');
+ put('simple-gbp-day','Last 24h: '+day.length+' closed · '+cash(sum(day),'£'));
+ put('simple-gbp-open','Open positions: '+pos.length);
+ const m=f.summary||{};
+ put('simple-usd-pnl',cash(num(m.net_usd),'$')+' realised');
+ put('simple-usd-wins',show(m.closed)+' closed · '+show(m.wins)+' wins');
+ put('simple-usd-scan',show(fs)+' detailed candle scans of '+show(feed.eligible)+' eligible');
+ const age=s.last_run?Date.now()-Date.parse(s.last_run):Infinity;
+ const errs=(num(h.errors_this_cycle)||0)+(num(h.rate_limit_errors)||0);
+ put('simple-health',age<0||age>1200000?'DATA STALE — last cycle '+stamp(s.last_run):
+ errs?'CHECK FEEDS — '+errs+' latest issues':
+ 'RUNNING · '+show(s.completed_cycles)+' saved cycles · no reported feed errors · paper only');
+ const box=document.getElementById('simple-recent');if(!box)return;box.replaceChildren();
+ const recent=closed.slice(-5).reverse();if(!recent.length)box.textContent='No closed trades yet.';
+ for(const t of recent){const row=document.createElement('div'),label=document.createElement('span'),profit=document.createElement('span');
+ row.className='simple-trade';label.className='simple-trade-label';profit.className='simple-trade-pnl';
+ label.textContent=(t.pool_name||t.symbol||'Token')+' · '+stamp(t.exit_at);
+ profit.textContent=cash(num(t.net_pnl_gbp),'£');
+ if(num(t.net_pnl_gbp)!==null)profit.classList.add(t.net_pnl_gbp<0?'negative':'positive');
+ row.append(label,profit);box.appendChild(row);}
+}
 function health(s){let el=$('freshness'),last=s?.last_data_at?new Date(s.last_data_at):null,age=last?(Date.now()-last.getTime())/60000:null,run=s?.last_run?new Date(s.last_run):null;
 let mode='warn',txt='AWAITING FIRST CYCLE';if(run){if(!last||age>15){mode='bad';txt='STALE / NO DATA';}else if(s.last_status==='OK'||s.last_status==='BOOTSTRAPPED_NO_TRADES'){mode='ok';txt='DATA RECENT';}else{mode='warn';txt='CHECK DATA HEALTH';}}
 el.className='badge '+mode;el.textContent=txt;$('statusTitle').textContent=run?'Latest cycle: '+(s.last_status||'UNKNOWN'):'Waiting for verified observations';
