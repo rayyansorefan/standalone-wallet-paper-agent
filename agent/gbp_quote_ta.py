@@ -88,6 +88,45 @@ def select_arms(f):
     return result
 
 
+def _archive_trimmed(book, rows):
+    """Keep loss/missing outcome counts after bounded detailed rows roll off.
+
+    Closed quote observations are never rewritten as trades or backfilled.
+    Identities are bounded; any overflow explicitly prevents later review.
+    """
+    archive = book.setdefault("archived_outcomes", {})
+    for row in rows:
+        for arm in row["arms"]:
+            for horizon in HORIZONS:
+                label = str(horizon) + "m"
+                data = archive.setdefault(arm, {}).setdefault(label, {
+                    "selected": 0, "priced": 0, "missing": 0, "wins": 0,
+                    "losses": 0, "net_sum": 0., "days": [], "pools": [],
+                    "identity_complete": True,
+                })
+                data["selected"] += 1
+                outcome = row.get("outcomes", {}).get(label) or {}
+                value = finite(outcome.get("net_quote_roi_pct"))
+                if value is None:
+                    data["missing"] += 1
+                    continue
+                data["priced"] += 1
+                data["wins"] += value > 0
+                data["losses"] += value < 0
+                data["net_sum"] += value
+                # Only compact identity hashes are persisted in the research
+                # archive; wallet and actual trade records are untouched.
+                for field, raw in (("days", str(row["at"])[:10]),
+                                   ("pools", str(row["pool"]))):
+                    identity = hashlib.sha256(raw.encode()).hexdigest()[:16]
+                    if identity in data[field]:
+                        continue
+                    if len(data[field]) >= 5000:
+                        data["identity_complete"] = False
+                    else:
+                        data[field].append(identity)
+
+
 def _summary(book, arm, horizon):
     rows = [r for r in book["done"] + book["pending"] if arm in r["arms"]]
     label = str(horizon) + "m"
@@ -99,14 +138,25 @@ def _summary(book, arm, horizon):
                   for r in rows)
     pending = len(rows) - missing - len(priced)
     vals = [v for _, v in priced]
+    previous = book.get("archived_outcomes", {}).get(arm, {}).get(label, {})
+    n = previous.get("priced", 0) + len(vals)
+    total = previous.get("net_sum", 0.) + sum(vals)
+    days = set(previous.get("days", []))
+    pools = set(previous.get("pools", []))
+    for row, _ in priced:
+        days.add(hashlib.sha256(row["at"][:10].encode()).hexdigest()[:16])
+        pools.add(hashlib.sha256(row["pool"].encode()).hexdigest()[:16])
     return dict(
-        selected=len(rows), priced=len(vals), missing=missing, pending=pending,
-        wins=sum(v > 0 for v in vals), losses=sum(v < 0 for v in vals),
-        mean_net_quote_roi_pct=round(sum(vals) / len(vals), 4) if vals else None,
-        mean_stressed_quote_roi_pct=round(sum(v - 2 for v in vals) / len(vals), 4)
-            if vals else None,
-        distinct_pools=len({r["pool"] for r, _ in priced}),
-        distinct_days=len({r["at"][:10] for r, _ in priced}),
+        selected=previous.get("selected", 0) + len(rows),
+        priced=n, missing=previous.get("missing", 0) + missing,
+        pending=pending,
+        wins=previous.get("wins", 0) + sum(v > 0 for v in vals),
+        losses=previous.get("losses", 0) + sum(v < 0 for v in vals),
+        mean_net_quote_roi_pct=round(total / n, 4) if n else None,
+        mean_stressed_quote_roi_pct=round(total / n - 2, 4) if n else None,
+        distinct_pools=len(pools), distinct_days=len(days),
+        identity_complete=previous.get("identity_complete", True),
+        archived=previous.get("selected", 0),
         review_ready=False, trades_enabled=False,
     )
 
@@ -150,7 +200,12 @@ def update(state, fresh_prices, current):
         if len(row["outcomes"]) == len(HORIZONS):
             book["done"].append(row)
             book["pending"].remove(row)
-    book["done"] = book["done"][-MAX_DONE:]
+    # Detailed history is bounded, but cumulative outcomes cannot disappear
+    # from the cost-aware evidence denominator as records roll off.
+    overflow = len(book["done"]) - MAX_DONE
+    if overflow > 0:
+        _archive_trimmed(book, book["done"][:overflow])
+        del book["done"][:overflow]
     tick = int(current.timestamp()) // 300
     candidates = []
     for pool in sorted(quotes):
