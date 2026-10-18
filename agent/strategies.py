@@ -65,7 +65,7 @@ def event(book, now, action, **data):
     book['events'] = (book['events'] + [dict(at=now.isoformat(), action=action, **data)])[-120:]
 
 
-def market(book, now, fetch=get):
+def market(book, now, fetch=get, priority_symbols=()):
     payload = fetch('/derivatives/api/v3/tickers')
     at = stamp(payload.get('serverTime'))
     if payload.get('result') != 'success' or not at or not -15 <= (now-at).total_seconds() <= 90:
@@ -86,8 +86,18 @@ def market(book, now, fetch=get):
                 number(t.get('relativeFundingRate')) is not None]
     eligible.sort(key=lambda t:abs(number(t.get('change24h')) or 0), reverse=True)
     held = book.get('position')
-    symbols = ([held['symbol']] if held else [])
-    # Preserve the held position and two highest-ranked eligible instruments.
+    # Held positions across the funded challenger and isolated forward-trial
+    # arms need candle features every cycle for exit management. Quotes alone
+    # cannot evaluate reversal exits, ATR stops or complete observations.
+    # Deduplicate these anchors and retain the fixed six-candle request budget.
+    symbols = []
+    for symbol in ([held.get('symbol')] if isinstance(held,dict) else []) + list(priority_symbols):
+        if isinstance(symbol,str) and symbol in quotes and symbol not in symbols:
+            symbols.append(symbol)
+        if len(symbols)>=6:
+            break
+    priority_held = tuple(symbols)
+    # Preserve all held positions and two highest-ranked eligible instruments.
     # Rotate the remaining candle slots over the whole eligible universe,
     # rather than repeatedly re-reading the same six leaders forever.
     # This changes data coverage, NOT setup qualification or position sizing.
@@ -113,6 +123,8 @@ def market(book, now, fetch=get):
     book['feed'] = dict(at=at.isoformat(), eligible=len(eligible), scanned=len(symbols),
                         bulk_tickers_evaluated=len(quotes), deep_candle_scans=len(symbols),
                         rotation_cursor=book.get('market_rotation_cursor',0),
+                        priority_held_symbols=len(priority_held),
+                        priority_held_scanned=sum(s in {name for name,_,_ in rows} for s in priority_held),
                         unscanned_candle_instruments=max(0,len(eligible)-len(set(symbols))),
                         requests=1+len(symbols), errors={s:e for s,_,e in rows if e},
                         provider='Kraken public futures', max_requests=7)
@@ -414,7 +426,13 @@ def run(state, now=None, fetch=get):
     now=now or dt.datetime.now(UTC)
     b=initialize(state,now)
     try:
-        quotes, indicators, eligible=market(b,now,fetch)
+        experiment=(state.get('research',{}).get('forward_experiment_v1') or {})
+        priority_symbols=[]
+        for arm in (experiment.get('arms') or {}).values():
+            held=arm.get('position') if isinstance(arm,dict) else None
+            if isinstance(held,dict) and held.get('symbol'):
+                priority_symbols.append(held['symbol'])
+        quotes, indicators, eligible=market(b,now,fetch,priority_symbols=priority_symbols)
         b.pop('error',None)
         observed_at=dt.datetime.now(UTC) if live_clock else now
         result=advance(state,observed_at,quotes,indicators,eligible)

@@ -206,6 +206,32 @@ class Strategies(unittest.TestCase):
         self.assertEqual(len(set(seen)),18)
         self.assertEqual(len(eligible),18)
 
+    def test_held_experiment_symbols_preempt_rotation_without_more_requests(self):
+        names=['PF_T'+str(i)+'USD' for i in range(18)]
+        ticks=[dict(symbol=name,bid=99.99,ask=100.01,tag='perpetual',
+                    volumeQuote=2_000_000,relativeFundingRate=.0001,
+                    change24h=100-i) for i,name in enumerate(names)]
+        book={'position':{'symbol':names[10]}}
+        seen=[]
+        def fetch(path):
+            if path=='/derivatives/api/v3/tickers':
+                return dict(result='success',serverTime=NOW.isoformat(),tickers=ticks)
+            if '/api/charts/v1/trade/' in path:
+                seen.append(path.split('/')[5])
+                return {'candles':[]}
+            self.fail(path)
+        with mock.patch.object(s,'features',return_value={'close':100}):
+            _,indicators,_=s.market(
+                book,NOW,fetch,priority_symbols=[names[11],names[12],names[11]])
+        self.assertEqual(len(seen),6)
+        self.assertEqual(len(set(seen)),6)
+        for symbol in (names[10],names[11],names[12],names[0],names[1]):
+            self.assertIn(symbol,seen)
+        self.assertEqual(book['feed']['requests'],7)
+        self.assertEqual(book['feed']['priority_held_symbols'],3)
+        self.assertEqual(book['feed']['priority_held_scanned'],3)
+        self.assertEqual(len(indicators),6)
+
     def test_feed_failure_is_visible_without_touching_account(self):
         state,_,_=fixture();s.run(state,NOW,fetch=lambda _: (_ for _ in ()).throw(TimeoutError('timeout')))
         self.assertEqual(state['research']['strategies_v1']['status'],'DATA_UNAVAILABLE')
