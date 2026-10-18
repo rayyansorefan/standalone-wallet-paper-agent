@@ -93,6 +93,59 @@ def recent_winner_audit(closed):
     }
 
 
+def archive_evicted(state, rows):
+    """Store only prospective aggregate results before the 500-row feed trim."""
+    book = (state.get('research') or {}).get(KEY)
+    if not isinstance(book, dict) or book.get('version') != VERSION or book.get('hypothesis_sha256') != FINGERPRINT:
+        return
+    start = dt.datetime.fromisoformat(book['registered_at'].replace('Z', '+00:00'))
+    archive = book.setdefault('archived_forward', {'observations': 0, 'arms': {}})
+    for row in rows:
+        if not isinstance(row, dict) or not row.get('signal_id') or not isinstance(row.get('signal_technical'), dict):
+            continue
+        try:
+            at = dt.datetime.fromisoformat(str(row['at']).replace('Z', '+00:00'))
+        except (TypeError, ValueError, KeyError):
+            continue
+        if at.tzinfo is None or at < start:
+            continue
+        archive['observations'] += 1
+        for arm in ARMS:
+            matched = match(arm, row)
+            target = archive['arms'].setdefault(arm, {'feature_complete': 0, 'selected': 0, 'horizons': {}})
+            if matched is not None:
+                target['feature_complete'] += 1
+            if matched is not True:
+                continue
+            target['selected'] += 1
+            for horizon in HORIZONS:
+                slot = target['horizons'].setdefault(horizon, {
+                    'priced': 0, 'missing': 0, 'wins': 0, 'losses': 0,
+                    'net_sum': 0., 'stressed_sum': 0., 'days': [],
+                    'pools': [], 'identity_complete': True,
+                })
+                outcome = (row.get('outcomes') or {}).get(horizon)
+                value = finite(outcome.get('net_quote_roi_pct')) if isinstance(outcome, dict) else None
+                if value is None:
+                    slot['missing'] += 1
+                    continue
+                slot['priced'] += 1
+                slot['wins'] += value > 0
+                slot['losses'] += value < 0
+                slot['net_sum'] += value
+                slot['stressed_sum'] += value - 2
+                for field, identity in (('days', row['at'][:10]), ('pools', row.get('token') or '')):
+                    if not identity:
+                        continue
+                    token = hashlib.sha256(identity.encode()).hexdigest()[:16]
+                    if token in slot[field]:
+                        continue
+                    if len(slot[field]) >= 5000:
+                        slot['identity_complete'] = False
+                    else:
+                        slot[field].append(token)
+
+
 def _score(items, horizon):
     selected = len(items)
     priced = []
