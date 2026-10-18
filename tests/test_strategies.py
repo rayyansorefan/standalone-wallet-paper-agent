@@ -1,6 +1,7 @@
 import copy
 import datetime as dt
 import unittest
+from unittest import mock
 from agent import strategies as s
 
 NOW=dt.datetime(2026,10,16,21,0,tzinfo=s.UTC)
@@ -176,6 +177,34 @@ class Strategies(unittest.TestCase):
         self.assertEqual(f['close'],101)
         with self.assertRaises(ValueError):s.features(bars[:90],NOW)
         with self.assertRaises(ValueError):s.features(bars[:70]+bars[71:],NOW)
+
+    def test_futures_deep_candle_scan_rotates_without_exceeding_free_budget(self):
+        b={}
+        names=['PF_T'+str(i)+'USD' for i in range(18)]
+        ticks=[dict(symbol=name,bid=99.99,ask=100.01,tag='perpetual',
+                    volumeQuote=2_000_000,relativeFundingRate=.0001,
+                    change24h=100-i) for i,name in enumerate(names)]
+        seen=[]
+        def fetch(path):
+            if path=='/derivatives/api/v3/tickers':
+                return dict(result='success',serverTime=NOW.isoformat(),tickers=ticks)
+            if '/api/charts/v1/trade/' in path:
+                seen.append(path.split('/')[5])
+                return {'candles':[]}
+            self.fail(path)
+        with mock.patch.object(s,'features',return_value={'close':100}):
+            for _ in range(4):
+                start=len(seen)
+                quotes,indicators,eligible=s.market(b,NOW,fetch)
+                scanned=seen[start:]
+                self.assertEqual(len(scanned),6)
+                self.assertIn(names[0],scanned)
+                self.assertIn(names[1],scanned)
+                self.assertEqual(b['feed']['bulk_tickers_evaluated'],18)
+                self.assertEqual(b['feed']['requests'],7)
+                self.assertEqual(len(indicators),6)
+        self.assertEqual(len(set(seen)),18)
+        self.assertEqual(len(eligible),18)
 
     def test_feed_failure_is_visible_without_touching_account(self):
         state,_,_=fixture();s.run(state,NOW,fetch=lambda _: (_ for _ in ()).throw(TimeoutError('timeout')))
