@@ -84,6 +84,45 @@ class ForwardExperiment(unittest.TestCase):
         self.assertEqual(t['registered_at'],old)
         self.assertIsNone(t['arms']['baseline']['position'])
 
+    def test_invalidated_epoch_one_is_archived_once_before_separate_epoch_two(self):
+        s,q,f=inputs()
+        old=lab.advance(s,NOW,q,f,set(q))
+        old['version']=lab.LEGACY_VERSION
+        old['invalidated_at']=(NOW+dt.timedelta(minutes=1)).isoformat()
+        old['invalid_reason']='ECONOMIC_SOURCE_CHANGED_NO_AUTOMATIC_RESTART'
+        old['arms']['baseline']['closed']=[{
+            'net_usd':-4.81776,'stress_net_usd':-8.332792,
+            'opened_at':NOW.isoformat()}]
+        old_summary=copy.deepcopy(old['summary'])
+        old_source=old['source_sha256']
+        new_time=NOW+dt.timedelta(minutes=5)
+        current=lab.advance(s,new_time,q,f,set(q))
+        archive=s['research'][lab.ARCHIVE_KEY]
+        self.assertEqual(len(archive),1)
+        self.assertEqual(archive[0]['version'],lab.LEGACY_VERSION)
+        self.assertEqual(archive[0]['source_sha256'],old_source)
+        self.assertEqual(archive[0]['summary'],old_summary)
+        self.assertEqual(archive[0]['arms']['baseline']['closed'][0]['net_usd'],-4.81776)
+        self.assertEqual(current['version'],lab.ACTIVE_VERSION)
+        self.assertEqual(current['predecessor_version'],lab.LEGACY_VERSION)
+        self.assertEqual(current['restart_reason'],
+                         'SEPARATE_EPOCH_AFTER_STABLE_SCAN_ENGINEERING')
+        self.assertEqual(current['arms']['baseline']['closed'],[])
+        self.assertEqual(current['registered_at'],new_time.isoformat())
+        lab.advance(s,new_time+dt.timedelta(minutes=5),q,f,set(q))
+        self.assertEqual(len(s['research'][lab.ARCHIVE_KEY]),1)
+
+    def test_invalidated_epoch_two_does_not_auto_restart(self):
+        s,q,f=inputs()
+        trial=lab.advance(s,NOW,q,f,set(q))
+        trial['invalidated_at']=NOW.isoformat()
+        trial['invalid_reason']='FUTURE_SOURCE_CHANGE'
+        registered=trial['registered_at']
+        again=lab.advance(s,NOW+dt.timedelta(minutes=5),q,f,set(q))
+        self.assertEqual(again['status'],'INVALIDATED')
+        self.assertEqual(again['registered_at'],registered)
+        self.assertNotIn(lab.ARCHIVE_KEY,s['research'])
+
     def test_deadline_stops_new_entries_and_does_not_claim_validation(self):
         s,q,f=inputs();lab.advance(s,NOW,q,{},set(q))
         t=lab.advance(s,NOW+dt.timedelta(days=28),q,f,set(q))
