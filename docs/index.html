@@ -128,6 +128,46 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 .legacy-dashboard>summary:focus-visible{outline:2px solid #71d2bd}
 @media(max-width:800px){.simple-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.simple-accounts{grid-template-columns:1fr}.simple-number{font-size:25px}.simple-card{padding:13px}}
+
+/* Owner dashboard: visual-first, legible position monitoring. */
+.owner-section{margin:19px 0 23px}
+.owner-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.owner-heading h2{margin:0;font-size:20px;font-weight:850}
+.owner-heading p{font-size:12px;color:#abc0dc;margin:3px 0 0}
+.owner-tag{border-radius:99px;background:#1b4054;border:1px solid #327995;color:#a7e7ff;font-weight:750;font-size:12px;padding:7px 12px}
+.owner-open-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px}
+.owner-position{padding:20px;border-radius:17px;background:linear-gradient(145deg,#1b2c46,#122136);border:1px solid #385472;box-shadow:0 12px 35px #02091755}
+.owner-positive{border-top:4px solid #34e7a5}.owner-negative{border-top:4px solid #ff617a}.owner-unpriced{border-top:4px solid #ffcd73}
+.owner-position-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.owner-position-head h3{margin:0 0 5px;font-size:18px;overflow-wrap:anywhere}
+.owner-muted{display:block;color:#aec1dd;font-size:12px;line-height:1.55}
+.owner-pill{border-radius:30px;background:#253a52;padding:5px 10px;font-size:11px;font-weight:850;white-space:nowrap}
+.owner-positive .owner-pill{background:#12473c;color:#71ffd0}.owner-negative .owner-pill{background:#552536;color:#ffacbb}
+.owner-gain{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:20px 0 17px}
+.owner-gain strong{font-size:37px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.owner-gain span{font-size:16px;font-weight:750;font-variant-numeric:tabular-nums}
+.owner-green{color:#42edb1!important}.owner-red{color:#ff7489!important}
+.owner-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;border-top:1px solid #38506b;padding-top:16px}
+.owner-detail-grid b{display:block;margin-top:3px;font-size:13px;overflow-wrap:anywhere}
+.owner-position h4{margin:20px 0 5px;font-size:13px}
+.owner-warning{color:#ffcf83;background:#3a2d22;border-radius:9px;padding:10px;font-size:12px}
+.owner-chart{width:100%;margin:8px 0;min-height:60px}
+.owner-svg{display:block;width:100%;height:auto;max-height:230px}
+.owner-visual-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+.owner-visual-card{padding:19px;background:linear-gradient(135deg,#172940,#122137);border:1px solid #334e6d;border-radius:16px}
+.owner-visual-card h3{font-size:15px;margin:0 0 6px}
+.owner-winrate{font-size:32px;font-weight:850;margin:20px 0 12px}
+.owner-bar{height:15px;border-radius:99px;background:#522b3c;overflow:hidden}
+.owner-bar>div{height:100%;background:linear-gradient(90deg,#16bb88,#59f2c5);transition:width .3s}
+.owner-history-item{border:1px solid #35506e;border-radius:11px;background:#17273d;margin-bottom:8px}
+.owner-history-head{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px}
+.owner-history-head>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.owner-history-head b{overflow-wrap:anywhere}
+.owner-history-head>strong{white-space:nowrap;font-variant-numeric:tabular-nums}
+.owner-history-body{padding:0 15px;color:#c4d5eb;font-size:12px}
+.owner-history-body p{margin:6px 0}
+.owner-history-item .owner-chart{padding:0 12px}
+@media(max-width:700px){.owner-visual-grid{grid-template-columns:1fr}.owner-gain strong{font-size:29px}.owner-history-head>strong{white-space:normal;text-align:right}}
 /* Whale tables scroll inside their panel on phones rather than crushing columns. */
 #whales table:has(thead){min-width:640px}
 </style>
@@ -162,6 +202,22 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   </div>
   <div class="simple-health" id="simple-health">Checking latest engine status…</div>
   <div class="simple-trades"><h2>Latest five closed GBP trades</h2><div id="simple-recent">Waiting for trade history.</div></div>
+</section>
+
+<section class="owner-section" id="owner-open-positions" aria-labelledby="owner-open-title">
+ <div class="owner-heading"><div><h2 id="owner-open-title">Open positions · live gain / loss</h2><p>Current net return, £/$ P&amp;L, entry price, protective stop, additions and verified quote history</p></div><span class="owner-tag" id="owner-open-count">Loading</span></div>
+ <div class="owner-open-list" id="owner-open-list"><p class="owner-muted">Loading positions from the saved paper ledger.</p></div>
+</section>
+<section class="owner-section" aria-label="Performance charts">
+ <div class="owner-visual-grid">
+  <div class="owner-visual-card"><h3>Portfolio equity · original £2,000 account</h3><p class="owner-muted">Recorded marked equity, not an exchange balance</p><div id="owner-equity" class="owner-chart">Loading chart…</div></div>
+  <div class="owner-visual-card"><h3>Winning versus losing trades</h3><div class="owner-winrate" id="owner-win-rate">—</div><div class="owner-bar"><div id="owner-win-bar" style="width:0"></div></div><p class="owner-muted" id="owner-win-detail">Waiting for results</p><p class="owner-muted">GBP closed trades only; futures are a separate account.</p></div>
+ </div>
+</section>
+<section class="owner-section" id="owner-trade-history" aria-labelledby="owner-history-title">
+ <div class="owner-heading"><div><h2 id="owner-history-title">Position history</h2><p>12 latest closed trades across both accounts. Select a trade for entry, exit, reason and its recorded price history.</p></div></div>
+ <div id="owner-position-history"><p class="owner-muted">Loading position history.</p></div>
+ <p class="owner-muted">Full searchable trade ledger and CSV export remain under Detailed reports below.</p>
 </section>
 <details class="legacy-dashboard" id="advanced-dashboard">
 <summary>Show detailed reports, charts and full trade history</summary>
@@ -321,6 +377,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
 </main>
 <script src="./trade-history.js"></script>
+<script src="./owner-visuals.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), money=(n,sign=false)=>Number.isFinite(Number(n))?'£'+(sign&&Number(n)>0?'+':'')+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
@@ -404,7 +461,7 @@ hint.textContent=history.length+' priced snapshots · Last recorded equity '+mon
 $('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
 $('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
 document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
-function render(s){state=s;health(s);simpleOverview(s);
+function render(s){state=s;health(s);simpleOverview(s);window.ownerVisualRender?.(s);
  const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
  document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
  const paired=s.research?.forward_experiment_v1?.summary;

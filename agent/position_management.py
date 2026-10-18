@@ -24,6 +24,7 @@ TRAIL_PCT = .07
 LOCK_PROFIT_PCT = .02
 MAX_ADDITIONS = 1
 MAX_MARKS = 3
+MAX_POSITION_HISTORY = 96  # Bounded, real five-minute observations; no backfilled prices.
 
 
 def finite(x):
@@ -115,6 +116,16 @@ def observe(pos,price,current,cost_per_side=.01):
     pos['position_action']='HOLD_PROTECTED' if pos.get('trailing_stop_price_usd') else (
         'WATCHING_WINNER' if gain>0 else 'WATCHING_LOSS')
     pos['last_net_roi_pct']=round(gain,3)
+    # Preserve each verified quote/ROI for the owner's position progression
+    # chart. The final history follows the position into the closed ledger.
+    # No synthetic prices, historical reconstruction, or duplicated cycle marks.
+    history=pos.setdefault('mark_history',[])
+    point={'at':iso,'price_usd':px,'net_roi_pct':round(gain,3)}
+    if history and history[-1].get('at')==iso:
+        history[-1]=point
+    else:
+        history.append(point)
+    pos['mark_history']=history[-MAX_POSITION_HISTORY:]
     return gain
 
 
