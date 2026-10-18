@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-18T07:39:16+00:00",
-  "last_data_at": "2026-10-18T07:39:16+00:00",
-  "cycle": 671,
+  "last_run": "2026-10-18T07:44:15+00:00",
+  "last_data_at": "2026-10-18T07:44:15+00:00",
+  "cycle": 672,
   "status": "OK",
   "cycle_health": {
     "screened_pass": 9,
@@ -18,7 +18,7 @@
     "unscreened_discovery_candidates": 0,
     "discoveries_eligible_unique": 10,
     "discovery_raw_rows": 23,
-    "discovery_free_batch_tokens": 48,
+    "discovery_free_batch_tokens": 47,
     "discovery_errors": [],
     "alternate_quoted_pools": 0,
     "trade_feeds_unavailable": 0,
@@ -44,7 +44,7 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-18T07:39:16+00:00",
+    "latest_cycle": "2026-10-18T07:44:15+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -63,18 +63,141 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-18T07:39:09.291887+00:00"
+    "last_success_at": "2026-10-18T07:44:09.061370+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_QUOTA",
-    "last_run": "2026-10-18T07:39:16+00:00",
+    "last_run": "2026-10-18T07:44:15+00:00",
     "last_scan_errors": []
   },
+  "forward_experiment": {
+    "status": "COLLECTING",
+    "last_run": "2026-10-18T07:44:16.246036+00:00",
+    "registered_at": "2026-10-18T07:44:16.246036+00:00",
+    "end_at": "2026-11-15T07:44:16.246036+00:00",
+    "source_sha256": "ede6b834745bf8f2371d3d16a52ef9313bd86bb1b29a14f40b53c4229e26221f",
+    "arms": {
+      "baseline": {
+        "closed": 0,
+        "wins": 0,
+        "losses": 0,
+        "net_usd": 0,
+        "equity_usd": 1998.263114,
+        "profit_factor": null,
+        "win_rate_pct": null,
+        "stress_net_usd": 0,
+        "entry_hour_clusters": 0,
+        "entry_days": 0,
+        "open_positions": 1,
+        "drawdown_pct": 0.08684430497649664,
+        "entry_block": null,
+        "status": "COLLECTING_FORWARD_EVIDENCE",
+        "missing_exit_feature_cycles": 0,
+        "missing_mark_cycles": 0
+      },
+      "pullback": {
+        "closed": 0,
+        "wins": 0,
+        "losses": 0,
+        "net_usd": 0,
+        "equity_usd": 2000.0,
+        "profit_factor": null,
+        "win_rate_pct": null,
+        "stress_net_usd": 0,
+        "entry_hour_clusters": 0,
+        "entry_days": 0,
+        "open_positions": 0,
+        "drawdown_pct": 0.0,
+        "entry_block": null,
+        "status": "COLLECTING_FORWARD_EVIDENCE",
+        "missing_exit_feature_cycles": 0,
+        "missing_mark_cycles": 0
+      }
+    },
+    "delta_equity_usd": 1.736886,
+    "hurdles": {
+      "complete": false,
+      "adequate_sample": false,
+      "positive_net": false,
+      "profit_factor": false,
+      "majority_wins": false,
+      "stress_positive": false,
+      "beats_baseline": true,
+      "complete_observations": true,
+      "no_loss_stop": true
+    },
+    "automatic_promotion": false,
+    "note": "Prospective USD simulations only. Quote-sampled stops can gap. Descriptive hurdles do not establish statistical independence, confidence or profitable learning."
+  },
+  "forward_experiment_error": null,
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-18T07:39:17.496960+00:00",
+    "last_run": "2026-10-18T07:44:16.246036+00:00",
     "closed": 16,
     "wins": 3
+  },
+  "profitability_diagnostics": {
+    "cohorts": {
+      "current_matching_policy": {
+        "closed": 10,
+        "decomposed": 10,
+        "unknown_or_inconsistent": 0,
+        "gross_price_pnl_gbp": -1.7339,
+        "modeled_cost_drag_gbp": 1.9662,
+        "decomposed_net_pnl_gbp": -3.7001,
+        "gross_wins": 3,
+        "net_wins": 2,
+        "cost_erased_gross_wins": 1,
+        "by_exit": {
+          "observed_net_stop_4_5": {
+            "closed": 7,
+            "net_pnl_gbp": -4.3408
+          },
+          "winner_trailing_stop": {
+            "closed": 1,
+            "net_pnl_gbp": 0.1514
+          },
+          "observed_trader_sell": {
+            "closed": 2,
+            "net_pnl_gbp": 0.4893
+          }
+        }
+      },
+      "legacy_or_mixed_policy": {
+        "closed": 62,
+        "decomposed": 62,
+        "unknown_or_inconsistent": 0,
+        "gross_price_pnl_gbp": -2.746,
+        "modeled_cost_drag_gbp": 12.3458,
+        "decomposed_net_pnl_gbp": -15.0918,
+        "gross_wins": 21,
+        "net_wins": 14,
+        "cost_erased_gross_wins": 7,
+        "by_exit": {
+          "legacy_stop_12": {
+            "closed": 24,
+            "net_pnl_gbp": -34.6861
+          },
+          "observed_trader_sell": {
+            "closed": 18,
+            "net_pnl_gbp": 0.405
+          },
+          "legacy_take_profit_20": {
+            "closed": 9,
+            "net_pnl_gbp": 24.6992
+          },
+          "maximum_hold_6h": {
+            "closed": 4,
+            "net_pnl_gbp": -0.3626
+          },
+          "observed_net_stop_4_5": {
+            "closed": 7,
+            "net_pnl_gbp": -5.1473
+          }
+        }
+      }
+    },
+    "note": "Descriptive recorded CLOSED GBP only; gross movement less recorded modeled entry/exit costs. Totals cover decomposed rows only. Mixed history cannot certify the current policy. Does not establish why repairs or strategy caused losses."
   },
   "original": {
     "closed": 72,
@@ -115,8 +238,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-18T07:38:46.065Z",
-    "run_id": "39108445322",
+    "scheduled_at": "2026-10-18T07:43:46.750Z",
+    "run_id": "39108757571",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
