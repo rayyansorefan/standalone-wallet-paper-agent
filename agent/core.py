@@ -208,6 +208,11 @@ def close_position(state, pos, price, reason):
 
 def maybe_open(state, ev, price, current, prices):
     wallet = ev['wallet']; token = ev['token']
+    from .allocation_guard import update as allocation_status
+    allocation=allocation_status(state,current)
+    if not allocation['new_entries_allowed']:
+        log_decision(state,'SKIP_POLICY_ALLOCATION',wallet,token,allocation['reason'])
+        return
     reason = None
     from .decision import entry_assessment
     assessment = entry_assessment(state, ev, current)
@@ -318,6 +323,9 @@ def maintain_positions(state, prices, current):
 def reinforce_open_winners(state, prices, quote_times, current, safe_pools, conflicting_sells):
     """At most one evidence-gated, 0.5%-of-equity additional PAPER purchase."""
     from .position_management import addition_amount, apply_add, MAX_ADDITIONS
+    from .allocation_guard import update as allocation_status
+    if not allocation_status(state,current)['winner_additions_allowed']:
+        return 0
     if not state.get('positions') or not safe_pools:
         return 0
     complete=equity(state,prices)

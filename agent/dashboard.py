@@ -162,6 +162,7 @@ def compact_health(state):
                             'max_requests','priority_held_symbols',
                             'priority_held_scanned')}},
         'profitability_diagnostics':diagnostic(closed),
+        'allocation_guard':research.get('gbp_allocation_guard_v1'),
         'original':{'closed':len(closed),
                     'open_positions':len(opened),
                     'performance':_original_performance(state,opened,closed)},
