@@ -23,7 +23,7 @@ class SimpleDashboard(unittest.TestCase):
                       'simple-gbp-pnl', 'simple-usd-pnl', 'simple-recent', 'simple-health'):
             self.assertIn('id="'+field+'"', HTML)
         self.assertIn("num(v)===null?'—'", HTML)
-        self.assertIn('Being assessed does NOT mean fully analysed', HTML)
+        self.assertIn('These counts are different stages, not one continuous funnel', HTML)
 
     def test_single_valid_html_document_and_no_state_writes(self):
         self.assertEqual(HTML.count('<!doctype html>'), 1)
