@@ -15,6 +15,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 .badge.ok{color:#6be8bd;background:#102a27;border-color:#20674e}.badge.ok::before{background:#3fe0b0}.badge.warn{color:#ffd18a;background:#332718;border-color:#654a22}.badge.warn::before{background:#ffd18a}
 .badge.bad{color:#ff9da9;background:#3a2029;border-color:#824352}.badge.bad::before{background:#ff889a}
 .topnote{padding:14px 18px;border-radius:12px;border:1px solid #344259;background:#192438;margin-bottom:22px;color:#d4e3fa;display:flex;gap:12px;align-items:flex-start}
+.topnote[hidden]{display:none}
 .topnote strong{color:#fff}.topnote small{display:block;color:#a8b9d3;font-size:12px;margin-top:3px}
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}.metric{border:1px solid #293a51;background:#172339;padding:18px;border-radius:15px;min-height:116px}
 .label{color:#adbed6;font-weight:600;font-size:12px}.value{font-size:30px;font-weight:800;letter-spacing:-1.1px;margin:8px 0 0;line-height:1.2;font-variant-numeric:tabular-nums}.meta{font-size:11px;color:#8fa3bf;margin-top:10px}.positive{color:#6ce3b2!important}.negative{color:#ff9ba7!important}.quiet{color:#a6b8d3}
@@ -199,6 +200,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </section>
 
 <!-- OWNER_SIMPLE_OVERVIEW: keep this visible; detailed tables live below in a closed archive. -->
+<div class="topnote" id="allocation-guard-banner" role="status" hidden></div>
 <section id="simple-overview" aria-label="Trading engine at a glance">
   <h1 class="simple-title">What happened in the latest scan?</h1>
   <p class="simple-sub" id="simple-time">Waiting for the latest saved five-minute cycle.</p>
@@ -465,7 +467,11 @@ hint.textContent=history.length+' priced snapshots · Last recorded equity '+mon
 $('chart').addEventListener('mousemove',evt=>{if(!points.length)return;let b=$('chart').getBoundingClientRect(),x=(evt.clientX-b.left)/b.width*850;let item=points.reduce((a,b)=>Math.abs(b.x-x)<Math.abs(a.x-x)?b:a);let t=$('hover');t.innerHTML=safe(uk(item.raw.at))+' · <b>'+safe(money(item.raw.equity_gbp))+'</b>';t.style.display='block';t.style.left=Math.max(2,Math.min(evt.clientX-b.left-45,b.width-170))+'px';t.style.top=Math.max(0,(item.y/260)*b.height-42)+'px'});
 $('chart').addEventListener('mouseleave',()=>$('hover').style.display='none');
 document.querySelectorAll('[data-span]').forEach(b=>b.addEventListener('click',()=>{span=b.dataset.span;document.querySelectorAll('[data-span]').forEach(n=>n.classList.toggle('sel',n===b));draw();}));
-function render(s){state=s;health(s);simpleOverview(s);window.ownerVisualRender?.(s);
+function render(s){state=s;health(s);
+ const allocation=s.research?.gbp_allocation_guard_v1;const banner=document.getElementById('allocation-guard-banner');
+ banner.hidden=!allocation || allocation.new_entries_allowed!==false;
+ banner.textContent=allocation?.new_entries_allowed===false ? 'GBP new entries and additions paused: '+allocation.reason+'. Existing positions remain monitored. Research continues; profitability is unproven.' : '';
+simpleOverview(s);window.ownerVisualRender?.(s);
  const attribution=s.profitability_diagnostics?.cohorts?.current_matching_policy;
  document.getElementById('cost-attribution').textContent=attribution ? 'Current matching GBP policy: '+attribution.decomposed+' of '+attribution.closed+' closes decomposed · gross price P&L £'+(attribution.gross_price_pnl_gbp??'—')+' · modeled cost drag £'+(attribution.modeled_cost_drag_gbp??'—')+' · net £'+(attribution.decomposed_net_pnl_gbp??'—')+'. Descriptive, not proof of causation.' : 'Current-policy cost attribution awaits recorded closes.';
  const paired=s.research?.forward_experiment_v1?.summary;
