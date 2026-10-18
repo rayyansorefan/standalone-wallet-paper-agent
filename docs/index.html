@@ -131,6 +131,9 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 
 /* Owner dashboard: visual-first, legible position monitoring. */
 .owner-section{margin:19px 0 23px}
+#owner-open-positions{padding:18px;border-radius:18px;background:linear-gradient(125deg,#13344b 0%,#172640 45%,#242444 100%);border:1px solid #427ca2;box-shadow:0 0 0 1px #1e547955,0 15px 35px #03091744}
+#owner-open-positions .owner-heading h2{color:#b9eeff;letter-spacing:.2px}
+#owner-trade-history{border-top:2px solid #345f85;padding-top:15px}
 .owner-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
 .owner-heading h2{margin:0;font-size:20px;font-weight:850}
 .owner-heading p{font-size:12px;color:#abc0dc;margin:3px 0 0}
@@ -179,6 +182,22 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 </header>
 <div class="topnote"><span style="font-size:20px">◉</span><div><strong id="statusTitle">Waiting for verified observations</strong><div id="statusMessage">No verified market-data cycle has been received. Every figure will be labelled with its actual observation time.</div><small id="updated">Data update: not yet received. Dashboard polls published results every 60 seconds.</small></div></div>
 
+<section class="owner-section" id="owner-open-positions" aria-labelledby="owner-open-title">
+ <div class="owner-heading"><div><h2 id="owner-open-title">LIVE POSITION MONITOR · GAIN / LOSS</h2><p>Current net return, £/$ P&amp;L, entry price, protective stop, additions and verified quote history</p></div><span class="owner-tag" id="owner-open-count">Loading</span></div>
+ <div class="owner-open-list" id="owner-open-list"><p class="owner-muted">Loading positions from the saved paper ledger.</p></div>
+</section>
+<section class="owner-section" aria-label="Performance charts">
+ <div class="owner-visual-grid">
+  <div class="owner-visual-card"><h3>Portfolio equity · original £2,000 account</h3><p class="owner-muted">Recorded marked equity, not an exchange balance</p><div id="owner-equity" class="owner-chart">Loading chart…</div></div>
+  <div class="owner-visual-card"><h3>Winning versus losing trades</h3><div class="owner-winrate" id="owner-win-rate">—</div><div class="owner-bar"><div id="owner-win-bar" style="width:0"></div></div><p class="owner-muted" id="owner-win-detail">Waiting for results</p><p class="owner-muted">GBP closed trades only; futures are a separate account.</p></div>
+ </div>
+</section>
+<section class="owner-section" id="owner-trade-history" aria-labelledby="owner-history-title">
+ <div class="owner-heading"><div><h2 id="owner-history-title">Position history</h2><p>12 latest closed trades across both accounts. Select a trade for entry, exit, reason and its recorded price history.</p></div></div>
+ <div id="owner-position-history"><p class="owner-muted">Loading position history.</p></div>
+ <p class="owner-muted">Full searchable trade ledger and CSV export remain under Detailed reports below.</p>
+</section>
+
 <!-- OWNER_SIMPLE_OVERVIEW: keep this visible; detailed tables live below in a closed archive. -->
 <section id="simple-overview" aria-label="Trading engine at a glance">
   <h1 class="simple-title">What happened in the latest scan?</h1>
@@ -204,21 +223,6 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
   <div class="simple-trades"><h2>Latest five closed GBP trades</h2><div id="simple-recent">Waiting for trade history.</div></div>
 </section>
 
-<section class="owner-section" id="owner-open-positions" aria-labelledby="owner-open-title">
- <div class="owner-heading"><div><h2 id="owner-open-title">Open positions · live gain / loss</h2><p>Current net return, £/$ P&amp;L, entry price, protective stop, additions and verified quote history</p></div><span class="owner-tag" id="owner-open-count">Loading</span></div>
- <div class="owner-open-list" id="owner-open-list"><p class="owner-muted">Loading positions from the saved paper ledger.</p></div>
-</section>
-<section class="owner-section" aria-label="Performance charts">
- <div class="owner-visual-grid">
-  <div class="owner-visual-card"><h3>Portfolio equity · original £2,000 account</h3><p class="owner-muted">Recorded marked equity, not an exchange balance</p><div id="owner-equity" class="owner-chart">Loading chart…</div></div>
-  <div class="owner-visual-card"><h3>Winning versus losing trades</h3><div class="owner-winrate" id="owner-win-rate">—</div><div class="owner-bar"><div id="owner-win-bar" style="width:0"></div></div><p class="owner-muted" id="owner-win-detail">Waiting for results</p><p class="owner-muted">GBP closed trades only; futures are a separate account.</p></div>
- </div>
-</section>
-<section class="owner-section" id="owner-trade-history" aria-labelledby="owner-history-title">
- <div class="owner-heading"><div><h2 id="owner-history-title">Position history</h2><p>12 latest closed trades across both accounts. Select a trade for entry, exit, reason and its recorded price history.</p></div></div>
- <div id="owner-position-history"><p class="owner-muted">Loading position history.</p></div>
- <p class="owner-muted">Full searchable trade ledger and CSV export remain under Detailed reports below.</p>
-</section>
 <details class="legacy-dashboard" id="advanced-dashboard">
 <summary>Show detailed reports, charts and full trade history</summary>
 <!-- UNIFIED_V2_NAV -->
@@ -377,7 +381,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;ma
 <footer class="footer"><strong>Evidence standards.</strong> This is not an executable-price feed or a verified-wallet-profit product. Quotes can be cached, delayed, or unavailable. No actual orders are sent. Portfolio totals are not shown when a held asset lacks a fresh price. A successful program run is not evidence of a profitable trading strategy. All displayed amounts are simulated GBP denominations based on USD token-price ratios without modeling GBP/USD fluctuations. <span id="lastBrowserCheck"></span></footer>
 </main>
 <script src="./trade-history.js"></script>
-<script src="./owner-visuals.js"></script>
+<script src="./owner-visuals.js?v=20261018-positions-2"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), money=(n,sign=false)=>Number.isFinite(Number(n))?'£'+(sign&&Number(n)>0?'+':'')+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
