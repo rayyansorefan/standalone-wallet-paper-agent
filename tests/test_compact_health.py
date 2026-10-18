@@ -24,7 +24,16 @@ class CompactHealth(unittest.TestCase):
                                               'retry_at':'2026-10-17T15:29:05+00:00'},
                        'strategies_v1':{'status':'COLLECTING_FORWARD_EVIDENCE',
                                         'closed':[{'private':'details'}],
-                                        'summary':{'wins':0}}}
+                                        'summary':{'wins':0},
+                                        'feed':{'eligible':28,'scanned':6,
+                                                'bulk_tickers_evaluated':40,
+                                                'deep_candle_scans':6,
+                                                'rotation_cursor':12,
+                                                'unscanned_candle_instruments':22,
+                                                'requests':7,'max_requests':7,
+                                                'priority_held_symbols':3,
+                                                'priority_held_scanned':3,
+                                                'errors':{'private-symbol':'timeout'}}}}
         original=json.dumps(s,sort_keys=True)
         report=dashboard.compact_health(s)
         with tempfile.TemporaryDirectory() as d:
@@ -37,6 +46,11 @@ class CompactHealth(unittest.TestCase):
         self.assertEqual(parsed['cycle_health']['errors_this_cycle'],2)
         self.assertEqual(parsed['primary_provider']['rate_limit_strikes'],2)
         self.assertEqual(parsed['futures']['closed'],1)
+        self.assertEqual(parsed['futures']['feed']['eligible'],28)
+        self.assertEqual(parsed['futures']['feed']['scanned'],6)
+        self.assertEqual(parsed['futures']['feed']['rotation_cursor'],12)
+        self.assertEqual(parsed['futures']['feed']['priority_held_scanned'],3)
+        self.assertNotIn('errors',parsed['futures']['feed'])
         self.assertEqual(parsed['original']['open_positions'],1)
         for secret in ('private-wallet','private-token','closed-wallet'):
             self.assertNotIn(secret,body)
