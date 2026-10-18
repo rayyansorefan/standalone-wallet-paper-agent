@@ -96,5 +96,57 @@ class TechnicalLab(unittest.TestCase):
         self.assertLessEqual(len(b["done"]),ta.MAX_DONE)
 
 
+    def test_bounded_rows_do_not_erase_lifetime_wins_losses_or_missing(self):
+        state = {}
+        book = ta.update(state, {}, NOW)
+        for i in range(ta.MAX_DONE + 1):
+            book["done"].append({
+                "at": NOW.isoformat(), "pool": "pool" + str(i % 3),
+                "entry_price": 1., "arms": ["sampled_quote_control",
+                                            "ema_macd_continuation"],
+                "features": {}, "outcomes": {
+                    "5m": {"net_quote_roi_pct": 3.0 if i % 2 == 0 else -2.0},
+                    "30m": {"status": "MISSING_FRESH_MARK"},
+                    "60m": {"net_quote_roi_pct": -1.0},
+                },
+            })
+        original_records = ta.MAX_DONE + 1
+        ta.update(state, {}, NOW + dt.timedelta(minutes=5))
+        self.assertEqual(len(book["done"]), ta.MAX_DONE)
+        self.assertEqual(book["archived_outcomes"]["sampled_quote_control"]["5m"]["selected"], 1)
+        report = book["reports"]["sampled_quote_control"]
+        self.assertEqual(report["5m"]["selected"], original_records)
+        self.assertEqual(report["5m"]["wins"], (original_records + 1) // 2)
+        self.assertEqual(report["5m"]["losses"], original_records // 2)
+        self.assertEqual(report["30m"]["missing"], original_records)
+        self.assertEqual(report["60m"]["priced"], original_records)
+        self.assertEqual(report["5m"]["distinct_pools"], 3)
+        self.assertEqual(report["5m"]["distinct_days"], 1)
+        self.assertEqual(report["5m"]["archived"], 1)
+        self.assertFalse(report["5m"]["review_ready"])
+        self.assertFalse(report["5m"]["trades_enabled"])
+        self.assertEqual(book["reports"]["ema_macd_continuation"]["5m"]["selected"],
+                         original_records)
+        # A later empty cycle may not recount the already-archived record.
+        ta.update(state, {}, NOW + dt.timedelta(minutes=10))
+        self.assertEqual(book["reports"]["sampled_quote_control"]["5m"]["selected"],
+                         original_records)
+
+    def test_archive_identity_cap_fails_visible_not_silently_overstates_diversity(self):
+        b = {"archived_outcomes": {}}
+        row = {"at": NOW.isoformat(), "pool": "pool",
+               "arms": ["sampled_quote_control"],
+               "outcomes": {"5m": {"net_quote_roi_pct": 1.5},
+                            "30m": {"status": "MISSING_FRESH_MARK"},
+                            "60m": {"net_quote_roi_pct": -3.0}}}
+        ta._archive_trimmed(b, [row])
+        bucket = b["archived_outcomes"]["sampled_quote_control"]["5m"]
+        bucket["pools"] = [f"other-{i}" for i in range(5000)]
+        ta._archive_trimmed(b, [dict(row, pool="another-pool")])
+        self.assertFalse(bucket["identity_complete"])
+        self.assertEqual(bucket["selected"], 2)
+        self.assertEqual(bucket["wins"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()
