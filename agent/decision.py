@@ -147,8 +147,15 @@ def observe_forward(state, events, prices, current):
         price=numeric(prices.get(ev['token']));a=entry_assessment(state,ev,current)
         if price is None or price<=0 or a is None:continue
         if len(pending)>=64:break
+        # Freeze all candidate features before any forward outcome is observed.
+        # This is read-only GBP research: NEVER a new allocation qualification.
+        technical = dict(a.get('technical') or {})
+        technical['liquidity_usd'] = numeric(ev.get('liquidity_usd'))
+        technical['age_hours'] = numeric(ev.get('age_hours'))
+        technical['signal_age_seconds'] = max(0,(current-ev['timestamp']).total_seconds())
         pending.append(dict(signal_id=ev['id'],token=ev['token'],at=current.isoformat(),price=price,
-                            accepted_by_policy=a['allowed'],reasons=a['reasons'],outcomes={}))
+                            accepted_by_policy=a['allowed'],reasons=a['reasons'],outcomes={},
+                            signal_technical=technical))
     d['forward_outcomes']=done[-500:]
     summary={}
     for accepted in (True,False):
