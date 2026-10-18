@@ -12,13 +12,20 @@ import math
 import re
 import urllib.parse
 import urllib.request
+import urllib.error
 
 SOL=re.compile(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$')
 ROOT='https://api.dexscreener.com'
 SOURCES=('/token-profiles/latest/v1','/token-boosts/top/v1')
 MAX_MINTS=100
 MAX_POOL_RESULTS=100
-SEARCH_QUERIES=('SOL','USDC','BONK','AI')
+# Rotate market-search categories across successive five-minute cycles.
+# No paid discovery, no extra requests per cycle.
+SEARCH_QUERIES=('SOL','USDC','BONK','AI','BTC','ETH','WIF','JUP',
+                'RAY','PUMP','PYTH','JTO','POPCAT','FARTCOIN','PENGU','ORCA',
+                'MEW','TRUMP','USDT','DOGE','SPX','JLP','MEME','SOLANA')
+SEARCHES_PER_CYCLE=4
+PRIOR_WATCHLIST_LIMIT=60
 CHUNK=30
 TIMEOUT=7
 MAX_BYTES=1_200_000
@@ -37,8 +44,13 @@ def http_get(path):
     req=urllib.request.Request(ROOT+path,headers={
         'User-Agent':'PaperResearchWideDiscovery/1.0 (paper only)',
         'Accept':'application/json'})
-    with urllib.request.urlopen(req,timeout=TIMEOUT) as response:
-        raw=response.read(MAX_BYTES+1)
+    try:
+        with urllib.request.urlopen(req,timeout=TIMEOUT) as response:
+            raw=response.read(MAX_BYTES+1)
+    except urllib.error.HTTPError as exc:
+        if exc.code==429:
+            raise RuntimeError('DEX_DISCOVERY_RATE_LIMITED') from exc
+        raise
     if len(raw)>MAX_BYTES:raise ValueError('Free discovery response too large')
     return json.loads(raw)
 
@@ -80,7 +92,7 @@ def choose_pair(pair,now):
             'promotion_is_not_safety_approval':True}
 
 
-def discover(get=http_get,now=None):
+def discover(get=http_get,now=None,prior_mints=(),search_cursor=0):
     """Broad free search + 100 independently validated mints; no credentials.
 
     Provider failures only degrade optional breadth, not core scanner. A
@@ -88,7 +100,16 @@ def discover(get=http_get,now=None):
     """
     now=now or dt.datetime.now(UTC)
     addresses=[]
+    # Revalidate a bounded previous watchlist using NEW batched quotes.
+    # Prior prices are NEVER reused; stale/missing refreshes are not eligible.
+    previous=[]
+    for mint in prior_mints:
+        if isinstance(mint,str) and SOL.fullmatch(mint) and mint not in previous:
+            previous.append(mint)
+        if len(previous)>=PRIOR_WATCHLIST_LIMIT:break
+    addresses.extend(previous)
     issues=[]
+    rate_limited=False
     source_counts={}
     for source in SOURCES:
         try:
@@ -103,9 +124,11 @@ def discover(get=http_get,now=None):
                     addresses.append(mint);count+=1
                 if len(addresses)>=MAX_MINTS:break
             source_counts[source]=count
-        except Exception:
-            issues.append(source.split('/')[-2]+' unavailable')
-        if len(addresses)>=MAX_MINTS:break
+        except Exception as exc:
+            if 'DEX_DISCOVERY_RATE_LIMITED' in str(exc):
+                issues.append('dex rate limited');rate_limited=True
+            else:issues.append(source.split('/')[-2]+' unavailable')
+        if rate_limited or len(addresses)>=MAX_MINTS:break
     # Public DEX search returns complete pair snapshots, unlike promotional
     # token lists. This expands the cheap opportunity universe without
     # pretending each pool has had a Rugcheck or on-chain swap read.
@@ -114,7 +137,10 @@ def discover(get=http_get,now=None):
     pairs={}
     search_requests=0
     search_rows=0
-    for query in SEARCH_QUERIES:
+    rotated_queries=[SEARCH_QUERIES[(int(search_cursor)*SEARCHES_PER_CYCLE+i)%len(SEARCH_QUERIES)]
+                     for i in range(SEARCHES_PER_CYCLE)]
+    for query in rotated_queries:
+        if rate_limited:break
         try:
             search_requests+=1
             response=get('/latest/dex/search?q='+urllib.parse.quote(query,safe=''))
@@ -128,10 +154,13 @@ def discover(get=http_get,now=None):
                 pairs.setdefault(item['pool'],item)
                 if item['mint'] not in addresses and len(addresses)<MAX_MINTS:
                     addresses.append(item['mint'])
-        except Exception:
-            issues.append('public search unavailable')
+        except Exception as exc:
+            if 'DEX_DISCOVERY_RATE_LIMITED' in str(exc):
+                issues.append('dex rate limited');rate_limited=True
+            else:issues.append('public search unavailable')
     calls=0
     for i in range(0,len(addresses),CHUNK):
+        if rate_limited:break
         batch=addresses[i:i+CHUNK]
         try:
             calls+=1
@@ -143,12 +172,18 @@ def discover(get=http_get,now=None):
                     old=pairs.get(item['pool'])
                     if old is None or item['liquidity_usd']>old['liquidity_usd']:
                         pairs[item['pool']]=item
-        except Exception:
-            issues.append('pair batch unavailable')
+        except Exception as exc:
+            if 'DEX_DISCOVERY_RATE_LIMITED' in str(exc):
+                issues.append('dex rate limited');rate_limited=True
+            else:issues.append('pair batch unavailable')
     return list(pairs.values())[:MAX_POOL_RESULTS],{
         'sources':source_counts,'raw_token_mints':len(addresses),
         'qualified_pairs':len(pairs),'returned_pairs':min(len(pairs),MAX_POOL_RESULTS),
         'search_requests':search_requests,'search_rows_examined':search_rows,
-        'batch_requests':calls,'coverage_target':MAX_POOL_RESULTS,
+        'search_queries':rotated_queries,
+        'prior_mints_requested':len(previous),
+        'prior_mints_refreshed':len({m for m in previous if any(p['mint']==m for p in pairs.values())}),
+        'batch_requests':calls,'rate_limited':rate_limited,
+        'coverage_target':MAX_POOL_RESULTS,
         'coverage_shortfall':max(0,MAX_POOL_RESULTS-min(len(pairs),MAX_POOL_RESULTS)),
         'errors':issues[:6]}

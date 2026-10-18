@@ -418,14 +418,32 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 discovery_health['errors'].append('gecko deeper page unavailable')
         else:
             discovery_health['gecko_extra_page_deferred']=True
-        try:
-            from .opportunity_discovery import discover
-            extra,report=discover()
-            pools.extend(extra)
-            discovery_health.update(report)
-            discovery_health['mode']='gecko_plus_free_dex_batch'
-        except Exception:
-            discovery_health['errors'].append('optional dex batch discovery unavailable')
+        dex_retry=parse_time(state.setdefault('research',{}).get('dex_discovery_retry_at'))
+        if dex_retry and current<dex_retry:
+            discovery_health['dex_backoff_active']=True
+            discovery_health['mode']='gecko_only_dex_backoff'
+        else:
+            try:
+                from .opportunity_discovery import discover
+                # Preserve ONLY mint identities from previously eligible pools.
+                # Re-fetch prices/metrics each cycle; no stale quotes are promoted.
+                prior=[p.get('mint') for p in state.get('watched_pools',[])
+                       if isinstance(p,dict) and p.get('mint')]
+                extra,report=discover(prior_mints=prior,
+                                      search_cursor=int(state.get('completed_cycles',0)))
+                pools.extend(extra)
+                discovery_health.update(report)
+                discovery_health['mode']='gecko_plus_free_dex_batch'
+                if report.get('rate_limited'):
+                    # Optional DEX discovery must not retry a shared free-IP
+                    # 429 every five minutes and harm the primary paper engine.
+                    state['research']['dex_discovery_retry_at']=(
+                        current+dt.timedelta(minutes=15)).isoformat()
+                    discovery_health['dex_backoff_started']=True
+                else:
+                    state['research'].pop('dex_discovery_retry_at',None)
+            except Exception:
+                discovery_health['errors'].append('optional dex batch discovery unavailable')
     unique={}
     for meta in pools:
         if eligible(meta):
@@ -674,6 +692,15 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         # A 100-candidate ceiling is NOT 100 detailed checks: report each tier.
         'discovery_search_rows_examined': discovery_health.get('search_rows_examined',0),
         'discovery_search_requests': discovery_health.get('search_requests',0),
+        'discovery_search_queries': discovery_health.get('search_queries',[]),
+        'discovery_prior_mints_requested': discovery_health.get('prior_mints_requested',0),
+        'discovery_prior_mints_refreshed': discovery_health.get('prior_mints_refreshed',0),
+        'discovery_dex_backoff_active': discovery_health.get('dex_backoff_active',False),
+        'discovery_dex_rate_limited': discovery_health.get('rate_limited',False),
+        'technical_candidates_assessed': len((research.get('decision_v1') or {}).get('assessments',{})),
+        'technical_candidates_qualified': sum(
+            a.get('allowed') is True for a in
+            (research.get('decision_v1') or {}).get('assessments',{}).values()),
         'discovery_coverage_target': MAX_POOL_CANDIDATES,
         'discovery_coverage_shortfall': max(0,MAX_POOL_CANDIDATES-len(candidate_pools)),
         'detailed_trade_feed_coverage_pct': round(100*sampled_feeds/len(candidate_pools),1) if candidate_pools else 0,
