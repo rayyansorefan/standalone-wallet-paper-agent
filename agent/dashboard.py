@@ -135,6 +135,8 @@ def compact_health(state):
         'whale':{'status':whale.get('status'),
                  'last_run':whale.get('last_run'),
                  'last_scan_errors':[str(x)[:160] for x in whale.get('last_scan_errors',[])[-3:]]},
+        'forward_experiment':(research.get('forward_experiment_v1') or {}).get('summary'),
+        'forward_experiment_error':research.get('forward_experiment_error'),
         'futures':{'status':futures.get('status'),
                    'last_run':futures.get('last_run'),
                    'closed':len(futures.get('closed') or []),
