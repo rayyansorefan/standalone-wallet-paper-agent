@@ -1,28 +1,28 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-18T03:39:14+00:00",
-  "last_data_at": "2026-10-18T03:39:14+00:00",
-  "cycle": 624,
+  "last_run": "2026-10-18T03:44:18+00:00",
+  "last_data_at": "2026-10-18T03:44:18+00:00",
+  "cycle": 625,
   "status": "OK",
   "cycle_health": {
-    "screened_pass": 9,
+    "screened_pass": 7,
     "screened_unavailable": 0,
-    "screened_rejected_or_unavailable": 1,
+    "screened_rejected_or_unavailable": 3,
     "trade_feeds_sampled": 4,
-    "trade_feeds_budget_deferred": 5,
+    "trade_feeds_budget_deferred": 3,
     "trade_feeds_attempted": 4,
     "trade_feed_budget": 4,
     "trade_feeds_provider_cooldown_deferred": 0,
     "security_screened": 10,
-    "unscreened_discovery_candidates": 2,
-    "discoveries_eligible_unique": 12,
-    "discovery_raw_rows": 23,
+    "unscreened_discovery_candidates": 11,
+    "discoveries_eligible_unique": 21,
+    "discovery_raw_rows": 42,
     "discovery_free_batch_tokens": 49,
     "discovery_errors": [],
-    "alternate_quoted_pools": 0,
+    "alternate_quoted_pools": 1,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 12,
+    "candidate_pools": 21,
     "errors_this_cycle": 0,
     "error_messages": [],
     "partial_screening_only": false,
@@ -44,12 +44,13 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-18T03:39:14+00:00",
+    "latest_cycle": "2026-10-18T03:44:18+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
-    "status": "NOT_REQUIRED",
-    "quoted_pools": 0,
+    "status": "OK",
+    "quoted_pools": 1,
+    "requested_pools": 1,
     "provider": "dexscreener"
   },
   "helius_rpc": {
@@ -59,20 +60,20 @@
   },
   "primary_provider": {
     "http_status": 200,
-    "requests": 5,
+    "requests": 6,
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-18T03:39:09.555151+00:00"
+    "last_success_at": "2026-10-18T03:44:12.485895+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_QUOTA",
-    "last_run": "2026-10-18T03:39:14+00:00",
+    "last_run": "2026-10-18T03:44:18+00:00",
     "last_scan_errors": []
   },
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-18T03:39:14.979789+00:00",
+    "last_run": "2026-10-18T03:44:18.942020+00:00",
     "closed": 12,
     "wins": 2
   },
@@ -93,13 +94,13 @@
         "profit_factor": 0.635
       },
       "last_6h": {
-        "closed": 8,
+        "closed": 7,
         "complete_outcomes": true,
         "wins": 2,
-        "losses": 6,
-        "win_rate_pct": 25.0,
-        "net_pnl_gbp": -3.1859,
-        "profit_factor": 0.198
+        "losses": 5,
+        "win_rate_pct": 28.57,
+        "net_pnl_gbp": -2.4556,
+        "profit_factor": 0.243
       },
       "last_24h": {
         "closed": 19,
@@ -115,8 +116,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-18T03:38:46.179Z",
-    "run_id": "39094353136",
+    "scheduled_at": "2026-10-18T03:43:46.404Z",
+    "run_id": "39094641252",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
