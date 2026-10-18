@@ -22,8 +22,8 @@ class SimpleDashboard(unittest.TestCase):
         for field in ('simple-assessed', 'simple-qualified', 'simple-screened', 'simple-deep',
                       'simple-gbp-pnl', 'simple-usd-pnl', 'simple-recent', 'simple-health'):
             self.assertIn('id="'+field+'"', HTML)
-        self.assertIn("n(x)===null?'—'", HTML)
-        self.assertIn('being assessed does NOT mean fully analysed', HTML)
+        self.assertIn("num(v)===null?'—'", HTML)
+        self.assertIn('Being assessed does NOT mean fully analysed', HTML)
 
     def test_single_valid_html_document_and_no_state_writes(self):
         self.assertEqual(HTML.count('<!doctype html>'), 1)
