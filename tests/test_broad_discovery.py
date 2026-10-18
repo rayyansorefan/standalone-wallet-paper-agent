@@ -107,6 +107,41 @@ class BroadDiscovery(unittest.TestCase):
         self.assertTrue(all(core.eligible(t) for t in rows))
         self.assertTrue(all(t.get('promotion_is_not_safety_approval') for t in rows))
 
+    def test_rotating_queries_expand_universe_without_more_search_requests(self):
+        queries=[]
+        def get(path):
+            if '/latest/dex/search?' in path:
+                queries.append(path.split('=')[-1])
+                return {'pairs':[]}
+            if '/token-' in path:return []
+            if '/tokens/v1/' in path:return []
+            self.fail(path)
+        _,first=discover(get=get,now=NOW,search_cursor=0)
+        _,next_=discover(get=get,now=NOW,search_cursor=1)
+        self.assertEqual(first['search_requests'],4)
+        self.assertEqual(next_['search_requests'],4)
+        self.assertTrue(set(first['search_queries']).isdisjoint(next_['search_queries']))
+        self.assertEqual(len(queries),8)
+
+    def test_prior_watchlist_is_refreshed_and_stale_candidates_not_traded(self):
+        mint1,mint2=MINTS[:2]
+        pool1,pool2=POOL_IDS[:2]
+        requested=[]
+        def get(path):
+            if '/latest/dex/search?' in path:return {'pairs':[]}
+            if '/token-' in path:return []
+            if '/tokens/v1/' in path:
+                requested.extend(path.rsplit('/',1)[1].split(','))
+                # Mint2 disappeared; no cached price may be reused.
+                return [ds_pair(mint1,pool1)]
+            self.fail(path)
+        rows,h=discover(get=get,now=NOW,prior_mints=[mint1,mint2])
+        self.assertEqual(h['prior_mints_requested'],2)
+        self.assertEqual(h['prior_mints_refreshed'],1)
+        self.assertEqual({x['mint'] for x in rows},{mint1})
+        self.assertEqual(set(requested),{mint1,mint2})
+        self.assertTrue(all(core.eligible(x) for x in rows))
+
     def test_no_rugcheck_bypass_on_promotion_and_bad_provider_data(self):
         def get(path):
             if 'token-profiles' in path:raise TimeoutError('offline')
