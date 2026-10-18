@@ -632,6 +632,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     fresh_prices = {token:price for token,price in prices.items()
                     if token in quote_times and 0 <= (current-quote_times[token]).total_seconds() <= MAX_TRADE_AGE_SECONDS}
     observe_forward(state, new_events, fresh_prices, current)
+    # Quote-only EMA/MACD/RSI forward research, using already fetched FRESH marks.
+    # Isolated from GBP allocation, USD futures and all provider quotas.
+    from .gbp_quote_ta import safe_update as update_gbp_quote_ta
+    update_gbp_quote_ta(state, fresh_prices, current)
     # Independent, predeclared forward quote comparisons; no allocation access,
     # extra market-data calls, or changes to ongoing futures experiments.
     from .gbp_signal_lab import safe_update as update_gbp_signal_lab
