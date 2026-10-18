@@ -75,6 +75,19 @@ def safe_float(v):
     except (TypeError, ValueError, OverflowError): return None
 
 
+def pending_forward_mints(state):
+    """Canonical mints that still need prospective 5/30/60m quotes."""
+    decision = (state.get('research') or {}).get('decision_v1') or {}
+    aliases = decision.get('pool_mints') or {}
+    result = []
+    for row in decision.get('forward_pending') or []:
+        token = row.get('token') if isinstance(row, dict) else None
+        mint = aliases.get(token)
+        if isinstance(mint, str) and SOL_ADDRESS.fullmatch(mint) and mint not in result:
+            result.append(mint)
+    return result
+
+
 def api(path, params=None):
     uri = BASE + path + ('?' + urllib.parse.urlencode(params) if params else '')
     req = urllib.request.Request(uri, headers=HEADERS)
@@ -440,10 +453,21 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                 from .opportunity_discovery import discover
                 # Preserve ONLY mint identities from previously eligible pools.
                 # Re-fetch prices/metrics each cycle; no stale quotes are promoted.
-                prior=[p.get('mint') for p in state.get('watched_pools',[])
-                       if isinstance(p,dict) and p.get('mint')]
+                # Pending prospective signals take the front of the SAME free
+                # batch so a pool ranked below the 60-mint rolling watch slice
+                # does not silently lose its 5/30/60m outcome. The existing
+                # 100-mint/four-batch ceiling is unchanged.
+                pending_mints=pending_forward_mints(state)
+                prior=pending_mints+[p.get('mint') for p in state.get('watched_pools',[])
+                                     if isinstance(p,dict) and p.get('mint')]
                 extra,report=discover(prior_mints=prior,
                                       search_cursor=int(state.get('completed_cycles',0)))
+                prioritised=pending_mints[:min(len(pending_mints),
+                    int(report.get('prior_mints_requested',0)))]
+                refreshed={p.get('mint') for p in extra if isinstance(p,dict)}
+                report['pending_signal_mints_prioritized']=len(prioritised)
+                report['pending_signal_mints_refreshed']=sum(
+                    mint in refreshed for mint in prioritised)
                 pools.extend(extra)
                 discovery_health.update(report)
                 discovery_health['mode']='gecko_plus_free_dex_batch'
@@ -720,6 +744,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
         'discovery_search_queries': discovery_health.get('search_queries',[]),
         'discovery_prior_mints_requested': discovery_health.get('prior_mints_requested',0),
         'discovery_prior_mints_refreshed': discovery_health.get('prior_mints_refreshed',0),
+        'discovery_pending_signal_mints_prioritized': discovery_health.get(
+            'pending_signal_mints_prioritized',0),
+        'discovery_pending_signal_mints_refreshed': discovery_health.get(
+            'pending_signal_mints_refreshed',0),
         'discovery_dex_backoff_active': discovery_health.get('dex_backoff_active',False),
         'discovery_dex_rate_limited': discovery_health.get('rate_limited',False),
         'technical_candidates_assessed': len((research.get('decision_v1') or {}).get('assessments',{})),
