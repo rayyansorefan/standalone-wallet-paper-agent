@@ -62,6 +62,8 @@ class BroadDiscovery(unittest.TestCase):
                 return [{'chainId':'solana','tokenAddress':m} for m in mints[:12]]
             if 'token-boosts' in path:
                 return [{'chainId':'solana','tokenAddress':m} for m in mints[12:]]
+            if '/latest/dex/search?' in path:
+                return {'pairs':[]}
             if '/tokens/v1/solana/' in path:
                 batch=path.rsplit('/',1)[1].split(',')
                 return [ds_pair(m,POOL_IDS[mints.index(m)]) for m in batch]
@@ -71,8 +73,39 @@ class BroadDiscovery(unittest.TestCase):
         self.assertEqual(health['raw_token_mints'],20)
         self.assertEqual(health['qualified_pairs'],20)
         self.assertEqual(health['batch_requests'],1)
-        self.assertEqual(len(seen),3)
+        self.assertEqual(len(seen),7)
+        self.assertEqual(health['search_requests'],4)
+        self.assertEqual(health['coverage_target'],100)
         self.assertTrue(all(core.eligible(t) for t in rows))
+
+    def test_search_expands_100_mints_without_claiming_safety(self):
+        alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+        mints=[alphabet[i//58]+alphabet[i%58]*31 for i in range(100)]
+        pools=[alphabet[(i+2)//58]+alphabet[(i+2)%58]*31 for i in range(100)]
+        seen=[]
+        def get(path):
+            seen.append(path)
+            if 'token-profiles' in path:
+                return [{'chainId':'solana','tokenAddress':m} for m in mints[:10]]
+            if 'token-boosts' in path:
+                return [{'chainId':'solana','tokenAddress':m} for m in mints[10:20]]
+            if '/latest/dex/search?' in path:
+                q=path.split('=')[-1]
+                index={'SOL':20,'USDC':40,'BONK':60,'AI':80}[q]
+                return {'pairs':[ds_pair(mints[i],pools[i]) for i in range(index,index+20)]}
+            if '/tokens/v1/solana/' in path:
+                batch=path.rsplit('/',1)[1].split(',')
+                return [ds_pair(m,pools[mints.index(m)]) for m in batch]
+            self.fail(path)
+        rows,health=discover(get=get,now=NOW)
+        self.assertEqual(len(rows),100)
+        self.assertEqual(health['raw_token_mints'],100)
+        self.assertEqual(health['coverage_shortfall'],0)
+        self.assertEqual(health['search_requests'],4)
+        self.assertEqual(health['batch_requests'],4)
+        self.assertEqual(len(seen),10)
+        self.assertTrue(all(core.eligible(t) for t in rows))
+        self.assertTrue(all(t.get('promotion_is_not_safety_approval') for t in rows))
 
     def test_no_rugcheck_bypass_on_promotion_and_bad_provider_data(self):
         def get(path):

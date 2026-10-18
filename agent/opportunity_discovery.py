@@ -10,12 +10,15 @@ import datetime as dt
 import json
 import math
 import re
+import urllib.parse
 import urllib.request
 
 SOL=re.compile(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$')
 ROOT='https://api.dexscreener.com'
 SOURCES=('/token-profiles/latest/v1','/token-boosts/top/v1')
-MAX_MINTS=60
+MAX_MINTS=100
+MAX_POOL_RESULTS=100
+SEARCH_QUERIES=('SOL','USDC','BONK','AI')
 CHUNK=30
 TIMEOUT=7
 MAX_BYTES=1_200_000
@@ -78,7 +81,7 @@ def choose_pair(pair,now):
 
 
 def discover(get=http_get,now=None):
-    """Up to 60 independent mints / two batched data requests, no credentials.
+    """Broad free search + 100 independently validated mints; no credentials.
 
     Provider failures only degrade optional breadth, not core scanner. A
     malformed source cannot authorise paper trades.
@@ -103,7 +106,30 @@ def discover(get=http_get,now=None):
         except Exception:
             issues.append(source.split('/')[-2]+' unavailable')
         if len(addresses)>=MAX_MINTS:break
+    # Public DEX search returns complete pair snapshots, unlike promotional
+    # token lists. This expands the cheap opportunity universe without
+    # pretending each pool has had a Rugcheck or on-chain swap read.
+    # Each response is independently validated; search hits cannot
+    # authorise wallet events or bypass later risk/age gates.
     pairs={}
+    search_requests=0
+    search_rows=0
+    for query in SEARCH_QUERIES:
+        try:
+            search_requests+=1
+            response=get('/latest/dex/search?q='+urllib.parse.quote(query,safe=''))
+            if not isinstance(response,dict) or not isinstance(response.get('pairs'),list):
+                raise ValueError('search response malformed')
+            for raw in response['pairs'][:100]:
+                search_rows+=1
+                item=choose_pair(raw,now)
+                if not item:continue
+                item['discovery_source']='dexscreener_public_search'
+                pairs.setdefault(item['pool'],item)
+                if item['mint'] not in addresses and len(addresses)<MAX_MINTS:
+                    addresses.append(item['mint'])
+        except Exception:
+            issues.append('public search unavailable')
     calls=0
     for i in range(0,len(addresses),CHUNK):
         batch=addresses[i:i+CHUNK]
@@ -119,7 +145,10 @@ def discover(get=http_get,now=None):
                         pairs[item['pool']]=item
         except Exception:
             issues.append('pair batch unavailable')
-    return list(pairs.values()),{
+    return list(pairs.values())[:MAX_POOL_RESULTS],{
         'sources':source_counts,'raw_token_mints':len(addresses),
-        'qualified_pairs':len(pairs),'batch_requests':calls,
-        'errors':issues[:4]}
+        'qualified_pairs':len(pairs),'returned_pairs':min(len(pairs),MAX_POOL_RESULTS),
+        'search_requests':search_requests,'search_rows_examined':search_rows,
+        'batch_requests':calls,'coverage_target':MAX_POOL_RESULTS,
+        'coverage_shortfall':max(0,MAX_POOL_RESULTS-min(len(pairs),MAX_POOL_RESULTS)),
+        'errors':issues[:6]}
