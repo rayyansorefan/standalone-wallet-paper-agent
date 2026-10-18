@@ -637,6 +637,10 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
     from .gbp_signal_lab import safe_update as update_gbp_signal_lab
     update_gbp_signal_lab(state, current)
     research_cycle(state, candidate_pools, prices, new_events, current)
+    # Independent indicator study on existing safely-screened pool marks; no
+    # new API calls, live orders, paper admissions or trial-fingerprint drift.
+    from .technical_evidence_lab import safe_advance as update_ta_evidence
+    update_ta_evidence(state, current)
     sells_in_cycle = conflicting_keys(new_events)
     # Process sells before buys, then prioritise profitable token histories.
     # Same-token signals retain chronological order; no extra exposure is earned.
