@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-18T23:44:02+00:00",
+  "last_run": "2026-10-18T23:49:01+00:00",
   "last_data_at": "2026-10-18T22:49:17+00:00",
-  "cycle": 863,
+  "cycle": 864,
   "status": "SCREENING_UNAVAILABLE",
   "cycle_health": {
     "screened_pass": 0,
@@ -14,53 +14,49 @@
     "trade_feeds_attempted": 0,
     "trade_feed_budget": 4,
     "trade_feeds_provider_cooldown_deferred": 0,
-    "security_screened": 1,
+    "security_screened": 0,
     "security_screening_slots_considered": 10,
-    "security_provider_backoff_deferred": 9,
+    "security_provider_backoff_deferred": 10,
     "security_provider_backoff_active": true,
     "security_provider_retry_at": "2026-10-18T23:58:57.209429+00:00",
     "security_provider_consecutive_failures": 2,
-    "unscreened_discovery_candidates": 52,
-    "discoveries_eligible_unique": 62,
-    "discovery_raw_rows": 80,
+    "unscreened_discovery_candidates": 54,
+    "discoveries_eligible_unique": 64,
+    "discovery_raw_rows": 82,
     "discovery_free_batch_tokens": 100,
     "discovery_search_rows_examined": 120,
     "discovery_search_requests": 4,
     "discovery_search_queries": [
-      "MEW",
-      "TRUMP",
-      "USDT",
-      "DOGE"
+      "SPX",
+      "JLP",
+      "MEME",
+      "SOLANA"
     ],
-    "discovery_prior_mints_requested": 60,
+    "discovery_prior_mints_requested": 58,
     "discovery_prior_mints_refreshed": 58,
-    "discovery_pending_signal_mints_prioritized": 4,
-    "discovery_pending_signal_mints_refreshed": 4,
+    "discovery_pending_signal_mints_prioritized": 2,
+    "discovery_pending_signal_mints_refreshed": 2,
     "discovery_dex_backoff_active": false,
     "discovery_dex_rate_limited": false,
-    "technical_candidates_assessed": 62,
-    "technical_candidates_qualified": 12,
+    "technical_candidates_assessed": 64,
+    "technical_candidates_qualified": 8,
     "discovery_coverage_target": 100,
-    "discovery_coverage_shortfall": 38,
+    "discovery_coverage_shortfall": 36,
     "detailed_trade_feed_coverage_pct": 0.0,
     "discovery_errors": [],
     "alternate_quoted_pools": 0,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 62,
+    "candidate_pools": 64,
     "errors_this_cycle": 1,
     "error_messages": [
-      "token security provider unavailable for 3NxfWMHmfQg8NJFW5AG1ti2xACdczWz24e9SKyk1pump (security API request or JSON failed)"
+      "token security provider backoff active until 2026-10-18T23:58:57.209429+00:00"
     ],
     "partial_screening_only": false,
     "partial_trade_feeds_only": false,
-    "rate_limit_errors": 0,
+    "rate_limit_errors": 1,
     "screening_http_statuses": []
   },
   "recent_errors": [
-    {
-      "at": "2026-10-18T23:18:59+00:00",
-      "error": "token security provider unavailable for J8PSdNP3QewKq2Z1JJJFDMaqF7KcaiJhR7gbr5KZpump (security API request or JSON failed)"
-    },
     {
       "at": "2026-10-18T23:24:04+00:00",
       "error": "token security provider unavailable for orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE (security API request or JSON failed)"
@@ -80,6 +76,10 @@
     {
       "at": "2026-10-18T23:44:02+00:00",
       "error": "token security provider unavailable for 3NxfWMHmfQg8NJFW5AG1ti2xACdczWz24e9SKyk1pump (security API request or JSON failed)"
+    },
+    {
+      "at": "2026-10-18T23:49:01+00:00",
+      "error": "token security provider backoff active until 2026-10-18T23:58:57.209429+00:00"
     }
   ],
   "position_management": {
@@ -95,7 +95,7 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-18T23:44:02+00:00",
+    "latest_cycle": "2026-10-18T23:49:01+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -117,7 +117,7 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-18T23:43:57.302517+00:00"
+    "last_success_at": "2026-10-18T23:48:56.848540+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_PRIORITY",
@@ -126,7 +126,7 @@
   },
   "forward_experiment": {
     "status": "COLLECTING",
-    "last_run": "2026-10-18T23:44:03.405959+00:00",
+    "last_run": "2026-10-18T23:49:02.718630+00:00",
     "registered_at": "2026-10-18T13:19:17.221767+00:00",
     "end_at": "2026-11-15T13:19:17.221767+00:00",
     "source_sha256": "53c77fbedfd1657244a66c609af35229d171d973806302ab328c8b92e19cb7d0",
@@ -324,16 +324,16 @@
   "forward_experiment_error": null,
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-18T23:44:03.405959+00:00",
+    "last_run": "2026-10-18T23:49:02.718630+00:00",
     "closed": 16,
     "wins": 3,
     "feed": {
-      "eligible": 32,
+      "eligible": 31,
       "scanned": 6,
       "bulk_tickers_evaluated": 207,
       "deep_candle_scans": 6,
-      "rotation_cursor": 21,
-      "unscanned_candle_instruments": 26,
+      "rotation_cursor": 25,
+      "unscanned_candle_instruments": 25,
       "requests": 7,
       "max_requests": 7,
       "priority_held_symbols": 0,
@@ -411,7 +411,7 @@
     "winner_additions_allowed": false,
     "reason": "Three consecutive net losses in the same GBP policy, across all wallets and tokens",
     "resume_policy": "No timed reset. Requires separately reviewed prospective evidence and explicit versioned release; never erase the suspension.",
-    "last_checked_at": "2026-10-18T23:43:58.748229+00:00",
+    "last_checked_at": "2026-10-18T23:48:57.653584+00:00",
     "evidence_policy_epoch": "GBP_WALLET_COPY_20261017_AUDITED_EPOCH_1",
     "comparable_closes": 19,
     "current_loss_streak": 15,
@@ -428,7 +428,7 @@
     "version": "GBP_PROSPECTIVE_SIGNAL_LAB_1",
     "registered_at": "2026-10-18T14:49:16.369850+00:00",
     "hypothesis_sha256": "422acbd5c03a63dacfaed937b8b05f559b758abf1cd87a390a01dc1a03c007d6",
-    "cycles": 107,
+    "cycles": 108,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "historical_audit": {
@@ -782,7 +782,7 @@
     "version": "GBP_ANTI_CHASE_HOLDOUT_1",
     "registered_at": "2026-10-18T18:44:11.039440+00:00",
     "hypothesis_sha256": "b8eaf72151442c568c7adf0542cb3ad0f8b8c16cb31ffa473b0ea78509288afb",
-    "cycles": 60,
+    "cycles": 61,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
@@ -1075,19 +1075,19 @@
     "version": "GBP_QUOTE_TA_FROZEN_1",
     "hypothesis_sha256": "9cdbf33a1326b5d3482c4cec5f455e13ac94f2f50a502b054af3060eff3e9ca4",
     "registered_at": "2026-10-18T15:34:20.153293+00:00",
-    "cycles": 98,
+    "cycles": 99,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
-    "reset_gaps": 482,
-    "total_marks": 6424,
+    "reset_gaps": 486,
+    "total_marks": 6488,
     "reports": {
       "sampled_quote_control": {
         "5m": {
-          "selected": 153,
+          "selected": 163,
           "priced": 143,
           "missing": 0,
-          "pending": 10,
+          "pending": 20,
           "wins": 10,
           "losses": 133,
           "mean_net_quote_roi_pct": -2.0374,
@@ -1100,10 +1100,10 @@
           "trades_enabled": false
         },
         "30m": {
-          "selected": 153,
+          "selected": 163,
           "priced": 113,
           "missing": 0,
-          "pending": 40,
+          "pending": 50,
           "wins": 13,
           "losses": 100,
           "mean_net_quote_roi_pct": -1.7254,
@@ -1116,10 +1116,10 @@
           "trades_enabled": false
         },
         "60m": {
-          "selected": 153,
+          "selected": 163,
           "priced": 102,
           "missing": 11,
-          "pending": 40,
+          "pending": 50,
           "wins": 19,
           "losses": 83,
           "mean_net_quote_roi_pct": -1.9891,
@@ -1134,10 +1134,10 @@
       },
       "ema_macd_continuation": {
         "5m": {
-          "selected": 4,
+          "selected": 5,
           "priced": 4,
           "missing": 0,
-          "pending": 0,
+          "pending": 1,
           "wins": 0,
           "losses": 4,
           "mean_net_quote_roi_pct": -4.5726,
@@ -1150,10 +1150,10 @@
           "trades_enabled": false
         },
         "30m": {
-          "selected": 4,
+          "selected": 5,
           "priced": 2,
           "missing": 0,
-          "pending": 2,
+          "pending": 3,
           "wins": 0,
           "losses": 2,
           "mean_net_quote_roi_pct": -10.0237,
@@ -1166,10 +1166,10 @@
           "trades_enabled": false
         },
         "60m": {
-          "selected": 4,
+          "selected": 5,
           "priced": 2,
           "missing": 0,
-          "pending": 2,
+          "pending": 3,
           "wins": 0,
           "losses": 2,
           "mean_net_quote_roi_pct": -11.5296,
@@ -1184,10 +1184,10 @@
       },
       "observed_high_breakout": {
         "5m": {
-          "selected": 6,
+          "selected": 7,
           "priced": 5,
           "missing": 0,
-          "pending": 1,
+          "pending": 2,
           "wins": 0,
           "losses": 5,
           "mean_net_quote_roi_pct": -3.5604,
@@ -1200,10 +1200,10 @@
           "trades_enabled": false
         },
         "30m": {
-          "selected": 6,
+          "selected": 7,
           "priced": 4,
           "missing": 0,
-          "pending": 2,
+          "pending": 3,
           "wins": 1,
           "losses": 3,
           "mean_net_quote_roi_pct": 0.5338,
@@ -1216,10 +1216,10 @@
           "trades_enabled": false
         },
         "60m": {
-          "selected": 6,
+          "selected": 7,
           "priced": 4,
           "missing": 0,
-          "pending": 2,
+          "pending": 3,
           "wins": 2,
           "losses": 2,
           "mean_net_quote_roi_pct": 0.6729,
@@ -1324,8 +1324,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-18T23:43:46.667Z",
-    "run_id": "39177728893",
+    "scheduled_at": "2026-10-18T23:48:47.173Z",
+    "run_id": "39178064278",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
