@@ -149,7 +149,11 @@ def update(state, now):
         book['status'] = 'INVALID_REGISTRATION'
         return book
     allrows = (d.get('forward_outcomes') or []) + (d.get('forward_pending') or [])
-    unique = {}
+    # decision_v1 retains only its last 500 completed signals. Without this
+    # independent evidence journal, losing outcomes vanish from the denominator
+    # as the main engine continues running; a prospective winner comparison
+    # would eventually become unknowingly biased.
+    retained = book.setdefault('retained_forward_signals', {})
     excluded = 0
     for row in allrows:
         if not isinstance(row, dict) or not row.get('signal_id'):
@@ -163,8 +167,39 @@ def update(state, now):
         if at.tzinfo is None or at < start or not isinstance(row.get('signal_technical'),dict):
             excluded += 1
             continue
-        unique.setdefault(row['signal_id'], row)
-    observations = list(unique.values())
+        identity = hashlib.sha256(str(row['signal_id']).encode('utf8')).hexdigest()
+        if identity not in retained:
+            if len(retained) >= 20000:
+                book['retention_overflow'] = True
+                continue  # Visible research failure; never claim certified evidence.
+            retained[identity] = dict(
+                signal_id=identity,
+                token=hashlib.sha256(str(row.get('token','')).encode('utf8')).hexdigest(),
+                at=at.isoformat(),
+                accepted_by_policy=row.get('accepted_by_policy') is True,
+                signal_technical={
+                    k: finite((row.get('signal_technical') or {}).get(k))
+                    for k in ('change_5m_pct','change_1h_pct','volume_pace_ratio',
+                              'buy_count_share','liquidity_usd','age_hours',
+                              'signal_age_seconds')
+                },
+                outcomes={})
+        evidence = retained[identity]
+        if evidence['at'] != at.isoformat():
+            book['retention_conflict'] = True
+            continue
+        # Evidence at entry is immutable. Only append newly mature, forward
+        # outcomes; never revise or erase priced losses based on newer marks.
+        for horizon in HORIZONS:
+            outcome = (row.get('outcomes') or {}).get(horizon)
+            if horizon in evidence['outcomes'] or not isinstance(outcome, dict):
+                continue
+            value = finite(outcome.get('net_quote_roi_pct'))
+            if value is not None:
+                evidence['outcomes'][horizon] = {'net_quote_roi_pct': value}
+            elif outcome.get('status') == 'MISSING_FRESH_QUOTE':
+                evidence['outcomes'][horizon] = {'status': 'MISSING_FRESH_QUOTE'}
+    observations = list(retained.values())
     reports = {}
     for arm in ARMS:
         matched = [match(arm, row) for row in observations]
@@ -176,7 +211,11 @@ def update(state, now):
         }
     book.update(last_run=now.isoformat(), cycles=book.get('cycles',0)+1,
                 observations=len(observations), excluded_historical_or_unfeatured=excluded,
-                reports=reports, status='COLLECTING_UNPROVEN',
+                reports=reports,
+                retained_forward_signal_count=len(retained),
+                status=('EVIDENCE_RETENTION_UNSAFE'
+                        if book.get('retention_overflow') or book.get('retention_conflict')
+                        else 'COLLECTING_UNPROVEN'),
                 warning='Signal-time registered quote comparison only, no actual fills; '
                         'historical pattern mining cannot validate this strategy. '
                         '100+ prospective independent trades across >=14 dates, '
