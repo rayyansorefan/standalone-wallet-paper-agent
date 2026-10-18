@@ -87,7 +87,20 @@ def market(book, now, fetch=get):
     eligible.sort(key=lambda t:abs(number(t.get('change24h')) or 0), reverse=True)
     held = book.get('position')
     symbols = ([held['symbol']] if held else [])
-    symbols += [t['symbol'] for t in eligible if t['symbol'] not in symbols][:6-len(symbols)]
+    # Preserve the held position and two highest-ranked eligible instruments.
+    # Rotate the remaining candle slots over the whole eligible universe,
+    # rather than repeatedly re-reading the same six leaders forever.
+    # This changes data coverage, NOT setup qualification or position sizing.
+    anchors = [t['symbol'] for t in eligible if t['symbol'] not in symbols][:min(2,6-len(symbols))]
+    symbols.extend(anchors)
+    remaining = [t['symbol'] for t in eligible if t['symbol'] not in symbols]
+    slots = max(0,6-len(symbols))
+    cursor = int(book.get('market_rotation_cursor',0))
+    if remaining and slots:
+        offset = cursor % len(remaining)
+        rotated = remaining[offset:]+remaining[:offset]
+        symbols.extend(rotated[:slots])
+        book['market_rotation_cursor'] = (cursor+slots) % len(remaining)
     start, end = int(now.timestamp())-33000, int(now.timestamp())
     def candles(symbol):
         try:
@@ -98,6 +111,9 @@ def market(book, now, fetch=get):
     with ThreadPoolExecutor(max_workers=6) as executor:
         rows = list(executor.map(candles, symbols))
     book['feed'] = dict(at=at.isoformat(), eligible=len(eligible), scanned=len(symbols),
+                        bulk_tickers_evaluated=len(quotes), deep_candle_scans=len(symbols),
+                        rotation_cursor=book.get('market_rotation_cursor',0),
+                        unscanned_candle_instruments=max(0,len(eligible)-len(set(symbols))),
                         requests=1+len(symbols), errors={s:e for s,_,e in rows if e},
                         provider='Kraken public futures', max_requests=7)
     return quotes, {s:f for s,f,_ in rows if f}, {t['symbol'] for t in eligible}
