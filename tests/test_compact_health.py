@@ -200,4 +200,22 @@ class CompactHealth(unittest.TestCase):
         for secret in ('private-wallet','secret-token','other-secret','old-secret'):
             self.assertNotIn(secret,published)
 
+    def test_gbp_forward_evidence_retention_status_is_public_without_private_rows(self):
+        state=core.blank_state()
+        state.setdefault('research', {})['gbp_signal_lab_v1'] = {
+            'status': 'EVIDENCE_RETENTION_UNSAFE',
+            'retained_forward_signal_count': 13,
+            'retention_overflow': True,
+            'retention_conflict': False,
+            'retained_forward_signals': {
+                'private-signal-id': {'token': 'private-token-address'}},
+        }
+        published=dashboard.compact_health(state)['gbp_signal_lab']
+        self.assertEqual(published['retained_forward_signal_count'], 13)
+        self.assertTrue(published['retention_overflow'])
+        self.assertFalse(published['retention_conflict'])
+        self.assertEqual(published['status'], 'EVIDENCE_RETENTION_UNSAFE')
+        self.assertNotIn('retained_forward_signals', published)
+        self.assertNotIn('private-token-address', json.dumps(published))
+
 if __name__=='__main__':unittest.main()
