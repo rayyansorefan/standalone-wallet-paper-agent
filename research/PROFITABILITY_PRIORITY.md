@@ -19,3 +19,23 @@ This is capital preservation, not proof of profitable self-improvement. Do not r
 5. Use issue #37 and this file for durable handoff. The hourly maintainer is authorized to do the tested work; the owner should not relay reports. Keep the suspended original account distinct from continuing research. If no candidate demonstrates an edge, say so instead of inventing a profitable selector.
 
 No paid services or real trading. Preserve the original £2,000 account identity/history, separate USD account, current safety screens, observed -2% warning/-4.5% stop and six-hour GBP maximum hold. Do not erase or relax the new guard merely to meet an activity target. Any release retains the historical suspension record and discloses its evidence.
+
+## Separately registered post-failure holdout
+
+The first prospective GBP signal cohort is retained unchanged. Its early results
+showed no net edge from the original gate, momentum, breakout, high-volume or
+buyer-pressure arms. `agent/gbp_holdout_lab.py` therefore registers a new,
+post-deployment-only anti-chase holdout without modifying or resetting the first
+trial. It tests a fixed all-signal control against three broad low-chase,
+tempered-continuation and mature-liquid-pullback admission hypotheses. It reads
+the existing immutable signal journal, adds no provider requests and never
+places or authorizes a GBP entry.
+
+No candidate can become review-eligible before 100 priced observations across
+at least 14 dates and 30 pools. It must have more net winners than losers,
+positive quote net after the existing two-sided costs and an additional 2pp
+stress, profit factor above one, remain positive without its best observation,
+best day and best pool, and beat the fixed all-signal control. Thirty priced
+loss-dominated negative observations over at least three dates mark an arm as
+persistently negative. Both statuses remain research findings only: automatic
+promotion and paper entry are disabled, and GBP suspension remains latched.

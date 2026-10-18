@@ -218,4 +218,21 @@ class CompactHealth(unittest.TestCase):
         self.assertNotIn('retained_forward_signals', published)
         self.assertNotIn('private-token-address', json.dumps(published))
 
+    def test_gbp_holdout_health_is_reviewable_without_private_rows(self):
+        state=core.blank_state()
+        state.setdefault('research', {})['gbp_holdout_lab_v1'] = {
+            'version':'GBP_ANTI_CHASE_HOLDOUT_1',
+            'status':'COLLECTING_UNPROVEN',
+            'post_registration_observations':7,
+            'paper_entries_allowed':False,
+            'automatic_promotion':False,
+            'reports':{'tempered_continuation':{'horizons':{}}},
+            'private_rows':{'wallet':'private-wallet','token':'private-token'},
+        }
+        published=dashboard.compact_health(state)['gbp_holdout_lab']
+        self.assertEqual(published['post_registration_observations'],7)
+        self.assertFalse(published['paper_entries_allowed'])
+        self.assertNotIn('private_rows',published)
+        self.assertNotIn('private-wallet',json.dumps(published))
+
 if __name__=='__main__':unittest.main()
