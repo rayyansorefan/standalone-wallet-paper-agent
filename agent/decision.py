@@ -156,6 +156,9 @@ def observe_forward(state, events, prices, current):
         pending.append(dict(signal_id=ev['id'],token=ev['token'],at=current.isoformat(),price=price,
                             accepted_by_policy=a['allowed'],reasons=a['reasons'],outcomes={},
                             signal_technical=technical))
+    if len(done) > 500:
+        from .gbp_signal_lab import archive_evicted
+        archive_evicted(state, done[:-500])
     d['forward_outcomes']=done[-500:]
     summary={}
     for accepted in (True,False):
