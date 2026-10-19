@@ -1,4 +1,5 @@
 import datetime as dt
+import io
 import json
 import socket
 import tempfile
@@ -212,8 +213,10 @@ class Diagnostics(unittest.TestCase):
         private={'Status':0,'Answer':[
             {'type':1,'data':'127.0.0.1'},
             {'type':1,'data':'10.0.0.2'}]}
-        with mock.patch.object(safety,'_fetch_json_at_address',
-                               return_value=private) as fetch:
+        with (mock.patch.object(safety,'_fetch_json_at_address',
+                                return_value=private) as fetch,
+              mock.patch('urllib.request.urlopen',
+                         side_effect=urllib.error.URLError('dns unavailable'))):
             with self.assertRaises(urllib.error.URLError):
                 safety._resolve_current_ipv4(safety.RUGCHECK_HOST)
         self.assertEqual(fetch.call_count,4)
@@ -230,10 +233,12 @@ class Diagnostics(unittest.TestCase):
 
     def test_doh_bootstrap_fails_over_to_independent_google_resolver(self):
         good={'Status':0,'Answer':[{'type':1,'data':'104.21.44.17'}]}
-        with mock.patch.object(
-                safety,'_fetch_json_at_address',
-                side_effect=[ValueError('not json'),ValueError('not json'),good]
-                ) as fetch:
+        with (mock.patch.object(
+                  safety,'_fetch_json_at_address',
+                  side_effect=[ValueError('not json'),ValueError('not json'),good]
+                  ) as fetch,
+              mock.patch('urllib.request.urlopen',
+                         side_effect=urllib.error.URLError('dns unavailable'))):
             self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
                              '104.21.44.17')
         calls=fetch.call_args_list
@@ -244,6 +249,22 @@ class Diagnostics(unittest.TestCase):
         self.assertEqual(
             calls[2].args[1],
             '/resolve?name=api.rugcheck.xyz&type=A&edns_client_subnet=0.0.0.0%2F0')
+
+    def test_doh_uses_standard_google_tls_path_before_direct_ip(self):
+        good=io.BytesIO(json.dumps({'Status':0,'Answer':[
+            {'type':1,'data':'104.21.44.17'}]}).encode())
+        with (mock.patch.object(
+                  safety,'_fetch_json_at_address',
+                  side_effect=[ValueError('not json'),ValueError('not json')]
+                  ) as pinned,
+              mock.patch('urllib.request.urlopen',return_value=good) as hosted):
+            self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
+                             '104.21.44.17')
+        self.assertEqual(pinned.call_count,2)
+        request=hosted.call_args.args[0]
+        self.assertEqual(
+            request.full_url,
+            'https://dns.google/resolve?name=api.rugcheck.xyz&type=A&edns_client_subnet=0.0.0.0%2F0')
 
     def test_pinned_transport_verifies_official_sni(self):
         raw=mock.Mock()

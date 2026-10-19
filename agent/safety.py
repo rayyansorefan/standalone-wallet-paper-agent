@@ -64,28 +64,43 @@ def _resolve_current_ipv4(host):
         query = urllib.parse.urlencode(
             {"name": host, "type": "A", **extra_query})
         path = resolver_path + "?" + query
+        if resolver_host == "dns.google":
+            try:
+                req = urllib.request.Request(
+                    "https://" + resolver_host + path, headers={
+                        "Accept": "application/dns-json",
+                        "User-Agent": "PaperAgentResearch/1.1"})
+                with urllib.request.urlopen(req, timeout=4) as response:
+                    address = _public_ipv4_from_doh(json.load(response))
+                if address:
+                    return address
+            except Exception as exc:
+                last_error = exc
         for bootstrap_address in bootstrap_addresses:
             try:
                 payload = _fetch_json_at_address(
                     resolver_host, path, bootstrap_address, timeout=4,
                     accept="application/dns-json")
-                if not isinstance(payload, dict) or payload.get("Status") != 0:
-                    raise ValueError("DNS-over-HTTPS response was not successful")
-                answers = payload.get("Answer", [])
-                for answer in answers:
-                    if not isinstance(answer, dict) or answer.get("type") != 1:
-                        continue
-                    try:
-                        address = ipaddress.ip_address(answer.get("data", ""))
-                    except ValueError:
-                        continue
-                    if address.version == 4 and address.is_global:
-                        return str(address)
-                raise urllib.error.URLError(socket.gaierror(
-                    socket.EAI_NONAME, "No public A record from DNS-over-HTTPS"))
+                return _public_ipv4_from_doh(payload)
             except Exception as exc:
                 last_error = exc
     raise last_error
+
+
+def _public_ipv4_from_doh(payload):
+    if not isinstance(payload, dict) or payload.get("Status") != 0:
+        raise ValueError("DNS-over-HTTPS response was not successful")
+    for answer in payload.get("Answer", []):
+        if not isinstance(answer, dict) or answer.get("type") != 1:
+            continue
+        try:
+            address = ipaddress.ip_address(answer.get("data", ""))
+        except ValueError:
+            continue
+        if address.version == 4 and address.is_global:
+            return str(address)
+    raise urllib.error.URLError(socket.gaierror(
+        socket.EAI_NONAME, "No public A record from DNS-over-HTTPS"))
 
 
 class _PinnedHTTPSConnection(http.client.HTTPSConnection):
