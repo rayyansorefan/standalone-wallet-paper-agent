@@ -1,5 +1,4 @@
 import datetime as dt
-import io
 import json
 import socket
 import tempfile
@@ -149,10 +148,10 @@ class Diagnostics(unittest.TestCase):
                                 return_value='1.1.1.1') as resolve,
               mock.patch.object(safety,'_fetch_summary_at_address',
                                 return_value={**report,
-                                    safety.TRANSPORT_KEY:'doh_tls'}) as pinned):
+                                    safety.TRANSPORT_KEY:'doh_bootstrap_tls'}) as pinned):
             x=inspect_token(MINT,fetch=fetch_summary)
         self.assertEqual(x['status'],'PASS')
-        self.assertEqual(x['provider_transport'],'doh_tls')
+        self.assertEqual(x['provider_transport'],'doh_bootstrap_tls')
         resolve.assert_called_once_with(safety.RUGCHECK_HOST)
         path='/v1/tokens/'+MINT+'/report/summary'
         pinned.assert_called_once_with(path,'1.1.1.1')
@@ -180,21 +179,38 @@ class Diagnostics(unittest.TestCase):
         self.assertFalse(x['allowed'])
         self.assertEqual(x['http_status'],502)
         self.assertEqual(x['failure_kind'],'http_error')
-        self.assertEqual(x['provider_transport'],'doh_tls')
+        self.assertEqual(x['provider_transport'],'doh_bootstrap_tls')
 
-    def test_doh_accepts_only_public_current_ipv4(self):
-        good=io.BytesIO(json.dumps({'Status':0,'Answer':[
+    def test_doh_bootstraps_without_system_dns_and_accepts_only_public_ipv4(self):
+        good={'Status':0,'Answer':[
             {'type':28,'data':'2606:4700:4700::1111'},
-            {'type':1,'data':'1.1.1.1'}]}).encode())
-        with mock.patch('urllib.request.urlopen',return_value=good):
+            {'type':1,'data':'104.21.44.17'}]}
+        with mock.patch.object(safety,'_fetch_json_at_address',
+                               return_value=good) as fetch:
             self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
-                             '1.1.1.1')
-        private=io.BytesIO(json.dumps({'Status':0,'Answer':[
+                             '104.21.44.17')
+        fetch.assert_called_once_with(
+            safety.DOH_HOST,
+            safety.DOH_PATH+'?name=api.rugcheck.xyz&type=A',
+            '1.1.1.1',timeout=4,accept='application/dns-json')
+        private={'Status':0,'Answer':[
             {'type':1,'data':'127.0.0.1'},
-            {'type':1,'data':'10.0.0.2'}]}).encode())
-        with mock.patch('urllib.request.urlopen',return_value=private):
+            {'type':1,'data':'10.0.0.2'}]}
+        with mock.patch.object(safety,'_fetch_json_at_address',
+                               return_value=private) as fetch:
             with self.assertRaises(urllib.error.URLError):
                 safety._resolve_current_ipv4(safety.RUGCHECK_HOST)
+        self.assertEqual(fetch.call_count,2)
+
+    def test_doh_bootstrap_rotates_official_anycast_addresses(self):
+        good={'Status':0,'Answer':[{'type':1,'data':'104.21.44.17'}]}
+        with mock.patch.object(
+                safety,'_fetch_json_at_address',
+                side_effect=[TimeoutError('first route timed out'),good]) as fetch:
+            self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
+                             '104.21.44.17')
+        self.assertEqual(
+            [call.args[2] for call in fetch.call_args_list],['1.1.1.1','1.0.0.1'])
 
     def test_pinned_transport_verifies_official_sni(self):
         raw=mock.Mock()
