@@ -1,4 +1,5 @@
 import datetime as dt
+import io
 import json
 import socket
 import tempfile
@@ -7,7 +8,8 @@ import urllib.error
 from pathlib import Path
 from unittest import mock
 from agent import core
-from agent.safety import inspect_token
+from agent import safety
+from agent.safety import fetch_summary, inspect_token
 
 MINT = 'A'*32
 POOL = 'B'*32
@@ -137,6 +139,76 @@ class Diagnostics(unittest.TestCase):
                 self.assertEqual(x['status'],'UNAVAILABLE')
                 self.assertEqual(x['failure_kind'],expected)
                 self.assertNotIn('secret',x['reason'])
+
+    def test_dns_failure_uses_fresh_doh_with_official_tls_host(self):
+        dns_failure=urllib.error.URLError(
+            socket.gaierror(socket.EAI_AGAIN,'temporary resolver failure'))
+        report={'score_normalised':4,'risks':[]}
+        with (mock.patch('urllib.request.urlopen',side_effect=dns_failure),
+              mock.patch.object(safety,'_resolve_current_ipv4',
+                                return_value='1.1.1.1') as resolve,
+              mock.patch.object(safety,'_fetch_summary_at_address',
+                                return_value={**report,
+                                    safety.TRANSPORT_KEY:'doh_tls'}) as pinned):
+            x=inspect_token(MINT,fetch=fetch_summary)
+        self.assertEqual(x['status'],'PASS')
+        self.assertEqual(x['provider_transport'],'doh_tls')
+        resolve.assert_called_once_with(safety.RUGCHECK_HOST)
+        path='/v1/tokens/'+MINT+'/report/summary'
+        pinned.assert_called_once_with(path,'1.1.1.1')
+
+    def test_non_dns_failure_never_uses_doh(self):
+        failure=urllib.error.URLError(TimeoutError('timeout'))
+        with (mock.patch('urllib.request.urlopen',side_effect=failure),
+              mock.patch.object(safety,'_resolve_current_ipv4') as resolve):
+            with self.assertRaises(urllib.error.URLError):
+                fetch_summary(MINT)
+        resolve.assert_not_called()
+
+    def test_doh_transport_failure_remains_fail_closed_and_auditable(self):
+        dns_failure=urllib.error.URLError(
+            socket.gaierror(socket.EAI_AGAIN,'temporary resolver failure'))
+        fallback_failure=urllib.error.HTTPError(
+            'https://api.rugcheck.xyz',502,'Bad Gateway',{},None)
+        with (mock.patch('urllib.request.urlopen',side_effect=dns_failure),
+              mock.patch.object(safety,'_resolve_current_ipv4',
+                                return_value='1.1.1.1'),
+              mock.patch.object(safety,'_fetch_summary_at_address',
+                                side_effect=fallback_failure)):
+            x=inspect_token(MINT,fetch=fetch_summary)
+        self.assertEqual(x['status'],'UNAVAILABLE')
+        self.assertFalse(x['allowed'])
+        self.assertEqual(x['http_status'],502)
+        self.assertEqual(x['failure_kind'],'http_error')
+        self.assertEqual(x['provider_transport'],'doh_tls')
+
+    def test_doh_accepts_only_public_current_ipv4(self):
+        good=io.BytesIO(json.dumps({'Status':0,'Answer':[
+            {'type':28,'data':'2606:4700:4700::1111'},
+            {'type':1,'data':'1.1.1.1'}]}).encode())
+        with mock.patch('urllib.request.urlopen',return_value=good):
+            self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
+                             '1.1.1.1')
+        private=io.BytesIO(json.dumps({'Status':0,'Answer':[
+            {'type':1,'data':'127.0.0.1'},
+            {'type':1,'data':'10.0.0.2'}]}).encode())
+        with mock.patch('urllib.request.urlopen',return_value=private):
+            with self.assertRaises(urllib.error.URLError):
+                safety._resolve_current_ipv4(safety.RUGCHECK_HOST)
+
+    def test_pinned_transport_verifies_official_sni(self):
+        raw=mock.Mock()
+        wrapped=mock.Mock()
+        context=mock.Mock()
+        context.wrap_socket.return_value=wrapped
+        with (mock.patch('ssl.create_default_context',return_value=context),
+              mock.patch('socket.create_connection',return_value=raw) as connect):
+            connection=safety._PinnedHTTPSConnection(
+                safety.RUGCHECK_HOST,'1.1.1.1',timeout=12)
+            connection.connect()
+        connect.assert_called_once_with(('1.1.1.1',443),12,None)
+        context.wrap_socket.assert_called_once_with(
+            raw,server_hostname=safety.RUGCHECK_HOST)
 
     def test_all_risky_pools_create_healthy_no_safe_pools_status(self):
         stamp=dt.datetime.now(core.UTC)
