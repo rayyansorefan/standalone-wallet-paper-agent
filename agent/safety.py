@@ -24,11 +24,12 @@ TRANSPORT_KEY = "_paper_agent_security_transport"
 
 
 def result(status, reason, score=None, http_status=None, failure_kind=None,
-           provider_transport=None):
+           provider_transport=None, provider_stage=None):
     return {"status": status, "allowed": status == "PASS", "reason": reason,
             "score_normalised": score, "http_status": http_status,
             "failure_kind": failure_kind,
-            "provider_transport": provider_transport}
+            "provider_transport": provider_transport,
+            "provider_stage": provider_stage}
 
 
 def classify_failure(exc):
@@ -135,14 +136,17 @@ def fetch_summary(mint):
         # Fresh public DNS evidence only; never reuse a cached/stale address.
         # The fallback still verifies RugCheck's ordinary TLS certificate/SNI.
         try:
-            return _fetch_summary_at_address(
-                path, _resolve_current_ipv4(RUGCHECK_HOST))
+            address = _resolve_current_ipv4(RUGCHECK_HOST)
         except Exception as fallback_exc:
-            # Bounded transport provenance only; never persist exception text.
-            try:
-                fallback_exc.provider_transport = "doh_bootstrap_tls"
-            except Exception:
-                pass
+            # Bounded provenance only; never persist exception text.
+            fallback_exc.provider_transport = "doh_bootstrap_tls"
+            fallback_exc.provider_stage = "doh_resolve"
+            raise
+        try:
+            return _fetch_summary_at_address(path, address)
+        except Exception as fallback_exc:
+            fallback_exc.provider_transport = "doh_bootstrap_tls"
+            fallback_exc.provider_stage = "rugcheck_summary"
             raise
 
 
@@ -158,15 +162,18 @@ def inspect_token(mint, fetch=None):
     except urllib.error.HTTPError as exc:
         return result("UNAVAILABLE", "security API HTTP error",
                       http_status=exc.code, failure_kind=classify_failure(exc),
-                      provider_transport=getattr(exc, "provider_transport", None))
+                      provider_transport=getattr(exc, "provider_transport", None),
+                      provider_stage=getattr(exc, "provider_stage", None))
     except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
         return result("UNAVAILABLE", "security API request or JSON failed",
                       failure_kind=classify_failure(exc),
-                      provider_transport=getattr(exc, "provider_transport", None))
+                      provider_transport=getattr(exc, "provider_transport", None),
+                      provider_stage=getattr(exc, "provider_stage", None))
     except Exception as exc:
         return result("UNAVAILABLE", "security API unexpected error",
                       failure_kind=classify_failure(exc),
-                      provider_transport=getattr(exc, "provider_transport", None))
+                      provider_transport=getattr(exc, "provider_transport", None),
+                      provider_stage=getattr(exc, "provider_stage", None))
     transport = payload.get(TRANSPORT_KEY) if isinstance(payload, dict) else None
     if not isinstance(payload, dict) or not isinstance(payload.get("risks"), list):
         return result("UNAVAILABLE", "security report missing risk list",

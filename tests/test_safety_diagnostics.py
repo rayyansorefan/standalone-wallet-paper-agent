@@ -180,6 +180,22 @@ class Diagnostics(unittest.TestCase):
         self.assertEqual(x['http_status'],502)
         self.assertEqual(x['failure_kind'],'http_error')
         self.assertEqual(x['provider_transport'],'doh_bootstrap_tls')
+        self.assertEqual(x['provider_stage'],'rugcheck_summary')
+
+    def test_doh_resolution_failure_records_bounded_stage(self):
+        dns_failure=urllib.error.URLError(
+            socket.gaierror(socket.EAI_AGAIN,'temporary resolver failure'))
+        invalid_json=ValueError('provider response contained private details')
+        with (mock.patch('urllib.request.urlopen',side_effect=dns_failure),
+              mock.patch.object(safety,'_resolve_current_ipv4',
+                                side_effect=invalid_json)):
+            x=inspect_token(MINT,fetch=fetch_summary)
+        self.assertEqual(x['status'],'UNAVAILABLE')
+        self.assertFalse(x['allowed'])
+        self.assertEqual(x['failure_kind'],'invalid_json')
+        self.assertEqual(x['provider_transport'],'doh_bootstrap_tls')
+        self.assertEqual(x['provider_stage'],'doh_resolve')
+        self.assertNotIn('private details',x['reason'])
 
     def test_doh_bootstraps_without_system_dns_and_accepts_only_public_ipv4(self):
         good={'Status':0,'Answer':[
