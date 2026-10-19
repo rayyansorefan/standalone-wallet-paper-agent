@@ -1,4 +1,6 @@
 import datetime as dt
+import json
+import socket
 import tempfile
 import unittest
 import urllib.error
@@ -33,7 +35,8 @@ class Diagnostics(unittest.TestCase):
         calls=[]
         unavailable=lambda mint:(calls.append(mint) or {
             'status':'UNAVAILABLE','allowed':False,
-            'reason':'security API request or JSON failed'})
+            'reason':'security API request or JSON failed',
+            'failure_kind':'timeout'})
         passing=lambda mint:(calls.append(mint) or {
             'status':'PASS','allowed':True,'reason':'available'})
         with tempfile.TemporaryDirectory() as root:
@@ -57,6 +60,7 @@ class Diagnostics(unittest.TestCase):
                 self.assertEqual(health['security_screening_slots_considered'],10)
                 self.assertEqual(health['security_provider_backoff_deferred'],9)
                 self.assertTrue(health['security_provider_backoff_active'])
+                self.assertEqual(health['security_provider_failure_kind'],'timeout')
                 self.assertEqual(failed['positions'],[])
                 self.assertEqual(failed['cash_gbp'],2000)
 
@@ -66,6 +70,8 @@ class Diagnostics(unittest.TestCase):
                 self.assertEqual(backed_off['cycle_health']['security_screened'],0)
                 self.assertEqual(
                     backed_off['cycle_health']['security_provider_backoff_deferred'],10)
+                self.assertEqual(
+                    backed_off['cycle_health']['security_provider_failure_kind'],'timeout')
                 self.assertEqual(backed_off['positions'],[])
 
                 saved=core.load(path)
@@ -109,7 +115,28 @@ class Diagnostics(unittest.TestCase):
         x=inspect_token(MINT,fetch=fail)
         self.assertEqual(x['status'],'UNAVAILABLE')
         self.assertEqual(x['http_status'],429)
+        self.assertEqual(x['failure_kind'],'http_error')
         self.assertFalse(x['allowed'])
+
+    def test_provider_failures_are_classified_without_exception_text(self):
+        failures=(
+            (urllib.error.URLError(socket.gaierror(-2,'secret host detail')),
+             'dns_error'),
+            (urllib.error.URLError(TimeoutError('secret timeout detail')),
+             'timeout'),
+            (json.JSONDecodeError('secret payload detail','x',0),
+             'invalid_json'),
+            (urllib.error.URLError(OSError('secret transport detail')),
+             'url_error'),
+        )
+        for failure, expected in failures:
+            with self.subTest(expected=expected):
+                def fail(_, exc=failure):
+                    raise exc
+                x=inspect_token(MINT,fetch=fail)
+                self.assertEqual(x['status'],'UNAVAILABLE')
+                self.assertEqual(x['failure_kind'],expected)
+                self.assertNotIn('secret',x['reason'])
 
     def test_all_risky_pools_create_healthy_no_safe_pools_status(self):
         stamp=dt.datetime.now(core.UTC)
