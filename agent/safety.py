@@ -17,7 +17,9 @@ ADDRESS = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 BLOCKED_LEVELS = {"high", "danger", "critical"}
 BLOCKED_NAMES = ("mint authority", "freeze authority", "cannot sell", "honeypot")
 RUGCHECK_HOST = "api.rugcheck.xyz"
-DOH_ENDPOINT = "https://cloudflare-dns.com/dns-query"
+DOH_HOST = "cloudflare-dns.com"
+DOH_PATH = "/dns-query"
+DOH_BOOTSTRAP_IPV4 = ("1.1.1.1", "1.0.0.1")
 TRANSPORT_KEY = "_paper_agent_security_transport"
 
 
@@ -55,26 +57,30 @@ def classify_failure(exc):
 
 def _resolve_current_ipv4(host):
     query = urllib.parse.urlencode({"name": host, "type": "A"})
-    req = urllib.request.Request(DOH_ENDPOINT + "?" + query, headers={
-        "Accept": "application/dns-json", "User-Agent": "PaperAgentResearch/1.1"})
-    try:
-        with urllib.request.urlopen(req, timeout=4) as response:
-            payload = json.load(response)
-    except Exception as exc:
-        raise urllib.error.URLError(
-            socket.gaierror(socket.EAI_AGAIN, "DNS-over-HTTPS lookup failed")) from exc
-    answers = payload.get("Answer", []) if isinstance(payload, dict) else []
-    for answer in answers:
-        if not isinstance(answer, dict) or answer.get("type") != 1:
-            continue
+    path = DOH_PATH + "?" + query
+    last_error = None
+    for bootstrap_address in DOH_BOOTSTRAP_IPV4:
         try:
-            address = ipaddress.ip_address(answer.get("data", ""))
-        except ValueError:
-            continue
-        if address.version == 4 and address.is_global:
-            return str(address)
-    raise urllib.error.URLError(
-        socket.gaierror(socket.EAI_NONAME, "No public A record from DNS-over-HTTPS"))
+            payload = _fetch_json_at_address(
+                DOH_HOST, path, bootstrap_address, timeout=4,
+                accept="application/dns-json")
+            if not isinstance(payload, dict) or payload.get("Status") != 0:
+                raise ValueError("DNS-over-HTTPS response was not successful")
+            answers = payload.get("Answer", [])
+            for answer in answers:
+                if not isinstance(answer, dict) or answer.get("type") != 1:
+                    continue
+                try:
+                    address = ipaddress.ip_address(answer.get("data", ""))
+                except ValueError:
+                    continue
+                if address.version == 4 and address.is_global:
+                    return str(address)
+            raise urllib.error.URLError(socket.gaierror(
+                socket.EAI_NONAME, "No public A record from DNS-over-HTTPS"))
+        except Exception as exc:
+            last_error = exc
+    raise last_error
 
 
 class _PinnedHTTPSConnection(http.client.HTTPSConnection):
@@ -89,23 +95,29 @@ class _PinnedHTTPSConnection(http.client.HTTPSConnection):
         self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
 
 
-def _fetch_summary_at_address(path, address):
-    connection = _PinnedHTTPSConnection(RUGCHECK_HOST, address, timeout=12)
-    url = "https://" + RUGCHECK_HOST + path
+def _fetch_json_at_address(host, path, address, timeout, accept="application/json"):
+    connection = _PinnedHTTPSConnection(host, address, timeout=timeout)
+    url = "https://" + host + path
     try:
         connection.request("GET", path, headers={
-            "Accept": "application/json", "Host": RUGCHECK_HOST,
+            "Accept": accept, "Host": host,
             "User-Agent": "PaperAgentResearch/1.1"})
         response = connection.getresponse()
         if response.status < 200 or response.status >= 300:
             raise urllib.error.HTTPError(
-                url, response.status, "security API HTTP error", response.headers, None)
-        payload = json.load(response)
+                url, response.status, "HTTPS endpoint returned an error",
+                response.headers, None)
+        return json.load(response)
     finally:
         connection.close()
+
+
+def _fetch_summary_at_address(path, address):
+    payload = _fetch_json_at_address(
+        RUGCHECK_HOST, path, address, timeout=12)
     if isinstance(payload, dict):
         payload = dict(payload)
-        payload[TRANSPORT_KEY] = "doh_tls"
+        payload[TRANSPORT_KEY] = "doh_bootstrap_tls"
     return payload
 
 
@@ -128,7 +140,7 @@ def fetch_summary(mint):
         except Exception as fallback_exc:
             # Bounded transport provenance only; never persist exception text.
             try:
-                fallback_exc.provider_transport = "doh_tls"
+                fallback_exc.provider_transport = "doh_bootstrap_tls"
             except Exception:
                 pass
             raise
