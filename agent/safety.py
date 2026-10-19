@@ -5,6 +5,8 @@ No API response, corrupted data or HTTP error can authorise any trade.
 import json
 import math
 import re
+import socket
+import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -14,9 +16,34 @@ BLOCKED_LEVELS = {"high", "danger", "critical"}
 BLOCKED_NAMES = ("mint authority", "freeze authority", "cannot sell", "honeypot")
 
 
-def result(status, reason, score=None, http_status=None):
+def result(status, reason, score=None, http_status=None, failure_kind=None):
     return {"status": status, "allowed": status == "PASS", "reason": reason,
-            "score_normalised": score, "http_status": http_status}
+            "score_normalised": score, "http_status": http_status,
+            "failure_kind": failure_kind}
+
+
+def classify_failure(exc):
+    """Return a bounded provider diagnostic without persisting exception text."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return "http_error"
+    if isinstance(exc, urllib.error.URLError):
+        reason = exc.reason
+        if isinstance(reason, (TimeoutError, socket.timeout)):
+            return "timeout"
+        if isinstance(reason, ssl.SSLError):
+            return "tls_error"
+        if isinstance(reason, socket.gaierror):
+            return "dns_error"
+        return "url_error"
+    if isinstance(exc, (TimeoutError, socket.timeout)):
+        return "timeout"
+    if isinstance(exc, (json.JSONDecodeError, UnicodeDecodeError)):
+        return "invalid_json"
+    if isinstance(exc, OSError):
+        return "os_error"
+    if isinstance(exc, ValueError):
+        return "invalid_json"
+    return "unexpected_error"
 
 
 def fetch_summary(mint):
@@ -37,11 +64,14 @@ def inspect_token(mint, fetch=None):
     try:
         payload = (fetch or fetch_summary)(mint)
     except urllib.error.HTTPError as exc:
-        return result("UNAVAILABLE", "security API HTTP error", http_status=exc.code)
-    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
-        return result("UNAVAILABLE", "security API request or JSON failed")
-    except Exception:
-        return result("UNAVAILABLE", "security API unexpected error")
+        return result("UNAVAILABLE", "security API HTTP error",
+                      http_status=exc.code, failure_kind=classify_failure(exc))
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+        return result("UNAVAILABLE", "security API request or JSON failed",
+                      failure_kind=classify_failure(exc))
+    except Exception as exc:
+        return result("UNAVAILABLE", "security API unexpected error",
+                      failure_kind=classify_failure(exc))
     if not isinstance(payload, dict) or not isinstance(payload.get("risks"), list):
         return result("UNAVAILABLE", "security report missing risk list")
     try:
