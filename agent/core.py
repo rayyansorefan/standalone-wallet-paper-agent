@@ -624,6 +624,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                         last_failure_at=current.isoformat(),
                         last_error=str(assessment.get('reason','unknown'))[:160],
                         last_failure_kind=assessment.get('failure_kind'),
+                        last_transport=assessment.get('provider_transport'),
                         last_http_status=assessment.get('http_status'),
                         consecutive_failures=int(
                             security_provider.get('consecutive_failures',0))+1)
@@ -635,12 +636,13 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
                         last_available_at=current.isoformat(),
                         last_error=None,
                         last_failure_kind=None,
+                        last_transport=assessment.get('provider_transport'),
                         last_http_status=None,
                         consecutive_failures=0)
                     security_retry=None
         verdict = {k: assessment.get(k) for k in
                    ('status', 'reason', 'score_normalised', 'http_status',
-                    'failure_kind')}
+                    'failure_kind', 'provider_transport')}
         verdict['mint'] = mint
         state['screening'].append(verdict)
         if assessment['status'] != 'PASS':
@@ -789,6 +791,7 @@ def run_cycle(fetch=api, path=STATE, screen_token=None):
             security_provider.get('consecutive_failures',0)),
         'security_provider_failure_kind': security_provider.get(
             'last_failure_kind'),
+        'security_provider_transport': security_provider.get('last_transport'),
         'unscreened_discovery_candidates': uninspected_candidates,
         'discoveries_eligible_unique': discovery_health['eligible_unique_pools'],
         'discovery_raw_rows': discovery_health['raw_pool_rows'],
