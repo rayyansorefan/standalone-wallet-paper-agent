@@ -17,9 +17,11 @@ ADDRESS = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 BLOCKED_LEVELS = {"high", "danger", "critical"}
 BLOCKED_NAMES = ("mint authority", "freeze authority", "cannot sell", "honeypot")
 RUGCHECK_HOST = "api.rugcheck.xyz"
-DOH_HOST = "cloudflare-dns.com"
-DOH_PATH = "/dns-query"
-DOH_BOOTSTRAP_IPV4 = ("1.1.1.1", "1.0.0.1")
+DOH_RESOLVERS = (
+    ("cloudflare-dns.com", "/dns-query", ("1.1.1.1", "1.0.0.1"), {}),
+    ("dns.google", "/resolve", ("8.8.8.8", "8.8.4.4"),
+     {"edns_client_subnet": "0.0.0.0/0"}),
+)
 TRANSPORT_KEY = "_paper_agent_security_transport"
 
 
@@ -57,30 +59,32 @@ def classify_failure(exc):
 
 
 def _resolve_current_ipv4(host):
-    query = urllib.parse.urlencode({"name": host, "type": "A"})
-    path = DOH_PATH + "?" + query
     last_error = None
-    for bootstrap_address in DOH_BOOTSTRAP_IPV4:
-        try:
-            payload = _fetch_json_at_address(
-                DOH_HOST, path, bootstrap_address, timeout=4,
-                accept="application/dns-json")
-            if not isinstance(payload, dict) or payload.get("Status") != 0:
-                raise ValueError("DNS-over-HTTPS response was not successful")
-            answers = payload.get("Answer", [])
-            for answer in answers:
-                if not isinstance(answer, dict) or answer.get("type") != 1:
-                    continue
-                try:
-                    address = ipaddress.ip_address(answer.get("data", ""))
-                except ValueError:
-                    continue
-                if address.version == 4 and address.is_global:
-                    return str(address)
-            raise urllib.error.URLError(socket.gaierror(
-                socket.EAI_NONAME, "No public A record from DNS-over-HTTPS"))
-        except Exception as exc:
-            last_error = exc
+    for resolver_host, resolver_path, bootstrap_addresses, extra_query in DOH_RESOLVERS:
+        query = urllib.parse.urlencode(
+            {"name": host, "type": "A", **extra_query})
+        path = resolver_path + "?" + query
+        for bootstrap_address in bootstrap_addresses:
+            try:
+                payload = _fetch_json_at_address(
+                    resolver_host, path, bootstrap_address, timeout=4,
+                    accept="application/dns-json")
+                if not isinstance(payload, dict) or payload.get("Status") != 0:
+                    raise ValueError("DNS-over-HTTPS response was not successful")
+                answers = payload.get("Answer", [])
+                for answer in answers:
+                    if not isinstance(answer, dict) or answer.get("type") != 1:
+                        continue
+                    try:
+                        address = ipaddress.ip_address(answer.get("data", ""))
+                    except ValueError:
+                        continue
+                    if address.version == 4 and address.is_global:
+                        return str(address)
+                raise urllib.error.URLError(socket.gaierror(
+                    socket.EAI_NONAME, "No public A record from DNS-over-HTTPS"))
+            except Exception as exc:
+                last_error = exc
     raise last_error
 
 

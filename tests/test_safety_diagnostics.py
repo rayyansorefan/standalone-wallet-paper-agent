@@ -206,8 +206,8 @@ class Diagnostics(unittest.TestCase):
             self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
                              '104.21.44.17')
         fetch.assert_called_once_with(
-            safety.DOH_HOST,
-            safety.DOH_PATH+'?name=api.rugcheck.xyz&type=A',
+            'cloudflare-dns.com',
+            '/dns-query?name=api.rugcheck.xyz&type=A',
             '1.1.1.1',timeout=4,accept='application/dns-json')
         private={'Status':0,'Answer':[
             {'type':1,'data':'127.0.0.1'},
@@ -216,7 +216,7 @@ class Diagnostics(unittest.TestCase):
                                return_value=private) as fetch:
             with self.assertRaises(urllib.error.URLError):
                 safety._resolve_current_ipv4(safety.RUGCHECK_HOST)
-        self.assertEqual(fetch.call_count,2)
+        self.assertEqual(fetch.call_count,4)
 
     def test_doh_bootstrap_rotates_official_anycast_addresses(self):
         good={'Status':0,'Answer':[{'type':1,'data':'104.21.44.17'}]}
@@ -227,6 +227,23 @@ class Diagnostics(unittest.TestCase):
                              '104.21.44.17')
         self.assertEqual(
             [call.args[2] for call in fetch.call_args_list],['1.1.1.1','1.0.0.1'])
+
+    def test_doh_bootstrap_fails_over_to_independent_google_resolver(self):
+        good={'Status':0,'Answer':[{'type':1,'data':'104.21.44.17'}]}
+        with mock.patch.object(
+                safety,'_fetch_json_at_address',
+                side_effect=[ValueError('not json'),ValueError('not json'),good]
+                ) as fetch:
+            self.assertEqual(safety._resolve_current_ipv4(safety.RUGCHECK_HOST),
+                             '104.21.44.17')
+        calls=fetch.call_args_list
+        self.assertEqual(
+            [(call.args[0],call.args[2]) for call in calls],
+            [('cloudflare-dns.com','1.1.1.1'),
+             ('cloudflare-dns.com','1.0.0.1'),('dns.google','8.8.8.8')])
+        self.assertEqual(
+            calls[2].args[1],
+            '/resolve?name=api.rugcheck.xyz&type=A&edns_client_subnet=0.0.0.0%2F0')
 
     def test_pinned_transport_verifies_official_sni(self):
         raw=mock.Mock()
