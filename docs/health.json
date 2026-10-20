@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-20T16:09:01+00:00",
+  "last_run": "2026-10-20T16:14:01+00:00",
   "last_data_at": "2026-10-20T15:59:11+00:00",
-  "cycle": 1336,
+  "cycle": 1337,
   "status": "SCREENING_UNAVAILABLE",
   "cycle_health": {
     "screened_pass": 0,
@@ -23,17 +23,17 @@
     "security_provider_failure_kind": "timeout",
     "security_provider_transport": null,
     "security_provider_stage": null,
-    "unscreened_discovery_candidates": 58,
-    "discoveries_eligible_unique": 68,
-    "discovery_raw_rows": 87,
+    "unscreened_discovery_candidates": 53,
+    "discoveries_eligible_unique": 63,
+    "discovery_raw_rows": 82,
     "discovery_free_batch_tokens": 100,
     "discovery_search_rows_examined": 120,
     "discovery_search_requests": 4,
     "discovery_search_queries": [
-      "POPCAT",
-      "FARTCOIN",
-      "PENGU",
-      "ORCA"
+      "MEW",
+      "TRUMP",
+      "USDT",
+      "DOGE"
     ],
     "discovery_prior_mints_requested": 60,
     "discovery_prior_mints_refreshed": 59,
@@ -41,15 +41,15 @@
     "discovery_pending_signal_mints_refreshed": 4,
     "discovery_dex_backoff_active": false,
     "discovery_dex_rate_limited": false,
-    "technical_candidates_assessed": 68,
+    "technical_candidates_assessed": 63,
     "technical_candidates_qualified": 0,
     "discovery_coverage_target": 100,
-    "discovery_coverage_shortfall": 32,
+    "discovery_coverage_shortfall": 37,
     "detailed_trade_feed_coverage_pct": 0.0,
     "discovery_errors": [],
     "alternate_quoted_pools": 1,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 68,
+    "candidate_pools": 63,
     "errors_this_cycle": 1,
     "error_messages": [
       "token security provider backoff active until 2026-10-20T16:19:08.486762+00:00"
@@ -60,10 +60,6 @@
     "screening_http_statuses": []
   },
   "recent_errors": [
-    {
-      "at": "2026-10-20T14:09:26+00:00",
-      "error": "trades G8kgi7aUpeX8EVR8VMkrth9SKEv5BietWC33UjAiiMGh: Primary rate limit for /networks/solana/pools/G8kgi7aUpeX8EVR8VMkrth9SKEv5BietWC33UjAiiMGh/trades: HTTP Error 429: Too Many Requests; retry at 2026"
-    },
     {
       "at": "2026-10-20T14:14:06+00:00",
       "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-20T14:14:17.384564+00:00; retry at 2026-10-20T14:14:17.384564+00:00"
@@ -83,6 +79,10 @@
     {
       "at": "2026-10-20T16:09:01+00:00",
       "error": "token security provider backoff active until 2026-10-20T16:19:08.486762+00:00"
+    },
+    {
+      "at": "2026-10-20T16:14:01+00:00",
+      "error": "token security provider backoff active until 2026-10-20T16:19:08.486762+00:00"
     }
   ],
   "position_management": {
@@ -98,7 +98,7 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-20T16:09:01+00:00",
+    "latest_cycle": "2026-10-20T16:14:01+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -121,7 +121,7 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-20T16:08:56.212766+00:00"
+    "last_success_at": "2026-10-20T16:13:56.545810+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_PRIORITY",
@@ -130,7 +130,7 @@
   },
   "forward_experiment": {
     "status": "LOSS_LIMITED",
-    "last_run": "2026-10-20T16:09:01.766587+00:00",
+    "last_run": "2026-10-20T16:14:02.378117+00:00",
     "registered_at": "2026-10-18T13:19:17.221767+00:00",
     "end_at": "2026-11-15T13:19:17.221767+00:00",
     "source_sha256": "53c77fbedfd1657244a66c609af35229d171d973806302ab328c8b92e19cb7d0",
@@ -328,7 +328,7 @@
   "forward_experiment_error": null,
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-20T16:09:01.766587+00:00",
+    "last_run": "2026-10-20T16:14:02.378117+00:00",
     "closed": 28,
     "wins": 5,
     "feed": {
@@ -336,7 +336,7 @@
       "scanned": 6,
       "bulk_tickers_evaluated": 207,
       "deep_candle_scans": 6,
-      "rotation_cursor": 10,
+      "rotation_cursor": 14,
       "unscanned_candle_instruments": 35,
       "requests": 7,
       "max_requests": 7,
@@ -415,7 +415,7 @@
     "winner_additions_allowed": false,
     "reason": "Three consecutive net losses in the same GBP policy, across all wallets and tokens",
     "resume_policy": "No timed reset. Requires separately reviewed prospective evidence and explicit versioned release; never erase the suspension.",
-    "last_checked_at": "2026-10-20T16:08:56.992989+00:00",
+    "last_checked_at": "2026-10-20T16:13:57.695679+00:00",
     "evidence_policy_epoch": "GBP_WALLET_COPY_20261017_AUDITED_EPOCH_1",
     "comparable_closes": 19,
     "current_loss_streak": 15,
@@ -432,7 +432,7 @@
     "version": "GBP_PROSPECTIVE_SIGNAL_LAB_1",
     "registered_at": "2026-10-18T14:49:16.369850+00:00",
     "hypothesis_sha256": "422acbd5c03a63dacfaed937b8b05f559b758abf1cd87a390a01dc1a03c007d6",
-    "cycles": 580,
+    "cycles": 581,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "historical_audit": {
@@ -786,7 +786,7 @@
     "version": "GBP_ANTI_CHASE_HOLDOUT_1",
     "registered_at": "2026-10-18T18:44:11.039440+00:00",
     "hypothesis_sha256": "b8eaf72151442c568c7adf0542cb3ad0f8b8c16cb31ffa473b0ea78509288afb",
-    "cycles": 533,
+    "cycles": 534,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
@@ -1079,23 +1079,23 @@
     "version": "GBP_QUOTE_TA_FROZEN_1",
     "hypothesis_sha256": "9cdbf33a1326b5d3482c4cec5f455e13ac94f2f50a502b054af3060eff3e9ca4",
     "registered_at": "2026-10-18T15:34:20.153293+00:00",
-    "cycles": 571,
+    "cycles": 572,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
-    "reset_gaps": 3131,
-    "total_marks": 37571,
+    "reset_gaps": 3133,
+    "total_marks": 37635,
     "reports": {
       "sampled_quote_control": {
         "5m": {
           "selected": 1724,
-          "priced": 1708,
+          "priced": 1713,
           "missing": 11,
-          "pending": 5,
+          "pending": 0,
           "wins": 93,
-          "losses": 1615,
-          "mean_net_quote_roi_pct": -1.911,
-          "mean_stressed_quote_roi_pct": -3.911,
+          "losses": 1620,
+          "mean_net_quote_roi_pct": -1.9112,
+          "mean_stressed_quote_roi_pct": -3.9112,
           "distinct_pools": 87,
           "distinct_days": 3,
           "identity_complete": true,
@@ -1139,14 +1139,14 @@
       "ema_macd_continuation": {
         "5m": {
           "selected": 65,
-          "priced": 61,
+          "priced": 63,
           "missing": 2,
-          "pending": 2,
+          "pending": 0,
           "wins": 4,
-          "losses": 57,
-          "mean_net_quote_roi_pct": -2.4526,
-          "mean_stressed_quote_roi_pct": -4.4526,
-          "distinct_pools": 36,
+          "losses": 59,
+          "mean_net_quote_roi_pct": -2.4493,
+          "mean_stressed_quote_roi_pct": -4.4493,
+          "distinct_pools": 37,
           "distinct_days": 3,
           "identity_complete": true,
           "archived": 33,
@@ -1189,14 +1189,14 @@
       "observed_high_breakout": {
         "5m": {
           "selected": 98,
-          "priced": 93,
+          "priced": 95,
           "missing": 3,
-          "pending": 2,
+          "pending": 0,
           "wins": 6,
-          "losses": 87,
-          "mean_net_quote_roi_pct": -2.5069,
-          "mean_stressed_quote_roi_pct": -4.5069,
-          "distinct_pools": 54,
+          "losses": 89,
+          "mean_net_quote_roi_pct": -2.5036,
+          "mean_stressed_quote_roi_pct": -4.5036,
+          "distinct_pools": 56,
           "distinct_days": 3,
           "identity_complete": true,
           "archived": 44,
@@ -1328,8 +1328,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-20T16:08:46.338Z",
-    "run_id": "39454841906",
+    "scheduled_at": "2026-10-20T16:13:46.736Z",
+    "run_id": "39455581581",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
