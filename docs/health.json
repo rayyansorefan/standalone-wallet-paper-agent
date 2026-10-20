@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-20T19:24:08+00:00",
-  "last_data_at": "2026-10-20T19:24:08+00:00",
-  "cycle": 1374,
+  "last_run": "2026-10-20T19:29:12+00:00",
+  "last_data_at": "2026-10-20T19:29:12+00:00",
+  "cycle": 1375,
   "status": "OK",
   "cycle_health": {
-    "screened_pass": 6,
+    "screened_pass": 5,
     "screened_unavailable": 0,
-    "screened_rejected_or_unavailable": 4,
+    "screened_rejected_or_unavailable": 5,
     "trade_feeds_sampled": 2,
-    "trade_feeds_budget_deferred": 4,
+    "trade_feeds_budget_deferred": 3,
     "trade_feeds_attempted": 2,
     "trade_feed_budget": 2,
     "trade_feeds_provider_cooldown_deferred": 0,
@@ -23,33 +23,33 @@
     "security_provider_failure_kind": null,
     "security_provider_transport": null,
     "security_provider_stage": null,
-    "unscreened_discovery_candidates": 56,
-    "discoveries_eligible_unique": 66,
-    "discovery_raw_rows": 84,
+    "unscreened_discovery_candidates": 53,
+    "discoveries_eligible_unique": 63,
+    "discovery_raw_rows": 81,
     "discovery_free_batch_tokens": 100,
     "discovery_search_rows_examined": 120,
     "discovery_search_requests": 4,
     "discovery_search_queries": [
-      "SPX",
-      "JLP",
-      "MEME",
-      "SOLANA"
+      "SOL",
+      "USDC",
+      "BONK",
+      "AI"
     ],
-    "discovery_prior_mints_requested": 59,
-    "discovery_prior_mints_refreshed": 59,
+    "discovery_prior_mints_requested": 60,
+    "discovery_prior_mints_refreshed": 60,
     "discovery_pending_signal_mints_prioritized": 10,
     "discovery_pending_signal_mints_refreshed": 10,
     "discovery_dex_backoff_active": false,
     "discovery_dex_rate_limited": false,
-    "technical_candidates_assessed": 66,
+    "technical_candidates_assessed": 63,
     "technical_candidates_qualified": 0,
     "discovery_coverage_target": 100,
-    "discovery_coverage_shortfall": 34,
-    "detailed_trade_feed_coverage_pct": 3.0,
+    "discovery_coverage_shortfall": 37,
+    "detailed_trade_feed_coverage_pct": 3.2,
     "discovery_errors": [],
     "alternate_quoted_pools": 1,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 66,
+    "candidate_pools": 63,
     "errors_this_cycle": 0,
     "error_messages": [],
     "partial_screening_only": false,
@@ -71,7 +71,7 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-20T19:24:08+00:00",
+    "latest_cycle": "2026-10-20T19:29:12+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
@@ -94,7 +94,7 @@
     "last_error": null,
     "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-20T19:24:02.813646+00:00"
+    "last_success_at": "2026-10-20T19:29:04.333800+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_PRIORITY",
@@ -103,7 +103,7 @@
   },
   "forward_experiment": {
     "status": "LOSS_LIMITED",
-    "last_run": "2026-10-20T19:24:08.851266+00:00",
+    "last_run": "2026-10-20T19:29:12.969703+00:00",
     "registered_at": "2026-10-18T13:19:17.221767+00:00",
     "end_at": "2026-11-15T13:19:17.221767+00:00",
     "source_sha256": "53c77fbedfd1657244a66c609af35229d171d973806302ab328c8b92e19cb7d0",
@@ -301,16 +301,16 @@
   "forward_experiment_error": null,
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-20T19:24:08.851266+00:00",
+    "last_run": "2026-10-20T19:29:12.969703+00:00",
     "closed": 28,
     "wins": 5,
     "feed": {
-      "eligible": 41,
+      "eligible": 42,
       "scanned": 6,
       "bulk_tickers_evaluated": 207,
       "deep_candle_scans": 6,
-      "rotation_cursor": 4,
-      "unscanned_candle_instruments": 35,
+      "rotation_cursor": 8,
+      "unscanned_candle_instruments": 36,
       "requests": 7,
       "max_requests": 7,
       "priority_held_symbols": 0,
@@ -388,7 +388,7 @@
     "winner_additions_allowed": false,
     "reason": "Three consecutive net losses in the same GBP policy, across all wallets and tokens",
     "resume_policy": "No timed reset. Requires separately reviewed prospective evidence and explicit versioned release; never erase the suspension.",
-    "last_checked_at": "2026-10-20T19:24:04.723027+00:00",
+    "last_checked_at": "2026-10-20T19:29:08.174710+00:00",
     "evidence_policy_epoch": "GBP_WALLET_COPY_20261017_AUDITED_EPOCH_1",
     "comparable_closes": 19,
     "current_loss_streak": 15,
@@ -405,7 +405,7 @@
     "version": "GBP_PROSPECTIVE_SIGNAL_LAB_1",
     "registered_at": "2026-10-18T14:49:16.369850+00:00",
     "hypothesis_sha256": "422acbd5c03a63dacfaed937b8b05f559b758abf1cd87a390a01dc1a03c007d6",
-    "cycles": 618,
+    "cycles": 619,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "historical_audit": {
@@ -424,11 +424,11 @@
       "all_time_net_gbp": -23.4774,
       "interpretation": "Descriptive only. Legacy winners are non-comparable across changed exits."
     },
-    "observations": 309,
+    "observations": 310,
     "excluded_historical_or_unfeatured": 202,
     "reports": {
       "observed_original_gate": {
-        "feature_complete": 303,
+        "feature_complete": 304,
         "selected": 35,
         "horizons": {
           "5m": {
@@ -482,7 +482,7 @@
         }
       },
       "moderate_momentum": {
-        "feature_complete": 303,
+        "feature_complete": 304,
         "selected": 11,
         "horizons": {
           "5m": {
@@ -536,7 +536,7 @@
         }
       },
       "accelerating_breakout": {
-        "feature_complete": 303,
+        "feature_complete": 304,
         "selected": 3,
         "horizons": {
           "5m": {
@@ -590,14 +590,14 @@
         }
       },
       "high_volume_trend": {
-        "feature_complete": 303,
-        "selected": 1,
+        "feature_complete": 304,
+        "selected": 2,
         "horizons": {
           "5m": {
-            "selected": 1,
+            "selected": 2,
             "priced": 1,
             "missing": 0,
-            "pending": 0,
+            "pending": 1,
             "wins": 0,
             "losses": 1,
             "win_rate_pct": 0.0,
@@ -605,15 +605,15 @@
             "mean_stressed_quote_roi_pct": -5.9858,
             "distinct_entry_days": 1,
             "distinct_pools": 1,
-            "complete_outcomes": true,
+            "complete_outcomes": false,
             "evidence_sufficient_for_review": false,
             "paper_entry_enabled": false
           },
           "30m": {
-            "selected": 1,
+            "selected": 2,
             "priced": 1,
             "missing": 0,
-            "pending": 0,
+            "pending": 1,
             "wins": 0,
             "losses": 1,
             "win_rate_pct": 0.0,
@@ -621,15 +621,15 @@
             "mean_stressed_quote_roi_pct": -6.0887,
             "distinct_entry_days": 1,
             "distinct_pools": 1,
-            "complete_outcomes": true,
+            "complete_outcomes": false,
             "evidence_sufficient_for_review": false,
             "paper_entry_enabled": false
           },
           "60m": {
-            "selected": 1,
+            "selected": 2,
             "priced": 1,
             "missing": 0,
-            "pending": 0,
+            "pending": 1,
             "wins": 0,
             "losses": 1,
             "win_rate_pct": 0.0,
@@ -637,14 +637,14 @@
             "mean_stressed_quote_roi_pct": -8.9686,
             "distinct_entry_days": 1,
             "distinct_pools": 1,
-            "complete_outcomes": true,
+            "complete_outcomes": false,
             "evidence_sufficient_for_review": false,
             "paper_entry_enabled": false
           }
         }
       },
       "buyer_pressure": {
-        "feature_complete": 303,
+        "feature_complete": 304,
         "selected": 12,
         "horizons": {
           "5m": {
@@ -698,7 +698,7 @@
         }
       },
       "liquid_confirmed_trend": {
-        "feature_complete": 303,
+        "feature_complete": 304,
         "selected": 5,
         "horizons": {
           "5m": {
@@ -753,25 +753,25 @@
       }
     },
     "warning": "Signal-time registered quote comparison only, no actual fills; historical pattern mining cannot validate this strategy. 100+ prospective independent trades across >=14 dates, closed net economics, cost stress and clustered holdout are required before separate review; no automatic promotion.",
-    "retained_forward_signal_count": 309
+    "retained_forward_signal_count": 310
   },
   "gbp_holdout_lab": {
     "version": "GBP_ANTI_CHASE_HOLDOUT_1",
     "registered_at": "2026-10-18T18:44:11.039440+00:00",
     "hypothesis_sha256": "b8eaf72151442c568c7adf0542cb3ad0f8b8c16cb31ffa473b0ea78509288afb",
-    "cycles": 571,
+    "cycles": 572,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
-    "post_registration_observations": 277,
+    "post_registration_observations": 278,
     "reports": {
       "all_fresh_signals_control": {
         "horizons": {
           "5m": {
-            "selected": 267,
+            "selected": 268,
             "priced": 249,
             "missing": 18,
-            "pending": 0,
+            "pending": 1,
             "wins": 37,
             "losses": 212,
             "win_rate_pct": 14.86,
@@ -790,10 +790,10 @@
             "paper_entry_enabled": false
           },
           "30m": {
-            "selected": 267,
+            "selected": 268,
             "priced": 250,
             "missing": 13,
-            "pending": 4,
+            "pending": 5,
             "wins": 58,
             "losses": 192,
             "win_rate_pct": 23.2,
@@ -812,10 +812,10 @@
             "paper_entry_enabled": false
           },
           "60m": {
-            "selected": 267,
+            "selected": 268,
             "priced": 247,
             "missing": 10,
-            "pending": 10,
+            "pending": 11,
             "wins": 77,
             "losses": 170,
             "win_rate_pct": 31.17,
@@ -1052,12 +1052,12 @@
     "version": "GBP_QUOTE_TA_FROZEN_1",
     "hypothesis_sha256": "9cdbf33a1326b5d3482c4cec5f455e13ac94f2f50a502b054af3060eff3e9ca4",
     "registered_at": "2026-10-18T15:34:20.153293+00:00",
-    "cycles": 609,
+    "cycles": 610,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
-    "reset_gaps": 3383,
-    "total_marks": 40128,
+    "reset_gaps": 3384,
+    "total_marks": 40192,
     "reports": {
       "sampled_quote_control": {
         "5m": {
@@ -1301,8 +1301,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-20T19:23:46.229Z",
-    "run_id": "39483092017",
+    "scheduled_at": "2026-10-20T19:28:46.352Z",
+    "run_id": "39483803694",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
