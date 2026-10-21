@@ -26,6 +26,8 @@ jobs:
           assert isinstance(d['signals'],list)
           print('Validated FX feed')
           PY
+      - name: Browser DOM rendering and stale quote safety smoke tests
+        run: node tests/dashboard-smoke.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
