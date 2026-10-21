@@ -2,7 +2,7 @@ name: FX HTML dashboard deployment
 on:
   push:
     branches: [main]
-    paths: ['docs/**','.github/workflows/fx-dashboard.yml']
+    paths: ['docs/**','tests/**','.github/workflows/fx-dashboard.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,6 +17,8 @@ jobs:
     environment: github-pages
     steps:
       - uses: actions/checkout@v4
+      - name: Verify chart rendering inputs, source freshness gate and JS syntax
+        run: node --test tests/fx_dashboard_smoke.test.mjs
       - name: Validate public feed
         run: |
           python - <<'PY'
