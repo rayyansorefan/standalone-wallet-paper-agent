@@ -1,0 +1,33 @@
+name: FX HTML dashboard deployment
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**','.github/workflows/fx-dashboard.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: fx-pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate public feed
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('docs/fx-feed.json'))
+          assert d['schema']==1 and d['snapshot_at'] and d['pairs']
+          assert isinstance(d['signals'],list)
+          print('Validated FX feed')
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4
