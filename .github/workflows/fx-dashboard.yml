@@ -2,7 +2,7 @@ name: FX HTML dashboard deployment
 on:
   push:
     branches: [main]
-    paths: ['docs/**','.github/workflows/fx-dashboard.yml']
+    paths: ['docs/**','tests/dashboard-smoke.mjs','.github/workflows/fx-dashboard.yml']
   workflow_dispatch:
 permissions:
   contents: read
