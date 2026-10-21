@@ -47,7 +47,7 @@ assert.equal($("indicators").children.length,9);
 assert.ok($("headlines").children.length>0);
 assert.ok($("events").children.length>0);
 assert.equal($("verdict").textContent,"WAIT");
-assert.equal($("approved").textContent,"0");
+assert.equal(String($("approved").textContent),"0");
 assert.equal($("entryState").textContent,"WAIT");
 assert.ok($("pair").options.length>=5);
 const priorPair=$("pair").value;
