@@ -39,6 +39,15 @@ test('UI converts OANDA numeric-string OHLC safely before plotting', () => {
   assert.match(page, /Date\.now\(\)-Date\.parse\(feed\.snapshot_at\)<4200000/);
   assert.match(page, /NO LIVE ENTRY/);
 });
+test('visual long/short cards fail closed and show entry stop TP1 and capped-spread reward risk', () => {
+  assert.match(page, /function renderPlans\(\)/);
+  assert.match(page, /id="activePlan"/);
+  assert.match(page, /NET R:R|Net R:R at capped spread/);
+  assert.match(page, /safePlan=/);
+  assert.match(page, /quoteFresh\&\&!stale\&\&!blackout/);
+  assert.match(page, /WAIT FOR VERIFIED M15 CLOSE/);
+  assert.match(page, /NO LIVE ENTRY/);
+});
 test('crypto trading UI and execution scripts absent', () => {
   assert.doesNotMatch(page, /trading engine at a glance|whale wallet|crypto futures/i);
   const filenames = fs.readdirSync('.github/workflows');
