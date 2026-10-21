@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "paper_only": true,
-  "last_run": "2026-10-21T10:09:08+00:00",
-  "last_data_at": "2026-10-21T10:04:24+00:00",
-  "cycle": 1550,
-  "status": "TRADE_FEEDS_FAILED",
+  "last_run": "2026-10-21T10:14:09+00:00",
+  "last_data_at": "2026-10-21T10:14:09+00:00",
+  "cycle": 1551,
+  "status": "OK",
   "cycle_health": {
-    "screened_pass": 8,
+    "screened_pass": 6,
     "screened_unavailable": 0,
-    "screened_rejected_or_unavailable": 2,
-    "trade_feeds_sampled": 0,
-    "trade_feeds_budget_deferred": 0,
-    "trade_feeds_attempted": 0,
+    "screened_rejected_or_unavailable": 4,
+    "trade_feeds_sampled": 2,
+    "trade_feeds_budget_deferred": 4,
+    "trade_feeds_attempted": 2,
     "trade_feed_budget": 2,
-    "trade_feeds_provider_cooldown_deferred": 8,
+    "trade_feeds_provider_cooldown_deferred": 0,
     "security_screened": 10,
     "security_screening_slots_considered": 10,
     "security_provider_backoff_deferred": 0,
@@ -23,17 +23,17 @@
     "security_provider_failure_kind": null,
     "security_provider_transport": null,
     "security_provider_stage": null,
-    "unscreened_discovery_candidates": 52,
-    "discoveries_eligible_unique": 62,
-    "discovery_raw_rows": 62,
+    "unscreened_discovery_candidates": 61,
+    "discoveries_eligible_unique": 71,
+    "discovery_raw_rows": 91,
     "discovery_free_batch_tokens": 100,
     "discovery_search_rows_examined": 120,
     "discovery_search_requests": 4,
     "discovery_search_queries": [
-      "BTC",
-      "ETH",
-      "WIF",
-      "JUP"
+      "RAY",
+      "PUMP",
+      "PYTH",
+      "JTO"
     ],
     "discovery_prior_mints_requested": 60,
     "discovery_prior_mints_refreshed": 60,
@@ -41,50 +41,23 @@
     "discovery_pending_signal_mints_refreshed": 9,
     "discovery_dex_backoff_active": false,
     "discovery_dex_rate_limited": false,
-    "technical_candidates_assessed": 62,
+    "technical_candidates_assessed": 71,
     "technical_candidates_qualified": 2,
     "discovery_coverage_target": 100,
-    "discovery_coverage_shortfall": 38,
-    "detailed_trade_feed_coverage_pct": 0.0,
+    "discovery_coverage_shortfall": 29,
+    "detailed_trade_feed_coverage_pct": 2.8,
     "discovery_errors": [],
-    "alternate_quoted_pools": 1,
+    "alternate_quoted_pools": 0,
     "trade_feeds_unavailable": 0,
-    "candidate_pools": 62,
-    "errors_this_cycle": 1,
-    "error_messages": [
-      "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-21T10:09:18.471506+00:00; retry at 2026-10-21T10:09:18.471506+00:00"
-    ],
+    "candidate_pools": 71,
+    "errors_this_cycle": 0,
+    "error_messages": [],
     "partial_screening_only": false,
     "partial_trade_feeds_only": false,
-    "rate_limit_errors": 1,
+    "rate_limit_errors": 0,
     "screening_http_statuses": []
   },
-  "recent_errors": [
-    {
-      "at": "2026-10-21T04:14:14+00:00",
-      "error": "trades Em6RvzGXhd35pZ7CVUjCTPEnv4jAztScaVHaXBXCBcG7: Primary rate limit for /networks/solana/pools/Em6RvzGXhd35pZ7CVUjCTPEnv4jAztScaVHaXBXCBcG7/trades: HTTP Error 429: Too Many Requests; retry at 2026"
-    },
-    {
-      "at": "2026-10-21T04:19:02+00:00",
-      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-21T04:19:09.678859+00:00; retry at 2026-10-21T04:19:09.678859+00:00"
-    },
-    {
-      "at": "2026-10-21T08:19:26+00:00",
-      "error": "trades 3KFCgJ5R3zshW8hTDbzjSrrKSRYmKvsMfhc4Vo4iddxD: Primary rate limit for /networks/solana/pools/3KFCgJ5R3zshW8hTDbzjSrrKSRYmKvsMfhc4Vo4iddxD/trades: HTTP Error 429: Too Many Requests; retry at 2026"
-    },
-    {
-      "at": "2026-10-21T08:24:06+00:00",
-      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-21T08:24:19.583094+00:00; retry at 2026-10-21T08:24:19.583094+00:00"
-    },
-    {
-      "at": "2026-10-21T10:04:24+00:00",
-      "error": "trades 3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj: Primary rate limit for /networks/solana/pools/3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj/trades: HTTP Error 429: Too Many Requests; retry at 2026"
-    },
-    {
-      "at": "2026-10-21T10:09:08+00:00",
-      "error": "pool discovery: Primary rate limit for /networks/solana/trending_pools: Primary provider cooling down until 2026-10-21T10:09:18.471506+00:00; retry at 2026-10-21T10:09:18.471506+00:00"
-    }
-  ],
+  "recent_errors": [],
   "position_management": {
     "open_with_additions": 0,
     "closed_with_additions": 0,
@@ -98,13 +71,12 @@
     "net_loss_warning_pct": -2.0,
     "net_loss_exit_pct": -4.5,
     "last_add_at": null,
-    "latest_cycle": "2026-10-21T10:09:08+00:00",
+    "latest_cycle": "2026-10-21T10:14:09+00:00",
     "risk_policy": "ONE_30_TO_50_PCT_POSITION_TOPUP_ONLY_AFTER_3_RISING_MARKS"
   },
   "market_resilience": {
-    "status": "OK",
-    "quoted_pools": 1,
-    "requested_pools": 1,
+    "status": "NOT_REQUIRED",
+    "quoted_pools": 0,
     "provider": "dexscreener"
   },
   "helius_rpc": {
@@ -116,12 +88,12 @@
     "last_success_at": "2026-10-21T09:49:16.950724+00:00"
   },
   "primary_provider": {
-    "http_status": 429,
-    "requests": 0,
-    "last_error": "HTTP 429; adaptive persisted provider cooldown; no immediate retry",
-    "retry_at": "2026-10-21T10:09:18.471506+00:00",
+    "http_status": 200,
+    "requests": 3,
+    "last_error": null,
+    "retry_at": null,
     "rate_limit_strikes": 1,
-    "last_success_at": "2026-10-21T10:04:15.858903+00:00"
+    "last_success_at": "2026-10-21T10:14:03.585011+00:00"
   },
   "whale": {
     "status": "DEFERRED_PRIMARY_PRIORITY",
@@ -130,7 +102,7 @@
   },
   "forward_experiment": {
     "status": "LOSS_LIMITED",
-    "last_run": "2026-10-21T10:09:09.047861+00:00",
+    "last_run": "2026-10-21T10:14:10.022532+00:00",
     "registered_at": "2026-10-18T13:19:17.221767+00:00",
     "end_at": "2026-11-15T13:19:17.221767+00:00",
     "source_sha256": "53c77fbedfd1657244a66c609af35229d171d973806302ab328c8b92e19cb7d0",
@@ -328,7 +300,7 @@
   "forward_experiment_error": null,
   "futures": {
     "status": "COLLECTING_FORWARD_EVIDENCE",
-    "last_run": "2026-10-21T10:09:09.047861+00:00",
+    "last_run": "2026-10-21T10:14:10.022532+00:00",
     "closed": 33,
     "wins": 8,
     "feed": {
@@ -336,7 +308,7 @@
       "scanned": 6,
       "bulk_tickers_evaluated": 207,
       "deep_candle_scans": 6,
-      "rotation_cursor": 26,
+      "rotation_cursor": 30,
       "unscanned_candle_instruments": 39,
       "requests": 7,
       "max_requests": 7,
@@ -415,7 +387,7 @@
     "winner_additions_allowed": false,
     "reason": "Three consecutive net losses in the same GBP policy, across all wallets and tokens",
     "resume_policy": "No timed reset. Requires separately reviewed prospective evidence and explicit versioned release; never erase the suspension.",
-    "last_checked_at": "2026-10-21T10:09:04.217916+00:00",
+    "last_checked_at": "2026-10-21T10:14:04.932670+00:00",
     "evidence_policy_epoch": "GBP_WALLET_COPY_20261017_AUDITED_EPOCH_1",
     "comparable_closes": 19,
     "current_loss_streak": 15,
@@ -432,7 +404,7 @@
     "version": "GBP_PROSPECTIVE_SIGNAL_LAB_1",
     "registered_at": "2026-10-18T14:49:16.369850+00:00",
     "hypothesis_sha256": "422acbd5c03a63dacfaed937b8b05f559b758abf1cd87a390a01dc1a03c007d6",
-    "cycles": 794,
+    "cycles": 795,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "historical_audit": {
@@ -451,11 +423,11 @@
       "all_time_net_gbp": -23.4774,
       "interpretation": "Descriptive only. Legacy winners are non-comparable across changed exits."
     },
-    "observations": 435,
-    "excluded_historical_or_unfeatured": 74,
+    "observations": 437,
+    "excluded_historical_or_unfeatured": 72,
     "reports": {
       "observed_original_gate": {
-        "feature_complete": 429,
+        "feature_complete": 431,
         "selected": 49,
         "horizons": {
           "5m": {
@@ -492,14 +464,14 @@
           },
           "60m": {
             "selected": 49,
-            "priced": 41,
+            "priced": 42,
             "missing": 7,
-            "pending": 1,
+            "pending": 0,
             "wins": 16,
-            "losses": 25,
-            "win_rate_pct": 39.02,
-            "mean_net_quote_roi_pct": -0.8099,
-            "mean_stressed_quote_roi_pct": -2.8099,
+            "losses": 26,
+            "win_rate_pct": 38.1,
+            "mean_net_quote_roi_pct": -0.8396,
+            "mean_stressed_quote_roi_pct": -2.8396,
             "distinct_entry_days": 4,
             "distinct_pools": 27,
             "complete_outcomes": false,
@@ -509,7 +481,7 @@
         }
       },
       "moderate_momentum": {
-        "feature_complete": 429,
+        "feature_complete": 431,
         "selected": 15,
         "horizons": {
           "5m": {
@@ -563,7 +535,7 @@
         }
       },
       "accelerating_breakout": {
-        "feature_complete": 429,
+        "feature_complete": 431,
         "selected": 3,
         "horizons": {
           "5m": {
@@ -617,7 +589,7 @@
         }
       },
       "high_volume_trend": {
-        "feature_complete": 429,
+        "feature_complete": 431,
         "selected": 3,
         "horizons": {
           "5m": {
@@ -671,7 +643,7 @@
         }
       },
       "buyer_pressure": {
-        "feature_complete": 429,
+        "feature_complete": 431,
         "selected": 20,
         "horizons": {
           "5m": {
@@ -725,7 +697,7 @@
         }
       },
       "liquid_confirmed_trend": {
-        "feature_complete": 429,
+        "feature_complete": 431,
         "selected": 6,
         "horizons": {
           "5m": {
@@ -780,25 +752,25 @@
       }
     },
     "warning": "Signal-time registered quote comparison only, no actual fills; historical pattern mining cannot validate this strategy. 100+ prospective independent trades across >=14 dates, closed net economics, cost stress and clustered holdout are required before separate review; no automatic promotion.",
-    "retained_forward_signal_count": 435
+    "retained_forward_signal_count": 437
   },
   "gbp_holdout_lab": {
     "version": "GBP_ANTI_CHASE_HOLDOUT_1",
     "registered_at": "2026-10-18T18:44:11.039440+00:00",
     "hypothesis_sha256": "b8eaf72151442c568c7adf0542cb3ad0f8b8c16cb31ffa473b0ea78509288afb",
-    "cycles": 747,
+    "cycles": 748,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
-    "post_registration_observations": 403,
+    "post_registration_observations": 405,
     "reports": {
       "all_fresh_signals_control": {
         "horizons": {
           "5m": {
-            "selected": 393,
+            "selected": 395,
             "priced": 365,
             "missing": 28,
-            "pending": 0,
+            "pending": 2,
             "wins": 50,
             "losses": 315,
             "win_rate_pct": 13.7,
@@ -817,21 +789,21 @@
             "paper_entry_enabled": false
           },
           "30m": {
-            "selected": 393,
-            "priced": 367,
+            "selected": 395,
+            "priced": 368,
             "missing": 20,
-            "pending": 6,
+            "pending": 7,
             "wins": 83,
-            "losses": 284,
-            "win_rate_pct": 22.62,
-            "net_quote_roi_points": -520.6616,
-            "mean_net_quote_roi_pct": -1.4187,
-            "stressed_net_roi_points": -1254.6616,
-            "profit_factor": 0.477,
+            "losses": 285,
+            "win_rate_pct": 22.55,
+            "net_quote_roi_points": -524.6628,
+            "mean_net_quote_roi_pct": -1.4257,
+            "stressed_net_roi_points": -1260.6628,
+            "profit_factor": 0.475,
             "max_cumulative_drawdown_points": 532.1431,
-            "net_without_best_observation": -562.615,
-            "net_without_best_day": -498.0891,
-            "net_without_best_pool": -567.0069,
+            "net_without_best_observation": -566.6162,
+            "net_without_best_day": -502.0903,
+            "net_without_best_pool": -571.0081,
             "distinct_entry_days": 4,
             "distinct_pools": 61,
             "mean_advantage_vs_control_pp": null,
@@ -839,21 +811,21 @@
             "paper_entry_enabled": false
           },
           "60m": {
-            "selected": 393,
-            "priced": 364,
+            "selected": 395,
+            "priced": 366,
             "missing": 20,
             "pending": 9,
             "wins": 104,
-            "losses": 260,
-            "win_rate_pct": 28.57,
-            "net_quote_roi_points": -430.3579,
-            "mean_net_quote_roi_pct": -1.1823,
-            "stressed_net_roi_points": -1158.3579,
-            "profit_factor": 0.624,
+            "losses": 262,
+            "win_rate_pct": 28.42,
+            "net_quote_roi_points": -434.2609,
+            "mean_net_quote_roi_pct": -1.1865,
+            "stressed_net_roi_points": -1166.2609,
+            "profit_factor": 0.622,
             "max_cumulative_drawdown_points": 458.6223,
-            "net_without_best_observation": -519.8743,
-            "net_without_best_day": -418.8458,
-            "net_without_best_pool": -571.9214,
+            "net_without_best_observation": -523.7773,
+            "net_without_best_day": -422.7488,
+            "net_without_best_pool": -575.8244,
             "distinct_entry_days": 4,
             "distinct_pools": 61,
             "mean_advantage_vs_control_pp": null,
@@ -904,7 +876,7 @@
             "net_without_best_pool": -22.0634,
             "distinct_entry_days": 4,
             "distinct_pools": 10,
-            "mean_advantage_vs_control_pp": 0.3098,
+            "mean_advantage_vs_control_pp": 0.3168,
             "review_status": "COLLECTING",
             "paper_entry_enabled": false
           },
@@ -926,7 +898,7 @@
             "net_without_best_pool": -19.2304,
             "distinct_entry_days": 4,
             "distinct_pools": 9,
-            "mean_advantage_vs_control_pp": 1.3701,
+            "mean_advantage_vs_control_pp": 1.3744,
             "review_status": "COLLECTING",
             "paper_entry_enabled": false
           }
@@ -974,7 +946,7 @@
             "net_without_best_pool": -32.4824,
             "distinct_entry_days": 4,
             "distinct_pools": 8,
-            "mean_advantage_vs_control_pp": -0.8161,
+            "mean_advantage_vs_control_pp": -0.8091,
             "review_status": "COLLECTING",
             "paper_entry_enabled": false
           },
@@ -996,7 +968,7 @@
             "net_without_best_pool": -33.9116,
             "distinct_entry_days": 4,
             "distinct_pools": 8,
-            "mean_advantage_vs_control_pp": -1.1627,
+            "mean_advantage_vs_control_pp": -1.1585,
             "review_status": "COLLECTING",
             "paper_entry_enabled": false
           }
@@ -1044,29 +1016,29 @@
             "net_without_best_pool": -9.1249,
             "distinct_entry_days": 4,
             "distinct_pools": 7,
-            "mean_advantage_vs_control_pp": 1.2546,
+            "mean_advantage_vs_control_pp": 1.2616,
             "review_status": "COLLECTING",
             "paper_entry_enabled": false
           },
           "60m": {
             "selected": 10,
-            "priced": 8,
+            "priced": 9,
             "missing": 1,
-            "pending": 1,
+            "pending": 0,
             "wins": 3,
-            "losses": 5,
-            "win_rate_pct": 37.5,
-            "net_quote_roi_points": 9.4897,
-            "mean_net_quote_roi_pct": 1.1862,
-            "stressed_net_roi_points": -6.5103,
-            "profit_factor": 1.68,
-            "max_cumulative_drawdown_points": 9.7508,
-            "net_without_best_observation": -11.9949,
-            "net_without_best_day": -7.7919,
-            "net_without_best_pool": -11.9949,
+            "losses": 6,
+            "win_rate_pct": 33.33,
+            "net_quote_roi_points": 7.4356,
+            "mean_net_quote_roi_pct": 0.8262,
+            "stressed_net_roi_points": -10.5644,
+            "profit_factor": 1.464,
+            "max_cumulative_drawdown_points": 11.8049,
+            "net_without_best_observation": -14.049,
+            "net_without_best_day": -9.846,
+            "net_without_best_pool": -14.049,
             "distinct_entry_days": 4,
-            "distinct_pools": 6,
-            "mean_advantage_vs_control_pp": 2.3685,
+            "distinct_pools": 7,
+            "mean_advantage_vs_control_pp": 2.0127,
             "review_status": "COLLECTING",
             "paper_entry_enabled": false
           }
@@ -1079,35 +1051,35 @@
     "version": "GBP_QUOTE_TA_FROZEN_1",
     "hypothesis_sha256": "9cdbf33a1326b5d3482c4cec5f455e13ac94f2f50a502b054af3060eff3e9ca4",
     "registered_at": "2026-10-18T15:34:20.153293+00:00",
-    "cycles": 785,
+    "cycles": 786,
     "status": "COLLECTING_UNPROVEN",
     "automatic_promotion": false,
     "paper_entries_allowed": false,
-    "reset_gaps": 4380,
-    "total_marks": 51819,
+    "reset_gaps": 4390,
+    "total_marks": 51890,
     "reports": {
       "sampled_quote_control": {
         "5m": {
-          "selected": 2319,
-          "priced": 2293,
+          "selected": 2328,
+          "priced": 2303,
           "missing": 16,
-          "pending": 10,
-          "wins": 128,
-          "losses": 2165,
-          "mean_net_quote_roi_pct": -1.8972,
-          "mean_stressed_quote_roi_pct": -3.8972,
+          "pending": 9,
+          "wins": 130,
+          "losses": 2173,
+          "mean_net_quote_roi_pct": -1.8948,
+          "mean_stressed_quote_roi_pct": -3.8948,
           "distinct_pools": 99,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 1368,
+          "archived": 1378,
           "review_ready": false,
           "trades_enabled": false
         },
         "30m": {
-          "selected": 2319,
+          "selected": 2328,
           "priced": 2242,
           "missing": 65,
-          "pending": 12,
+          "pending": 21,
           "wins": 272,
           "losses": 1970,
           "mean_net_quote_roi_pct": -1.8409,
@@ -1115,49 +1087,49 @@
           "distinct_pools": 99,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 1368,
+          "archived": 1378,
           "review_ready": false,
           "trades_enabled": false
         },
         "60m": {
-          "selected": 2319,
-          "priced": 2170,
+          "selected": 2328,
+          "priced": 2180,
           "missing": 98,
-          "pending": 51,
-          "wins": 343,
-          "losses": 1826,
-          "mean_net_quote_roi_pct": -1.8715,
-          "mean_stressed_quote_roi_pct": -3.8715,
-          "distinct_pools": 96,
+          "pending": 50,
+          "wins": 344,
+          "losses": 1835,
+          "mean_net_quote_roi_pct": -1.8629,
+          "mean_stressed_quote_roi_pct": -3.8629,
+          "distinct_pools": 97,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 1368,
+          "archived": 1378,
           "review_ready": false,
           "trades_enabled": false
         }
       },
       "ema_macd_continuation": {
         "5m": {
-          "selected": 88,
-          "priced": 84,
+          "selected": 89,
+          "priced": 86,
           "missing": 2,
-          "pending": 2,
+          "pending": 1,
           "wins": 5,
-          "losses": 79,
-          "mean_net_quote_roi_pct": -2.3618,
-          "mean_stressed_quote_roi_pct": -4.3618,
+          "losses": 81,
+          "mean_net_quote_roi_pct": -2.3598,
+          "mean_stressed_quote_roi_pct": -4.3598,
           "distinct_pools": 46,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 50,
+          "archived": 51,
           "review_ready": false,
           "trades_enabled": false
         },
         "30m": {
-          "selected": 88,
+          "selected": 89,
           "priced": 83,
           "missing": 3,
-          "pending": 2,
+          "pending": 3,
           "wins": 14,
           "losses": 69,
           "mean_net_quote_roi_pct": -2.3776,
@@ -1165,15 +1137,15 @@
           "distinct_pools": 45,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 50,
+          "archived": 51,
           "review_ready": false,
           "trades_enabled": false
         },
         "60m": {
-          "selected": 88,
+          "selected": 89,
           "priced": 81,
           "missing": 3,
-          "pending": 4,
+          "pending": 5,
           "wins": 16,
           "losses": 65,
           "mean_net_quote_roi_pct": -2.4403,
@@ -1181,21 +1153,21 @@
           "distinct_pools": 45,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 50,
+          "archived": 51,
           "review_ready": false,
           "trades_enabled": false
         }
       },
       "observed_high_breakout": {
         "5m": {
-          "selected": 132,
-          "priced": 128,
+          "selected": 133,
+          "priced": 129,
           "missing": 3,
           "pending": 1,
           "wins": 8,
-          "losses": 120,
-          "mean_net_quote_roi_pct": -2.2853,
-          "mean_stressed_quote_roi_pct": -4.2853,
+          "losses": 121,
+          "mean_net_quote_roi_pct": -2.287,
+          "mean_stressed_quote_roi_pct": -4.287,
           "distinct_pools": 65,
           "distinct_days": 4,
           "identity_complete": true,
@@ -1204,10 +1176,10 @@
           "trades_enabled": false
         },
         "30m": {
-          "selected": 132,
+          "selected": 133,
           "priced": 127,
           "missing": 4,
-          "pending": 1,
+          "pending": 2,
           "wins": 20,
           "losses": 107,
           "mean_net_quote_roi_pct": -2.4944,
@@ -1220,10 +1192,10 @@
           "trades_enabled": false
         },
         "60m": {
-          "selected": 132,
+          "selected": 133,
           "priced": 127,
           "missing": 3,
-          "pending": 2,
+          "pending": 3,
           "wins": 19,
           "losses": 108,
           "mean_net_quote_roi_pct": -2.8705,
@@ -1249,7 +1221,7 @@
           "distinct_pools": 61,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 113,
+          "archived": 115,
           "review_ready": false,
           "trades_enabled": false
         },
@@ -1265,23 +1237,23 @@
           "distinct_pools": 60,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 113,
+          "archived": 115,
           "review_ready": false,
           "trades_enabled": false
         },
         "60m": {
           "selected": 168,
-          "priced": 156,
+          "priced": 157,
           "missing": 9,
-          "pending": 3,
-          "wins": 35,
+          "pending": 2,
+          "wins": 36,
           "losses": 121,
-          "mean_net_quote_roi_pct": -0.9441,
-          "mean_stressed_quote_roi_pct": -2.9441,
+          "mean_net_quote_roi_pct": -0.8309,
+          "mean_stressed_quote_roi_pct": -2.8309,
           "distinct_pools": 57,
           "distinct_days": 4,
           "identity_complete": true,
-          "archived": 113,
+          "archived": 115,
           "review_ready": false,
           "trades_enabled": false
         }
@@ -1328,8 +1300,8 @@
   },
   "execution": {
     "scheduler": "google-apps-script",
-    "scheduled_at": "2026-10-21T10:08:46.657Z",
-    "run_id": "39582416188",
+    "scheduled_at": "2026-10-21T10:13:46.293Z",
+    "run_id": "39583037081",
     "trigger_uid": "3977529251376136192"
   },
   "note": "Diagnostic observations only; successful workflow != profitable trading."
