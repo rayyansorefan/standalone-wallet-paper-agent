@@ -6,6 +6,19 @@ import { Script } from 'node:vm';
 const page = fs.readFileSync('docs/index.html', 'utf8');
 const feed = JSON.parse(fs.readFileSync('docs/fx-feed.json', 'utf8'));
 const embedded = page.match(/<script>([\s\S]*?)<\/script>/);
+test('public payload fits monitoring budget and retains authorised conditional setups', () => {
+  const raw = fs.readFileSync('docs/fx-feed.json');
+  assert.ok(raw.length < 950_000, 'public feed must remain below the hourly size ceiling');
+  assert.ok(Array.isArray(feed.research_setups));
+  const allowed = new Set(['schema','snapshot_at','news_at','published_at','status',
+    'news_status','coverage','priorities','pairs','signals','research_setups',
+    'hourly','sources','headlines','calendar','learning']);
+  assert.ok(Object.keys(feed).every(k => allowed.has(k)), 'no unexpected fields');
+  for (const item of feed.research_setups) {
+    assert.equal(item.status, 'CONDITIONAL_RESEARCH_NOT_TRIGGERED');
+    assert.equal(item.approved_entry, false);
+  }
+});
 test('published dashboard JavaScript parses', () => {
   assert.ok(embedded, 'dashboard must include an inline script');
   assert.doesNotThrow(() => new Script(embedded[1], { filename: 'fx-dashboard.js' }));
