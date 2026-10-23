@@ -48,6 +48,16 @@ test('visual long/short cards fail closed and show entry stop TP1 and capped-spr
   assert.match(page, /WAIT FOR VERIFIED M15 CLOSE/);
   assert.match(page, /NO LIVE ENTRY/);
 });
+test('top directional plans are displayed with labelled entry, stop, targets and fail-closed state', () => {
+  assert.match(page, /id="researchCards"/);
+  assert.match(page, /function renderResearchSetups\(\)/);
+  assert.match(page, /Entry zone · OANDA/);
+  assert.match(page, /Take-profit 1/);
+  assert.match(page, /Take-profit 2/);
+  assert.match(page, /CONDITIONAL · NOT TRIGGERED/);
+  assert.match(page, /STALE · DO NOT TRADE/);
+  assert.match(page, /Pepperstone availability/);
+});
 test('crypto trading UI and execution scripts absent', () => {
   assert.doesNotMatch(page, /trading engine at a glance|whale wallet|crypto futures/i);
   const filenames = fs.readdirSync('.github/workflows');
