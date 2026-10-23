@@ -7,6 +7,11 @@ const page = fs.readFileSync('docs/index.html', 'utf8');
 const feed = JSON.parse(fs.readFileSync('docs/fx-feed.json', 'utf8'));
 const embedded = page.match(/<script>([\s\S]*?)<\/script>/);
 test('public payload fits monitoring budget and retains authorised conditional setups', () => {
+  assert.equal(Object.hasOwn(feed.pairs,"GBP_ZAR"), false, "broker-unavailable GBP/ZAR must not appear in public pairs");
+  assert.ok(feed.priorities.every(s=>s.pair!=="GBP_ZAR"),"No GBP/ZAR ranked watchlist item");
+  assert.ok(feed.signals.every(s=>s.instrument!=="GBP_ZAR"),"No GBP/ZAR signal");
+  assert.ok(feed.research_setups.every(s=>s.instrument!=="GBP_ZAR"),"No GBP/ZAR research plan");
+  assert.ok((feed.hourly?.signals||[]).every(s=>(s.pair||s.instrument)!=="GBP_ZAR"),"No hourly GBP/ZAR alert");
   const raw = fs.readFileSync('docs/fx-feed.json');
   assert.ok(raw.length < 950_000, 'public feed must remain below the hourly size ceiling');
   assert.ok(Array.isArray(feed.research_setups));
