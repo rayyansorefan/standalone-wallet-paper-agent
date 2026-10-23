@@ -99,3 +99,15 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
   assert.match(page, /trade-outcomes\.json\?fresh=/);
   assert.match(page, /No strategy weights, win probabilities, or entry approvals are updated/);
 });
+
+test('setup cards disclose direction, executable-zone observation and unverified candle trigger', () => {
+  assert.match(page, /Entry confirmation checklist/);
+  assert.match(page, /Direction:/);
+  assert.match(page, /Entry zone:/);
+  assert.match(page, /Entry confirmation:/);
+  assert.match(page, /quoteRecent=!stale/);
+  assert.match(page, /Date\.now\(\)-quoteAt<=300000/);
+  assert.match(page, /M15 rejection candle/);
+  assert.match(page, /M5 continuation candle/);
+  assert.match(page, /not verified by this research feed/);
+});
