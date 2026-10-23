@@ -26,8 +26,19 @@ jobs:
           python - <<'PY'
           import json
           d=json.load(open('docs/fx-feed.json'))
+          from pathlib import Path
+          size = len(Path('docs/fx-feed.json').read_bytes())
+          assert size < 950_000, f'Public feed exceeds 950 KB: {size} bytes'
+          allowed = {'schema','snapshot_at','news_at','published_at','status',
+                     'news_status','coverage','priorities','pairs','signals',
+                     'research_setups','hourly','sources','headlines','calendar','learning'}
+          assert set(d) <= allowed, f'Unknown public fields: {set(d)-allowed}'
           assert d['schema']==1 and d['snapshot_at'] and d['pairs']
           assert isinstance(d['signals'],list)
+          assert isinstance(d['research_setups'],list)
+          assert all(s.get('approved_entry') is False and
+                     s.get('status') == 'CONDITIONAL_RESEARCH_NOT_TRIGGERED'
+                     for s in d['research_setups'])
           print('Validated FX feed')
           PY
       - uses: actions/configure-pages@v5
