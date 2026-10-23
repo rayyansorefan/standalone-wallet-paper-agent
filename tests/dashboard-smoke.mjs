@@ -48,7 +48,7 @@ assert.equal($("openSnapshotPnl").textContent,"£0.00");
 assert.equal($("accountSnapshotBalance").textContent,"£1117.24");
 assert.equal($("outcomesRows").children.length,3);
 assert.match($("outcomesLearning").textContent,/PENDING/);
-assert.equal($("rows").children.length,Object.keys(feed.pairs).length);
+assert.equal($("rows").children.length,Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length);
 assert.equal($("picks").children.length,Math.min(4,feed.priorities.filter(x=>x.pair!=="GBP_ZAR").length));
 assert.equal($("researchCards").children.length,1,"A conditional setup must have its own level card even with zero approved signals");
 assert.match($("researchCards").children[0].className,/setupcard/);
