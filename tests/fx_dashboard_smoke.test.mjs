@@ -103,14 +103,26 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
   assert.match(page, /No strategy weights, win probabilities, or entry approvals are updated/);
 });
 
-test('setup cards disclose direction, executable-zone observation and unverified candle trigger', () => {
-  assert.match(page, /Entry confirmation checklist/);
-  assert.match(page, /Direction:/);
-  assert.match(page, /Entry zone:/);
-  assert.match(page, /Entry confirmation:/);
-  assert.match(page, /quoteRecent=!stale/);
-  assert.match(page, /Date\.now\(\)-quoteAt<=300000/);
-  assert.match(page, /M15 rejection candle/);
-  assert.match(page, /M5 continuation candle/);
-  assert.match(page, /not verified by this research feed/);
+test('setups report independent trend, observed price distance and completed-candle evidence', () => {
+  assert.match(page, /function setupDiagnostics\(s,p\)/);
+  assert.match(page, /Three independent checks/);
+  assert.match(page, /1\. Direction/);
+  assert.match(page, /2\. Price vs plan/);
+  assert.match(page, /3\. Completed /);
+  assert.match(page, /age<=5&&!stale/);
+  assert.match(page, /Historical only; NOT a current entry check/);
+  assert.match(page, /Historical candle only; NOT a current entry trigger/);
+  assert.match(page, /rejection pattern OBSERVED/);
+  assert.match(page, /continuation pattern OBSERVED/);
+  assert.doesNotMatch(page, /Not verifiable with a recent quote/);
+});
+
+test('user-confirmed GBP ZAR Pepperstone exclusion is applied to every dashboard surface', () => {
+  assert.match(page, /HIDDEN_PAIRS=new Set\(\["GBP_ZAR"\]\)/);
+  assert.match(page, /feed\.research_setups:\[\]\)\.filter\(s=>visiblePair\(s\.instrument\)\)/);
+  assert.match(page, /feed\.priorities\.filter\(r=>visiblePair\(r\.pair\)\)/);
+  assert.match(page, /Object\.keys\(feed\.pairs\)\.filter\(visiblePair\)/);
+  assert.match(page, /keys=Object\.keys\(feed\.pairs\)\.filter\(visiblePair\)/);
+  assert.match(page, /!visiblePair\(pair\)/);
+  assert.match(page, /visiblePair\(s\.instrument\)&&Date\.parse\(s\.expires_at\)/);
 });
