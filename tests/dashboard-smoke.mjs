@@ -55,9 +55,9 @@ assert.equal($("picks").children.length,Math.min(4,feed.priorities.filter(x=>x.p
 assert.equal($("researchCards").children.length,1,"A conditional setup must have its own level card even with zero approved signals");
 assert.match($("researchCards").children[0].className,/setupcard/);
 const diag=JSON.stringify($("researchCards").children[0].children);
-assert.match(diag,/1\\. Direction/);
-assert.match(diag,/2\\. Price vs plan/);
-assert.match(diag,/3\\. Completed M15 candle/);
+assert.match(diag,/1\. Direction/);
+assert.match(diag,/2\. Price vs plan/);
+assert.match(diag,/3\. Completed M15 candle/);
 assert.match(diag,/Historical only|inside zone|outside the planned|pips ABOVE|pips BELOW/i);
 assert.ok(!$("pair").options.some(o=>o.value==="GBP_ZAR"),"Excluded pair must not be chart selectable");
 assert.ok(!$("journalPair").options.some(o=>o.value==="GBP_ZAR"),"Excluded pair must not be in personal journal selector");
