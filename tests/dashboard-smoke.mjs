@@ -5,6 +5,7 @@ import vm from "node:vm";
 
 const html=fs.readFileSync("docs/index.html","utf8");
 const feed=JSON.parse(fs.readFileSync("docs/fx-feed.json","utf8"));
+const evidence=JSON.parse(fs.readFileSync("docs/trade-outcomes.json","utf8"));
 assert.equal(feed.schema,1);
 feed.research_setups=[{instrument:"EUR_JPY",direction:"SHORT",status:"CONDITIONAL_RESEARCH_NOT_TRIGGERED",entry_low:175.86,entry_high:175.94,stop:176.28,tp1:175.25,tp2:175.03,net_rr_estimate:1.47,source_quote_at:feed.snapshot_at,technical_checks_agree:5,timeframes_aligned:["M15","H1","H4","D"],trigger:"Wait for a completed M15 bearish rejection."}];
 const script=html.split("<script>")[1]?.split("</script>")[0];
@@ -35,12 +36,17 @@ class TestDate extends Date{
 const timers=[];
 const localStorage={getItem:key=>saved[key]??null,setItem:(key,val)=>saved[key]=val};
 const ctx={document:doc,Date:TestDate,Intl,Number,String,Math,Object,Array,URL,Promise,
-  localStorage,console,fetch:async()=>({ok:true,json:async()=>feed}),
+  localStorage,console,fetch:async url=>({ok:true,json:async()=>(String(url).includes("trade-outcomes.json")?evidence:feed)}),
   setInterval:(fn)=>timers.push(fn)};
 vm.runInNewContext(script,ctx);
 await new Promise(resolve=>setImmediate(resolve));
 const $=id=>map.get(id);
 assert.equal($("screened").textContent,feed.coverage.screened+" / "+feed.coverage.total);
+assert.equal($("completedCount").textContent,"2 trades");
+assert.equal($("realisedPnl").textContent,"+£74.24");
+assert.equal($("openSnapshotPnl").textContent,"+£55.90");
+assert.equal($("outcomesRows").children.length,3);
+assert.match($("outcomesLearning").textContent,/PENDING/);
 assert.equal($("rows").children.length,Object.keys(feed.pairs).length);
 assert.equal($("picks").children.length,Math.min(4,feed.priorities.length));
 assert.equal($("researchCards").children.length,1,"A conditional setup must have its own level card even with zero approved signals");
