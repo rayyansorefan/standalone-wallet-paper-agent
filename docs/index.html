@@ -100,7 +100,7 @@ function renderOutcomes(){
  });
  el("outcomesRows").replaceChildren(...rows);
  const wins=closed.filter(t=>t.realised_pnl_gbp>0).length;
- el("outcomesSource").textContent="Pepperstone DEMO · "+wins+"/"+closed.length+" completed positions profitable. User-supplied screenshots, not broker API verification. +(open.length?"Floating P&L reflects "+uk(outcomeEvidence.as_of)+" only; do not treat it as banked profit.":"No open positions at the last screenshot ("+uk(outcomeEvidence.as_of)+"). Prior floating P&L is not added to the realised total.")";
+ el("outcomesSource").textContent="Pepperstone DEMO · "+wins+"/"+closed.length+" completed positions profitable. User-supplied screenshots, not broker API verification. "+(open.length?"Floating P&L reflects "+uk(outcomeEvidence.as_of)+" only; do not treat it as banked profit.":"No open positions at the last screenshot ("+uk(outcomeEvidence.as_of)+"). Prior floating P&L is not added to the realised total.");
  el("outcomesLearning").textContent="Evidence strength: EARLY / INCOMPLETE. All "+records.length+" records are described as research-influenced, but original signal-to-fill matches are PENDING. No strategy weights, win probabilities, or entry approvals are updated from this small sample.";
 }
 async function loadOutcomes(){
