@@ -1,16 +1,18 @@
 {
   "schema": 1,
-  "as_of": "2026-10-23T12:55:00Z",
+  "as_of": "2026-10-23T13:34:00Z",
   "account_type": "PEPPERSTONE_DEMO_SPREAD_BET",
-  "evidence": "User-provided Pepperstone demo account screenshots from 23 October 2026; manually transcribed, not confirmed through broker API.",
+  "evidence": "User-provided Pepperstone demo trade-history and flat-account screenshots, 23 October 2026; manually transcribed and reconciled using execution prices, not broker-API verified.",
   "signal_linkage": "Research-influenced per user; no immutable dashboard signal ID has yet been matched to broker fills.",
-  "notes": "These records are historical evidence, not live broker connectivity. The open position P&L is a point-in-time snapshot only. Do not use as backtest labels or automatically adjust model weights.",
+  "notes": "All three demo shorts are closed in the 14:34 BST screenshot. The prior £55.90 USD/JPY floating profit was a historical snapshot and is not additional realised P&L. Original research-to-execution signal IDs remain unmatched; do not adjust strategy weights based on these results.",
   "account_snapshot": {
-    "observed_at": "2026-10-23T12:55:00Z",
-    "equity_gbp": 1130.14,
-    "used_margin_gbp": 523.13,
-    "free_margin_gbp": 607.01,
-    "margin_level_pct": 216.03
+    "observed_at": "2026-10-23T13:34:00Z",
+    "balance_gbp": 1117.24,
+    "equity_gbp": 1117.24,
+    "current_pnl_gbp": 0,
+    "used_margin_gbp": 0,
+    "free_margin_gbp": 1117.24,
+    "open_positions": 0
   },
   "trades": [
     {
@@ -23,7 +25,10 @@
       "size_gbp_per_point": 0.8,
       "signal_id": null,
       "signal_match": "PENDING",
-      "source": "DEMO_HISTORY_SCREENSHOT"
+      "source": "DEMO_HISTORY_SCREENSHOT",
+      "opened_at": "2026-10-23T06:43:00Z",
+      "entry_price": 157.155,
+      "exit_price": 156.654
     },
     {
       "key": "2026-10-23-gbpjpy-closed-1349",
@@ -35,18 +40,29 @@
       "size_gbp_per_point": 0.7,
       "signal_id": null,
       "signal_match": "PENDING",
-      "source": "DEMO_HISTORY_SCREENSHOT"
+      "source": "DEMO_HISTORY_SCREENSHOT",
+      "opened_at": "2026-10-23T11:36:00Z",
+      "entry_price": 209.78,
+      "exit_price": 209.292
     },
     {
       "key": "2026-10-23-usdjpy-open-1355",
       "instrument": "USD_JPY",
       "direction": "SHORT",
-      "status": "OPEN_AT_SNAPSHOT",
-      "observed_at": "2026-10-23T12:55:00Z",
-      "unrealised_pnl_gbp": 55.9,
+      "status": "CLOSED",
+      "opened_at": "2026-10-23T11:22:00Z",
+      "closed_at": "2026-10-23T13:34:00Z",
+      "entry_price": 156.906,
+      "exit_price": 156.476,
+      "realised_pnl_gbp": 43,
+      "size_gbp_per_point": 1,
+      "prior_floating_snapshot": {
+        "observed_at": "2026-10-23T12:55:00Z",
+        "unrealised_pnl_gbp": 55.9
+      },
       "signal_id": null,
       "signal_match": "PENDING",
-      "source": "DEMO_PORTFOLIO_SCREENSHOT"
+      "source": "DEMO_HISTORY_SCREENSHOT"
     }
   ]
 }
