@@ -36,6 +36,7 @@ jobs:
           assert d['schema']==1 and d['snapshot_at'] and d['pairs']
           assert isinstance(d['signals'],list)
           assert isinstance(d['research_setups'],list)
+          assert "GBP_ZAR" not in json.dumps(d), "Excluded GBP/ZAR still present in public feed"
           assert all(s.get('approved_entry') is False and
                      s.get('status') == 'CONDITIONAL_RESEARCH_NOT_TRIGGERED'
                      for s in d['research_setups'])
@@ -65,6 +66,11 @@ jobs:
                   req = urllib.request.Request(url, headers={"Cache-Control": "no-cache"})
                   with urllib.request.urlopen(req, timeout=15) as response:
                       live = json.load(response)
+                  if "GBP_ZAR" in json.dumps(live):
+                      last_error = "Live GitHub Pages feed still contains excluded GBP/ZAR"
+                      print(f"Pages readback {attempt+1}/12: {last_error}", flush=True)
+                      time.sleep(6)
+                      continue
                   if (live.get("snapshot_at") == expected.get("snapshot_at")
                           and live.get("published_at") == expected.get("published_at")):
                       print("Verified public FX feed:", live["snapshot_at"], url)
