@@ -8,6 +8,8 @@ const feed=JSON.parse(fs.readFileSync("docs/fx-feed.json","utf8"));
 const evidence=JSON.parse(fs.readFileSync("docs/trade-outcomes.json","utf8"));
 assert.equal(feed.schema,1);
 feed.research_setups=[{instrument:"EUR_JPY",direction:"SHORT",status:"CONDITIONAL_RESEARCH_NOT_TRIGGERED",entry_low:175.86,entry_high:175.94,stop:176.28,tp1:175.25,tp2:175.03,net_rr_estimate:1.47,source_quote_at:feed.snapshot_at,technical_checks_agree:5,timeframes_aligned:["M15","H1","H4","D"],trigger:"Wait for a completed M15 bearish rejection."}];
+feed.research_setups.push({...feed.research_setups[0],instrument:"GBP_ZAR"}); // Simulate next publisher reintroducing the excluded symbol.
+feed.signals.push({instrument:"GBP_ZAR",direction:"LONG",expires_at:new Date(Date.parse(feed.snapshot_at)+3600000).toISOString()});
 const script=html.split("<script>")[1]?.split("</script>")[0];
 assert.ok(script, "Dashboard JavaScript is present");
 new vm.Script(script);
@@ -65,7 +67,7 @@ assert.ok($("chart").children.length>30,"Completed candlesticks should render");
 assert.equal($("indicators").children.length,10);
 assert.equal($("headlines").children.length,Math.min(10,feed.headlines.length));
 assert.ok($("events").children.length>=1,"Calendar must render actual upcoming releases or an explicit no-events caveat");
-const approvedCount=feed.signals.filter(s=>Date.parse(s.expires_at)>at.now).length;
+const approvedCount=feed.signals.filter(s=>s.instrument!=="GBP_ZAR"&&Date.parse(s.expires_at)>at.now).length;
 assert.equal($("verdict").textContent,approvedCount?"REVIEW":"WAIT");
 assert.equal(String($("approved").textContent),String(approvedCount));
 assert.equal($("entryState").textContent,feed.signals.some(s=>s.instrument===$("pair").value&&Date.parse(s.expires_at)>at.now)?"REVIEW":"WAIT");
