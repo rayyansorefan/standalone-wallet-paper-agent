@@ -35,6 +35,21 @@ if(!setups.length){holder.append(make("div","No directional setup passed the mul
 for(const [i,s] of setups.entries()){const p=feed.pairs[s.instrument],quote=p?.quote||{},isShort=s.direction==="SHORT",card=make("article",undefined,"setupcard"+(isShort?" shortsetup":""));if(stale)card.className+=" setupstale";
 const top=make("div",undefined,"setuptop");top.append(make("span","MODEL #"+(i+1)+" · "+(isShort?"SELL / SHORT":"BUY / LONG"),"pill "+(isShort?"short":"long")),make("span",stale?"STALE · DO NOT TRADE":"CONDITIONAL · NOT TRIGGERED","setupstatus"+(stale?" stale":"")));card.append(top,make("h3",s.instrument.replace("_","/")),make("p","M15 pullback with H1/H4/D1 trend alignment · "+s.technical_checks_agree+" indicator checks","small"));
 const levels=make("div",undefined,"setupgridlines");for(const [label,value] of [["Entry zone · OANDA",money(s.entry_low)+" – "+money(s.entry_high)],["Stop-loss",money(s.stop)],["Take-profit 1",money(s.tp1)],["Take-profit 2",money(s.tp2)],["Est. net reward:risk",n(s.net_rr_estimate,2)+":1"],["OANDA bid / ask",money(quote.bid)+" / "+money(quote.ask)]]){const cell=make("div",undefined,"setupmetric");cell.append(make("small",label),make("strong",value));levels.append(cell)}card.append(levels);
+const decisionCheck=make("div",undefined,"setuprule");
+decisionCheck.append(make("b","Entry confirmation checklist · for your own decision"));
+const directionConfirmed=s.timeframes_aligned?.length>=4&&s.technical_checks_agree>=4;
+const quoteAt=Date.parse(quote.time||s.source_quote_at),quoteRecent=!stale&&Number.isFinite(quoteAt)&&Date.now()-quoteAt>=0&&Date.now()-quoteAt<=300000;
+const executable=Number(isShort?quote.bid:quote.ask),lower=Number(s.entry_low),upper=Number(s.entry_high);
+const zoneKnown=quoteRecent&&Number.isFinite(executable)&&executable>0&&Number.isFinite(lower)&&Number.isFinite(upper)&&lower<=upper;
+const inZone=zoneKnown&&executable>=lower&&executable<=upper;
+const lines=[
+[(directionConfirmed&&!stale?"✅":stale?"⚠️":"❔")+" Direction: "+(directionConfirmed?(isShort?"Bearish — indicators favour selling.":"Bullish — indicators favour buying."):"Model alignment cannot be confirmed.")+(stale?" Source stale.":"")],
+[(inZone?"✅":zoneKnown?"❌":"❔")+" Entry zone: "+(inZone?"Latest OANDA "+(isShort?"bid":"ask")+" is inside the suggested range.":zoneKnown?"Latest OANDA "+(isShort?"bid":"ask")+" is outside the suggested range.":"Not verifiable with a recent quote.")+" Zone "+money(lower)+"–"+money(upper)+"; observed "+money(executable)+" at "+uk(quote.time||s.source_quote_at)+"."],
+["❔ Entry confirmation: "+(s.entry_route==="MOMENTUM_CONTINUATION"?"A NEW completed M5 continuation candle":"A completed M15 rejection candle")+" is not verified by this research feed. Do not treat NOT TRIGGERED as proof it failed."],
+];
+for(const [line] of lines)decisionCheck.append(make("p",line,"small"));
+decisionCheck.append(make("p","OANDA research only, not a verified Pepperstone fill. Check your broker spread, macro-news risk and original stop/targets before making your own decision.","small"));
+card.append(decisionCheck);
 const rule=make("div",undefined,"setuprule");rule.append(make("b",s.trigger||"Wait for technical confirmation."),make("p","Timeframes aligned: "+(s.timeframes_aligned||[]).map(t=>t==="D"?"D1":t).join(" · ")+" · Source "+uk(s.source_quote_at)+".","small"),make("p",stale?"SOURCE STALE: levels are historical. No entry clearance.":"News clearance and Pepperstone availability, price and spread are unverified; check these before any order.","small"));card.append(rule);
 const button=make("button","Inspect chart","setupaction");button.onclick=()=>{if(!p)return;pair=s.instrument;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth"})};card.append(button);holder.append(card)}}
 function renderPlans(){const holder=el("activePlan");holder.replaceChildren();const active=approved();
