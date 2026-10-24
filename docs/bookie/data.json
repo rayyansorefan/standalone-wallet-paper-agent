@@ -1,0 +1,26 @@
+{
+  "schema": 2,
+  "generated_at": null,
+  "last_success": null,
+  "source_status": "NOT_CONFIGURED",
+  "source": "The Odds API v4; no bet365 UK bookmaker coverage",
+  "scanned_events": 0,
+  "source_sports": [],
+  "quota_remaining": null,
+  "candidates": [],
+  "watchlist": [],
+  "history": [],
+  "model": {
+    "settled_forecasts": 0,
+    "brier": null,
+    "missed_watch_decisions": 0,
+    "missed_watch_wins": 0,
+    "missed_watch_shadow_units": 0,
+    "adjustments_by_sport": {},
+    "method": "Calibration only after forward-settled research forecasts; starts with no training claims."
+  },
+  "messages": [
+    "Initial dashboard scaffold. Four-hour collection requires a licensed odds provider API key; bet365 quotes are not supplied by the free reference feed.",
+    "NO BET until fresh bet365 offers are independently verified."
+  ]
+}
