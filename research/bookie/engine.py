@@ -98,6 +98,12 @@ def event_rows(event,historical):
             sources.append({"key":book.get("key",""),"title":book.get("title",""),"timestamp":book.get("last_update"),"prices":prices,
                             "fair":{s:(1/o)/margin for s,o in prices.items()},"margin":margin})
     external=[x for x in sources if x["key"] not in ("bet365","bet365_uk")]
+    # Identical white-label price feeds are not independent market evidence.
+    dedup={}
+    for item in external:
+        fingerprint=tuple(sorted((name,round(value,3)) for name,value in item["prices"].items()))
+        if fingerprint not in dedup: dedup[fingerprint]=item
+    external=list(dedup.values())
     if len(external)<3: return []
     result=[]
     for selection in sorted(set().union(*(x["fair"].keys() for x in external))):
@@ -135,7 +141,11 @@ def event_rows(event,historical):
 def main():
     data=read_data(); historic=data["history"]; key=os.getenv("ODDS_API_KEY","").strip()
     data["generated_at"]=stamp();data["messages"]=[];data["candidates"]=[]
-    if not key:
+    oddspapi=os.getenv("ODDSPAPI_API_KEY","").strip()
+    if oddspapi:
+        from odds_papi import collect
+        collect(data,historic,oddspapi,event_rows,now,stamp)
+    elif not key:
         data.update({"source_status":"NOT_CONFIGURED","watchlist":[],"scanned_events":0,"source_sports":[]})
         data["messages"]=["No licensed odds key configured. No real-time market data or bet365 prices verified. No new betting recommendations."]
     else:
