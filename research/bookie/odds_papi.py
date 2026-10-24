@@ -8,7 +8,7 @@ import os
 import urllib.parse
 import urllib.request
 
-MAX_MONTHLY_CALLS=220  # Stay below advertised 250/month, leave spare headroom.
+MAX_MONTHLY_CALLS=235  # 250 advertised monthly calls; reserve 15 for retries and validation.
 COMPARATORS=os.getenv("ODDSPAPI_BOOKMAKERS","").strip()  # Empty = all; avoids unknown slugs.
 FOCUS={11:0,12:1,15:2,10:3,13:4,14:5,16:6,19:7,17:8}
 def call(data,key,path,params):
@@ -98,7 +98,7 @@ def normalize(board, definitions):
 def score_ledger_for_finished(data,key,history,now,stamp):
     # Exactly one older fixture graded at most once daily; no assumed results.
     day=now().strftime("%Y-%m-%d")
-    if data.get("papi_settlement_day")==day:return
+    if data.get("papi_settlement_day")==day or now().day%2==0:return  # preserve free API allowance
     pending=sorted((h for h in history if h.get("settled") is None and h.get("outcome_id") and
                    (p:=__import__("datetime").datetime.fromisoformat(h["start"].replace("Z","+00:00")))<now()-dt.timedelta(hours=4)),
                    key=lambda h:h["start"])
@@ -115,7 +115,7 @@ def score_ledger_for_finished(data,key,history,now,stamp):
             h["settled"]=1 if status=="WIN" else 0;h["settled_at"]=stamp();done=True
     if done: data["papi_settlement_day"]=day
 def collect(data,history,key,event_rows,now,stamp):
-    data["source"]="OddsPapi v4, bookmaker-labelled prices including bet365 (one board per cycle)"
+    data["source"]="OddsPapi v4, third-party bet365-labelled prices (one event per four-hour cycle; not all sports)"
     data["candidates"]=[];data["watchlist"]=[];data["source_sports"]=[];data["scanned_events"]=0
     issues=[]
     day=now().strftime("%Y-%m-%d")
