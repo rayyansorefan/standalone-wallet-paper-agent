@@ -44,4 +44,31 @@ class BookieEngineTests(unittest.TestCase):
     def test_reference_probabilities_sum_to_one(self):
         rows=module.event_rows(self.fixture(False),[])
         self.assertAlmostEqual(sum(r["reference_probability"] for r in rows),1,places=3)
+class OddsPapiAdapterTests(unittest.TestCase):
+    def test_two_way_moneyline_normalization(self):
+        from pathlib import Path
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"research"/"bookie"))
+        import odds_papi
+        data={"fixtureId":"fixture-1","sportId":11,"sportName":"Basketball","startTime":module.stamp(module.now()+dt.timedelta(hours=6)),
+              "participant1Name":"Wolves","participant2Name":"Magic",
+              "bookmakerOdds":{"bet365":{"bookmakerIsActive":True,"suspended":False,"markets":{"111":{"marketActive":True,
+              "outcomes":{"111":{"players":{"0":{"active":True,"price":2.01,"changedAt":module.stamp()}}},
+                          "112":{"players":{"0":{"active":True,"price":1.8,"changedAt":module.stamp()}}}}}}}}}
+        norm=odds_papi.normalize(data)
+        self.assertEqual(norm["market_id"],"111")
+        self.assertEqual(norm["outcome_ids"]["Wolves"],"111")
+        self.assertEqual(norm["bookmakers"][0]["markets"][0]["outcomes"][0]["price"],2.01)
+    def test_football_market_has_draw(self):
+        from pathlib import Path
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"research"/"bookie"))
+        import odds_papi
+        market, mapping=odds_papi.market_name_map({"sportId":10,"participant1Name":"A","participant2Name":"B"})
+        self.assertEqual((market,mapping["102"],mapping["103"]),("101","Draw","B"))
+    def test_learning_pauses_when_forward_adjustments_worsen(self):
+        hist=[{"first_probability":.65,"first_adjusted_probability":.7,"settled":0,
+               "settled_at":module.stamp(),"sport":"basketball","event_id":str(i)} for i in range(35)]
+        self.assertFalse(module.adjustment_guard(hist))
+
 if __name__=="__main__":unittest.main()
