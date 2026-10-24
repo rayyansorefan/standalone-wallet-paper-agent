@@ -49,6 +49,7 @@ jobs:
       - name: Collect odds and grade forward forecasts
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
           SPORT_KEYS: ${{ vars.BOOKIE_SPORT_KEYS }}
           SPORTS_PER_RUN: '2'
         run: |
