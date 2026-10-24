@@ -79,7 +79,8 @@ test('top directional plans are displayed with labelled entry, stop, targets and
 test('crypto trading UI and execution scripts absent', () => {
   assert.doesNotMatch(page, /trading engine at a glance|whale wallet|crypto futures/i);
   const filenames = fs.readdirSync('.github/workflows');
-  assert.deepEqual(filenames, ['fx-dashboard.yml']);
+  assert.deepEqual(filenames.sort(), ['bookie-research.yml', 'fx-dashboard.yml']);
+  assert.ok(filenames.every(name => !/crypto|trade-execution|paper-agent/i.test(name)));
 });
 
 test('separate Pepperstone demo evidence is accurate, attributed and never counted as an entry approval', () => {
