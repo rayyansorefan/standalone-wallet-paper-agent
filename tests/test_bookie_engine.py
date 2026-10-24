@@ -93,4 +93,52 @@ class OddsPapiAdapterTests(unittest.TestCase):
                "settled_at":module.stamp(),"sport":"basketball","event_id":str(i)} for i in range(35)]
         self.assertFalse(module.adjustment_guard(hist))
 
+
+class QuotaGuardTests(unittest.TestCase):
+    @staticmethod
+    def quota():
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"research"/"bookie"))
+        import quota
+        return quota
+    def test_unverified_quota_blocks_all_billable_calls(self):
+        q=self.quota()
+        with self.assertRaisesRegex(RuntimeError,"quota"):
+            q.billable_call({}, "example-test-key", "odds", {"fixtureId":"fake"})
+    def test_reserve_blocks_call_before_network(self):
+        q=self.quota()
+        data={"papi_usage":{"count":220,"hard_cap":220}}
+        with self.assertRaisesRegex(RuntimeError,"exhausted"):
+            q.billable_call(data, "example-test-key", "odds", {"fixtureId":"fake"})
+    def test_account_preflight_enforces_30_call_reserve(self):
+        import io
+        from unittest.mock import patch
+        q=self.quota()
+        fake={"current_subscription_id":"s1","subscriptions":[{"subscription_id":"s1","is_active":True,
+              "request_limit":250,"request_count":219,"bookmakers":{"bet365":{}}}]}
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self,*args): return False
+            def read(self,*args): return __import__("json").dumps(fake).encode()
+        with patch.object(q.urllib.request, "urlopen", return_value=Response()) as network:
+            data={}
+            q.check_quota(data,"example-test-key")
+            self.assertEqual(data["quota_remaining"],1)
+            with self.assertRaisesRegex(RuntimeError,"exhausted"):
+                data["papi_usage"]["count"]=220
+                q.billable_call(data,"example-test-key","odds",{})
+            self.assertEqual(network.call_count,1) # account check only; no billable request
+    def test_account_preflight_fails_closed_without_bet365(self):
+        from unittest.mock import patch
+        q=self.quota()
+        fake={"current_subscription_id":"s1","subscriptions":[{"subscription_id":"s1","is_active":True,
+              "request_limit":250,"request_count":0,"bookmakers":{"pinnacle":{}}}]}
+        class Response:
+            def __enter__(self):return self
+            def __exit__(self,*args):return False
+            def read(self,*args):return __import__("json").dumps(fake).encode()
+        with patch.object(q.urllib.request,"urlopen",return_value=Response()):
+            with self.assertRaisesRegex(RuntimeError,"bet365"):
+                q.check_quota({},"example-test-key")
+
 if __name__=="__main__":unittest.main()
