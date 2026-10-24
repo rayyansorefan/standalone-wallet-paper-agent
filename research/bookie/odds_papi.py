@@ -84,12 +84,15 @@ def normalize(board, definitions):
 def score_ledger_for_finished(data,key,history,now,stamp):
     # Exactly one older fixture graded at most once daily; no assumed results.
     day=now().strftime("%Y-%m-%d")
-    if data.get("papi_settlement_day")==day or now().day%2==0:return  # preserve free API allowance
+    last=data.get("papi_settlement_attempt_at")
+    if last and now()-dt.datetime.fromisoformat(last.replace("Z","+00:00"))<dt.timedelta(hours=72):
+        return
     pending=sorted((h for h in history if h.get("settled") is None and h.get("outcome_id") and
                    (p:=__import__("datetime").datetime.fromisoformat(h["start"].replace("Z","+00:00")))<now()-dt.timedelta(hours=4)),
                    key=lambda h:h["start"])
     if not pending:return
     sample=pending[0]
+    data["papi_settlement_attempt_at"]=stamp()
     result=call(data,key,"settlements",{"fixtureId":sample["event_id"]})
     markets=result.get("markets") or {}
     done=False
@@ -112,16 +115,18 @@ def collect(data,history,key,event_rows,now,stamp):
         return
     day=now().strftime("%Y-%m-%d")
     cache=data.get("papi_fixtures",[])
-    if data.get("papi_fixtures_day")!=day or not cache:
+    if not cache or not data.get("papi_fixtures_fetched_at") or (
+        now()-dt.datetime.fromisoformat(data["papi_fixtures_fetched_at"].replace("Z","+00:00"))
+        >=dt.timedelta(hours=36)):
         try:
-            fixtures=call(data,key,"fixtures",{"from":stamp(now()),"to":stamp(now()+dt.timedelta(hours=36)),
+            fixtures=call(data,key,"fixtures",{"from":stamp(now()),"to":stamp(now()+dt.timedelta(hours=47)),
                 "statusId":0,"hasOdds":"true","bookmakers":"bet365"})
             if not isinstance(fixtures,list):raise ValueError("Unexpected fixture response type")
             fixtures=[x for x in fixtures if x.get("fixtureId") and x.get("hasOdds")]
             # Store only small, public schedule metadata; no provider raw odds.
             cache=[{k:x.get(k) for k in ("fixtureId","sportId","sportName","startTime","participant1Name","participant2Name","tournamentName")}
                    for x in fixtures[:1200]]
-            data["papi_fixtures"]=cache;data["papi_fixtures_day"]=day
+            data["papi_fixtures"]=cache;data["papi_fixtures_fetched_at"]=stamp()
         except Exception as exc:issues.append("Fixture discovery failed: "+type(exc).__name__)
     month=now().strftime("%Y-%m")
     if data.get("papi_markets_month")!=month or not data.get("papi_markets"):
