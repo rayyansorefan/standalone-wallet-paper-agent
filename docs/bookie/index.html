@@ -28,6 +28,7 @@
 <div class="stack">
 <div class="mini"><div class="eyebrow">Calibration policy</div><strong>Prior 80 · Minimum 40 settled forecasts per bucket</strong><p>Sports and probability bands are calibrated separately; adjustments capped at ±4 percentage points.</p></div>
 <div class="mini"><div class="eyebrow">Missed-opportunity audit</div><strong id="missed">0 evaluated</strong><p id="missed-desc">Watchlist forecasts are scored even when rejected. A winning pass is not automatically a mistake.</p></div>
+<div class="mini"><div class="eyebrow">Forward-tested learning impact</div><strong id="learning-score">Insufficient forward outcomes</strong><p>Adjusted versus unadjusted Brier score on forecasts frozen before each match. Underperforming changes are paused.</p></div>
 <div class="mini"><div class="eyebrow">Current learned adjustments</div><div id="calibration" class="bars"><span class="muted">Not enough outcomes yet.</span></div></div>
 <div class="mini"><div class="eyebrow">Decision threshold</div><strong>Conservative win chance >52% · EV >2%</strong><p>At least three independent bookmaker price sources. Fresh bet365 quote within 30 minutes. Lower-bound probability includes uncertainty.</p></div>
 </div></section>
@@ -58,6 +59,7 @@ const status=c.status==="BET_CANDIDATE"?"good":"warn";return '<div class="signal
 }
 function render(d){
 current=d;health(d);$("settled").textContent=d.model?.settled_forecasts??0;$("brier").textContent=d.model?.brier==null?"—":Number(d.model.brier).toFixed(3);
+$("learning-score").textContent=d.model?.verified_brier_improvement==null?"Not enough settled forecasts":("Brier improvement "+Number(d.model.verified_brier_improvement).toFixed(4)+" · "+(d.model.adaptation_status||"UNCALIBRATED"));
 $("missed").textContent=(d.model?.missed_watch_decisions||0)+" resolved WATCH decisions";$("missed-desc").textContent="Hypothetical P/L of original WATCH selections (not real bets): "+(d.model?.missed_watch_shadow_units??0)+" units. Includes wins and losses; assessed only at original recorded odds.";
 const adjust=d.model?.adjustments_by_sport||{};let bars=[];
 for(const [sport,buckets] of Object.entries(adjust))for(const [name,x] of Object.entries(buckets)){if(x.n<40)continue;bars.push('<div class="bar-row"><span>'+safe(sport.replace(/_/g," "))+' '+safe(name)+'</span><div class="track"><div style="width:'+Math.round(Math.abs(x.bias)/.04*100)+'%;background:'+(x.bias<0?'var(--red)':'var(--mint)')+'"></div></div><span>'+((x.bias||0)*100).toFixed(1)+'pp</span></div>')}
