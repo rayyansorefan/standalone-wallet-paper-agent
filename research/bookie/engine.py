@@ -39,12 +39,23 @@ def scores_url(sport,key):
     return ("https://api.the-odds-api.com/v4/sports/"+urllib.parse.quote(sport,safe="")+"/scores/?"+
             urllib.parse.urlencode({"apiKey":key,"daysFrom":3,"dateFormat":"iso"}))
 def classify_prob(p): return "low" if p<.35 else ("high" if p>.65 else "middle")
+def adjustment_guard(history):
+    # Prequential evaluation only: each previously recorded adjusted probability
+    # is compared against its frozen original, on outcomes observed after prediction.
+    rows=[h for h in history if h.get("settled") in (0,1) and
+          h.get("first_adjusted_probability") is not None and
+          abs(h["first_adjusted_probability"]-h["first_probability"])>.0001]
+    recent=sorted(rows,key=lambda h:h.get("settled_at",""))[-80:]
+    if len(recent)<30: return True
+    initial=statistics.mean((h["settled"]-h["first_probability"])**2 for h in recent)
+    adjusted=statistics.mean((h["settled"]-h["first_adjusted_probability"])**2 for h in recent)
+    return adjusted<=initial+.005
 def calibration(history,sport,bucket):
     rows=[h for h in history if h.get("settled") in (0,1) and h.get("sport")==sport and classify_prob(h.get("first_probability",.5))==bucket]
     # Calibration is learned only from predictions frozen before kickoff; prior shrinks tiny samples.
     n=len(rows)
     residual=sum(h["settled"]-h["first_probability"] for h in rows)
-    bias=bound(residual/(n+80),-.04,.04) if n>=40 else 0
+    bias=bound(residual/(n+80),-.04,.04) if n>=40 and adjustment_guard(history) else 0
     brier=statistics.mean((h["first_probability"]-h["settled"])**2 for h in rows) if n else None
     return {"n":n,"bias":round(bias,5),"brier":round(brier,5) if brier is not None else None}
 def settlement(scores):
@@ -69,6 +80,7 @@ def score_previous(history,results):
 def summarize_model(history):
     settled=[h for h in history if h.get("settled") in (0,1)]
     brier=statistics.mean((h["first_probability"]-h["settled"])**2 for h in settled) if settled else None
+    adjusted=statistics.mean((h.get("first_adjusted_probability",h["first_probability"])-h["settled"])**2 for h in settled) if settled else None
     missed=[h for h in settled if h.get("first_decision")=="WATCH" and h.get("first_book_odds")]
     missing_wins=sum(h["settled"] for h in missed)
     # Hindsight record, not an instruction to bet; includes losing missed selections.
@@ -77,6 +89,9 @@ def summarize_model(history):
     for sport in sorted({h.get("sport") for h in history if h.get("sport")}):
         buckets[sport]={b:calibration(settled,sport,b) for b in ("low","middle","high")}
     return {"settled_forecasts":len(settled),"brier":round(brier,4) if brier is not None else None,
+            "adjusted_brier":round(adjusted,4) if adjusted is not None else None,
+            "verified_brier_improvement":round(brier-adjusted,4) if brier is not None and adjusted is not None else None,
+            "adaptation_status":"ACTIVE" if adjustment_guard(history) else "PAUSED_UNDERPERFORMANCE",
             "missed_watch_decisions":len(missed),"missed_watch_wins":missing_wins,
             "missed_watch_shadow_units":round(shadow_profit,2),
             "adjustments_by_sport":buckets,
@@ -127,7 +142,8 @@ def event_rows(event,historical):
         if old is None:
             old={"id":ident,"event_id":event_id,"sport":sport,"event":event.get("home_team","")+" vs "+event.get("away_team",""),
                  "start":event.get("commence_time"),"selection":selection,"first_seen":stamp(),
-                 "first_probability":round(centre,5),"first_book_odds":offered,
+                 "first_probability":round(centre,5),"first_adjusted_probability":round(adj,5),
+                 "first_conservative_probability":round(low,5),"first_min_odds":threshold,"first_book_odds":offered,
                  "first_decision":"BET_CANDIDATE" if allowed else "WATCH","settled":None}
             historical.append(old)
         result.append({"id":ident,"sport":sport,"event":old["event"],"start":event["commence_time"],
