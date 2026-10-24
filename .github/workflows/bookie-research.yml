@@ -1,0 +1,108 @@
+name: Bookie Intelligence - four-hour research
+on:
+  schedule:
+    - cron: '17 */4 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'research/bookie/**'
+      - 'docs/bookie/**'
+      - 'tests/test_bookie_engine.py'
+      - '.github/workflows/bookie-research.yml'
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: bookie-intelligence-collector
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run research unit tests
+        run: python -m unittest discover -s tests -p 'test_bookie_engine.py' -v
+      - name: Validate dashboard JavaScript
+        run: |
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Script(HTMLParser):
+              def __init__(self): super().__init__(); self.inside=False; self.code=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag=='script': self.inside=True
+              def handle_endtag(self,tag):
+                  if tag=='script': self.inside=False
+              def handle_data(self,data):
+                  if self.inside: self.code.append(data)
+          s=Script();s.feed(Path('docs/bookie/index.html').read_text())
+          Path('/tmp/bookie-dashboard.js').write_text(''.join(s.code))
+          PY
+          node --check /tmp/bookie-dashboard.js
+      - name: Collect odds and grade forward forecasts
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          SPORT_KEYS: ${{ vars.BOOKIE_SPORT_KEYS }}
+          SPORTS_PER_RUN: '2'
+        run: |
+          if [ -z "$SPORT_KEYS" ]; then export SPORT_KEYS='basketball_nba,americanfootball_nfl,baseball_mlb'; fi
+          python research/bookie/engine.py
+      - name: Validate published snapshot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('docs/bookie/data.json');d=json.loads(p.read_text())
+          assert d['schema']==2 and d['generated_at'] and p.stat().st_size<2000000
+          assert len(d['candidates'])<=3
+          assert all(x['status']=='BET_CANDIDATE' and x['book_odds'] is not None
+                     and x['conservative_ev']>.02 and x['lower_probability']>.52
+                     and x['source_count']>=3 and x['book_odds']>=x['min_odds']
+                     and x['book_timestamp'] for x in d['candidates'])
+          if d['source_status']!='OK': assert not d['candidates']
+          print('Research decision invariants PASS')
+          PY
+      - name: Commit public research feed
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/bookie/data.json
+          if git diff --cached --quiet; then
+            echo 'No feed changes.'
+          else
+            git commit -m 'data(bookie): four-hour odds snapshot and forward learning'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Dispatch verified Pages publisher
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run fx-dashboard.yml --ref main
+      - name: Verify live Pages feed readback
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json,os,sys,time,urllib.request
+          expected=json.load(open('docs/bookie/data.json'))['generated_at']
+          url='https://rayyansorefan.github.io/standalone-wallet-paper-agent/bookie/data.json?verify='+os.environ['GITHUB_RUN_ID']
+          last=''
+          for i in range(24):
+              try:
+                  req=urllib.request.Request(url,headers={'Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(req,timeout=15) as res: live=json.load(res)
+                  if live.get('generated_at')==expected and live.get('schema')==2:
+                      print('PASS: Published sports feed matches this run',expected); sys.exit(0)
+                  last='Stale public sports feed'
+              except Exception as exc: last=type(exc).__name__+': '+str(exc)[:100]
+              print('Pages readback',i+1,'of 24',last,flush=True);time.sleep(8)
+          sys.exit('FAIL: sports dashboard publication unverified: '+last)
+          PY
