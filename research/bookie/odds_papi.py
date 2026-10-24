@@ -9,7 +9,7 @@ import urllib.parse
 import urllib.request
 
 MAX_MONTHLY_CALLS=220  # Stay below advertised 250/month, leave spare headroom.
-COMPARATORS="bet365,pinnacle,betfair-ex,betfair-sb,unibet,paddypower,betfred"
+COMPARATORS=os.getenv("ODDSPAPI_BOOKMAKERS","").strip()  # Empty = all; avoids unknown slugs.
 FOCUS={11:0,12:1,15:2,10:3,13:4,14:5,16:6,19:7,17:8}
 def call(data,key,path,params):
     month=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m")
@@ -101,6 +101,8 @@ def collect(data,history,key,event_rows,now,stamp):
             data["papi_fixtures"]=cache;data["papi_fixtures_day"]=day
         except Exception as exc:issues.append("Fixture discovery failed: "+type(exc).__name__)
     recent=data.setdefault("papi_last_polled",{})
+    recent={k:v for k,v in recent.items() if v and (now()-dt.datetime.fromisoformat(v.replace("Z","+00:00")))<dt.timedelta(days=3)}
+    data["papi_last_polled"]=recent
     eligible=[]
     for f in cache:
         try: start=dt.datetime.fromisoformat(f["startTime"].replace("Z","+00:00"))
@@ -111,13 +113,15 @@ def collect(data,history,key,event_rows,now,stamp):
         last=recent.get(f["fixtureId"])
         stale=not last or (now()-dt.datetime.fromisoformat(last.replace("Z","+00:00"))).total_seconds()/3600>12
         if not stale:continue
-        eligible.append((FOCUS.get(sportid,20),abs(distance-7),start,f))
-    eligible.sort(key=lambda r:r[:3])
+        recent_count=sum(1 for other in cache if other.get("sportId")==sportid and other.get("fixtureId") in recent)
+        eligible.append((recent_count,FOCUS.get(sportid,20),abs(distance-7),start,f))
+    eligible.sort(key=lambda r:r[:4])
     if eligible:
-        f=eligible[0][3]
+        f=eligible[0][4]
         try:
-            board=call(data,key,"odds",{"fixtureId":f["fixtureId"],"bookmakers":COMPARATORS,
-                                       "oddsFormat":"decimal","language":"en"})
+            opts={"fixtureId":f["fixtureId"],"oddsFormat":"decimal","language":"en"}
+            if COMPARATORS: opts["bookmakers"]=COMPARATORS
+            board=call(data,key,"odds",opts)
             normalized=normalize(board)
             recent[f["fixtureId"]]=stamp()
             if normalized:
@@ -142,6 +146,6 @@ def collect(data,history,key,event_rows,now,stamp):
     if data["source_status"]=="OK":data["last_success"]=stamp()
     if data["source_status"]!="OK":
         data["candidates"]=[] # Fail closed on any incomplete source state.
-    data["quota_remaining"]=max(0,250-data.get("papi_usage",{}).get("count",0))
+    data["quota_remaining"]=max(0,MAX_MONTHLY_CALLS-data.get("papi_usage",{}).get("count",0))
     data["messages"]=issues or ["Bet365-labelled odds are provider observations, not authenticated offers in your account."]
     if not data["candidates"]:data["messages"].append("NO APPROVED BET — model and price gates did not both pass.")
