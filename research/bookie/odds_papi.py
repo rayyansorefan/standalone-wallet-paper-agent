@@ -26,26 +26,56 @@ def call(data,key,path,params):
     if isinstance(value,dict) and value.get("error"):
         raise RuntimeError("Provider returned an API error")
     return value
-def market_name_map(fixture):
-    n=int(fixture.get("sportId",0))
-    if n<1:return None
-    market=n*10+1
-    a=fixture.get("participant1Name") or "Participant 1"
-    b=fixture.get("participant2Name") or "Participant 2"
-    # Soccer full-time winner is explicitly three-way. Other major
-    # sports' Winner market is two-way, including NHL overtime.
-    names=[a,"Draw",b] if n==10 else [a,b]
-    ids=[str(market+i) for i in range(len(names))]
-    return str(market),dict(zip(ids,names))
-def normalize(board):
-    mapping=market_name_map(board)
-    if not mapping: return None
+def eligible_market(m, sport_id):
+    """Only unambiguous FULL MATCH 1X2 or 2-way winner markets, never props/spreads."""
+    try:
+        if int(m.get("sportId",-1)) != int(sport_id): return False
+        if int(m.get("marketLength",0)) != len(m.get("outcomes") or []): return False
+        count=int(m["marketLength"])
+    except (TypeError,ValueError,KeyError):return False
+    if m.get("playerProp") or m.get("handicap") not in (None,0,0.0): return False
+    name=str(m.get("marketName","")).strip().lower()
+    period=str(m.get("period") or "").lower()
+    if period and period not in ("fulltime","match","full_time","overall","game"):return False
+    kind=str(m.get("marketType","")).lower()
+    if int(sport_id)==10:
+        return count==3 and (name in ("full time result","match result","1x2","fulltime result")
+                             or (kind=="1x2" and period in ("","fulltime","match")))
+    return count==2 and (name in ("winner","match winner","game winner","moneyline","money line",
+                                  "match winner including overtime","winner including overtime",
+                                  "to win","match betting","match result (including overtime)")
+                         or (kind in ("moneyline","winner","h2h") and period in ("","fulltime","match","game")))
+def market_name_map(fixture, definitions):
+    """Choose an explicitly documented match market from OddsPapi GET /markets."""
+    sport=fixture.get("sportId")
+    if not sport or not isinstance(definitions,list):return None
+    active=(fixture.get("bookmakerOdds") or {}).get("bet365") or {}
+    offered=active.get("markets") or {}
+    choices=[m for m in definitions if eligible_market(m,sport) and str(m.get("marketId")) in offered]
+    if not choices:return None
+    choices.sort(key=lambda m:(str(m.get("marketName","")).lower() not in ("full time result","moneyline","money line","match winner"),int(m["marketId"])))
+    market=choices[0]
+    raw=market["outcomes"]
+    if int(sport)==10:
+        if [str(x.get("outcomeName","")).upper() for x in raw]!=["1","X","2"]:return None
+        names=[fixture.get("participant1Name"),"Draw",fixture.get("participant2Name")]
+    else:
+        labels=[str(x.get("outcomeName","")).strip().lower() for x in raw]
+        if labels not in (["1","2"],["home","away"],["player 1","player 2"],["team 1","team 2"],
+                          [str(fixture.get("participant1Name","")).lower(),str(fixture.get("participant2Name","")).lower()]):
+            return None
+        names=[fixture.get("participant1Name"),fixture.get("participant2Name")]
+    if not names[0] or not names[-1] or len(set(names))!=len(names):return None
+    return str(market["marketId"]), {str(o["outcomeId"]):name for o,name in zip(raw,names)}
+def normalize(board, definitions):
+    mapping=market_name_map(board,definitions)
+    if not mapping:return None
     mid,name_for_id=mapping
     books=[]
     for slug,b in (board.get("bookmakerOdds") or {}).items():
-        if b.get("bookmakerIsActive") is False or b.get("suspended"): continue
+        if b.get("bookmakerIsActive") is False or b.get("suspended"):continue
         market=(b.get("markets") or {}).get(mid)
-        if not market or market.get("marketActive") is False: continue
+        if not market or market.get("marketActive") is False:continue
         offered=[];changed=[]
         for oid,name in name_for_id.items():
             outcome=(market.get("outcomes") or {}).get(oid)
@@ -60,6 +90,7 @@ def normalize(board):
         if len(offered)!=len(name_for_id):continue
         books.append({"key":slug,"title":slug,"last_update":min(changed) if changed else None,
                       "markets":[{"key":"h2h","outcomes":offered}]})
+    if not any(x["key"]=="bet365" for x in books):return None
     return {"id":board.get("fixtureId"),"sport_key":(board.get("sportName") or str(board.get("sportId"))).lower().replace(" ","_"),
             "commence_time":board.get("startTime"),"home_team":board.get("participant1Name",""),
             "away_team":board.get("participant2Name",""),"market_id":mid,"outcome_ids":{v:k for k,v in name_for_id.items()},
@@ -100,6 +131,16 @@ def collect(data,history,key,event_rows,now,stamp):
                    for x in fixtures[:1200]]
             data["papi_fixtures"]=cache;data["papi_fixtures_day"]=day
         except Exception as exc:issues.append("Fixture discovery failed: "+type(exc).__name__)
+    month=now().strftime("%Y-%m")
+    if data.get("papi_markets_month")!=month or not data.get("papi_markets"):
+        try:
+            all_markets=call(data,key,"markets",{"language":"en"})
+            if not isinstance(all_markets,list):raise ValueError("Unexpected market catalogue")
+            # Retain only full-match winner metadata; no arbitrary market-ID guesses.
+            kept=[m for m in all_markets if eligible_market(m,m.get("sportId",0))]
+            data["papi_markets"]=kept
+            data["papi_markets_month"]=month
+        except Exception as exc:issues.append("Market catalogue unavailable: "+type(exc).__name__)
     recent=data.setdefault("papi_last_polled",{})
     recent={k:v for k,v in recent.items() if v and (now()-dt.datetime.fromisoformat(v.replace("Z","+00:00")))<dt.timedelta(days=3)}
     data["papi_last_polled"]=recent
@@ -122,7 +163,7 @@ def collect(data,history,key,event_rows,now,stamp):
             opts={"fixtureId":f["fixtureId"],"oddsFormat":"decimal","language":"en"}
             if COMPARATORS: opts["bookmakers"]=COMPARATORS
             board=call(data,key,"odds",opts)
-            normalized=normalize(board)
+            normalized=normalize(board,data.get('papi_markets',[]))
             recent[f["fixtureId"]]=stamp()
             if normalized:
                 rows=event_rows(normalized,history)
