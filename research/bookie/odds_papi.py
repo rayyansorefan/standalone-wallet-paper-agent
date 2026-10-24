@@ -8,24 +8,10 @@ import os
 import urllib.parse
 import urllib.request
 
-MAX_MONTHLY_CALLS=235  # 250 advertised monthly calls; reserve 15 for retries and validation.
+MAX_MONTHLY_CALLS=220  # See quota.py; 30-call reserve.
 COMPARATORS=os.getenv("ODDSPAPI_BOOKMAKERS","").strip()  # Empty = all; avoids unknown slugs.
 FOCUS={11:0,12:1,15:2,10:3,13:4,14:5,16:6,19:7,17:8}
-def call(data,key,path,params):
-    month=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m")
-    usage=data.setdefault("papi_usage",{"month":month,"count":0})
-    if usage["month"]!=month:usage.update(month=month,count=0)
-    if usage["count"]>=MAX_MONTHLY_CALLS:
-        raise RuntimeError("Monthly research quota budget exhausted: no extra data calls")
-    usage["count"]+=1 # Count failures as potentially billed requests.
-    query=urllib.parse.urlencode({**params,"apiKey":key})
-    req=urllib.request.Request("https://api.oddspapi.io/v4/"+path+"?"+query,
-                               headers={"Accept":"application/json","User-Agent":"BookieResearch/1.0"})
-    with urllib.request.urlopen(req,timeout=25) as response:
-        value=json.load(response)
-    if isinstance(value,dict) and value.get("error"):
-        raise RuntimeError("Provider returned an API error")
-    return value
+from quota import billable_call as call, check_quota
 def eligible_market(m, sport_id):
     """Only unambiguous FULL MATCH 1X2 or 2-way winner markets, never props/spreads."""
     try:
@@ -118,6 +104,12 @@ def collect(data,history,key,event_rows,now,stamp):
     data["source"]="OddsPapi v4, third-party bet365-labelled prices (one event per four-hour cycle; not all sports)"
     data["candidates"]=[];data["watchlist"]=[];data["source_sports"]=[];data["scanned_events"]=0
     issues=[]
+    try:
+        check_quota(data,key)
+    except Exception as exc:
+        data["source_status"]="NOT_CONFIGURED"
+        data["messages"]=["Quota/entitlement preflight failed: "+type(exc).__name__+". No billable provider request made."]
+        return
     day=now().strftime("%Y-%m-%d")
     cache=data.get("papi_fixtures",[])
     if data.get("papi_fixtures_day")!=day or not cache:
@@ -187,6 +179,6 @@ def collect(data,history,key,event_rows,now,stamp):
     if data["source_status"]=="OK":data["last_success"]=stamp()
     if data["source_status"]!="OK":
         data["candidates"]=[] # Fail closed on any incomplete source state.
-    data["quota_remaining"]=max(0,MAX_MONTHLY_CALLS-data.get("papi_usage",{}).get("count",0))
+    data["quota_remaining"]=max(0,data.get("papi_usage",{}).get("hard_cap",0)-data.get("papi_usage",{}).get("count",0))
     data["messages"]=issues or ["Bet365-labelled odds are provider observations, not authenticated offers in your account."]
     if not data["candidates"]:data["messages"].append("NO APPROVED BET — model and price gates did not both pass.")
