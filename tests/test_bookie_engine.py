@@ -45,27 +45,49 @@ class BookieEngineTests(unittest.TestCase):
         rows=module.event_rows(self.fixture(False),[])
         self.assertAlmostEqual(sum(r["reference_probability"] for r in rows),1,places=3)
 class OddsPapiAdapterTests(unittest.TestCase):
-    def test_two_way_moneyline_normalization(self):
-        from pathlib import Path
+    @staticmethod
+    def adapter():
         import sys
         sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"research"/"bookie"))
         import odds_papi
-        data={"fixtureId":"fixture-1","sportId":11,"sportName":"Basketball","startTime":module.stamp(module.now()+dt.timedelta(hours=6)),
-              "participant1Name":"Wolves","participant2Name":"Magic",
-              "bookmakerOdds":{"bet365":{"bookmakerIsActive":True,"suspended":False,"markets":{"111":{"marketActive":True,
-              "outcomes":{"111":{"players":{"0":{"active":True,"price":2.01,"changedAt":module.stamp()}}},
-                          "112":{"players":{"0":{"active":True,"price":1.8,"changedAt":module.stamp()}}}}}}}}}
-        norm=odds_papi.normalize(data)
-        self.assertEqual(norm["market_id"],"111")
-        self.assertEqual(norm["outcome_ids"]["Wolves"],"111")
+        return odds_papi
+    @staticmethod
+    def board(sport=11,market="888"):
+        return {"fixtureId":"fixture-1","sportId":sport,"sportName":"Basketball" if sport==11 else "Soccer",
+                "startTime":module.stamp(module.now()+dt.timedelta(hours=6)),
+                "participant1Name":"Wolves","participant2Name":"Magic",
+                "bookmakerOdds":{"bet365":{"bookmakerIsActive":True,"suspended":False,"markets":{market:{
+                    "marketActive":True,"outcomes":{
+                        market:{"players":{"0":{"active":True,"price":2.01,"changedAt":module.stamp()}}},
+                        str(int(market)+1):{"players":{"0":{"active":True,"price":1.8,"changedAt":module.stamp()}}}
+                    }}}}}}
+    def test_dynamic_two_way_moneyline(self):
+        api=self.adapter()
+        markets=[{"sportId":11,"marketId":888,"marketLength":2,"marketName":"Moneyline","period":"fulltime","marketType":"moneyline",
+                  "playerProp":False,"handicap":0,"outcomes":[{"outcomeId":888,"outcomeName":"1"},{"outcomeId":889,"outcomeName":"2"}]}]
+        norm=api.normalize(self.board(),markets)
+        self.assertEqual(norm["market_id"],"888")
+        self.assertEqual(norm["outcome_ids"]["Wolves"],"888")
         self.assertEqual(norm["bookmakers"][0]["markets"][0]["outcomes"][0]["price"],2.01)
-    def test_football_market_has_draw(self):
-        from pathlib import Path
-        import sys
-        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"research"/"bookie"))
-        import odds_papi
-        market, mapping=odds_papi.market_name_map({"sportId":10,"participant1Name":"A","participant2Name":"B"})
-        self.assertEqual((market,mapping["102"],mapping["103"]),("101","Draw","B"))
+        self.assertIsNone(api.normalize(self.board(),[]))
+    def test_no_sport_arithmetic_or_spread_confusion(self):
+        api=self.adapter()
+        markets=[{"sportId":11,"marketId":888,"marketLength":2,"marketName":"Moneyline","period":"fulltime",
+                  "playerProp":False,"handicap":12.5,"outcomes":[{"outcomeId":888,"outcomeName":"1"},{"outcomeId":889,"outcomeName":"2"}]}]
+        self.assertIsNone(api.normalize(self.board(),markets))
+    def test_football_requires_full_time_three_way(self):
+        api=self.adapter()
+        market={"sportId":10,"marketId":101,"marketLength":3,"marketName":"Full Time Result","marketType":"1x2",
+                "period":"fulltime","handicap":0,"outcomes":[{"outcomeId":101,"outcomeName":"1"},
+                {"outcomeId":102,"outcomeName":"X"},{"outcomeId":103,"outcomeName":"2"}]}
+        board=self.board(sport=10,market="101")
+        board["bookmakerOdds"]["bet365"]["markets"]["101"]["outcomes"]["103"]={"players":{"0":{"active":True,"price":4.3,"changedAt":module.stamp()}}}
+        mapping=api.market_name_map(board,[market])
+        self.assertEqual(mapping[0],"101")
+        self.assertEqual(mapping[1]["102"],"Draw")
+        self.assertEqual(mapping[1]["103"],"Magic")
+        market["period"]="firsthalf"
+        self.assertIsNone(api.market_name_map(board,[market]))
     def test_learning_pauses_when_forward_adjustments_worsen(self):
         hist=[{"first_probability":.65,"first_adjusted_probability":.7,"settled":0,
                "settled_at":module.stamp(),"sport":"basketball","event_id":str(i)} for i in range(35)]
