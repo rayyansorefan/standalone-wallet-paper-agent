@@ -92,6 +92,8 @@ for(const fn of timers)fn();
 assert.equal($("verdict").textContent,"NO DATA");
 assert.equal($("entryState").textContent,"NO ENTRY");
 assert.match($("health").textContent,/STALE DATA/);
+assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.length,
+  "All recorded shortlist quotes must become stale without a new published feed");
 assert.match($("researchCards").children[0].className,/setupstale/,"Stale model levels are visibly disabled");
 assert.match($("alert").children[0].textContent,/NO LIVE ENTRY/);
 console.log("FX dashboard passed: full-universe chart selector, 10 indicators, shortlist, scanner, news, local journal, stale fail-closed.");
