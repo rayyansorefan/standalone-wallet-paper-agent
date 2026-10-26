@@ -77,8 +77,23 @@ assert.match(visualCard.className,/current-watch-card/);
 assert.ok(visualCard.children.some(c=>c.tagName==="svg"&&c.attributes?.class==="current-watch-chart"),
   "Each hourly card must include an SVG chart");
 const completedM15=visualCard.children.find(c=>c.tagName==="svg"&&c.attributes?.class==="current-watch-chart");
-assert.ok(completedM15.children.filter(c=>c.tagName==="rect").length>=6,
-  "New watches must display actual completed M15 candlesticks, not a single flat zero-return line");
+assert.ok(completedM15.children.some(c=>c.tagName==="path")||
+  completedM15.children.filter(c=>c.tagName==="rect").length>=6,
+  "Watched-price history must render as a movement line, or historical candles if fewer than 2 observations exist");
+assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-start")&&
+  c.children.some(n=>String(n.textContent).startsWith("WATCH STARTED "))),
+  "Every hourly visual card must show original watch start time and elapsed age");
+const cad=$("hourlyCohortCards").children.find(c=>
+  c.children.some(n=>n.tagName==="div"&&n.children.some(z=>z.textContent==="CAD/CHF")));
+if(cad){
+  const origin=feed.learning.paper_audit.candidates.find(x=>x.id==="PRIORITY-20261026-CAD_CHF-LONG");
+  assert.ok(cad.children.some(c=>String(c.className).includes("current-watch-start")&&
+    c.children.some(n=>String(n.textContent).includes("17:39"))),
+    "Repeated CAD/CHF snapshots must retain first directional watch timestamp");
+  const move=cad.children.find(c=>String(c.className).includes("current-watch-move"));
+  assert.ok(move&&Math.abs(Number.parseFloat(move.textContent))>0.001,
+    "CAD/CHF later snapshot must not reset the original nonzero observed movement to 0%");
+}
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
 assert.equal($("indicators").children.length,10);
