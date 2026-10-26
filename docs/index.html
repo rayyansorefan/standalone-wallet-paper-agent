@@ -424,7 +424,7 @@ function renderHourlyCohorts(){
     const move=make("div",valid?(pct>=0?"+":"")+pct.toFixed(3)+"%":"—",
       "current-watch-move"+(valid&&(pct!==0)?pct>0?" positive":" negative":""));
     card.append(move,make("div",!valid?"Not enough price evidence":history.length<2?
-      "New observation · first follow-up quote pending":!enough?
+      "New observation · M15 candle context below · next percentage check pending":!enough?
       "No price movement recorded yet":
       "Underlying directional move since first observation · not trading profit",
       "current-watch-context"));
@@ -435,12 +435,33 @@ function renderHourlyCohorts(){
     graph.setAttribute("role","img");
     graph.setAttribute("aria-label",enough?"Historical directional movement chart in percent":"New observation: price change history not yet available");
     const vals=history.map(x=>x.m);
-    if(vals.length>=2){
+    const candles=(feed.pairs?.[t.instrument]?.frames?.M15?.candles||[])
+      .filter(c=>[c.o,c.h,c.l,c.c].every(v=>Number.isFinite(Number(v)))&&
+        Number(c.l)<=Number(c.o)&&Number(c.o)<=Number(c.h)&&
+        Number(c.l)<=Number(c.c)&&Number(c.c)<=Number(c.h))
+      .slice(-24);
+    const drawCandleHistory=candles.length>=6;
+    if(drawCandleHistory){
+      const lows=candles.map(c=>Number(c.l)),highs=candles.map(c=>Number(c.h));
+      const lo=Math.min(...lows),hi=Math.max(...highs);
+      const pad=(hi-lo)*.12||.00001,min=lo-pad,max=hi+pad,y=v=>9+(max-v)/(max-min)*71;
+      const gap=286/candles.length,w=Math.min(12,Math.max(4,gap*.65));
+      for(let i=1;i<=3;i++){
+        const yline=9+i*71/4;
+        svg("line",{x1:11,y1:yline,x2:309,y2:yline,stroke:"#2b475a","stroke-width":.75,"stroke-dasharray":"3 5"},graph);
+      }
+      candles.forEach((c,i)=>{
+        const x=17+(i+.5)*gap,o=Number(c.o),v=Number(c.c),up=v>=o,col=up?"#6fe6bb":"#fa97ad";
+        svg("line",{x1:x,y1:y(Number(c.h)),x2:x,y2:y(Number(c.l)),stroke:col,"stroke-width":1.5},graph);
+        svg("rect",{x:x-w/2,y:Math.min(y(o),y(v)),width:w,height:Math.max(1.5,Math.abs(y(o)-y(v))),rx:1,fill:col},graph);
+      });
+      graph.setAttribute("aria-label",candles.length+" completed historical M15 OANDA candlesticks, not trades or post-observation returns");
+    }else if(vals.length>=2){
       const lo=Math.min(0,...vals),hi=Math.max(0,...vals),pad=Math.max((hi-lo)*0.24,.002);
       const min=lo-pad,max=hi+pad,y=v=>12+(max-v)/(max-min)*66;
       const point=(v,i)=>[18+i*284/(vals.length-1),y(v)];
       svg("line",{x1:10,y1:y(0),x2:310,y2:y(0),stroke:"#597184","stroke-width":1,"stroke-dasharray":"4 5"},graph);
-      const path=vals.map((v,i)=>(i?"L":"M")+point(v,i).map(n=>n.toFixed(1)).join(",")).join(" ");
+      const path=vals.map((v,i)=>(i?"L":"M")+point(v,i).map(n=>n.toFixed(1)).join(" ");
       svg("path",{d:path,fill:"none",stroke:vals.at(-1)>=0?"#71e5b9":"#ff9eae","stroke-width":3.2,"stroke-linecap":"round","stroke-linejoin":"round"},graph);
       const last=point(vals.at(-1),vals.length-1);
       svg("circle",{cx:last[0],cy:last[1],r:4.5,fill:vals.at(-1)>=0?"#71e5b9":"#ff9eae"},graph);
@@ -448,7 +469,9 @@ function renderHourlyCohorts(){
       svg("line",{x1:15,y1:45,x2:305,y2:45,stroke:"#597184","stroke-width":1.5,"stroke-dasharray":"5 7"},graph);
       svg("circle",{cx:160,cy:45,r:4,fill:"#92b9c9"},graph);
     }
-    card.append(graph);
+    card.append(graph,make("small",drawCandleHistory?
+      candles.length+" completed M15 OANDA candles · BEFORE/AFTER watch start · chart context, not P/L":
+      "Observed movement history · if no history, the graph cannot show price evolution","small"));
     const prices=make("div",undefined,"current-watch-prices");
     const first=make("div");first.append(make("small","START PRICE"),make("b",Number.isFinite(base)&&base>0?money(base):"—"));
     const last=make("div");last.append(make("small",fresh?"LATEST EXIT-SIDE":"LAST RECORDED · STALE"),make("b",Number.isFinite(price)&&price>0?money(price):"—"));
