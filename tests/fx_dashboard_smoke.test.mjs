@@ -72,6 +72,13 @@ test('today main-assessment cards show only frozen priced plans and hourly perfo
   assert.match(page, /directional watches shown separately below/);
   assert.match(page, /const currentPlans = todayPlans.filter\(isCurrent\)/);
   assert.match(page, /function renderHourlyCohorts\(\)/);
+  assert.match(page, /id="currentVisualStrip"/);
+  assert.match(page, /id="paperArchive"/);
+  assert.match(page, /id="paperHistory"/);
+  assert.match(page, /id="hourlyCohortCards" class="current-watch-grid"/);
+  assert.match(page, /current-watch-chart/);
+  assert.match(page, /renderCards\(currentPlans\)/);
+  assert.match(page, /historyHolder\.replaceChildren/);
   assert.match(page, /SCHEDULED_MAIN_ASSESSMENT/);
   assert.match(page, /id="paperScope"/);
   assert.match(page, /function renderPaperAudit\(\)/);
