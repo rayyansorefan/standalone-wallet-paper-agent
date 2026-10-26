@@ -160,6 +160,30 @@ body{background:#07111f;color:#edf5ff}
 .audit-card-details{margin-top:8px}
 .today-focus #paperMethod{margin:10px 0 0;font-size:11px}
 @media(max-width:700px){#paperAuditPanel{padding:12px}#paperAuditPanel .outcomekpis{grid-template-columns:repeat(2,minmax(0,1fr))}.audit-live-card{padding:15px}.audit-live-levels b{font-size:18px}.audit-live-grid{grid-template-columns:1fr}}
+/* Latest-first visual FX overview */
+.current-visual-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.current-visual-stat{padding:13px 15px;border:1px solid #365a6c;border-radius:12px;background:#0d2538}
+.current-visual-stat small{display:block;color:#9bbccd;text-transform:uppercase;letter-spacing:.8px;font-size:10px;font-weight:850}
+.current-visual-stat b{font-size:21px;line-height:1.35;color:#edfaff;font-variant-numeric:tabular-nums}
+.current-watch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0 10px}
+.current-watch-card{border:1px solid #315971;border-top:3px solid #63dcc0;background:linear-gradient(160deg,#12344a,#091b2f);border-radius:14px;padding:16px;min-width:0}
+.current-watch-card.short{border-top-color:#ff9aa6}
+.current-watch-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.current-watch-head strong{font-size:19px;letter-spacing:-.4px}
+.current-watch-tag{border:1px solid #4b806f;border-radius:7px;background:#174537;color:#abf7d9;padding:3px 7px;font-size:10px;font-weight:850}
+.current-watch-card.short .current-watch-tag{border-color:#825461;background:#452834;color:#ffc1c7}
+.current-watch-move{font-size:34px;font-weight:900;line-height:1.15;letter-spacing:-1px;margin:12px 0 1px;font-variant-numeric:tabular-nums;color:#eef8ff}
+.current-watch-move.positive{color:#71e5b9}.current-watch-move.negative{color:#ff9eae}
+.current-watch-context{color:#b8ccdb;font-size:11px;min-height:34px}
+.current-watch-chart{display:block;width:100%;height:91px;overflow:hidden;background:linear-gradient(180deg,#0c2940,#0a2134);border:1px solid #294861;border-radius:9px;margin:11px 0 8px}
+.current-watch-prices{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#a2c6d6}
+.current-watch-prices b{display:block;color:#edfaff;font-variant-numeric:tabular-nums;font-size:12px}
+.current-watch-footer{border-top:1px solid #2c5065;margin-top:11px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10px;color:#9bb5c8}
+.current-watch-chartbtn{border:1px solid #3e7e89;border-radius:8px;background:#154753;padding:7px 10px;color:#e1fcff;font-weight:800;font-size:10px}
+.current-archive>summary{background:#102a3c;border:1px solid #31566a}
+.current-archive[open]>summary{border-color:#5b9bb1}
+@media(max-width:1170px){.current-watch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.current-visual-strip{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.current-visual-stat{padding:10px}.current-visual-stat b{font-size:17px}.current-watch-grid{grid-template-columns:1fr}.current-watch-card{padding:14px}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -190,15 +214,16 @@ body{background:#07111f;color:#edf5ff}
 <section class="section today-focus" id="learning" aria-label="Today's monitored FX trades">
   <div class="heading"><div><div class="eyebrow">LATEST RESEARCH · CURRENT FIRST</div><h2>Today's monitored trades and watches</h2><p>Current priced plans and latest hourly research appear first. Previous expired plans remain accessible for historical analysis, never as current entry opportunities.</p></div><span class="label" id="paperAsOf">LOADING RESEARCH</span></div>
   <div class="panel" id="paperAuditPanel">
+    <div class="current-visual-strip" id="currentVisualStrip" aria-label="Current FX research snapshot"></div>
     <div id="currentPlansSurface">
       <div class="audit-toolbar"><b>CURRENT PRICED PLANS · NOT BROKER ORDERS</b><span>Entry, stop and target require independent verification</span></div>
       <div id="paperToday" class="audit-live-grid"></div>
     </div>
     <div class="audit-toolbar" style="margin-top:12px"><b>LATEST HOURLY DIRECTIONAL WATCHES · NOT TRADES</b><label for="hourlyCohortScope">SHOW <select id="hourlyCohortScope"><option value="LATEST" selected>Latest assessment</option><option value="TODAY">All today</option><option value="ALL">Available history</option></select></label></div>
     <p class="small" id="hourlyCohortSummary">Loading timestamped research observations…</p>
-    <div id="hourlyCohortCards" class="audit-live-grid"></div>
+    <div id="hourlyCohortCards" class="current-watch-grid"></div>
     <p class="small">These are hourly research hypotheses, not approved entries. Percentages show hypothetical movement from frozen first-observed OANDA prices, not returns. Without independently checked entry, stop and target, a directional watch is not a trade plan.</p>
-    <details class="archive-details" id="paperArchive" style="margin-top:22px">
+    <details class="archive-details current-archive" id="paperArchive" style="margin-top:22px">
       <summary style="cursor:pointer;font-weight:750;padding:14px;border:1px solid #355b6e;border-radius:10px">Today's monitored trades · Previous assessments and expired plans (open history)</summary>
       <div style="padding-top:15px">
         <div class="audit-toolbar"><label for="paperScope">PLAN HISTORY <select id="paperScope"><option value="HISTORY" selected>Expired / previous plans</option><option value="TODAY">Current only</option><option value="ALL">All priced plans</option></select></label><span id="paperCoverage">Checking saved shortlist…</span></div>
@@ -356,35 +381,85 @@ function renderHourlyCohorts(){
     .slice().sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
   scope.onchange=renderHourlyCohorts;
   const window=feed?.learning?.paper_audit?.public_window||{};
-  summary.textContent=(window.truncated?"PUBLIC HISTORY LIMITED: "+window.published_candidates+" of "+window.private_total_candidates+" observations available here. Full ledger remains private. · ":"")+dayRows.length+" observations today across "+new Set(dayRows.map(t=>t.created_at)).size+
-    " recorded assessments · "+selected.length+" shown · "+
-    "last collector "+uk(feed.snapshot_at)+
-    ". Research watches are NOT broker positions.";
-  if(!selected.length){holder.replaceChildren(make("p","No timestamped research observations in this selection. Future hourly snapshots will be recorded independently; earlier hours cannot be backfilled.","small"));return}
+  const latestCount=dayRows.filter(t=>Date.parse(t.created_at)===latestTime).length;
+  const freshFeed=!stale;
+  const currentPlans=(feed?.learning?.paper_audit?.candidates||[]).filter(t=>
+    ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source)&&
+    Number(t.entry)>0&&Number(t.stop)>0&&Number(t.tp1)>0&&
+    londonDate(t.created_at)===today&&(!t.expires_at||Date.parse(t.expires_at)>Date.now())).length;
+  const strip=el("currentVisualStrip");
+  if(strip){
+    const tiles=[
+      ["Active priced plans",String(currentPlans),currentPlans?"Check entry conditions":"None currently qualified"],
+      ["Latest hourly watches",String(latestCount),latestTime?uk(new Date(latestTime).toISOString()):"Awaiting collection"],
+      ["Research feed",freshFeed?"CURRENT":"STALE",uk(feed.snapshot_at)]
+    ];
+    strip.replaceChildren(...tiles.map(([label,value,sub])=>{
+      const tile=make("div",undefined,"current-visual-stat");
+      tile.append(make("small",label),make("b",value),make("small",sub));return tile;
+    }));
+  }
+  summary.textContent=(window.truncated?"PUBLIC HISTORY LIMITED: "+window.published_candidates+" / "+window.private_total_candidates+". · ":"")+dayRows.length+
+    " observations today · "+new Set(dayRows.map(t=>t.created_at)).size+" independent assessments · "+
+    selected.length+" shown · last collected "+uk(feed.snapshot_at)+". Directional research only.";
+  if(!selected.length){holder.replaceChildren(make("p","No timestamped research observations in this selection. Future hourly snapshots will be recorded independently; earlier hours cannot be backfilled.","setupempty"));return}
   holder.replaceChildren(...selected.map(t=>{
-    const card=make("div",undefined,"audit-card"),head=make("div",undefined,"audit-card-head");
-    const pair=make("b",t.instrument.replace("_","/")+" "+t.direction);
-    const meta=make("small",uk(t.created_at)+" · "+(t.technical_context?.assessment_kind||"RESEARCH")+
-      " · WATCH ONLY");
-    head.append(pair,meta);
+    const short=t.direction==="SHORT";
+    const card=make("article",undefined,"current-watch-card"+(short?" short":""));
+    const head=make("div",undefined,"current-watch-head");
+    head.append(make("strong",t.instrument.replace("_","/")),make("span",short?"▼ SELL BIAS":"▲ BUY BIAS","current-watch-tag"));
+    card.append(head,make("small",uk(t.created_at)+" · OANDA directional research, not an entry","small"));
     const track=t.tracking||{},quote=feed.pairs?.[t.instrument]?.quote||{};
-    const fresh=quote.time&&Number.isFinite(Date.parse(quote.time))&&
-      Math.abs(Date.now()-Date.parse(quote.time))<=4200000;
-    const price=fresh?Number(t.direction==="SHORT"?quote.ask:quote.bid):Number(track.price);
+    const fresh=!stale&&quote.time&&Number.isFinite(Date.parse(quote.time))&&
+      Date.now()-Date.parse(quote.time)<=4200000&&Date.now()-Date.parse(quote.time)>=-300000;
+    const price=fresh?Number(short?quote.ask:quote.bid):Number(track.price);
     const base=Number(track.reference_price);
-    const recorded=Number(track.move_pct);
-    const pct=Number.isFinite(base)&&base>0&&Number.isFinite(price)&&price>0?
-      (t.direction==="SHORT"?(base-price):(price-base))/base*100:
-      (Number.isFinite(recorded)?recorded:null);
-    const line=make("div",undefined,"audit-card-body");
-    line.append(make("p",(pct===null?"Movement unavailable":(pct>=0?"+":"")+pct.toFixed(3)+"% hypothetical movement")+
-      " · "+(fresh?"fresh OANDA quote":"LAST KNOWN / STALE")),
-      make("small","Exit-side price "+(Number.isFinite(price)&&price>0?price.toFixed(t.instrument.endsWith("JPY")?3:5):"unavailable")+
-      " · baseline "+(Number.isFinite(base)&&base>0?base.toFixed(t.instrument.endsWith("JPY")?3:5):"unavailable")+
-      " · "+(fresh?uk(quote.time):uk(track.quote_at||t.created_at))),
-      make("small","Paper: "+(t.status||"UNTESTABLE")+
-      " · No confirmed entry, stop or target from a directional priority watch."));
-    card.append(head,line);return card;
+    const valid=Number.isFinite(base)&&base>0&&Number.isFinite(price)&&price>0;
+    const pct=valid?(short?base-price:price-base)/base*100:null;
+    const history=(track.history||[]).filter(x=>Number.isFinite(Number(x.move_pct))&&Number.isFinite(Date.parse(x.at)))
+      .map(x=>({at:x.at,m:Number(x.move_pct)})).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+    if(valid&&fresh&&(!history.length||Date.parse(quote.time)>Date.parse(history.at(-1).at)))
+      history.push({at:quote.time,m:pct});
+    const enough=history.length>=2&&history.some(x=>Math.abs(x.m-history[0].m)>1e-9);
+    const move=make("div",valid?(pct>=0?"+":"")+pct.toFixed(3)+"%":"—",
+      "current-watch-move"+(valid&&(pct!==0)?pct>0?" positive":" negative":""));
+    card.append(move,make("div",!valid?"Not enough price evidence":history.length<2?
+      "New observation · first follow-up quote pending":!enough?
+      "No price movement recorded yet":
+      "Underlying directional move since first observation · not trading profit",
+      "current-watch-context"));
+    const graph=document.createElementNS("http://www.w3.org/2000/svg","svg");
+    graph.setAttribute("viewBox","0 0 320 90");
+    graph.setAttribute("preserveAspectRatio","none");
+    graph.setAttribute("class","current-watch-chart");
+    graph.setAttribute("role","img");
+    graph.setAttribute("aria-label",enough?"Historical directional movement chart in percent":"New observation: price change history not yet available");
+    const vals=history.map(x=>x.m);
+    if(vals.length>=2){
+      const lo=Math.min(0,...vals),hi=Math.max(0,...vals),pad=Math.max((hi-lo)*0.24,.002);
+      const min=lo-pad,max=hi+pad,y=v=>12+(max-v)/(max-min)*66;
+      const point=(v,i)=>[18+i*284/(vals.length-1),y(v)];
+      svg("line",{x1:10,y1:y(0),x2:310,y2:y(0),stroke:"#597184","stroke-width":1,"stroke-dasharray":"4 5"},graph);
+      const path=vals.map((v,i)=>(i?"L":"M")+point(v,i).map(n=>n.toFixed(1)).join(",")).join(" ");
+      svg("path",{d:path,fill:"none",stroke:vals.at(-1)>=0?"#71e5b9":"#ff9eae","stroke-width":3.2,"stroke-linecap":"round","stroke-linejoin":"round"},graph);
+      const last=point(vals.at(-1),vals.length-1);
+      svg("circle",{cx:last[0],cy:last[1],r:4.5,fill:vals.at(-1)>=0?"#71e5b9":"#ff9eae"},graph);
+    }else{
+      svg("line",{x1:15,y1:45,x2:305,y2:45,stroke:"#597184","stroke-width":1.5,"stroke-dasharray":"5 7"},graph);
+      svg("circle",{cx:160,cy:45,r:4,fill:"#92b9c9"},graph);
+    }
+    card.append(graph);
+    const prices=make("div",undefined,"current-watch-prices");
+    const first=make("div");first.append(make("small","START PRICE"),make("b",Number.isFinite(base)&&base>0?money(base):"—"));
+    const last=make("div");last.append(make("small",fresh?"LATEST EXIT-SIDE":"LAST RECORDED · STALE"),make("b",Number.isFinite(price)&&price>0?money(price):"—"));
+    prices.append(first,last);card.append(prices);
+    const footer=make("div",undefined,"current-watch-footer");
+    footer.append(make("span",(fresh?uk(quote.time):uk(track.quote_at||t.created_at))+" · "+(fresh?"QUOTE CURRENT":"NOT CURRENT")));
+    const openChart=make("button","View chart","current-watch-chartbtn");
+    openChart.type="button";
+    openChart.addEventListener("click",()=>{if(!feed.pairs[t.instrument])return;pair=t.instrument;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
+    footer.append(openChart);card.append(footer);
+    return card;
   }));
 }
 
