@@ -68,6 +68,16 @@ assert.ok(!$("journalPair").options.some(o=>o.value==="GBP_ZAR"),"Excluded pair 
 assert.ok(!$("rows").children.some(row=>row.children.some(c=>c.textContent==="GBP/ZAR")),"Excluded pair must not be in scanner");
 assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes("GBP/ZAR")),"Excluded pair must not be a priority card");
 assert.ok($("chart").children.length>30,"Completed candlesticks should render");
+assert.equal($("currentVisualStrip").children.length,3,
+  "Dashboard must present current research counts ahead of archived plans");
+assert.ok($("hourlyCohortCards").children.length>=1,
+  "Timestamped hourly watches must render as separate graphical cards");
+const visualCard=$("hourlyCohortCards").children[0];
+assert.match(visualCard.className,/current-watch-card/);
+assert.ok(visualCard.children.some(c=>c.className==="current-watch-chart"),
+  "Each hourly card must include a rendered visual percentage-movement chart");
+assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
+  "Hourly cards must clearly display hypothetical directional price movement");
 assert.equal($("indicators").children.length,10);
 assert.equal($("headlines").children.length,Math.min(10,feed.headlines.length));
 assert.ok($("events").children.length>=1,"Calendar must render actual upcoming releases or an explicit no-events caveat");
