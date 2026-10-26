@@ -67,14 +67,14 @@ test('visual long/short cards fail closed and show entry stop TP1 and price-move
   assert.match(page, /WAIT FOR VERIFIED M15 CLOSE/);
   assert.match(page, /NO LIVE ENTRY/);
 });
-test('all shortlisted candidates have one consolidated hourly-performance view', () => {
+test('today main-assessment cards show only frozen priced plans and hourly performance', () => {
   assert.match(page, /Today.s monitored trades/);
   assert.match(page, /unpriced rankings excluded/);
   assert.match(page, /SCHEDULED_MAIN_ASSESSMENT/);
   assert.match(page, /id="paperScope"/);
   assert.match(page, /function renderPaperAudit\(\)/);
-  assert.match(page, /FIRST_OBSERVED_QUOTE/);
-  assert.match(page, /ORIGINAL_ZONE_MIDPOINT/);
+  assert.doesNotMatch(page, /AUTOMATIC RESEARCH WATCH/);
+  assert.match(page, /Number\(t\.entry\) > 0/);
   assert.doesNotMatch(page, /id="paperRows"/);
   assert.doesNotMatch(page, /Net R:R|NET R:R|Result R/);
   const audit = feed.learning?.paper_audit;
