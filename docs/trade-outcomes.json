@@ -145,8 +145,8 @@
     "as_of": "2026-10-26T16:22:59Z",
     "focus_trade_key": "2026-10-26-audnzd-stop-1622",
     "status": "UNAPPROVED_RESEARCH_WATCH_EXECUTED",
-    "finding": "AUD/NZD long was a paper watch, not an approved signal; actual entry was 4.0 pips above planned 1.23560 and above the proposed zone. The candidate was excluded from signals.json due to failed spread-adjusted TP1 reward/risk and conflicting D1/H4 structure; a completed M15 rejection at entry has not been evidenced.",
-    "action": "Require explicit signal approval and completed M15/broker spread verification. Retain this outcome for execution-quality and missed-gate audits; do not automatically recalibrate entry thresholds from one trade.",
+    "finding": "Your AUD/NZD buy was 3 pips above the suggested entry zone. The possible profit was too small once the spread was included, and the longer-term trend did not support the buy.",
+    "action": "The dashboard will flag opportunities with limited upside or conflicting trends. This one loss is not enough to change the model's trading rules.",
     "signal_match": "PENDING"
   }
 }

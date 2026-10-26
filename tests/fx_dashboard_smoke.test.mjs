@@ -148,9 +148,9 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
    assert.match(page, /id="todayNetPnl"/);
    assert.match(page, /id="closedRecord"/);
    assert.match(page, /LOSS REVIEW/);
-   assert.match(page, /ANALYSIS GOOD\/BAD\/MIXED/);
+   assert.match(page, /ANALYSIS GOOD\/RISKY\/MIXED/);
    assert.match(page, /ANALYSIS /);
-   assert.match(page, /DO NOT ENTER · FAILED RISK/);
+   assert.match(page, /AVOID THIS TRADE/);
    assert.match(page, /M15 TRIGGER · CHECK BROKER/);
    assert.match(page, /CHECK STALE · NO ENTRY/);
 

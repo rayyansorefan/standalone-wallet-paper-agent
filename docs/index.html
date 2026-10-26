@@ -388,6 +388,17 @@ function renderPaperAudit() {
     const formal=isActiveFormal(t);
     const riskText=((t.rationale||"")+" "+(t.technical_context?.atr_spread||"")+" "+(t.technical_context?.trend||"")).toLowerCase();
     const rejectedWatch=/not admitted to signals|gate fail|regime-quality gate does not|reward.cost gate[s]? fail/.test(riskText);
+    const riskDetails=t.technical_context||{};
+    const costWarning=/spread.adjusted.*fail|return.risk.*fail|reward.cost.*fail/i.test(
+      (riskDetails.atr_spread||"")+" "+(t.rationale||""));
+    const trendWarning=/conflict|against|bearish.*structure/i.test(riskDetails.trend||"");
+    const riskyExplanation=costWarning&&trendWarning?
+      "The potential gain is too small after the spread, and the longer-term trend disagrees with this trade.":
+      costWarning?
+      "The potential gain is too small compared with what you could lose, once the spread is included.":
+      trendWarning?
+      "The short-term move looks promising, but the longer-term trend points the other way.":
+      "The indicators disagree, so this trade is less reliable.";
     const analysisStamp=uk(t.created_at);
     const frames=feed.pairs?.[t.instrument]?.frames||{};
     const f15=frames.M15?.indicators||{},f1=frames.H1?.indicators||{};
@@ -402,32 +413,32 @@ function renderPaperAudit() {
     }
     const aligned=checks.filter(n=>n>0).length,opposed=checks.filter(n=>n<0).length;
     const currentQuality=quote.fresh&&checks.length>=5;
-    let quality="MIXED",qualityReason="The archived research did not establish a clear enough multi-timeframe edge.";
+    let quality="MIXED",qualityReason="The indicators do not point clearly in one direction.";
     if(rejectedWatch){
       quality="BAD";
-      qualityReason="Original risk/regime gate failed despite favourable shorter-term indicators.";
+      qualityReason=riskyExplanation;
     } else if(currentQuality){
       if(aligned>=4&&opposed<=2){
         quality="GOOD";
-        qualityReason=aligned+"/"+checks.length+" current M15/H1 direction checks agree.";
+        qualityReason=aligned+" of "+checks.length+" current trend checks favour this direction.";
       } else if(opposed>=4){
         quality="BAD";
-        qualityReason=opposed+"/"+checks.length+" current M15/H1 checks oppose the planned direction.";
+        qualityReason="Most current trend checks now point the other way ("+opposed+" of "+checks.length+").";
       } else{
         quality="MIXED";
-        qualityReason=aligned+"/"+checks.length+" M15/H1 checks agree; signals are mixed.";
+        qualityReason="Only "+aligned+" of "+checks.length+" trend checks favour this direction.";
       }
     } else if(formal||/qualified prospective|adjusted.*gate[s]? pass|adjusted rr 1\.[0-9]+/.test(riskText)){
       quality="GOOD";
-      qualityReason="Original research passed directional/risk review at "+analysisStamp+"; new technical assessment not available.";
+      qualityReason="The original analysis favoured this direction; newer technical evidence is unavailable.";
     }
     const activeHourly=feed.hourly?.at&&Number.isFinite(Date.parse(feed.hourly.at))&&
       Math.abs(Date.now()-Date.parse(feed.hourly.at))<=4200000;
     let status="WAIT · ENTRY NOT CONFIRMED",state="waiting";
     let entryReason="A directionally attractive setup is not a confirmed entry. Await the planned price and a completed M15 trigger.";
     if(rejectedWatch){
-      status="DO NOT ENTER · FAILED RISK";state="bad";
-      entryReason="This was a non-approved paper watch. "+(t.rationale||"");
+      status="AVOID THIS TRADE";state="bad";
+      entryReason="";
     }else if(done.has(t.status)){
       status=t.status==="WIN_TP1"?"PAPER TARGET REACHED":
         t.status==="LOSS_STOP"?"PAPER STOP REACHED":"PAPER CLOSED";
@@ -447,8 +458,8 @@ function renderPaperAudit() {
       entryReason="Research completed-candle pattern verified; still check Pepperstone spread, news and risk before choosing.";
     }else if(["REASSESS_NEWS_FIRST","MANUAL_EVENT_BLACKOUT","NEWS_COVERAGE_NOT_VERIFIED",
                "SUPPRESSED_BY_ROBUST_NEGATIVE_PAPER_HISTORY"].includes(watcher?.status)){
-      status="DO NOT ENTER · RISK GATE";state="bad";
-      entryReason="A news or research safety gate is blocking this entry.";
+      status="NO TRADE · NEWS/UNCERTAINTY";state="bad";
+      entryReason="Important news, missing news data or a poor historical pattern makes this entry too uncertain.";
     }else if(watcher?.status==="REASSESS_OR_EXPIRE_PRIOR_PLAN_LEVEL_REACHED"){
       status="WAIT · REASSESS PRICE";state="waiting";
       entryReason="The planned level has passed; do not chase without a new plan.";
@@ -459,7 +470,7 @@ function renderPaperAudit() {
     name.append(make("b",t.instrument.replace("_","/")),
       make("span",t.direction==="LONG"?"▲ BUY PLAN":"▼ SELL PLAN","audit-direction"));
     const badges=make("div",undefined,"audit-verdicts");
-    badges.append(make("span","ANALYSIS "+quality,"audit-status "+(quality==="GOOD"?"good":quality==="BAD"?"bad":"waiting")),
+    badges.append(make("span","ANALYSIS "+(quality==="BAD"?"RISKY":quality),"audit-status "+(quality==="GOOD"?"good":quality==="BAD"?"bad":"waiting")),
       make("span",status,"audit-status "+state));
     head.append(name,badges);
     card.append(head,make("p","Assessed "+uk(t.created_at),"small"));
@@ -472,7 +483,7 @@ function renderPaperAudit() {
     }
     card.append(levels);
     const condition=make("div",undefined,"audit-confirm");
-    condition.textContent="Analysis: "+qualityReason+" Entry: "+entryReason+" Latest OANDA quote "+(quote.at?uk(quote.at):"unavailable")+(quote.fresh?" (recent).":" (stale/unavailable).");
+    condition.textContent=qualityReason+(entryReason?" "+entryReason:"")+" Checked "+(quote.at?uk(quote.at):"time unavailable")+(quote.fresh?".":" (old price).");
     card.append(condition);
     const performance=make("div",undefined,"audit-performance"),left=make("div");
     left.append(make("small","Price move vs proposed entry · hypothetical"));
@@ -533,7 +544,7 @@ function renderPaperAudit() {
   holder.replaceChildren(...(cards.length?cards:[make("p",scope==="TODAY"?
     "No complete trade plans have been recorded for today's main assessments yet. Technical rankings without entry/stop/target are not displayed as trade opportunities.":
     "No complete priced plans in this view.","small")]));
-  el("paperMethod").textContent="ANALYSIS GOOD/BAD/MIXED is directional merit, separate from whether the entry trigger is confirmed. It is not a promise of profit. Percentages compare OANDA prices against the original proposed entry. "
+  el("paperMethod").textContent="ANALYSIS GOOD/RISKY/MIXED describes the direction and key concerns, separate from whether the entry trigger is confirmed. It is not a promise of profit. Percentages compare OANDA prices against the original proposed entry. "
     +"They are hypothetical directional moves, not your account return or proof of an executed trade. "
     +"A price touching a level does not confirm the required M15 setup. Pepperstone quotes and fees must be checked separately.";
   el("paperStrategy").textContent="Trade plans remain fixed once recorded; future hourly checks compare against those same levels.";
