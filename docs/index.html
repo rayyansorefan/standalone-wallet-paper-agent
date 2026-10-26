@@ -168,6 +168,12 @@ body{background:#07111f;color:#edf5ff}
 .current-watch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0 10px}
 .current-watch-card{border:1px solid #315971;border-top:3px solid #63dcc0;background:linear-gradient(160deg,#12344a,#091b2f);border-radius:14px;padding:16px;min-width:0}
 .current-watch-card.short{border-top-color:#ff9aa6}
+.current-watch-start{display:flex;justify-content:space-between;align-items:center;gap:8px;
+  margin:12px 0 7px;padding:9px 10px;background:#10384a;border:1px solid #437789;border-radius:8px;
+  font-variant-numeric:tabular-nums;color:#e4faff}
+.current-watch-start b{font-size:11px;line-height:1.45;letter-spacing:.3px}
+.current-watch-start strong{font-size:12px;color:#78ebce;white-space:nowrap}
+.current-watch-card.short .current-watch-start strong{color:#ffc1c7}
 .current-watch-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .current-watch-head strong{font-size:19px;letter-spacing:-.4px}
 .current-watch-tag{border:1px solid #4b806f;border-radius:7px;background:#174537;color:#abf7d9;padding:3px 7px;font-size:10px;font-weight:850}
@@ -403,21 +409,50 @@ function renderHourlyCohorts(){
     " observations today · "+new Set(dayRows.map(t=>t.created_at)).size+" independent assessments · "+
     selected.length+" shown · last collected "+uk(feed.snapshot_at)+". Directional research only.";
   if(!selected.length){holder.replaceChildren(make("p","No timestamped research observations in this selection. Future hourly snapshots will be recorded independently; earlier hours cannot be backfilled.","setupempty"));return}
+  const elapsedLabel=ms=>{
+    if(!Number.isFinite(ms)||ms<0)return "UNKNOWN";
+    const n=Math.floor(ms/60000),d=Math.floor(n/1440),h=Math.floor((n%1440)/60),m=n%60;
+    return (d?d+"d ":"")+(h?h+"h ":"")+m+"m";
+  };
   holder.replaceChildren(...selected.map(t=>{
     const short=t.direction==="SHORT";
+    // Repeated hourly snapshots are distinct observations, but the same directional
+    // watch retains its first same-day immutable observed-price baseline.
+    const peers=rows.filter(x=>x.instrument===t.instrument&&x.direction===t.direction&&
+      londonDate(x.created_at)===londonDate(t.created_at)&&
+      Date.parse(x.created_at)<=Date.parse(t.created_at))
+      .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+    const first=peers.find(x=>Number(x.tracking?.reference_price)>0&&
+      Number.isFinite(Date.parse(x.tracking?.reference_at)))||t;
+    const watchStarted=first.created_at;
+    const track=first.tracking||{};
+    const firstObserved=track.reference_at||track.history?.[0]?.at||null;
     const card=make("article",undefined,"current-watch-card"+(short?" short":""));
     const head=make("div",undefined,"current-watch-head");
     head.append(make("strong",t.instrument.replace("_","/")),make("span",short?"▼ SELL BIAS":"▲ BUY BIAS","current-watch-tag"));
-    card.append(head,make("small",uk(t.created_at)+" · OANDA directional research, not an entry","small"));
-    const track=t.tracking||{},quote=feed.pairs?.[t.instrument]?.quote||{};
+    card.append(head);
+    const started=make("div",undefined,"current-watch-start");
+    started.append(make("b","WATCH STARTED "+(Number.isFinite(Date.parse(watchStarted))?uk(watchStarted):"UNKNOWN")),
+      make("strong","AGE "+elapsedLabel(Date.now()-Date.parse(watchStarted))));
+    card.append(started);
+    card.append(make("small","Latest assessment "+uk(t.created_at)+" · OANDA directional watch, not an entry","small"));
+    const quote=feed.pairs?.[t.instrument]?.quote||{};
     const fresh=!stale&&quote.time&&Number.isFinite(Date.parse(quote.time))&&
       Date.now()-Date.parse(quote.time)<=4200000&&Date.now()-Date.parse(quote.time)>=-300000;
     const price=fresh?Number(short?quote.ask:quote.bid):Number(track.price);
     const base=Number(track.reference_price);
     const valid=Number.isFinite(base)&&base>0&&Number.isFinite(price)&&price>0;
     const pct=valid?(short?base-price:price-base)/base*100:null;
-    const history=(track.history||[]).filter(x=>Number.isFinite(Number(x.move_pct))&&Number.isFinite(Date.parse(x.at)))
-      .map(x=>({at:x.at,m:Number(x.move_pct)})).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+    // Combine price observations of the same same-day directional watch, never
+    // displaying pre-watch M15 candles as measured post-start performance.
+    const observed=peers.flatMap(x=>x.tracking?.history||[])
+      .filter(x=>Number.isFinite(Number(x.price))&&Number(x.price)>0&&
+        Number.isFinite(Date.parse(x.at))&&
+        (!firstObserved||Date.parse(x.at)>=Date.parse(firstObserved)));
+    const history=observed.map(x=>({
+      at:x.at,m:valid?(short?base-Number(x.price):Number(x.price)-base)/base*100:NaN
+    })).filter(x=>Number.isFinite(x.m)).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at))
+      .filter((x,i,all)=>i===0||Date.parse(x.at)!==Date.parse(all[i-1].at));
     if(valid&&fresh&&(!history.length||Date.parse(quote.time)>Date.parse(history.at(-1).at)))
       history.push({at:quote.time,m:pct});
     const enough=history.length>=2&&history.some(x=>Math.abs(x.m-history[0].m)>1e-9);
@@ -440,7 +475,7 @@ function renderHourlyCohorts(){
         Number(c.l)<=Number(c.o)&&Number(c.o)<=Number(c.h)&&
         Number(c.l)<=Number(c.c)&&Number(c.c)<=Number(c.h))
       .slice(-24);
-    const drawCandleHistory=candles.length>=6;
+    const drawCandleHistory=candles.length>=6&&history.length<2;
     if(drawCandleHistory){
       const lows=candles.map(c=>Number(c.l)),highs=candles.map(c=>Number(c.h));
       const lo=Math.min(...lows),hi=Math.max(...highs);
@@ -470,14 +505,19 @@ function renderHourlyCohorts(){
       svg("circle",{cx:160,cy:45,r:4,fill:"#92b9c9"},graph);
     }
     card.append(graph,make("small",drawCandleHistory?
-      candles.length+" completed M15 OANDA candles · BEFORE/AFTER watch start · chart context, not P/L":
-      "Observed movement history · if no history, the graph cannot show price evolution","small"));
+      candles.length+" historical M15 candles · NOT measured monitoring performance":
+      history.length>=2?
+      "MONITORED MOVEMENT · "+uk(history[0].at)+" → "+uk(history.at(-1).at)+" · "+history.length+" observations · not P/L":
+      "Awaiting a second observed quote; no monitoring price chart yet","small"));
     const prices=make("div",undefined,"current-watch-prices");
-    const first=make("div");first.append(make("small","START PRICE"),make("b",Number.isFinite(base)&&base>0?money(base):"—"));
+    const firstPrice=make("div");firstPrice.append(make("small","BASELINE PRICE · "+(firstObserved?uk(firstObserved):"TIME UNKNOWN")),make("b",Number.isFinite(base)&&base>0?money(base):"—"));
     const last=make("div");last.append(make("small",fresh?"LATEST EXIT-SIDE":"LAST RECORDED · STALE"),make("b",Number.isFinite(price)&&price>0?money(price):"—"));
-    prices.append(first,last);card.append(prices);
+    prices.append(firstPrice,last);card.append(prices);
     const footer=make("div",undefined,"current-watch-footer");
-    footer.append(make("span",(fresh?uk(quote.time):uk(track.quote_at||t.created_at))+" · "+(fresh?"QUOTE CURRENT":"NOT CURRENT")));
+    const lastQuoteAt=fresh?quote.time:t.tracking?.quote_at||track.quote_at;
+    footer.append(make("span",(lastQuoteAt?uk(lastQuoteAt):"QUOTE TIME UNKNOWN")+
+      " · QUOTE AGE "+elapsedLabel(Date.now()-Date.parse(lastQuoteAt))+
+      " · "+(fresh?"CURRENT":"STALE / UNVERIFIED")));
     const openChart=make("button","View chart","current-watch-chartbtn");
     openChart.type="button";
     openChart.addEventListener("click",()=>{if(!feed.pairs[t.instrument])return;pair=t.instrument;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
