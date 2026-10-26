@@ -146,6 +146,11 @@ body{background:#07111f;color:#edf5ff}
 .audit-performance small{font-size:11px;color:#9cb7c8;line-height:1.4}
 .audit-metric-caption{font-size:11px;color:#a8c1d2;line-height:1.45}
 .audit-live-card .audit-spark{height:58px;background:linear-gradient(#0d2d40,#092232);margin-top:10px}
+.audit-chart-age{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:12px 0 7px;color:#b6d7e7;font-size:12px}
+.audit-chart-age span{font-weight:800;color:#d7f1ff}
+.audit-chart-age b{font-size:12px;color:#7be5c8;font-variant-numeric:tabular-nums}
+.audit-chart-window{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;color:#9eb7ca;font-size:10px}
+.audit-chart-window small{font-size:10px}
 .audit-hourly-chips{flex-wrap:wrap;overflow:visible}
 .audit-hourly-chip{background:#18394b;border-color:#325b6d}
 .audit-card-actions{display:flex;gap:9px;align-items:center;margin-top:12px}
@@ -497,6 +502,16 @@ function renderPaperAudit() {
     const ticks=(t.tracking?.history||[]).filter(x=>x.move_pct!=null &&
       Number.isFinite(Number(x.move_pct)) && x.at).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
     const hourly=[...new Map(ticks.map(x=>[x.at.slice(0,13),x])).values()].slice(-8);
+    const startedAt=Date.parse(t.created_at);
+    const trackingMins=Number.isFinite(startedAt)?Math.max(0,Math.floor((Date.now()-startedAt)/60000)):null;
+    const ageText=trackingMins==null?"Age unavailable":
+      (trackingMins>=1440?Math.floor(trackingMins/1440)+"d ":"")+
+      (trackingMins>=60?Math.floor(trackingMins%1440/60)+"h ":"")+
+      (trackingMins%60)+"m tracked";
+    const chartAge=make("div",undefined,"audit-chart-age");
+    chartAge.append(make("span","Tracking began · "+uk(t.created_at)),
+      make("b",ageText));
+    card.append(chartAge);
     if(hourly.length>=2){
       const points=hourly.map(m=>Number(m.move_pct));
       const lo=Math.min(0,...points),hi=Math.max(0,...points),range=Math.max(.00001,hi-lo);
@@ -505,7 +520,7 @@ function renderPaperAudit() {
       svg.setAttribute("preserveAspectRatio","none");
       svg.setAttribute("class","audit-spark");
       svg.setAttribute("role","img");
-      svg.setAttribute("aria-label","Hourly hypothetical price movement in percent");
+      svg.setAttribute("aria-label","Hypothetical price movement shown from "+uk(hourly[0].at)+" to "+uk(hourly.at(-1).at)+". Research tracking started "+uk(t.created_at));
       const line=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       line.setAttribute("points",points.map((v,i)=>(8+i*264/(points.length-1)).toFixed(1)+","+
         (49-(v-lo)/range*39).toFixed(1)).join(" "));
@@ -515,6 +530,10 @@ function renderPaperAudit() {
       line.setAttribute("stroke-linecap","round");
       line.setAttribute("stroke-linejoin","round");
       svg.append(line);card.append(svg);
+      const chartWindow=make("div",undefined,"audit-chart-window");
+      chartWindow.append(make("small","Chart window: "+uk(hourly[0].at)),
+        make("small","Latest: "+uk(hourly.at(-1).at)));
+      card.append(chartWindow);
     }
     const track=make("div",undefined,"audit-hourly-path");
     track.append(make("small","Hourly checks"));

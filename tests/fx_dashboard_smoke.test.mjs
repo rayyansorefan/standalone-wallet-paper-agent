@@ -147,6 +147,10 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
    assert.equal(Number(closed.filter(t => t.closed_at?.startsWith('2026-10-26')).reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 9.95);
    assert.match(page, /id="todayNetPnl"/);
    assert.match(page, /id="closedRecord"/);
+   assert.match(page, /Tracking began · /);
+   assert.match(page, /Chart window: /);
+   assert.match(page, /audit-chart-age/);
+
    assert.match(page, /LOSS REVIEW/);
    assert.match(page, /ANALYSIS GOOD\/RISKY\/MIXED/);
    assert.match(page, /ANALYSIS /);
