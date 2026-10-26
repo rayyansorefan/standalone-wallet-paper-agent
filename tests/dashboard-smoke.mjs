@@ -16,7 +16,7 @@ new vm.Script(script);
 
 const saved={};
 class MockNode{
-  constructor(tag,id){this.tagName=tag;this.id=id;this.children=[];this.listeners={};this.textContent="";this.value="";this.className="";this.style={};this.attributes={};this.options=[];this.disabled=false;}
+  constructor(tag,id){this.tagName=tag;this.id=id;this.children=[];this.listeners={};this.textContent="";this.value="";this.className="";this.style={};this.attributes={};this.options=[];this.disabled=false;this.classList={add:(...items)=>{this.className=[...new Set([this.className,...items].filter(Boolean))].join(" ")},remove:(...items)=>{this.className=this.className.split(" ").filter(x=>!items.includes(x)).join(" ")}};}
   append(...elems){this.children.push(...elems);if(this.tagName==="select")this.options=this.children;return this}
   replaceChildren(...elems){this.children=elems;if(this.tagName==="select")this.options=this.children}
   addEventListener(event,handler){this.listeners[event]=handler}
