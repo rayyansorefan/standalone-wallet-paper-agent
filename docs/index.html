@@ -365,7 +365,7 @@ function renderPaperAudit() {
   if (selector) selector.onchange = () => renderPaperAudit();
   const summary = el("paperCoverage");
   if (summary) summary.textContent = "Showing " + selected.length + " of " +
-    visible.length + " original shortlist ideas · " +
+    visible.length + " recorded research ideas and formal plans · " +
     visible.filter((t) => day(t.created_at) === today).length + " added today · " +
     liveChecked + " with recent OANDA checks.";
   const cards = selected.map((t) => {
@@ -373,7 +373,8 @@ function renderPaperAudit() {
     const card = make("article", undefined, "audit-live-card");
     const head = make("div", undefined, "audit-live-head");
     head.append(make("b", t.instrument.replace("_", "/") + " " + t.direction),
-      make("span", names[t.status] || t.status, "audit-tag" +
+      make("span", t.source === "AUTOMATED_RESEARCH_PRIORITY"
+        ? "Ranked research · not an entry" : (names[t.status] || t.status), "audit-tag" +
         (t.status === "WIN_TP1" ? " win" : t.status === "LOSS_STOP" ? " loss" : "")));
     card.append(head, make("small", "Assessment " + uk(t.created_at), "small"));
     const metric = make("div", pct(info.value), "audit-move");
@@ -392,7 +393,9 @@ function renderPaperAudit() {
       card.append(make("p", "Completed PAPER result: " + exitPct +
         " at " + (t.at ? uk(t.at) : "unverified exit time"), "audit-paper-result"));
     } else if (t.status === "UNTESTABLE") {
-      card.append(make("p", "RESEARCH WATCH · original trade terms incomplete; no scored trade.",
+      card.append(make("p", t.source === "AUTOMATED_RESEARCH_PRIORITY"
+        ? "AUTOMATIC RESEARCH WATCH · tracked from first observed OANDA quote. No entry, position or paper win."
+        : "RESEARCH WATCH · original trade terms incomplete; no scored trade.",
         "audit-paper-result"));
     } else if (t.status === "UNTRIGGERED") {
       card.append(make("p", "Expired without a verified paper entry · not a loss.",
@@ -463,8 +466,9 @@ function renderPaperAudit() {
     return card;
   });
   todayHolder.replaceChildren(...(cards.length ? cards :
-    [make("p", "No candidates match this view. Choose All shortlist ideas.", "small")]));
+    [make("p", "No candidates match this view. Choose All monitored candidates.", "small")]));
   el("paperMethod").textContent = "Percentages describe currency-pair price movements, not account profit. "
+    + "Top-ranked technical watches are captured automatically when the collector runs, but never counted as trades. "
     + "Each recorded candidate is independently rechecked hourly, even if expired, untriggered "
     + "or unscorable. For watches without an original entry reference, comparison starts at the "
     + "first observed quote; it does not reconstruct prior Friday returns. "
