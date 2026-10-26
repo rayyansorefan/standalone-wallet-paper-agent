@@ -337,7 +337,7 @@ function renderHourlyCohorts(){
   if(!holder||!summary||!scope)return;
   const rows=(feed?.learning?.paper_audit?.candidates||[]).filter(t=>
     t.source==="AUTOMATED_RESEARCH_PRIORITY"&&visiblePair(t.instrument));
-  const londonDate=v=>{try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(v))}catch{return ""}};
+  const londonDate=v=>{try{const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date(v));const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+"-"+p.month+"-"+p.day}catch{return ""}};
   const today=londonDate(Date.now());
   const dayRows=rows.filter(t=>londonDate(t.created_at)===today);
   const latestTime=dayRows.length?Math.max(...dayRows.map(t=>Date.parse(t.created_at)||0)):0;
