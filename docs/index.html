@@ -189,7 +189,7 @@ body{background:#07111f;color:#edf5ff}
 <section class="section today-focus" id="learning" aria-label="Today's monitored FX trades">
   <div class="heading"><div><div class="eyebrow">YOUR DAILY FX SHORTLIST</div><h2>Today's monitored trades</h2><p>Plans captured at the main assessments, with their original prices and hourly movement. Every displayed opportunity has an entry, stop and target.</p></div><span class="label" id="paperAsOf">LOADING TODAY'S PLANS</span></div>
   <div class="panel" id="paperAuditPanel">
-    <div class="audit-toolbar"><label for="paperScope">PLANS <select id="paperScope"><option value="TODAY" selected>Today</option><option value="HISTORY">Previous assessments</option><option value="ALL">All priced plans</option></select></label><span id="paperCoverage">Checking the latest shortlist…</span></div>
+    <div class="audit-toolbar"><label for="paperScope">PLANS <select id="paperScope"><option value="TODAY" selected>Current · unexpired</option><option value="HISTORY">Expired / previous plans</option><option value="ALL">All priced plans</option></select></label><span id="paperCoverage">Checking the latest shortlist…</span></div>
     <div class="outcomekpis">
       <div class="outcomekpi"><small>Plans today</small><strong id="paperCandidates">—</strong></div>
       <div class="outcomekpi"><small>Awaiting confirmation</small><strong id="paperScored">—</strong></div>
@@ -402,9 +402,11 @@ function renderPaperAudit() {
   const priced = audit.candidates.filter(isTrackable).sort((a,b)=>
     Date.parse(b.created_at)-Date.parse(a.created_at));
   const todayPlans = priced.filter(t=>dateKey(t.created_at)===todayKey);
+  const isCurrent = t => !t.expires_at || Date.parse(t.expires_at)>Date.now();
+  const currentPlans = todayPlans.filter(isCurrent);
   const scope = el("paperScope").value;
-  const selected = scope==="HISTORY" ? priced.filter(t=>dateKey(t.created_at)!==todayKey)
-    : scope==="ALL" ? priced : todayPlans;
+  const selected = scope==="HISTORY" ? priced.filter(t=>!isCurrent(t)||dateKey(t.created_at)!==todayKey)
+    : scope==="ALL" ? priced : currentPlans;
   el("paperScope").onchange=renderPaperAudit;
   el("paperAsOf").textContent = "CHECKED "+uk(audit.updated_at || feed.snapshot_at);
   const done = new Set(["WIN_TP1","LOSS_STOP","TIME_EXIT"]);
@@ -422,17 +424,19 @@ function renderPaperAudit() {
     }
     return {at:x.quote_at||null,price:x.price,move:null,fresh:false};
   };
-  const recent = todayPlans.filter(t=>latest(t).fresh).length;
+  const recent = currentPlans.filter(t=>latest(t).fresh).length;
   const approvedIds=new Set((feed.signals||[]).map(s=>s.id));
   const isActiveFormal=t=>t.source==="LIVE_SIGNAL"||t.source==="GITHUB_FORMAL_SIGNAL"||approvedIds.has(t.id);
-  const waiting = todayPlans.filter(t=>isActiveFormal(t)&&!done.has(t.status) &&
+  const waiting = currentPlans.filter(t=>isActiveFormal(t)&&!done.has(t.status) &&
     (!t.expires_at || Date.parse(t.expires_at)>Date.now())).length;
   const paperDone = todayPlans.filter(t=>done.has(t.status)).length;
-  el("paperCandidates").textContent=String(todayPlans.length);
+  el("paperCandidates").textContent=String(currentPlans.length);
   el("paperScored").textContent=String(waiting);
   el("paperWins").textContent=String(paperDone);
-  el("paperTodayCount").textContent=recent+" / "+todayPlans.length;
-  el("paperCoverage").textContent=selected.length+" complete price plans · unpriced rankings excluded";
+  el("paperTodayCount").textContent=recent+" / "+currentPlans.length;
+  el("paperCoverage").textContent=selected.length+" priced plans displayed · "+
+    (scope==="TODAY"?"expired moved to history":"historical review")+
+    " · directional watches shown separately below";
   const fmtPercent = value => value==null || !Number.isFinite(Number(value))
     ? "—" : (Number(value)>=0?"+":"")+Number(value).toFixed(3)+"%";
   const stamp = value => new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",
