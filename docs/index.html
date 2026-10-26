@@ -368,7 +368,9 @@ function renderPaperAudit() {
     return {at:x.quote_at||null,price:x.price,move:null,fresh:false};
   };
   const recent = todayPlans.filter(t=>latest(t).fresh).length;
-  const waiting = todayPlans.filter(t=>!done.has(t.status) &&
+  const approvedIds=new Set((feed.signals||[]).map(s=>s.id));
+  const isActiveFormal=t=>t.source==="LIVE_SIGNAL"||t.source==="GITHUB_FORMAL_SIGNAL"||approvedIds.has(t.id);
+  const waiting = todayPlans.filter(t=>isActiveFormal(t)&&!done.has(t.status) &&
     (!t.expires_at || Date.parse(t.expires_at)>Date.now())).length;
   const paperDone = todayPlans.filter(t=>done.has(t.status)).length;
   el("paperCandidates").textContent=String(todayPlans.length);
@@ -383,7 +385,7 @@ function renderPaperAudit() {
   const cards=selected.map(t=>{
     const quote=latest(t),expired=t.expires_at&&Date.parse(t.expires_at)<=Date.now();
     const watcher=(feed.hourly?.signals||[]).find(s=>s.id===t.id);
-    const formal=t.source==="LIVE_SIGNAL"||t.source==="GITHUB_FORMAL_SIGNAL";
+    const formal=isActiveFormal(t);
     const riskText=((t.rationale||"")+" "+(t.technical_context?.atr_spread||"")+" "+(t.technical_context?.trend||"")).toLowerCase();
     const rejectedWatch=/not admitted to signals|gate fail|regime-quality gate does not|reward.cost gate[s]? fail/.test(riskText);
     const analysisStamp=uk(t.created_at);
@@ -565,7 +567,7 @@ function renderOutcomes(){
  el("outcomesRows").replaceChildren(...rows);
  const rate=closed.length?(100*wins/closed.length).toFixed(1)+"%":"—";
  el("outcomesSource").textContent="Screenshot-evidenced Pepperstone closures: "+wins+" wins, "+losses+
-   " losses ("+rate+"). "+reportDay+" net "+fmt(todayNet)+
+   " loss"+(losses===1?"":"es")+" ("+rate+"). "+reportDay+" net "+fmt(todayNet)+
    ". Cumulative net "+fmt(realised)+". This is not a forward-tested strategy win rate. "+
    "The last account balance was observed on "+uk(outcomeEvidence.account_snapshot?.observed_at)+
    "; current equity and open positions are unverified.";
