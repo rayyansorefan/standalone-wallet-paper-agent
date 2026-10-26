@@ -54,9 +54,11 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
           python - <<'PY'
-          import json, os, sys, time, urllib.parse, urllib.request
-          with open("docs/fx-feed.json", encoding="utf-8") as source:
-              expected = json.load(source)
+          import hashlib, json, os, sys, time, urllib.parse, urllib.request
+          from pathlib import Path
+          expected_feed_bytes = Path("docs/fx-feed.json").read_bytes()
+          expected_html_bytes = Path("docs/index.html").read_bytes()
+          expected = json.loads(expected_feed_bytes)
           base = os.environ["PAGE_URL"].rstrip("/") + "/"
           url = urllib.parse.urljoin(base, "fx-feed.json")
           url += "?verify=" + os.environ["GITHUB_RUN_ID"]
@@ -65,7 +67,8 @@ jobs:
               try:
                   req = urllib.request.Request(url, headers={"Cache-Control": "no-cache"})
                   with urllib.request.urlopen(req, timeout=15) as response:
-                      live = json.load(response)
+                      live_feed_bytes = response.read()
+                  live = json.loads(live_feed_bytes)
                   if "GBP_ZAR" in json.dumps(live):
                       last_error = "Live GitHub Pages feed still contains excluded GBP/ZAR"
                       print(f"Pages readback {attempt+1}/12: {last_error}", flush=True)
@@ -76,10 +79,21 @@ jobs:
                       page_url = urllib.parse.urljoin(base, "index.html") + "?verify=" + os.environ["GITHUB_RUN_ID"]
                       page_req = urllib.request.Request(page_url, headers={"Cache-Control": "no-cache"})
                       with urllib.request.urlopen(page_req, timeout=15) as page_response:
-                          page_html = page_response.read().decode("utf-8")
-                      if ("Today\u0027s monitored trades" not in page_html
-                              or "SCHEDULED_MAIN_ASSESSMENT" not in page_html):
-                          last_error = "Published HTML missing today-only main-assessment plans"
+                          page_html_bytes = page_response.read()
+                      if hashlib.sha256(page_html_bytes).digest() != hashlib.sha256(expected_html_bytes).digest():
+                          last_error = "Published HTML does not match current repository revision"
+                          print(f"Pages readback {attempt+1}/12: {last_error}", flush=True)
+                          time.sleep(6)
+                          continue
+                      if hashlib.sha256(live_feed_bytes).digest() != hashlib.sha256(expected_feed_bytes).digest():
+                          last_error = "Published JSON feed bytes do not match repository revision"
+                          print(f"Pages readback {attempt+1}/12: {last_error}", flush=True)
+                          time.sleep(6)
+                          continue
+                      page_html=page_html_bytes.decode("utf-8")
+                      if ("current-watch-chart" not in page_html or "current-visual-strip" not in page_html
+                              or "paperArchive" not in page_html):
+                          last_error = "Published page missing graphical current-first FX overview"
                           print(f"Pages readback {attempt+1}/12: {last_error}", flush=True)
                           time.sleep(6)
                           continue
