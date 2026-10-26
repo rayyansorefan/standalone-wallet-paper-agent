@@ -74,7 +74,7 @@ assert.ok($("hourlyCohortCards").children.length>=1,
   "Timestamped hourly watches must render as separate graphical cards");
 const visualCard=$("hourlyCohortCards").children[0];
 assert.match(visualCard.className,/current-watch-card/);
-assert.ok(visualCard.children.some(c=>c.className==="current-watch-chart"),
+assert.ok(visualCard.children.some(c=>c.tagName==="svg"&&c.attributes?.class==="current-watch-chart"),
   "Each hourly card must include a rendered visual percentage-movement chart");
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
