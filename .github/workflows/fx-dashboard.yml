@@ -73,7 +73,17 @@ jobs:
                       continue
                   if (live.get("snapshot_at") == expected.get("snapshot_at")
                           and live.get("published_at") == expected.get("published_at")):
-                      print("Verified public FX feed:", live["snapshot_at"], url)
+                      page_url = urllib.parse.urljoin(base, "index.html") + "?verify=" + os.environ["GITHUB_RUN_ID"]
+                      page_req = urllib.request.Request(page_url, headers={"Cache-Control": "no-cache"})
+                      with urllib.request.urlopen(page_req, timeout=15) as page_response:
+                          page_html = page_response.read().decode("utf-8")
+                      if ("All monitored candidates (today + history)" not in page_html
+                              or "AUTOMATED_RESEARCH_PRIORITY" not in page_html):
+                          last_error = "Published HTML missing all-candidate default or ranked-watch display"
+                          print(f"Pages readback {attempt+1}/12: {last_error}", flush=True)
+                          time.sleep(6)
+                          continue
+                      print("Verified public FX feed and HTML:", live["snapshot_at"], page_url)
                       sys.exit(0)
                   last_error = ("Stale site: live snapshot "
                                 + str(live.get("snapshot_at")) + ", expected "
