@@ -44,11 +44,11 @@ vm.runInNewContext(script,ctx);
 await new Promise(resolve=>setImmediate(resolve));
 const $=id=>map.get(id);
 assert.equal($("screened").textContent,String(Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length));
-assert.equal($("completedCount").textContent,"3 trades");
-assert.equal($("realisedPnl").textContent,"+£117.24");
+assert.equal($("completedCount").textContent,"4 trades");
+assert.equal($("realisedPnl").textContent,"+£125.24");
 assert.equal($("openSnapshotPnl").textContent,"£0.00");
 assert.equal($("accountSnapshotBalance").textContent,"£1117.24");
-assert.equal($("outcomesRows").children.length,3);
+assert.equal($("outcomesRows").children.length,4);
 assert.match($("outcomesLearning").textContent,/PENDING/);
 assert.equal($("rows").children.length,Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length);
 assert.equal($("picks").children.length,Math.min(4,feed.priorities.filter(x=>x.pair!=="GBP_ZAR").length));
@@ -92,8 +92,10 @@ for(const fn of timers)fn();
 assert.equal($("verdict").textContent,"NO DATA");
 assert.equal($("entryState").textContent,"NO ENTRY");
 assert.match($("health").textContent,/STALE DATA/);
-assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.length,
-  "All recorded shortlist quotes must become stale without a new published feed");
+assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
+    ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
+    t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) && Number(t.entry)>0 && Number(t.stop)>0 && Number(t.tp1)>0).length,
+  "Only todays priced assessment plans are shown; stale quotes must not be treated as current");
 assert.match($("researchCards").children[0].className,/setupstale/,"Stale model levels are visibly disabled");
 assert.match($("alert").children[0].textContent,/NO LIVE ENTRY/);
 console.log("FX dashboard passed: full-universe chart selector, 10 indicators, shortlist, scanner, news, local journal, stale fail-closed.");

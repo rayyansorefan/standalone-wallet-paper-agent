@@ -68,7 +68,9 @@ test('visual long/short cards fail closed and show entry stop TP1 and price-move
   assert.match(page, /NO LIVE ENTRY/);
 });
 test('all shortlisted candidates have one consolidated hourly-performance view', () => {
-  assert.match(page, /All shortlisted candidates · hourly comparison/);
+  assert.match(page, /Today.s monitored trades/);
+  assert.match(page, /unpriced rankings excluded/);
+  assert.match(page, /SCHEDULED_MAIN_ASSESSMENT/);
   assert.match(page, /id="paperScope"/);
   assert.match(page, /function renderPaperAudit\(\)/);
   assert.match(page, /FIRST_OBSERVED_QUOTE/);
@@ -106,21 +108,22 @@ test('crypto trading UI and execution scripts absent', () => {
 test('separate Pepperstone demo evidence is accurate, attributed and never counted as an entry approval', () => {
   const outcomes = JSON.parse(fs.readFileSync('docs/trade-outcomes.json', 'utf8'));
   assert.equal(outcomes.schema, 1);
-  assert.match(outcomes.account_type, /DEMO/);
-  assert.equal(outcomes.trades.length, 3);
-  assert.equal(new Set(outcomes.trades.map(t => t.key)).size, 3);
+  assert.match(outcomes.account_type, /PEPPERSTONE/);
+  assert.equal(outcomes.trades.length, 4);
+  assert.equal(new Set(outcomes.trades.map(t => t.key)).size, 4);
   const closed = outcomes.trades.filter(t => t.status === 'CLOSED');
   const open = outcomes.trades.filter(t => t.status === 'OPEN_AT_SNAPSHOT');
-  assert.equal(closed.length, 3);
+  assert.equal(closed.length, 4);
   assert.equal(open.length, 0);
-  assert.equal(Number(closed.reduce((s, t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 117.24);
+  assert.equal(Number(closed.reduce((s, t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 125.24);
   assert.equal(outcomes.trades[2].prior_floating_snapshot.unrealised_pnl_gbp, 55.90);
   assert.equal(outcomes.account_snapshot.equity_gbp, 1117.24);
   assert.equal(outcomes.account_snapshot.used_margin_gbp, 0);
   assert.equal(outcomes.account_snapshot.open_positions, 0);
   assert.equal(Number((outcomes.trades[2].entry_price-outcomes.trades[2].exit_price)*100).toFixed(2), '43.00');
   assert.ok(outcomes.trades.every(t => t.signal_id === null && t.signal_match === 'PENDING'));
-  assert.ok(outcomes.trades.every(t => ['USD_JPY','GBP_JPY'].includes(t.instrument)));
+  assert.ok(outcomes.trades.every(t => ['USD_JPY','GBP_JPY','EUR_USD'].includes(t.instrument)));
+  assert.equal(outcomes.trades[3].realised_pnl_gbp, 8);
   assert.equal(Object.hasOwn(feed, 'demo_trades'), false, 'research feed must remain unchanged');
   assert.match(page, /id="demoOutcomesPanel"/);
   assert.match(page, /id="outcomesRows"/);
