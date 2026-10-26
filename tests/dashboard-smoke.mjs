@@ -102,6 +102,6 @@ assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audi
     (!t.expires_at || Date.parse(t.expires_at)>Date.now()) &&
     Number(t.entry)>0 && Number(t.stop)>0 && Number(t.tp1)>0).length,
   "Only todays priced assessment plans are shown; stale quotes must not be treated as current");
-assert.match($("researchCards").children[0].className,/setupstale/,"Stale model levels are visibly disabled");
+assert.match($("researchCards").children[0].className, feed.research_setups.length ? /setupstale/ : /setupempty/,"Stale model levels are disabled or no setups exist");
 assert.match($("alert").children[0].textContent,/NO LIVE ENTRY/);
 console.log("FX dashboard passed: full-universe chart selector, 10 indicators, shortlist, scanner, news, local journal, stale fail-closed.");
