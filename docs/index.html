@@ -197,6 +197,10 @@ body{background:#07111f;color:#edf5ff}
       <div class="outcomekpi"><small>Quotes checked recently</small><strong id="paperTodayCount">—</strong></div>
     </div>
     <div id="paperToday" class="audit-live-grid"><p class="small">Loading today's planned trades…</p></div>
+    <div class="audit-toolbar" style="margin-top:18px"><b>HOURLY RESEARCH OBSERVATIONS · NOT TRADES</b><label for="hourlyCohortScope">SHOW <select id="hourlyCohortScope"><option value="LATEST">Latest assessment</option><option value="TODAY" selected>All today</option><option value="ALL">Available history</option></select></label></div>
+    <p class="small" id="hourlyCohortSummary">Loading timestamped research observations…</p>
+    <div id="hourlyCohortCards" class="audit-live-grid"></div>
+    <p class="small">Each row is a separately timestamped directional hypothesis. The percentage is hypothetical OANDA underlying price movement since the frozen first observation, not an entry, fill or account return. Historical data cannot be reconstructed for previously unrecorded hours.</p>
     <p class="small" id="paperMethod">Monitoring proposed entry prices; no position assumed.</p>
     <p class="small" id="paperStrategy"></p>
   </div>
@@ -328,7 +332,53 @@ function macro(){const srcGood=feed.sources.filter(s=>s.status==="OK").length;el
 el("headlines").replaceChildren(...feed.headlines.slice(0,10).map(h=>{const d=make("div",undefined,"newsitem"),a=make("b");try{const u=new URL(h.url);if(["https:","http:"].includes(u.protocol)){const link=make("a",h.title);link.href=u.href;link.rel="noopener noreferrer";link.target="_blank";a.append(link)}else a.textContent=h.title}catch{a.textContent=h.title}d.append(a,make("small",h.source+" · "+uk(h.time)+" · Unverified headline"));return d}));
 const es=feed.calendar.filter(x=>Date.parse(x.time)>Date.now()-1800000).slice(0,18);el("events").replaceChildren(...(es.length?es.map(v=>{const e=make("div",undefined,"event");e.append(make("span",uk(v.time)),make("b",v.currency));const d=make("div");d.append(make("b",v.title+(String(v.impact).toLowerCase()==="high"?" ⚠":"")),make("small",(v.forecast?" Forecast "+v.forecast:"")+(v.official?" · Official verified":" · Third-party calendar")));e.append(d);return e}):[make("p","No forthcoming events in the saved feed. This is NOT proof of a clear calendar.","small")]));}
 
+function renderHourlyCohorts(){
+  const holder=el("hourlyCohortCards"),summary=el("hourlyCohortSummary"),scope=el("hourlyCohortScope");
+  if(!holder||!summary||!scope)return;
+  const rows=(feed?.learning?.paper_audit?.candidates||[]).filter(t=>
+    t.source==="AUTOMATED_RESEARCH_PRIORITY"&&visiblePair(t.instrument));
+  const londonDate=v=>{try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(v))}catch{return ""}};
+  const today=londonDate(Date.now());
+  const dayRows=rows.filter(t=>londonDate(t.created_at)===today);
+  const latestTime=dayRows.length?Math.max(...dayRows.map(t=>Date.parse(t.created_at)||0)):0;
+  const selected=(scope.value==="ALL"?rows:scope.value==="LATEST"?
+    dayRows.filter(t=>Date.parse(t.created_at)===latestTime):dayRows)
+    .slice().sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
+  scope.onchange=renderHourlyCohorts;
+  summary.textContent=dayRows.length+" observations today across "+new Set(dayRows.map(t=>t.created_at)).size+
+    " recorded assessments · "+selected.length+" shown · "+
+    "last collector "+uk(feed.snapshot_at)+
+    ". Research watches are NOT broker positions.";
+  if(!selected.length){holder.replaceChildren(make("p","No timestamped research observations in this selection. Future hourly snapshots will be recorded independently; earlier hours cannot be backfilled.","small"));return}
+  holder.replaceChildren(...selected.map(t=>{
+    const card=make("div",undefined,"audit-card"),head=make("div",undefined,"audit-card-head");
+    const pair=make("b",t.instrument.replace("_","/")+" "+t.direction);
+    const meta=make("small",uk(t.created_at)+" · "+(t.technical_context?.assessment_kind||"RESEARCH")+
+      " · WATCH ONLY");
+    head.append(pair,meta);
+    const track=t.tracking||{},quote=feed.pairs?.[t.instrument]?.quote||{};
+    const fresh=quote.time&&Number.isFinite(Date.parse(quote.time))&&
+      Math.abs(Date.now()-Date.parse(quote.time))<=4200000;
+    const price=fresh?Number(t.direction==="SHORT"?quote.ask:quote.bid):Number(track.price);
+    const base=Number(track.reference_price);
+    const recorded=Number(track.move_pct);
+    const pct=Number.isFinite(base)&&base>0&&Number.isFinite(price)&&price>0?
+      (t.direction==="SHORT"?(base-price):(price-base))/base*100:
+      (Number.isFinite(recorded)?recorded:null);
+    const line=make("div",undefined,"audit-card-body");
+    line.append(make("p",(pct===null?"Movement unavailable":(pct>=0?"+":"")+pct.toFixed(3)+"% hypothetical movement")+
+      " · "+(fresh?"fresh OANDA quote":"LAST KNOWN / STALE")),
+      make("small","Exit-side price "+(Number.isFinite(price)&&price>0?price.toFixed(t.instrument.endsWith("JPY")?3:5):"unavailable")+
+      " · baseline "+(Number.isFinite(base)&&base>0?base.toFixed(t.instrument.endsWith("JPY")?3:5):"unavailable")+
+      " · "+(fresh?uk(quote.time):uk(track.quote_at||t.created_at))),
+      make("small","Paper: "+(t.status||"UNTESTABLE")+
+      " · No confirmed entry, stop or target from a directional priority watch."));
+    card.append(head,line);return card;
+  }));
+}
+
 function renderPaperAudit() {
+  renderHourlyCohorts();
   const audit = feed?.learning?.paper_audit;
   const holder = el("paperToday");
   if (!audit || !Array.isArray(audit.candidates)) {
