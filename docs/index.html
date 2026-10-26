@@ -291,7 +291,7 @@ function renderPaperAudit(){
  });
  el("paperRows").replaceChildren(...rows);
  el("paperMethod").textContent=(p.method||"Read-only OANDA paper replay")+
-  " Every result is a simulation, not a verified Pepperstone fill. Updated "+(p.updated_at?uk(p.updated_at):"unknown")+".";
+  " "+(p.cost_policy||"No broker costs verified.")+" Updated "+(p.updated_at?uk(p.updated_at):"unknown")+".";
  const strategies=Object.entries(p.strategy||{});
  const summary=strategies.map(([name,v])=>name+": "+v.count+" scored; "+v.wins+" positive; "+n(v.total_r,2)+"R"+
   (v.eligible_for_reinforcement?" · eligible for further validation":" · too little evidence"));
