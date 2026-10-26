@@ -96,12 +96,22 @@ for(const fn of timers)fn();
 assert.equal($("verdict").textContent,"NO DATA");
 assert.equal($("entryState").textContent,"NO ENTRY");
 assert.match($("health").textContent,/STALE DATA/);
-assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
-    ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
-    t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) &&
-    (!t.expires_at || Date.parse(t.expires_at)>Date.now()) &&
-    Number(t.entry)>0 && Number(t.stop)>0 && Number(t.tp1)>0).length,
-  "Only todays priced assessment plans are shown; stale quotes must not be treated as current");
-assert.match($("researchCards").children[0].className, feed.research_setups.length ? /setupstale/ : /setupempty/,"Stale model levels are disabled or no setups exist");
+const pricedMain = feed.learning.paper_audit.candidates.filter(t =>
+  ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
+  t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) &&
+  (!t.expires_at || Date.parse(t.expires_at)>at.now) &&
+  Number(t.entry)>0 && Number(t.stop)>0 && Number(t.tp1)>0 &&
+  (t.direction==="LONG" ? t.stop<t.entry && t.entry<t.tp1 :
+   t.direction==="SHORT" && t.tp1<t.entry && t.entry<t.stop));
+assert.equal($("paperTodayCount").textContent,"0 / "+pricedMain.length,
+  "Stale quotes cannot count as recently checked; expired plans must not count as current");
+assert.equal($("paperToday").children.length,pricedMain.length || 1,
+  "Current main-assessment panel must contain only unexpired plans or a no-plans notice");
+assert.equal($("researchCards").children.length,1,
+  "Stale research levels must not continue occupying live setup cards");
+assert.match($("researchCards").children[0].className,/setupempty/,
+  "The current setup panel must replace stale prices with a safe empty state");
+assert.match($("researchCards").children[0].textContent,/stale|Await a new verified/i,
+  "The user must see why stale setup levels were removed");
 assert.match($("alert").children[0].textContent,/NO LIVE ENTRY/);
 console.log("FX dashboard passed: full-universe chart selector, 10 indicators, shortlist, scanner, news, local journal, stale fail-closed.");
