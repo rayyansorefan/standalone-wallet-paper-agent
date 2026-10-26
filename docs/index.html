@@ -95,6 +95,8 @@ body{background:#07111f;color:#edf5ff}
  .kpi{min-height:125px;padding:14px}
  .kpi strong{font-size:26px}
 }
+
+.audit-live-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:13px;margin:14px 0 18px}.audit-live-card{border:1px solid #31506a;border-radius:13px;background:#0b1d30;padding:16px;min-width:0}.audit-live-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.audit-live-head b{font-size:17px}.audit-tag{color:#f9cf93;background:#3d2b21;border:1px solid #816142;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:800}.audit-move{font-size:34px;font-weight:900;letter-spacing:-1px;margin:9px 0 0}.audit-live-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 8px}.audit-live-levels>div{padding:8px;border:1px solid #2d445c;border-radius:8px}.audit-live-levels small{display:block;color:#93b0c6;font-size:10px}.audit-live-levels b{display:block;font-size:13px}.audit-hourly-path{margin-top:10px;border-top:1px solid #26415a;padding-top:10px}.audit-hourly-chips{display:flex;gap:6px;overflow-x:auto;padding:7px 0 2px}.audit-hourly-chip{white-space:nowrap;padding:5px 7px;border-radius:6px;border:1px solid #345a73;color:#d9ecff;font-size:11px;background:#102a3d}.audit-archive{margin:17px 0;padding:10px 12px;border:1px solid #2d465e;border-radius:10px}.audit-archive>summary{cursor:pointer;font-weight:800;color:#9cdef6}.audit-archive .outcometable{margin-top:12px}.audit-details{min-width:210px;padding:8px 5px;color:#b5cde1;font-size:11px}.audit-details p{margin:5px 0}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -109,7 +111,7 @@ body{background:#07111f;color:#edf5ff}
     <a href="#charts"><span aria-hidden="true">◷</span> Chart analysis</a>
     <a href="#scanner"><span aria-hidden="true">▤</span> Pair scanner</a>
     <a href="#news"><span aria-hidden="true">◉</span> News &amp; calendar</a>
-    <a href="#learning"><span aria-hidden="true">▧</span> Learning journal</a>
+    <a href="#learning"><span aria-hidden="true">▧</span> Opportunity tracker</a>
   </nav>
   <div class="side-foot"><span class="research-dot"></span><b>Research only</b><small>OANDA source · manual Pepperstone checks · no automated orders</small></div>
 </aside>
@@ -145,18 +147,19 @@ body{background:#07111f;color:#edf5ff}
 <section class="section" id="charts"><div class="heading"><div><h2>Charts across all key timeframes</h2><p>Every quoted pair: M15/H1 close-bar charts. Strongest audited pairs: additional M5/H4/D1 history and expanded indicators. OANDA prices are research-only.</p></div><span class="label">M1 · M5 · M15 · M30 · H1 · H4 · D1 · W1 · MN</span></div><div class="two"><div class="panel"><div class="panelhead"><div><h3 id="chartName">Multi-timeframe price action</h3><div class="small" id="chartTime">Select instrument</div></div><div class="controls"><select id="pair" aria-label="Currency pair"></select><div id="frames" class="controls"></div></div></div><div class="chartbox"><svg id="chart" viewBox="0 0 910 340" role="img" aria-label="Historical candlestick chart"></svg></div><div class="small" id="chartFoot">OANDA historical candles—not current Pepperstone executable prices.</div></div><div class="panel"><div class="panelhead"><h3>Technical confluence</h3><div class="small">Independent indicators</div></div><div class="indicators" id="indicators"></div><div class="decision"><b id="entryState">WAIT</b><p id="entryDetail">No approved and freshly confirmed entry.</p></div><p class="small" id="brokerCaution">Pepperstone symbols and spreads are not verified.</p></div></div></section>
 <section class="section" id="scanner"><div class="heading"><div><h2>Currency-pair scanner</h2><p>OANDA pair universe filtered for confirmed Pepperstone exclusions. Availability of other broker symbols is not guaranteed.</p></div><span class="label" id="scannerLabel">FULL UNIVERSE</span></div><div class="panel"><div class="panelhead"><h3>M15 & H1 signals</h3><input id="filter" type="search" placeholder="Search e.g. EURUSD" style="background:#172d47;padding:8px 12px;border:1px solid #375572;border-radius:8px"></div><div class="tablewrap"><table><thead><tr><th>Pair</th><th>OANDA bid / ask</th><th>Spread (pips)</th><th>M15 RSI</th><th>M15 ADX</th><th>H1 RSI</th><th>Alignment</th><th>Entry</th></tr></thead><tbody id="rows"></tbody></table></div></div></section>
 <section class="section" id="news"><div class="heading"><div><h2>FX news & economic calendar</h2><p>Headline scans are unverified research leads; official primary releases must be confirmed independently.</p></div><span class="label" id="newsLabel">PARTIAL COVERAGE</span></div><div class="two"><div class="panel"><div class="panelhead"><h3>Latest relevant headlines</h3><div class="small" id="newsTime"></div></div><div id="headlines" class="scroll"></div></div><div class="panel"><div class="panelhead"><h3>Forthcoming macro events</h3><div class="small">UK time</div></div><div id="events" class="scroll"></div><p class="small">Third-party calendar times and consensus are not official-source verification. Block entries around unverified high-impact events rather than assuming safety.</p></div></div></section>
-<section class="section" id="learning"><div class="heading"><div><h2>Learn from winners and losses</h2><p>Reinforce successful confluence only after fair outcome measurement; eliminate repeated failure modes and distinguish missed entries from losses.</p></div><span class="label">FORWARD EVIDENCE FIRST</span></div><div class="methods"><div class="method"><b>01 · Preserve original signals</b><p>Keep immutable creation, trigger, stop, TP, expiry and news blackout; never alter yesterday’s setup to fit today’s price.</p></div><div class="method"><b>02 · Audit every outcome</b><p>Review confirmed entry, false breakouts, stops, targets, costs and winning as well as losing ideas. Broker P&amp;L only from verified fills.</p></div><div class="method"><b>03 · Reinforce carefully</b><p>Analyse recurring characteristics of favourable and poor trades over meaningful samples; prevent hindsight bias and test proposed improvements forward.</p></div></div><div class="panel" style="margin-top:15px" id="paperAuditPanel">
- <div class="panelhead"><div><h3>Missed opportunities · paper-trade evidence</h3><p class="small">Frozen original plans, replayed on subsequent OANDA M15 bid/ask candles. Separate from the live Pepperstone account.</p></div><span class="label" id="paperAsOf">AWAITING AUDIT</span></div>
+<section class="section" id="learning"><div class="heading"><div><h2>Learn from winners and losses</h2><p>Reinforce successful confluence only after fair outcome measurement; eliminate repeated failure modes and distinguish missed entries from losses.</p></div><span class="label">FORWARD EVIDENCE FIRST</span></div><p class="small" style="margin-bottom:10px">Original trade ideas are preserved; the hourly system checks price, entry conditions, stop and target without assuming a real fill.</p><div class="panel" style="margin-top:15px" id="paperAuditPanel">
+ <div class="panelhead"><div><h3>Hourly FX opportunity tracker</h3><p class="small">How shortlisted prices move from their original entry, whether or not an entry triggered.</p></div><span class="label" id="paperAsOf">AWAITING AUDIT</span></div>
+ <div id="paperToday" class="audit-live-grid"><p class="small">Loading today's tracked candidates...</p></div>
  <div class="outcomekpis">
-  <div class="outcomekpi"><small>Recorded candidates</small><strong id="paperCandidates">—</strong></div>
-  <div class="outcomekpi"><small>Scored paper exits</small><strong id="paperScored">—</strong></div>
-  <div class="outcomekpi"><small>Paper W / L</small><strong id="paperWins">—</strong></div>
-  <div class="outcomekpi"><small>Scenario total (R)</small><strong id="paperTotalR">—</strong></div>
+  <div class="outcomekpi"><small>All recorded ideas</small><strong id="paperCandidates">—</strong></div>
+  <div class="outcomekpi"><small>Completed paper tests</small><strong id="paperScored">—</strong></div>
+  <div class="outcomekpi"><small>Wins / losses</small><strong id="paperWins">—</strong></div>
+  <div class="outcomekpi"><small>Today's researched ideas</small><strong id="paperTodayCount">—</strong></div>
  </div>
- <div class="outcometable"><table><thead><tr><th>Original signal (UK)</th><th>Pair · side</th><th>Entry</th><th>Stop</th><th>TP1 / TP2</th><th>Paper result</th><th>Result R</th><th>MAE / MFE (R)</th><th>Exit (UK)</th></tr></thead><tbody id="paperRows"></tbody></table></div>
- <p class="small" id="paperMethod">Loading verified model audit...</p>
- <div id="paperStrategy" class="small" style="margin-top:10px"></div>
- <p class="outcomenote">Only entries confirmed under the original rules are scored. Untriggered, missing-source, incomplete and ambiguous OHLC cases are <b>not losses or wins</b>. Your reported 3/3 live results remain separate until matched to original signal IDs and fills. Historical paper results cannot establish a profitable edge.</p>
+ <details class="audit-archive"><summary>Show original plans and historical results</summary><div class="outcometable"><table><thead><tr><th>Candidate</th><th>Side</th><th>Status</th><th>Price move</th><th>Details</th></tr></thead><tbody id="paperRows"></tbody></table></div></details>
+ <p class="small" id="paperMethod">Loading percentage observations...</p>
+ <p id="paperStrategy" class="small"></p>
+ <p class="outcomenote">A favourable percentage on an untriggered watch is <b>not profit</b>. It shows only the hypothetical move from the suggested entry. Your reported live results are separate until matched to verified executions.</p>
 </div><div class="panel" style="margin-top:15px" id="demoOutcomesPanel"><div class="panelhead"><div><h3>Research-informed demo trades · outcome evidence</h3><p class="small">Read-only screenshot records · independent of live OANDA research feed</p></div><span class="label" id="outcomesAsOf">LOADING HISTORY</span></div><div class="outcomekpis"><div class="outcomekpi"><small>Completed demo trades</small><strong id="completedCount">—</strong></div><div class="outcomekpi"><small>Realised demo P&amp;L</small><strong id="realisedPnl">—</strong></div><div class="outcomekpi"><small>Open P&amp;L · last screenshot</small><strong id="openSnapshotPnl" class="outcomeopen">—</strong></div><div class="outcomekpi"><small>Demo balance · last screenshot</small><strong id="accountSnapshotBalance">—</strong></div></div><div class="outcometable"><table><thead><tr><th>Instrument</th><th>Direction</th><th>Position status</th><th>P&amp;L</th><th>Observed (UK)</th><th>Signal match</th></tr></thead><tbody id="outcomesRows"></tbody></table></div><p class="small" id="outcomesSource">Reading evidence...</p><p class="outcomenote" id="outcomesLearning">These observations do not yet establish predictive accuracy or validate entry signals.</p></div><div class="panel" style="margin-top:15px"><h3>Personal trade journal · saved on this device</h3><p class="small">Optional self-reported win/loss notes, stored in your browser only. Not broker-verified.</p><form class="journal" id="journal"><select id="journalPair" aria-label="Traded currency pair"></select><select id="outcome" aria-label="Result"><option>WIN</option><option>LOSS</option><option>BREAKEVEN</option><option>NOT_TAKEN</option></select><input id="note" maxlength="200" placeholder="What worked or failed?" style="background:#172d47;padding:8px 12px;border-radius:8px;border:1px solid #375572"><button type="submit">Log outcome</button></form><p class="small" id="learningSummary">No verified outcomes are recorded.</p></div></section>
 <footer class="footer">RESEARCH ONLY · This site does not execute trades, connect to Pepperstone, or guarantee a daily trade count. OANDA practice quotes are indicative. The private OANDA research collector and ChatGPT's hourly notifications are separate from this static site. Public sanitized snapshots may be stale; the page blocks entry labels after 70 minutes. This site cannot issue ChatGPT push alerts. © FX Intelligence.</footer>
 </main></div></div><script>
@@ -258,46 +261,148 @@ function macro(){const srcGood=feed.sources.filter(s=>s.status==="OK").length;el
 el("headlines").replaceChildren(...feed.headlines.slice(0,10).map(h=>{const d=make("div",undefined,"newsitem"),a=make("b");try{const u=new URL(h.url);if(["https:","http:"].includes(u.protocol)){const link=make("a",h.title);link.href=u.href;link.rel="noopener noreferrer";link.target="_blank";a.append(link)}else a.textContent=h.title}catch{a.textContent=h.title}d.append(a,make("small",h.source+" · "+uk(h.time)+" · Unverified headline"));return d}));
 const es=feed.calendar.filter(x=>Date.parse(x.time)>Date.now()-1800000).slice(0,18);el("events").replaceChildren(...(es.length?es.map(v=>{const e=make("div",undefined,"event");e.append(make("span",uk(v.time)),make("b",v.currency));const d=make("div");d.append(make("b",v.title+(String(v.impact).toLowerCase()==="high"?" ⚠":"")),make("small",(v.forecast?" Forecast "+v.forecast:"")+(v.official?" · Official verified":" · Third-party calendar")));e.append(d);return e}):[make("p","No forthcoming events in the saved feed. This is NOT proof of a clear calendar.","small")]));}
 
-function renderPaperAudit(){
- const p=feed?.learning?.paper_audit;
- if(!p||p.schema!==1||!Array.isArray(p.candidates)){
-  el("paperAsOf").textContent="NOT PUBLISHED";
-  el("paperMethod").textContent="No verified research-paper ledger has been published.";
-  return;
- }
- const total=p.totals||{};
- el("paperAsOf").textContent=p.updated_at?"CHECKED "+uk(p.updated_at):"NOT YET CHECKED";
- el("paperCandidates").textContent=String(total.candidates??p.candidates.length);
- el("paperScored").textContent=String(total.scored??0);
- el("paperWins").textContent=String(total.wins??0)+" / "+String(total.losses??0);
- el("paperTotalR").textContent=Number.isFinite(total.net_r)?((total.net_r>0?"+":"")+n(total.net_r,2)+" R"):"—";
- const order=[...p.candidates].sort((a,b)=>Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
- const statusName={WIN_TP1:"TP1 HIT · PAPER WIN",LOSS_STOP:"STOP HIT · PAPER LOSS",TIME_EXIT:"96-BAR TIME EXIT",OPEN:"PAPER POSITION OPEN",UNTRIGGERED:"EXPIRED · NO TRIGGER",TRIGGERED_UNFILLED:"TRIGGERED · NOT FILLED",INVALIDATED_PRE_ENTRY:"INVALIDATED · NO ENTRY",AMBIGUOUS_ENTRY_BAR:"AMBIGUOUS ENTRY CANDLE",AMBIGUOUS_EXIT_BAR:"AMBIGUOUS STOP / TP",DATA_GAP:"HISTORY GAP",DATA_UNAVAILABLE:"PRICE DATA UNAVAILABLE",UNTESTABLE:"INCOMPLETE ORIGINAL SIGNAL",PENDING_TRIGGER:"AWAITING M15 TRIGGER",NOT_EVALUATED:"NOT YET AUDITED"};
- const rows=order.map(t=>{
-  const tr=make("tr");
-  const status=statusName[t.status]||t.status||"UNKNOWN";
-  const direction=(t.direction||"?");
-  const side=(t.instrument||"?").replace("_","/")+" "+direction;
-  const result=Number.isFinite(t.net_r)?((t.net_r>0?"+":"")+n(t.net_r,2)+" R"):"—";
-  const entryText=t.entry!==null&&t.entry!==undefined?money(t.entry):t.entry_low!=null&&t.entry_high!=null?money(t.entry_low)+"–"+money(t.entry_high):"—";
-  const cells=[uk(t.created_at),side,entryText,money(t.stop),money(t.tp1)+" / "+money(t.tp2),status,result,Number.isFinite(t.mae_r)&&Number.isFinite(t.mfe_r)?n(t.mae_r,2)+" / "+n(t.mfe_r,2):"—",t.at?uk(t.at):"—"];
-  for(let i=0;i<cells.length;i++){
-   const cell=make("td",cells[i]);
-   if(i===5||i===6)cell.className=t.status==="WIN_TP1"?"good":t.status==="LOSS_STOP"?"bad":"";
-   tr.append(cell);
+function renderPaperAudit() {
+  const p = feed?.learning?.paper_audit;
+  const todayHolder = el("paperToday");
+  if (!p || p.schema !== 1 || !Array.isArray(p.candidates)) {
+    el("paperAsOf").textContent = "AUDIT NOT AVAILABLE";
+    el("paperMethod").textContent = "No verified paper-audit data has been published.";
+    todayHolder.replaceChildren(make("p", "No tracked candidates available.", "small"));
+    return;
   }
-  tr.title=(t.rationale||"")+" | "+(t.reason||"")+" | source "+(t.source||"unknown");
-  return tr;
- });
- el("paperRows").replaceChildren(...rows);
- el("paperMethod").textContent=(p.method||"Read-only OANDA paper replay")+
-  " "+(p.cost_policy||"No broker costs verified.")+" Updated "+(p.updated_at?uk(p.updated_at):"unknown")+".";
- const strategies=Object.entries(p.strategy||{});
- const summary=strategies.map(([name,v])=>name+": "+v.count+" scored; "+v.wins+" positive; "+n(v.total_r,2)+"R"+
-  (v.eligible_for_reinforcement?" · eligible for further validation":" · too little evidence"));
- el("paperStrategy").textContent=summary.length?"Strategy cohorts — "+summary.join(" | "):
-  "Strategy cohorts — insufficient scored entries to estimate an edge. No strategy weights changed.";
+  const pct = (v) => v != null && Number.isFinite(Number(v))
+    ? (Number(v) >= 0 ? "+" : "") + Number(v).toFixed(4) + "%"
+    : "—";
+  const day = (t) => new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit"
+  }).format(new Date(t));
+  const clock = (t) => new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London", hour: "2-digit", minute: "2-digit", hour12: false
+  }).format(new Date(t));
+  const names = {
+    WIN_TP1: "Target reached", LOSS_STOP: "Stop-loss reached",
+    TIME_EXIT: "Time exit", OPEN: "Paper position open",
+    UNTRIGGERED: "Expired · no entry", TRIGGERED_UNFILLED: "Confirmed · not filled",
+    INVALIDATED_PRE_ENTRY: "Cancelled before entry",
+    AMBIGUOUS_ENTRY_BAR: "Entry uncertain", AMBIGUOUS_EXIT_BAR: "Exit uncertain",
+    DATA_GAP: "Candle history gap", DATA_UNAVAILABLE: "Replay incomplete",
+    UNTESTABLE: "Original plan incomplete",
+    PENDING_TRIGGER: "Awaiting entry confirmation", NOT_EVALUATED: "Not yet audited"
+  };
+  const completed = new Set(["WIN_TP1", "LOSS_STOP", "TIME_EXIT"]);
+  const active = new Set(["OPEN", "PENDING_TRIGGER", "TRIGGERED_UNFILLED",
+    "DATA_GAP", "DATA_UNAVAILABLE"]);
+  const checkFresh = (time) => {
+    const age = Date.now() - Date.parse(time);
+    return Number.isFinite(age) && age >= -300000 && age <= 4200000;
+  };
+  const observed = (t) => {
+    if (completed.has(t.status)) {
+      return { value: t.move_pct, at: t.at, price: t.exit, label: "PAPER EXIT" };
+    }
+    if (!active.has(t.status) || t.entry == null) return { value: null };
+    const tracking = t.tracking || {};
+    if (tracking.state === "NO_VERIFIED_ENTRY" || tracking.state === "PAPER_OPEN") {
+      if (checkFresh(tracking.quote_at)) {
+        return { value: t.move_pct, at: tracking.quote_at,
+          price: tracking.price, label: "OANDA AUDIT" };
+      }
+    }
+    const quote = feed.pairs?.[t.instrument]?.quote;
+    if (quote && quote.tradeable === true && checkFresh(quote.time)) {
+      const entry = Number(t.entry);
+      const price = Number(t.direction === "SHORT" ? quote.ask : quote.bid);
+      if (entry > 0 && Number.isFinite(price)) {
+        const move = (t.direction === "SHORT" ? entry - price : price - entry) / entry * 100;
+        return { value: move, at: quote.time, price, label: "OANDA FEED" };
+      }
+    }
+    return { value: null, at: tracking.quote_at, label: "STALE OR MISSING" };
+  };
+  const order = [...p.candidates].sort((a, b) =>
+    Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0));
+  const recent = order.filter((t) =>
+    visiblePair(t.instrument) && (day(t.created_at) === day(new Date()) || t.status === "OPEN"));
+  const total = p.totals || {};
+  el("paperAsOf").textContent = p.updated_at ? "CHECKED " + uk(p.updated_at) : "NOT CHECKED";
+  el("paperCandidates").textContent = String(total.candidates ?? order.length);
+  el("paperScored").textContent = String(total.scored ?? 0);
+  el("paperWins").textContent = String(total.wins ?? 0) + " / " + String(total.losses ?? 0);
+  el("paperTodayCount").textContent = String(recent.length);
+  const cards = recent.map((t) => {
+    const info = observed(t);
+    const card = make("article", undefined, "audit-live-card");
+    const head = make("div", undefined, "audit-live-head");
+    head.append(make("b", t.instrument.replace("_", "/") + " " + t.direction),
+      make("span", names[t.status] || t.status, "audit-tag"));
+    card.append(head, make("small", "Suggested " + uk(t.created_at), "small"));
+    const metric = make("div", pct(info.value), "audit-move");
+    if (info.value != null) metric.classList.add(info.value >= 0 ? "good" : "bad");
+    card.append(metric, make("div",
+      completed.has(t.status) ? "Simulated price move at exit"
+        : "Price move from suggested entry · NO LIVE POSITION",
+      "small"));
+    const levels = make("div", undefined, "audit-live-levels");
+    for (const [label, value] of [["Entry", t.entry], ["Stop", t.stop], ["TP1", t.tp1]]) {
+      const item = make("div");
+      item.append(make("small", label), make("b", money(value)));
+      levels.append(item);
+    }
+    card.append(levels);
+    card.append(make("p", info.at
+      ? info.label + " · " + money(info.price) + " at " + uk(info.at)
+      : "No fresh OANDA quote to calculate a percentage.", "small"));
+    const marks = (t.tracking?.history || []).filter((m) =>
+      m.move_pct != null && Number.isFinite(Number(m.move_pct))).slice(-8);
+    if (marks.length) {
+      const path = make("div", undefined, "audit-hourly-path");
+      path.append(make("small", "Hourly observations"));
+      const chips = make("div", undefined, "audit-hourly-chips");
+      for (const m of marks) {
+        chips.append(make("span", clock(m.at) + " " + pct(m.move_pct), "audit-hourly-chip"));
+      }
+      path.append(chips);
+      card.append(path);
+    } else {
+      card.append(make("p", "Hourly observations populate after subsequent completed candles.", "small"));
+    }
+    return card;
+  });
+  todayHolder.replaceChildren(...(cards.length ? cards :
+    [make("p", "No new candidates today. The earlier signals are preserved below.", "small")]));
+  const rows = order.filter((t) => visiblePair(t.instrument)).map((t) => {
+    const tr = make("tr");
+    const info = observed(t);
+    const outcome = make("td", names[t.status] || t.status);
+    if (t.status === "WIN_TP1") outcome.className = "good";
+    if (t.status === "LOSS_STOP") outcome.className = "bad";
+    const details = make("details");
+    const summary = make("summary", "See plan");
+    const body = make("div", undefined, "audit-details");
+    const zone = t.entry != null ? money(t.entry)
+      : t.entry_low != null && t.entry_high != null
+        ? money(t.entry_low) + "–" + money(t.entry_high) : "not recovered";
+    body.append(make("div", "Entry: " + zone + " · Stop: " + money(t.stop)
+      + " · TP1: " + money(t.tp1) + " · TP2: " + money(t.tp2)));
+    body.append(make("div", "Original assessment: " + uk(t.created_at)
+      + " · Expiry: " + (t.expires_at ? uk(t.expires_at) : "unknown")));
+    if (t.rationale) body.append(make("p", t.rationale));
+    if (t.reason) body.append(make("p", "Audit note: " + t.reason));
+    details.append(summary, body);
+    const detailCell = make("td");
+    detailCell.append(details);
+    tr.append(make("td", t.instrument.replace("_", "/") + " · " + clock(t.created_at)),
+      make("td", t.direction), outcome, make("td", pct(info.value)), detailCell);
+    return tr;
+  });
+  el("paperRows").replaceChildren(...rows);
+  el("paperMethod").textContent = "Percentages describe currency-pair price movements, not account profit. "
+    + "Pending signals are hypothetical and OANDA prices require live Pepperstone verification.";
+  el("paperStrategy").textContent = (total.scored ?? 0) < 30
+    ? "Learning: too few completed paper trades to change research priorities."
+    : "Learning: only statistically supported, diverse paper outcomes may influence research ranking.";
 }
+
 let outcomeEvidence=null;
 function renderOutcomes(){
  const records=outcomeEvidence.trades,closed=records.filter(t=>t.status==="CLOSED"),open=records.filter(t=>t.status==="OPEN_AT_SNAPSHOT");
