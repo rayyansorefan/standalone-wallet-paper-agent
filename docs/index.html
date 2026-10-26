@@ -279,7 +279,8 @@ function renderPaperAudit(){
   const direction=(t.direction||"?");
   const side=(t.instrument||"?").replace("_","/")+" "+direction;
   const result=Number.isFinite(t.net_r)?((t.net_r>0?"+":"")+n(t.net_r,2)+" R"):"—";
-  const cells=[uk(t.created_at),side,money(t.entry),money(t.stop),money(t.tp1)+" / "+money(t.tp2),status,result,Number.isFinite(t.mae_r)&&Number.isFinite(t.mfe_r)?n(t.mae_r,2)+" / "+n(t.mfe_r,2):"—",t.at?uk(t.at):"—"];
+  const entryText=t.entry!==null&&t.entry!==undefined?money(t.entry):t.entry_low!=null&&t.entry_high!=null?money(t.entry_low)+"–"+money(t.entry_high):"—";
+  const cells=[uk(t.created_at),side,entryText,money(t.stop),money(t.tp1)+" / "+money(t.tp2),status,result,Number.isFinite(t.mae_r)&&Number.isFinite(t.mfe_r)?n(t.mae_r,2)+" / "+n(t.mfe_r,2):"—",t.at?uk(t.at):"—"];
   for(let i=0;i<cells.length;i++){
    const cell=make("td",cells[i]);
    if(i===5||i===6)cell.className=t.status==="WIN_TP1"?"good":t.status==="LOSS_STOP"?"bad":"";
