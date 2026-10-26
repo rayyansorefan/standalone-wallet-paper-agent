@@ -57,15 +57,35 @@ test('UI converts OANDA numeric-string OHLC safely before plotting', () => {
   assert.match(page, /Date\.now\(\)-Date\.parse\(feed\.snapshot_at\)<4200000/);
   assert.match(page, /NO LIVE ENTRY/);
 });
-test('visual long/short cards fail closed and show entry stop TP1 and capped-spread reward risk', () => {
+test('visual long/short cards fail closed and show entry stop TP1 and price-move percentages', () => {
   assert.match(page, /function renderPlans\(\)/);
   assert.match(page, /id="activePlan"/);
-  assert.match(page, /NET R:R|Net R:R at capped spread/);
+  assert.match(page, /Potential TP1 price move/);
+  assert.doesNotMatch(page, /NET R:R|Net R:R at capped spread|Est\. net reward:risk/);
   assert.match(page, /safePlan=/);
   assert.match(page, /quoteFresh\&\&!stale\&\&!blackout/);
   assert.match(page, /WAIT FOR VERIFIED M15 CLOSE/);
   assert.match(page, /NO LIVE ENTRY/);
 });
+test('all shortlisted candidates have one consolidated hourly-performance view', () => {
+  assert.match(page, /All shortlisted candidates · hourly comparison/);
+  assert.match(page, /id="paperScope"/);
+  assert.match(page, /function renderPaperAudit\(\)/);
+  assert.match(page, /FIRST_OBSERVED_QUOTE/);
+  assert.match(page, /ORIGINAL_ZONE_MIDPOINT/);
+  assert.doesNotMatch(page, /id="paperRows"/);
+  assert.doesNotMatch(page, /Net R:R|NET R:R|Result R/);
+  const audit = feed.learning?.paper_audit;
+  assert.ok(audit && Array.isArray(audit.candidates), 'paper-audit shortlist must exist');
+  assert.ok(audit.candidates.length >= 10, 'preserve the original 10 Friday/Monday ideas');
+  assert.ok(audit.candidates.every(c => c.tracking?.history?.length >= 1),
+    'each registered shortlist idea must have a documented observed quote');
+  assert.ok(audit.candidates.every(c => c.id && c.instrument && c.direction),
+    'no unidentified candidate');
+  assert.ok(audit.candidates.every(c => !Object.hasOwn(c,'net_r')),
+    'user-facing feed must not contain R outcome metrics');
+});
+
 test('top directional plans are displayed with labelled entry, stop, targets and fail-closed state', () => {
   assert.match(page, /id="researchCards"/);
   assert.match(page, /function renderResearchSetups\(\)/);
