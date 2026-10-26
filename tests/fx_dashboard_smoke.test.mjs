@@ -69,7 +69,9 @@ test('visual long/short cards fail closed and show entry stop TP1 and price-move
 });
 test('today main-assessment cards show only frozen priced plans and hourly performance', () => {
   assert.match(page, /Today.s monitored trades/);
-  assert.match(page, /unpriced rankings excluded/);
+  assert.match(page, /directional watches shown separately below/);
+  assert.match(page, /const currentPlans = todayPlans.filter\(isCurrent\)/);
+  assert.match(page, /function renderHourlyCohorts\(\)/);
   assert.match(page, /SCHEDULED_MAIN_ASSESSMENT/);
   assert.match(page, /id="paperScope"/);
   assert.match(page, /function renderPaperAudit\(\)/);
