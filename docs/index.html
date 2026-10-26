@@ -187,7 +187,7 @@ body{background:#07111f;color:#edf5ff}
 </main></div></div><script>
 "use strict";
 const el=x=>document.getElementById(x),make=(tag,txt,cl)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=String(txt);if(cl)n.className=cl;return n},uk=t=>{try{return new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(t))+" UK"}catch{return "Unknown"}},n=(x,p=2)=>Number.isFinite(Number(x))&&x!==null?Number(x).toFixed(p):"—",money=x=>n(x,Math.abs(x)>10?3:5);
-let feed=null,pair="",tf="M15",stale=true;
+let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true;
 const pricePct=(side,entry,exit)=>{const e=Number(entry),x=Number(exit);if(!(e>0)||!Number.isFinite(x))return "—";const value=(side==="SHORT"?e-x:x-e)/e*100;return (value>=0?"+":"")+value.toFixed(4)+"%"};
 const HIDDEN_PAIRS=new Set(["GBP_ZAR"]); // User-confirmed unavailable on Pepperstone; retain raw OANDA feed.
 const visiblePair=k=>!HIDDEN_PAIRS.has(k);
