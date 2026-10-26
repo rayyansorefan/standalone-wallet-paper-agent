@@ -75,7 +75,10 @@ assert.ok($("hourlyCohortCards").children.length>=1,
 const visualCard=$("hourlyCohortCards").children[0];
 assert.match(visualCard.className,/current-watch-card/);
 assert.ok(visualCard.children.some(c=>c.tagName==="svg"&&c.attributes?.class==="current-watch-chart"),
-  "Each hourly card must include a rendered visual percentage-movement chart");
+  "Each hourly card must include an SVG chart");
+const completedM15=visualCard.children.find(c=>c.tagName==="svg"&&c.attributes?.class==="current-watch-chart");
+assert.ok(completedM15.children.filter(c=>c.tagName==="rect").length>=6,
+  "New watches must display actual completed M15 candlesticks, not a single flat zero-return line");
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
 assert.equal($("indicators").children.length,10);
