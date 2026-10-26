@@ -153,7 +153,7 @@ body{background:#07111f;color:#edf5ff}
   <div class="outcomekpi"><small>Paper W / L</small><strong id="paperWins">—</strong></div>
   <div class="outcomekpi"><small>Scenario total (R)</small><strong id="paperTotalR">—</strong></div>
  </div>
- <div class="outcometable"><table><thead><tr><th>Original signal (UK)</th><th>Pair · side</th><th>Entry</th><th>Stop</th><th>TP1 / TP2</th><th>Paper result</th><th>Result R</th></tr></thead><tbody id="paperRows"></tbody></table></div>
+ <div class="outcometable"><table><thead><tr><th>Original signal (UK)</th><th>Pair · side</th><th>Entry</th><th>Stop</th><th>TP1 / TP2</th><th>Paper result</th><th>Result R</th><th>MAE / MFE (R)</th><th>Exit (UK)</th></tr></thead><tbody id="paperRows"></tbody></table></div>
  <p class="small" id="paperMethod">Loading verified model audit...</p>
  <div id="paperStrategy" class="small" style="margin-top:10px"></div>
  <p class="outcomenote">Only entries confirmed under the original rules are scored. Untriggered, missing-source, incomplete and ambiguous OHLC cases are <b>not losses or wins</b>. Your reported 3/3 live results remain separate until matched to original signal IDs and fills. Historical paper results cannot establish a profitable edge.</p>
@@ -272,14 +272,14 @@ function renderPaperAudit(){
  el("paperWins").textContent=String(total.wins??0)+" / "+String(total.losses??0);
  el("paperTotalR").textContent=Number.isFinite(total.net_r)?((total.net_r>0?"+":"")+n(total.net_r,2)+" R"):"—";
  const order=[...p.candidates].sort((a,b)=>Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
- const statusName={WIN_TP1:"TP1 HIT · PAPER WIN",LOSS_STOP:"STOP HIT · PAPER LOSS",TIME_EXIT:"24H TIME EXIT",OPEN:"PAPER POSITION OPEN",UNTRIGGERED:"EXPIRED · NO TRIGGER",TRIGGERED_UNFILLED:"TRIGGERED · NOT FILLED",INVALIDATED_PRE_ENTRY:"INVALIDATED · NO ENTRY",AMBIGUOUS_ENTRY_BAR:"AMBIGUOUS ENTRY CANDLE",AMBIGUOUS_EXIT_BAR:"AMBIGUOUS STOP / TP",DATA_GAP:"HISTORY GAP",DATA_UNAVAILABLE:"PRICE DATA UNAVAILABLE",UNTESTABLE:"INCOMPLETE ORIGINAL SIGNAL",PENDING_TRIGGER:"AWAITING M15 TRIGGER",NOT_EVALUATED:"NOT YET AUDITED"};
+ const statusName={WIN_TP1:"TP1 HIT · PAPER WIN",LOSS_STOP:"STOP HIT · PAPER LOSS",TIME_EXIT:"96-BAR TIME EXIT",OPEN:"PAPER POSITION OPEN",UNTRIGGERED:"EXPIRED · NO TRIGGER",TRIGGERED_UNFILLED:"TRIGGERED · NOT FILLED",INVALIDATED_PRE_ENTRY:"INVALIDATED · NO ENTRY",AMBIGUOUS_ENTRY_BAR:"AMBIGUOUS ENTRY CANDLE",AMBIGUOUS_EXIT_BAR:"AMBIGUOUS STOP / TP",DATA_GAP:"HISTORY GAP",DATA_UNAVAILABLE:"PRICE DATA UNAVAILABLE",UNTESTABLE:"INCOMPLETE ORIGINAL SIGNAL",PENDING_TRIGGER:"AWAITING M15 TRIGGER",NOT_EVALUATED:"NOT YET AUDITED"};
  const rows=order.map(t=>{
   const tr=make("tr");
   const status=statusName[t.status]||t.status||"UNKNOWN";
   const direction=(t.direction||"?");
   const side=(t.instrument||"?").replace("_","/")+" "+direction;
   const result=Number.isFinite(t.net_r)?((t.net_r>0?"+":"")+n(t.net_r,2)+" R"):"—";
-  const cells=[uk(t.created_at),side,money(t.entry),money(t.stop),money(t.tp1)+" / "+money(t.tp2),status,result];
+  const cells=[uk(t.created_at),side,money(t.entry),money(t.stop),money(t.tp1)+" / "+money(t.tp2),status,result,Number.isFinite(t.mae_r)&&Number.isFinite(t.mfe_r)?n(t.mae_r,2)+" / "+n(t.mfe_r,2):"—",t.at?uk(t.at):"—"];
   for(let i=0;i<cells.length;i++){
    const cell=make("td",cells[i]);
    if(i===5||i===6)cell.className=t.status==="WIN_TP1"?"good":t.status==="LOSS_STOP"?"bad":"";
