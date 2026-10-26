@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "as_of": "2026-10-26T13:58:11Z",
+  "as_of": "2026-10-26T16:22:59Z",
   "account_type": "PEPPERSTONE_SPREAD_BET_SCREENSHOT_EVIDENCE",
-  "evidence": "User-supplied Pepperstone screenshots: three 23 October closed demo trades, 26 October EUR/USD close, and 26 October GBP/USD spread-bet closure. Prices, commission, swaps and net P&L are transcribed from screenshots, not a broker API.",
+  "evidence": "User-supplied Pepperstone screenshots: three 23 October closed demo trades, 26 October EUR/USD and GBP/USD wins, and 26 October AUD/NZD stop-loss. Prices, fees and P&L are transcribed, not broker-API verified.",
   "signal_linkage": "Research-influenced according to the user, but individual trades remain PENDING linkage to an immutable earlier signal, confirmation and planned entry. Never count them as approved paper fills or use them as strategy-specific training labels until matched.",
-  "notes": "Five profitable closed spread-bet/demo positions evidenced by screenshots; realised P&L is not a forward-tested strategy win rate. The account_snapshot is an older 23 October snapshot and must not be presented as the current balance. The separately observed 26 October AUD/NZD open trade is not included in realised P&L.",
+  "notes": "Six screenshot-evidenced closed trades: five gains and one AUD/NZD stop-out. These are execution observations, not confirmed approved research-signal fills. The account_snapshot is from 23 October and is not a current account balance. No current open-position inventory was provided.",
   "account_snapshot": {
     "observed_at": "2026-10-23T13:34:00Z",
     "balance_gbp": 1117.24,
@@ -101,6 +101,52 @@
       "signal_id": null,
       "signal_match": "PENDING",
       "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT"
+    },
+    {
+      "key": "2026-10-26-audnzd-stop-1622",
+      "instrument": "AUD_NZD",
+      "direction": "LONG",
+      "status": "CLOSED",
+      "opened_at": "2026-10-26T12:30:52Z",
+      "closed_at": "2026-10-26T16:22:59Z",
+      "entry_price": 1.236,
+      "exit_price": 1.2346,
+      "stop_price": 1.2346,
+      "exit_reason": "STOP_LOSS",
+      "realised_pnl_gbp": -7,
+      "net_pnl_gbp": -7,
+      "size_gbp_per_point": 0.5,
+      "commission_gbp": 0,
+      "swap_fees_gbp": 0,
+      "total_fees_gbp": 0,
+      "account_mode": "USER_REPORTED_PEPPERSTONE_DEMO",
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "related_research_plan_id": "20261026-1200-AUDNZD-L-B01-PAPER",
+      "entry_classification": "UNAPPROVED_RESEARCH_WATCH_EXECUTED",
+      "execution_review": {
+        "approved_signal_at_entry": false,
+        "original_plan_entry": 1.2356,
+        "entry_deviation_pips": 4,
+        "original_research_zone": [
+          1.2355,
+          1.2357
+        ],
+        "entry_above_zone_pips": 3,
+        "original_risk_gate": "FAILED_SPREAD_ADJUSTED_TP1_RR",
+        "longer_timeframe_gate": "D1_H4_CONFLICT",
+        "m15_confirmation": "UNVERIFIED",
+        "lesson": "An unapproved paper watch must never be presented as an entry signal. Verify completed-M15 confirmation, broker spread and spread-adjusted reward/risk before entry. One losing trade does not justify changing strategy weights."
+      },
+      "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT"
     }
-  ]
+  ],
+  "execution_review": {
+    "as_of": "2026-10-26T16:22:59Z",
+    "focus_trade_key": "2026-10-26-audnzd-stop-1622",
+    "status": "UNAPPROVED_RESEARCH_WATCH_EXECUTED",
+    "finding": "AUD/NZD long was a paper watch, not an approved signal; actual entry was 4.0 pips above planned 1.23560 and above the proposed zone. The candidate was excluded from signals.json due to failed spread-adjusted TP1 reward/risk and conflicting D1/H4 structure; a completed M15 rejection at entry has not been evidenced.",
+    "action": "Require explicit signal approval and completed M15/broker spread verification. Retain this outcome for execution-quality and missed-gate audits; do not automatically recalibrate entry thresholds from one trade.",
+    "signal_match": "PENDING"
+  }
 }

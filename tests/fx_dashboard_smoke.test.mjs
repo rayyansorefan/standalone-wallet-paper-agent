@@ -132,6 +132,29 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
    assert.equal(gbpUsd.net_pnl_gbp, 8.95);
    assert.equal(gbpUsd.commission_gbp, 0);
    assert.equal(gbpUsd.swap_fees_gbp, 0);
+   const audLoss = outcomes.trades.find(t => t.key === '2026-10-26-audnzd-stop-1622');
+   assert.ok(audLoss, 'closed AUD/NZD stop-loss evidence must be retained');
+   assert.equal(audLoss.entry_price, 1.236);
+   assert.equal(audLoss.exit_price, 1.2346);
+   assert.equal(audLoss.realised_pnl_gbp, -7);
+   assert.equal(audLoss.exit_reason, 'STOP_LOSS');
+   assert.equal(audLoss.entry_classification, 'UNAPPROVED_RESEARCH_WATCH_EXECUTED');
+   assert.equal(audLoss.execution_review.entry_deviation_pips, 4);
+   assert.equal(outcomes.trades.length, 6);
+   assert.equal(closed.filter(t => t.realised_pnl_gbp > 0).length, 5);
+   assert.equal(closed.filter(t => t.realised_pnl_gbp < 0).length, 1);
+   assert.equal(Number(closed.reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 127.19);
+   assert.equal(Number(closed.filter(t => t.closed_at?.startsWith('2026-10-26')).reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 9.95);
+   assert.match(page, /id="todayNetPnl"/);
+   assert.match(page, /id="closedRecord"/);
+   assert.match(page, /LOSS REVIEW/);
+   assert.match(page, /ANALYSIS GOOD\/BAD\/MIXED/);
+   assert.match(page, /ANALYSIS /);
+   assert.match(page, /DO NOT ENTER · FAILED RISK/);
+   assert.match(page, /M15 TRIGGER · CHECK BROKER/);
+   assert.match(page, /CHECK STALE · NO ENTRY/);
+
+
   assert.equal(Object.hasOwn(feed, 'demo_trades'), false, 'research feed must remain unchanged');
   assert.match(page, /id="demoOutcomesPanel"/);
   assert.match(page, /id="outcomesRows"/);
