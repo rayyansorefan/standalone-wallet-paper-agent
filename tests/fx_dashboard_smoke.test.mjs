@@ -28,6 +28,18 @@ test('published dashboard JavaScript parses', () => {
   assert.ok(embedded, 'dashboard must include an inline script');
   assert.doesNotThrow(() => new Script(embedded[1], { filename: 'fx-dashboard.js' }));
 });
+test('early-opportunity charts retain frozen entry, stop, target, start time and no-fill status', () => {
+  assert.match(page, /id="early-opportunities"/);
+  assert.match(page, /id="earlyGrid"/);
+  assert.match(page, /function renderEarlyOpportunities\(\)/);
+  assert.match(page, /function earlyCandidate\(instrument\)/);
+  assert.match(page, /EARLY ENTRY ZONE/);
+  assert.match(page, /WATCH START/);
+  assert.match(page, /PAPER ONLY/);
+  assert.match(page, /FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY/);
+  assert.match(page, /historical price candles|historical price|M15 historical price candles/);
+  assert.match(page, /renderEarlyOpportunities\(\);renderResearchSetups/);
+});
 test('public feed schema and required research fields', () => {
   assert.equal(feed.schema, 1);
   assert.ok(Date.parse(feed.snapshot_at) > 0);
