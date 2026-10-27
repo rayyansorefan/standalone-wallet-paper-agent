@@ -127,7 +127,7 @@ assert.match($("health").textContent,/STALE DATA/);
 assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
     ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
     t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) &&
-    (!t.expires_at || Date.parse(t.expires_at)>Date.now()) &&
+    (!t.expires_at || Date.parse(t.expires_at)>at.now) &&
     Number(t.entry)>0 && Number(t.stop)>0 && Number(t.tp1)>0).length,
   "Only todays priced assessment plans are shown; stale quotes must not be treated as current");
 assert.match($("researchCards").children[0].className,/setupstale|setupempty/,"Stale research cannot be presented as an actionable current setup");
