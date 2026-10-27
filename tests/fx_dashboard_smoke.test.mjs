@@ -32,6 +32,14 @@ test('early-opportunity charts retain frozen entry, stop, target, start time and
   assert.match(page, /id="early-opportunities"/);
   assert.match(page, /id="earlyGrid"/);
   assert.match(page, /function renderEarlyOpportunities\(\)/);
+  assert.match(page, /id="earlySort"/);
+  assert.match(page, /Highest potential/);
+  assert.match(page, /id="earlyScope"/);
+  assert.match(page, /function rankEarlyWatch\(t\)/);
+  assert.match(page, /POTENTIAL UNRATED/);
+  assert.match(page, /best_observed_pct/);
+  assert.match(page, /FAST M5 ROUTE UNDER STUDY/);
+  assert.match(page, /id="earlyEntryReview"/);
   assert.match(page, /function earlyCandidate\(instrument\)/);
   assert.match(page, /EARLY ENTRY ZONE/);
   assert.match(page, /WATCH START/);
