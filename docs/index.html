@@ -218,6 +218,15 @@ body{background:#07111f;color:#edf5ff}
 .early-empty{color:#bad0dd;background:#162e40;padding:15px;border:1px solid #3a586c;border-radius:10px}
 .early-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#c2d6e0;font-size:11px;margin:4px 0 12px;flex-wrap:wrap}.early-toolbar button{color:#ffe5b0;background:#4a3b2a;border:1px solid #a17d43;border-radius:8px;padding:8px 12px;font-weight:800;cursor:pointer}
 @media(max-width:750px){.early-grid{grid-template-columns:1fr}.early-board{padding:12px}.early-levels{gap:5px}.early-level b{font-size:12px}}
+
+.early-toolbar select{background:#143147;border:1px solid #3b6477;border-radius:8px;padding:8px;color:#e4f8ff;font-size:12px}
+.early-scoreline{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:10px 0;padding:10px;border:1px solid #2f6270;border-radius:8px;background:#102e40;font-size:11px;color:#c5e1ed}
+.early-scoreline b{color:#85ecc2;font-size:12px}.early-scoreline.weak b{color:#ffc2bf}
+.early-study{border:1px solid #4b816d;background:linear-gradient(125deg,#123c38,#0e2839);border-radius:12px;padding:15px;margin:12px 0 16px}
+.early-study strong{color:#7df0bd;font-size:15px}.early-study p{margin:7px 0;color:#cfe8e5;line-height:1.5;font-size:12px}
+.early-study-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.early-study-grid>div{background:#092934;border:1px solid #3c766f;border-radius:8px;padding:10px}.early-study-grid small{display:block;color:#a9c4c8;font-size:10px}.early-study-grid b{color:#e7fff7;font-size:17px}
+@media(max-width:700px){.early-toolbar{flex-wrap:wrap}.early-toolbar select{max-width:100%;flex:1}.early-study-grid{grid-template-columns:1fr 1fr}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -249,10 +258,10 @@ body{background:#07111f;color:#edf5ff}
 
 <section class="section" id="early-opportunities" aria-label="Early research opportunities and missed moves">
   <div class="early-board">
-    <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>Chart-first research before full trade confirmation. Each card has its original entry zone, stop, target and tracking start. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
-    <div class="early-toolbar"><span id="earlyCount">Checking tracked watches…</span><button id="earlyToggle" type="button">Show all watches</button></div>
+    <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>Potential-ranked research watches, even when full entry triggers are still pending. Each card has its original entry zone, stop, target and tracking start. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
+    <div class="early-toolbar"><span id="earlyCount">Ranking watches…</span><select id="earlyScope" aria-label="Watch cohort"><option value="ACTIVE">Active watches</option><option value="EXPIRED">Expired &amp; missed</option><option value="ALL">All tracked</option></select><select id="earlySort" aria-label="Ranking method"><option value="POTENTIAL">Highest potential</option><option value="PERFORMANCE">Best past move</option><option value="NEWEST">Newest first</option></select><button id="earlyToggle" type="button">Show all ranked</button></div>
     <div id="earlyGrid" class="early-grid"></div>
-    <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Only the latest publicly published cohort is available; older private watches are not backfilled.</p>
+    <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Ranking scores are heuristic, not winning probabilities. Past favourable movement is not a filled trade or permission to chase.</p>
   </div>
 </section>
 <section class="section today-focus" id="learning" aria-label="Today's monitored FX trades">
@@ -309,12 +318,12 @@ body{background:#07111f;color:#edf5ff}
 <section class="section" id="charts"><div class="heading"><div><h2>Charts across all key timeframes</h2><p>Every quoted pair: M15/H1 close-bar charts. Strongest audited pairs: additional M5/H4/D1 history and expanded indicators. OANDA prices are research-only.</p></div><span class="label">M1 · M5 · M15 · M30 · H1 · H4 · D1 · W1 · MN</span></div><div class="two"><div class="panel"><div class="panelhead"><div><h3 id="chartName">Multi-timeframe price action</h3><div class="small" id="chartTime">Select instrument</div></div><div class="controls"><select id="pair" aria-label="Currency pair"></select><div id="frames" class="controls"></div></div></div><div class="chartbox"><svg id="chart" viewBox="0 0 910 340" role="img" aria-label="Historical candlestick chart"></svg></div><div class="small" id="chartFoot">OANDA historical candles—not current Pepperstone executable prices.</div></div><div class="panel"><div class="panelhead"><h3>Technical confluence</h3><div class="small">Independent indicators</div></div><div class="indicators" id="indicators"></div><div class="decision"><b id="entryState">WAIT</b><p id="entryDetail">No approved and freshly confirmed entry.</p></div><p class="small" id="brokerCaution">Pepperstone symbols and spreads are not verified.</p></div></div></section>
 <section class="section" id="scanner"><div class="heading"><div><h2>Currency-pair scanner</h2><p>OANDA pair universe filtered for confirmed Pepperstone exclusions. Availability of other broker symbols is not guaranteed.</p></div><span class="label" id="scannerLabel">FULL UNIVERSE</span></div><div class="panel"><div class="panelhead"><h3>M15 & H1 signals</h3><input id="filter" type="search" placeholder="Search e.g. EURUSD" style="background:#172d47;padding:8px 12px;border:1px solid #375572;border-radius:8px"></div><div class="tablewrap"><table><thead><tr><th>Pair</th><th>OANDA bid / ask</th><th>Spread (pips)</th><th>M15 RSI</th><th>M15 ADX</th><th>H1 RSI</th><th>Alignment</th><th>Entry</th></tr></thead><tbody id="rows"></tbody></table></div></div></section>
 <section class="section" id="news"><div class="heading"><div><h2>FX news & economic calendar</h2><p>Headline scans are unverified research leads; official primary releases must be confirmed independently.</p></div><span class="label" id="newsLabel">PARTIAL COVERAGE</span></div><div class="two"><div class="panel"><div class="panelhead"><h3>Latest relevant headlines</h3><div class="small" id="newsTime"></div></div><div id="headlines" class="scroll"></div></div><div class="panel"><div class="panelhead"><h3>Forthcoming macro events</h3><div class="small">UK time</div></div><div id="events" class="scroll"></div><p class="small">Third-party calendar times and consensus are not official-source verification. Block entries around unverified high-impact events rather than assuming safety.</p></div></div></section>
-<section class="section" id="demoEvidence"><div class="heading"><div><h2>My closed trade results</h2><p>Closed trades evidenced by your Pepperstone screenshots, separate from hypothetical research performance.</p></div></div><div class="panel" style="margin-top:15px" id="demoOutcomesPanel"><div class="panelhead"><div><h3>Broker-screenshot trade history</h3><p class="small">Read-only closed trade records · separate from paper research</p></div><span class="label" id="outcomesAsOf">LOADING HISTORY</span></div><div class="outcomekpis"><div class="outcomekpi"><small>Closed screenshot trades</small><strong id="completedCount">—</strong></div><div class="outcomekpi"><small>Total realised net</small><strong id="realisedPnl">—</strong></div><div class="outcomekpi"><small>Today’s net</small><strong id="todayNetPnl">—</strong></div><div class="outcomekpi"><small>Wins / losses</small><strong id="closedRecord">—</strong></div></div><div class="outcometable"><table><thead><tr><th>Instrument</th><th>Direction</th><th>Position status</th><th>P&amp;L</th><th>Observed (UK)</th><th>Signal match</th></tr></thead><tbody id="outcomesRows"></tbody></table></div><p class="small" id="outcomesSource">Reading evidence...</p><p class="outcomenote" id="outcomesLearning">These observations do not yet establish predictive accuracy or validate entry signals.</p></div><div class="panel" style="margin-top:15px"><h3>Personal trade journal · saved on this device</h3><p class="small">Optional self-reported win/loss notes, stored in your browser only. Not broker-verified.</p><form class="journal" id="journal"><select id="journalPair" aria-label="Traded currency pair"></select><select id="outcome" aria-label="Result"><option>WIN</option><option>LOSS</option><option>BREAKEVEN</option><option>NOT_TAKEN</option></select><input id="note" maxlength="200" placeholder="What worked or failed?" style="background:#172d47;padding:8px 12px;border-radius:8px;border:1px solid #375572"><button type="submit">Log outcome</button></form><p class="small" id="learningSummary">No verified outcomes are recorded.</p></div></section>
+<section class="section" id="demoEvidence"><div class="heading"><div><h2>My closed trade results</h2><p>Closed trades evidenced by your Pepperstone screenshots, separate from hypothetical research performance.</p></div></div><div class="panel" style="margin-top:15px" id="demoOutcomesPanel"><div class="panelhead"><div><h3>Broker-screenshot trade history</h3><p class="small">Read-only closed trade records · separate from paper research</p></div><span class="label" id="outcomesAsOf">LOADING HISTORY</span></div><div class="outcomekpis"><div class="outcomekpi"><small>Closed screenshot trades</small><strong id="completedCount">—</strong></div><div class="outcomekpi"><small>Total realised net</small><strong id="realisedPnl">—</strong></div><div class="outcomekpi"><small>Today’s net</small><strong id="todayNetPnl">—</strong></div><div class="outcomekpi"><small>Wins / losses</small><strong id="closedRecord">—</strong></div></div><div class="outcometable"><table><thead><tr><th>Instrument</th><th>Direction</th><th>Position status</th><th>P&amp;L</th><th>Observed (UK)</th><th>Signal match</th></tr></thead><tbody id="outcomesRows"></tbody></table></div><p class="small" id="outcomesSource">Reading evidence...</p><div id="earlyEntryReview" class="early-study" hidden></div><p class="outcomenote" id="outcomesLearning">These observations do not yet establish predictive accuracy or validate entry signals.</p></div><div class="panel" style="margin-top:15px"><h3>Personal trade journal · saved on this device</h3><p class="small">Optional self-reported win/loss notes, stored in your browser only. Not broker-verified.</p><form class="journal" id="journal"><select id="journalPair" aria-label="Traded currency pair"></select><select id="outcome" aria-label="Result"><option>WIN</option><option>LOSS</option><option>BREAKEVEN</option><option>NOT_TAKEN</option></select><input id="note" maxlength="200" placeholder="What worked or failed?" style="background:#172d47;padding:8px 12px;border-radius:8px;border:1px solid #375572"><button type="submit">Log outcome</button></form><p class="small" id="learningSummary">No verified outcomes are recorded.</p></div></section>
 <footer class="footer">RESEARCH ONLY · This site does not execute trades, connect to Pepperstone, or guarantee a daily trade count. OANDA practice quotes are indicative. The private OANDA research collector and ChatGPT's hourly notifications are separate from this static site. Public sanitized snapshots may be stale; the page blocks entry labels after 70 minutes. This site cannot issue ChatGPT push alerts. © FX Intelligence.</footer>
 </main></div></div><script>
 "use strict";
 const el=x=>document.getElementById(x),make=(tag,txt,cl)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=String(txt);if(cl)n.className=cl;return n},uk=t=>{try{return new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(t))+" UK"}catch{return "Unknown"}},n=(x,p=2)=>Number.isFinite(Number(x))&&x!==null?Number(x).toFixed(p):"—",money=x=>n(x,Math.abs(x)>10?3:5);
-let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true,earlyExpanded=false;
+let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true,earlyExpanded=false,earlyScope="ACTIVE",earlySort="POTENTIAL";
 const pricePct=(side,entry,exit)=>{const e=Number(entry),x=Number(exit);if(!(e>0)||!Number.isFinite(x))return "—";const value=(side==="SHORT"?e-x:x-e)/e*100;return (value>=0?"+":"")+value.toFixed(4)+"%"};
 const HIDDEN_PAIRS=new Set(["GBP_ZAR"]); // User-confirmed unavailable on Pepperstone; retain raw OANDA feed.
 const visiblePair=k=>!HIDDEN_PAIRS.has(k);
@@ -329,32 +338,70 @@ function earlyCandidate(instrument){
     Number.isFinite(Date.parse(t.expires_at))&&Date.parse(t.expires_at)>Date.now())
     .sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))[0]||null;
 }
+
+function rankEarlyWatch(t){
+ const p=feed?.pairs?.[t.instrument]||{},q=p.quote||{},sign=t.direction==="SHORT"?-1:1;
+ const pip=Number(q.pip_size),spread=pip*Number(q.spread_pips);
+ const entry=(Number(t.entry_low)+Number(t.entry_high))/2;
+ const risk=(entry-Number(t.stop))*sign,reward=(Number(t.tp1)-entry)*sign;
+ const rr=risk>0&&reward>0&&Number.isFinite(spread)?(reward-spread)/(risk+spread):null;
+ const checks=[];
+ for(const f of [p.frames?.M15?.indicators||{},p.frames?.H1?.indicators||{}]){
+  if(Number.isFinite(f.ema20)&&Number.isFinite(f.ema50))checks.push((f.ema20-f.ema50)*sign>0);
+  if(Number.isFinite(f.plus_di14)&&Number.isFinite(f.minus_di14))checks.push((f.plus_di14-f.minus_di14)*sign>0);
+  if(Number.isFinite(f.macd_12_26_9?.histogram))checks.push(f.macd_12_26_9.histogram*sign>0);
+ }
+ const aligned=checks.filter(Boolean).length,age=Date.now()-Date.parse(q.time);
+ const price=Number(sign===-1?q.bid:q.ask),dist=price<Number(t.entry_low)?Number(t.entry_low)-price:price>Number(t.entry_high)?price-Number(t.entry_high):0;
+ const gap=pip>0?dist/pip:null,atr=Number(p.frames?.M15?.indicators?.atr14);
+ const move=t.hypothetical_move_pct==null?null:Number(t.hypothetical_move_pct);
+ if(stale||!Number.isFinite(age)||age< -300000||age>4200000||q.tradeable!==true||
+  checks.length<4||!Number.isFinite(rr)||rr<=0||!(atr>0)||!Number.isFinite(gap))
+  return {score:null,label:"UNRATED",reason:"Current quote, technicals or cost-adjusted reward/risk unavailable"};
+ const score=Math.max(0,Math.min(100,Math.round(10+32*aligned/checks.length+
+  Math.min(26,Math.max(0,rr*11))+Math.max(0,18-4*gap)+
+  (move==null?0:Math.max(-8,Math.min(9,move*140)))-Math.min(20,40*spread/atr)-
+  (move==null?0:Math.max(0,move-0.08)*130))));
+ return {score,label:rr<1?"LOW POTENTIAL":score>=70?"HIGH POTENTIAL":score>=50?"MEDIUM POTENTIAL":"LOW POTENTIAL",
+  reason:aligned+"/"+checks.length+" trend checks · net R:R "+rr.toFixed(2)+" · "+gap.toFixed(1)+" pips from zone"};
+}
 function renderEarlyOpportunities(){
   const holder=el("earlyGrid");if(!holder)return;
   const data=feed?.learning?.opportunity_audit||{},rows=Array.isArray(data.recent)?data.recent:[];
   el("earlyAsOf").textContent="TRACKED "+rows.length+" LATEST · "+uk(data.updated_at||feed.snapshot_at);
-  const ready=rows.filter(t=>visiblePair(t.instrument)&&Number(t.entry_low)>0&&
-    Number(t.entry_high)>=Number(t.entry_low)&&Number(t.stop)>0&&Number(t.tp1)>0&&
-    Number.isFinite(Date.parse(t.first_seen_at))&&
-    Number.isFinite(Date.parse(t.expires_at))&&Date.parse(t.expires_at)>Date.now());
-  // Preserve unfilled wins and adverse watches; do not hide losing observations.
-  const selected=ready.slice().sort((a,b)=>
-    (b.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY"?1:0)-
-    (a.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY"?1:0)||
-    Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at));
-  const shown=earlyExpanded?selected:selected.slice(0,4);
-  el("earlyCount").textContent="SHOWING "+shown.length+" OF "+selected.length+" ACTIVE FORWARD-TRACKED WATCHES";
-  el("earlyToggle").textContent=earlyExpanded?"Show top 4":"Show all "+selected.length;
-  el("earlyToggle").disabled=selected.length<=4;
-  if(!selected.length){holder.replaceChildren(make("p",
-    rows.length?"Published early watches have expired or lack valid frozen levels. No active early entry is verified.":"No forward-tracked early ideas in this public feed.","early-empty"));return}
+  const valid=rows.filter(t=>visiblePair(t.instrument)&&Number(t.entry_low)>0&&
+   Number(t.entry_high)>=Number(t.entry_low)&&Number(t.stop)>0&&Number(t.tp1)>0&&
+   Number.isFinite(Date.parse(t.first_seen_at))&&Number.isFinite(Date.parse(t.expires_at)));
+  const active=valid.filter(t=>Date.parse(t.expires_at)>Date.now());
+  const scoped=valid.filter(t=>earlyScope==="ALL"||(earlyScope==="ACTIVE"?
+   Date.parse(t.expires_at)>Date.now():Date.parse(t.expires_at)<=Date.now()));
+  const selected=scoped.map(t=>({...t,_potential:rankEarlyWatch(t)})).sort((a,b)=>{
+   if(earlySort==="NEWEST")return Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at);
+   if(earlySort==="PERFORMANCE")return Number(b.best_observed_pct??-1000)-Number(a.best_observed_pct??-1000)||
+    Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at);
+   return (b._potential.score??-1)-(a._potential.score??-1)||
+    Number(b.hypothetical_move_pct??-1000)-Number(a.hypothetical_move_pct??-1000)||
+    Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at);
+  });
+  const shown=earlyExpanded?selected:selected.slice(0,6);
+  el("earlyCount").textContent=selected.length+" RANKED · "+active.length+
+   " ACTIVE / "+valid.length+" TRACKED";
+  el("earlyToggle").textContent=earlyExpanded?"Show top 6":"Show all "+selected.length+" ranked";
+  el("earlyToggle").disabled=selected.length<=6;
+  if(!selected.length){holder.replaceChildren(make("p",valid.length?
+   "No watches in this category; switch filters.":"No forward-tracked watches in the latest feed.","early-empty"));return}
   holder.replaceChildren(...shown.map(t=>{
     const unfilled=t.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY",short=t.direction==="SHORT";
+    const archived=Date.parse(t.expires_at)<=Date.now(),potential=t._potential,ordinal=selected.indexOf(t)+1;
     const card=make("article",undefined,"early-card"+(unfilled?" unfilled":""));
     const head=make("div",undefined,"early-head");
-    head.append(make("strong",t.instrument.replace("_","/")+" · "+(short?"SELL":"BUY")),
-      make("span",unfilled?"🟢 FAVOURABLE · UNFILLED":"🟠 EARLY WATCH · PAPER ONLY","early-state"));
+    head.append(make("strong","#"+ordinal+" · "+t.instrument.replace("_","/")+" · "+(short?"SELL":"BUY")),
+      make("span",archived?"ARCHIVED · NO ENTRY":unfilled?"🟢 FAVOURABLE · UNFILLED":"🟠 WATCH · NOT APPROVED","early-state"));
     card.append(head);
+    const rankBox=make("div",undefined,"early-scoreline"+(potential.score==null||potential.score<50?" weak":""));
+    rankBox.append(make("b",potential.score==null?"POTENTIAL UNRATED":potential.label+" · "+potential.score+"/100"),
+      make("span",potential.reason));card.append(rankBox);
+    if(archived)card.append(make("p","Expired research · historical observations only, no current entry.","early-caption"));
     const quote=feed.pairs?.[t.instrument]?.quote||{};
     const quoteAt=t.latest_quote_at||quote.time;
     const quoteAge=Date.now()-Date.parse(quoteAt);
@@ -363,11 +410,13 @@ function renderEarlyOpportunities(){
       make("div","Last OANDA check "+(quoteAt?uk(quoteAt):"unknown")+" · "+(sourceOk?"research source recent":"STALE · NO ENTRY"),"early-times"));
     const metric=make("div",undefined,"early-move"),v=t.hypothetical_move_pct;
     metric.append(make("b",v==null||!Number.isFinite(Number(v))?"—":(Number(v)>=0?"+":"")+Number(v).toFixed(3)+"%"),
-      make("small","Directional price change since observation · hypothetical, no fill"));
+      make("small","Latest directional movement · hypothetical, NOT account return"));
     card.append(metric);
     const grid=make("div",undefined,"early-levels");
     const fields=[["Entry zone",money(t.entry_low)+"–"+money(t.entry_high),""],
-      ["Stop / invalidation",money(t.stop),"stop"],["Target 1",money(t.tp1),"target"]];
+      ["Stop / invalidation",money(t.stop),"stop"],["Target 1",money(t.tp1),"target"],
+       ["Best observed",t.best_observed_pct==null?"—":(Number(t.best_observed_pct)>=0?"+":"")+Number(t.best_observed_pct).toFixed(3)+"%","target"],
+       ["Worst observed",t.worst_observed_pct==null?"—":Number(t.worst_observed_pct).toFixed(3)+"%","stop"]];
     for(const [title,value,cls] of fields){
       const box=make("div",undefined,"early-level "+cls);
       box.append(make("small",title),make("b",value));grid.append(box);
@@ -406,7 +455,7 @@ function renderEarlyOpportunities(){
       card.append(graph,make("div","M15 candles · amber zone · red stop · green target · START marker is initial watch, not entry","early-caption"));
     }else card.append(make("p","Historical candlestick chart unavailable for this pair.","early-caption"));
     const note=make("div",undefined,"early-action");
-    note.append(make("small",unfilled?"Favourable direction observed; entry confirmation absent.":"Entry remains unconfirmed; no live trade approval."));
+    note.append(make("small",archived?"Expired: research archive only.": "Higher-ranked research is not a trade approval. Check fresh completed candles, news and Pepperstone spread."));
     const btn=make("button","Full chart");btn.type="button";
     btn.addEventListener("click",()=>{if(!feed.pairs?.[t.instrument])return;pair=t.instrument;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
     note.append(btn);card.append(note);
@@ -849,6 +898,11 @@ function renderPaperAudit() {
     const condition=make("div",undefined,"audit-confirm");
     condition.textContent=qualityReason+(entryReason?" "+entryReason:"")+" Checked "+(quote.at?uk(quote.at):"time unavailable")+(quote.fresh?".":" (old price).");
     card.append(condition);
+    if(!expired&&!rejectedWatch&&formal&&quality==="GOOD"&&quote.fresh&&activeHourly){
+      const lane=make("div",undefined,"audit-confirm");
+      lane.textContent="🟠 FAST M5 ROUTE UNDER STUDY: this direction may move before M15 confirmation. Completed M5 reversal, fresh Pepperstone price/spread and event clearance are still needed. NOT an approved entry.";
+      card.append(lane);
+    }
     const performance=make("div",undefined,"audit-performance"),left=make("div");
     left.append(make("small","Price move vs proposed entry · hypothetical"));
     const metric=make("div",fmtPercent(quote.move),"audit-move");
@@ -964,6 +1018,21 @@ function renderOutcomes(){
    ". Cumulative net "+fmt(realised)+". This is not a forward-tested strategy win rate. "+
    "The last account balance was observed on "+uk(outcomeEvidence.account_snapshot?.observed_at)+
    "; current equity and open positions are unverified.";
+ const study=outcomeEvidence.early_entry_study,studyHolder=el("earlyEntryReview");
+ if(study&&closed.some(t=>t.key===study.focus_trade_key)){
+  studyHolder.hidden=false;
+  const heading=make("strong","✅ EUR/USD · EARLY TRADE CAPTURED");
+  const metrics=make("div",undefined,"early-study-grid");
+  for(const [label,value] of [
+    ["Realised gain","+£"+Number(study.realised_pnl_gbp).toFixed(2)],
+    ["Pips captured",Number(study.captured_pips).toFixed(1)],
+    ["Strict planned entry",study.planned_sell_retouch_observed_after_confirmation?"Retouch seen":"Not seen on OANDA"]]){
+    const box=make("div");box.append(make("small",label),make("b",value));metrics.append(box);
+  }
+  studyHolder.replaceChildren(heading,metrics,
+    make("p","Manual short entered before completed M5/M15 confirmations. Original M15 plan entry price was not seen on the saved post-confirmation OANDA bids."),
+    make("p","Learning: prospectively test completed-M5 fast route against M15, logging wins, losses, fees, expiry and no-fills. One win does not validate an automatic early entry."));
+ }else{studyHolder.hidden=true;studyHolder.replaceChildren()}
  const review=outcomeEvidence.execution_review;
  el("outcomesLearning").textContent=(review?
    "LOSS REVIEW · "+review.finding+" ACTION · "+review.action+" ":"")+
@@ -985,6 +1054,8 @@ async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now
 el("pair").addEventListener("change",e=>{pair=e.target.value;tf="M15";chart()});el("filter").addEventListener("input",()=>feed&&scanner());el("journal").addEventListener("submit",e=>{e.preventDefault();try{const a=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]");a.push({at:new Date().toISOString(),pair:el("journalPair").value,outcome:el("outcome").value,note:el("note").value});localStorage.setItem("fx-journal-local-v1",JSON.stringify(a.slice(-1000)));el("note").value="";journal()}catch{el("learningSummary").textContent="Browser local storage is unavailable."}});
 if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
 el("earlyToggle").addEventListener("click",()=>{earlyExpanded=!earlyExpanded;if(feed)renderEarlyOpportunities()});
+el("earlyScope").addEventListener("change",e=>{earlyScope=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
+el("earlySort").addEventListener("change",e=>{earlySort=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("refreshView").addEventListener("click",async()=>{const b=el("refreshView");b.disabled=true;b.textContent="↻ Refreshing published data…";try{await Promise.all([load(),loadOutcomes()])}finally{b.disabled=false;b.textContent="↻ Refresh display"}});
 load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
 </script></body></html>
