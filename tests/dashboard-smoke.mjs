@@ -85,6 +85,20 @@ assert.match(JSON.stringify(earlyCard.children),/Entry zone/);
 assert.match(JSON.stringify(earlyCard.children),/Stop \/ invalidation/);
 assert.match(JSON.stringify(earlyCard.children),/Target 1/);
 assert.match(JSON.stringify(earlyCard.children),/Started/);
+// A later recalibration must supersede the displayed plan for its currency pair.
+// Prior levels remain in a collapsed audit, never at another top rank.
+const older=feed.learning.opportunity_audit.recent[0];
+const newest={...older,id:"SMOKE-GBPUSD-RECALIBRATED",
+  first_seen_at:new Date(Date.parse(feed.snapshot_at)+10*60*1000).toISOString(),
+  entry_low:1.33250,entry_high:1.33260};
+feed.learning.opportunity_audit.recent.push(newest);
+vm.runInNewContext("renderEarlyOpportunities()",ctx);
+assert.equal($("earlyGrid").children.length,1,"One primary visible watch per currency pair");
+const currentCard=JSON.stringify($("earlyGrid").children[0].children);
+assert.match(currentCard,/1\.33250/,"Newest GBP\/USD zone is displayed as the primary");
+assert.match(currentCard,/earlier version/,"Earlier watch remains available only in audit details");
+feed.learning.opportunity_audit.recent.pop();
+vm.runInNewContext("renderEarlyOpportunities()",ctx);
 const chartAction=earlyCard.children.at(-1).children.at(-1);
 chartAction.listeners.click();
 assert.match($("chartTime").textContent,/EARLY WATCH since/);

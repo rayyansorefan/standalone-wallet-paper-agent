@@ -193,6 +193,9 @@ body{background:#07111f;color:#edf5ff}
 
 
 /* Forward-only early-opportunity chart surface; never an approved entry. */
+.early-history{margin:10px 0;border:1px solid #34566b;border-radius:9px;padding:9px 11px;color:#c9dce8;font-size:11px}
+.early-history summary{cursor:pointer;color:#a8d9ec;font-weight:750}
+.early-history p{margin:8px 0 0;line-height:1.5;color:#a9c5d3}
 .early-board{border:1px solid #725b31;background:linear-gradient(145deg,#2b2b29,#111f2e);border-radius:15px;padding:18px}
 .early-board .heading{margin-bottom:12px}
 .early-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
@@ -258,7 +261,7 @@ body{background:#07111f;color:#edf5ff}
 
 <section class="section" id="early-opportunities" aria-label="Early research opportunities and missed moves">
   <div class="early-board">
-    <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>Potential-ranked research watches, even when full entry triggers are still pending. Each card has its original entry zone, stop, target and tracking start. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
+    <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>One current primary watch per currency pair, ranked against other pairs. Older signals remain in each pair’s audit history, not competing entry plans. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
     <div class="early-toolbar"><span id="earlyCount">Ranking watches…</span><select id="earlyScope" aria-label="Watch cohort"><option value="ACTIVE">Active watches</option><option value="EXPIRED">Expired &amp; missed</option><option value="ALL">All tracked</option></select><select id="earlySort" aria-label="Ranking method"><option value="POTENTIAL">Highest potential</option><option value="PERFORMANCE">Best past move</option><option value="NEWEST">Newest first</option></select><button id="earlyToggle" type="button">Show all ranked</button></div>
     <div id="earlyGrid" class="early-grid"></div>
     <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Ranking scores are heuristic, not winning probabilities. Past favourable movement is not a filled trade or permission to chase.</p>
@@ -339,6 +342,21 @@ function earlyCandidate(instrument){
     .sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))[0]||null;
 }
 
+// A new market snapshot replaces the displayed plan for its pair; earlier
+// immutable watches remain available for audit, but never occupy extra ranks.
+function primaryEarlyWatches(rows){
+ const byPair=new Map();
+ for(const t of rows){
+  if(!byPair.has(t.instrument))byPair.set(t.instrument,[]);
+  byPair.get(t.instrument).push(t);
+ }
+ return [...byPair.values()].map(group=>{
+  group.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at)||
+    (rankEarlyWatch(b).score??-1)-(rankEarlyWatch(a).score??-1));
+  return {...group[0],_potential:rankEarlyWatch(group[0]),_older:group.slice(1)};
+ });
+}
+
 function rankEarlyWatch(t){
  const p=feed?.pairs?.[t.instrument]||{},q=p.quote||{},sign=t.direction==="SHORT"?-1:1;
  const pip=Number(q.pip_size),spread=pip*Number(q.spread_pips);
@@ -375,7 +393,7 @@ function renderEarlyOpportunities(){
   const active=valid.filter(t=>Date.parse(t.expires_at)>Date.now());
   const scoped=valid.filter(t=>earlyScope==="ALL"||(earlyScope==="ACTIVE"?
    Date.parse(t.expires_at)>Date.now():Date.parse(t.expires_at)<=Date.now()));
-  const selected=scoped.map(t=>({...t,_potential:rankEarlyWatch(t)})).sort((a,b)=>{
+  const selected=primaryEarlyWatches(scoped).sort((a,b)=>{
    if(earlySort==="NEWEST")return Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at);
    if(earlySort==="PERFORMANCE")return Number(b.best_observed_pct??-1000)-Number(a.best_observed_pct??-1000)||
     Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at);
@@ -385,11 +403,11 @@ function renderEarlyOpportunities(){
   });
   const shown=earlyExpanded?selected:selected.slice(0,6);
   const audit=data.lifecycle_audit||{};
-  el("earlyCount").textContent=selected.length+" RANKED · "+active.length+
-   " ACTIVE · "+(audit.forward_watches??data.total_registered??valid.length)+" REGISTERED · "+
+  el("earlyCount").textContent=selected.length+" DISTINCT PAIRS · "+new Set(active.map(t=>t.instrument)).size+
+   " ACTIVE PAIRS · "+active.length+" ACTIVE WATCHES · "+(audit.forward_watches??data.total_registered??valid.length)+" TOTAL WATCHES · "+
    (audit.ever_meaningful_favourable??"—")+" FAVOURABLE / "+
    (audit.ever_meaningful_adverse??"—")+" ADVERSE OBSERVATIONS";
-  el("earlyToggle").textContent=earlyExpanded?"Show top 6":"Show all "+selected.length+" ranked";
+  el("earlyToggle").textContent=earlyExpanded?"Show top 6 pairs":"Show all "+selected.length+" pairs";
   el("earlyToggle").disabled=selected.length<=6;
   if(!selected.length){holder.replaceChildren(make("p",valid.length?
    "No watches in this category; switch filters.":"No forward-tracked watches in the latest feed.","early-empty"));return}
@@ -415,6 +433,20 @@ function renderEarlyOpportunities(){
     metric.append(make("b",v==null||!Number.isFinite(Number(v))?"—":(Number(v)>=0?"+":"")+Number(v).toFixed(3)+"%"),
       make("small","Latest directional movement · hypothetical, NOT account return"));
     card.append(metric);
+    if(t._older.length){
+      const history=make("details",undefined,"early-history");
+      history.append(make("summary",t._older.length+" earlier version"+(t._older.length===1?"":"s")+
+        " of "+t.instrument.replace("_","/")+" · audit only"));
+      history.append(make("p","The most recent watch above is the single primary plan for this pair. Older entry levels are superseded, NOT additional current entry instructions."));
+      for(const prior of t._older){
+        const state=Date.parse(prior.expires_at)<=Date.now()?"EXPIRED":"SUPERSEDED";
+        const move=prior.hypothetical_move_pct==null?"unscored":
+          (Number(prior.hypothetical_move_pct)>=0?"+":"")+Number(prior.hypothetical_move_pct).toFixed(3)+"% observed";
+        history.append(make("p",state+" · "+uk(prior.first_seen_at)+" · historical zone "+
+          money(prior.entry_low)+"–"+money(prior.entry_high)+" · "+move));
+      }
+      card.append(history);
+    }
     const grid=make("div",undefined,"early-levels");
     const fields=[["Entry zone",money(t.entry_low)+"–"+money(t.entry_high),""],
       ["Stop / invalidation",money(t.stop),"stop"],["Target 1",money(t.tp1),"target"],
