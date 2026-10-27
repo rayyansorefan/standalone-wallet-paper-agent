@@ -10,6 +10,16 @@ assert.equal(feed.schema,1);
 feed.research_setups=[{instrument:"EUR_JPY",direction:"SHORT",status:"CONDITIONAL_RESEARCH_NOT_TRIGGERED",entry_low:175.86,entry_high:175.94,stop:176.28,tp1:175.25,tp2:175.03,net_rr_estimate:1.47,source_quote_at:feed.snapshot_at,technical_checks_agree:5,timeframes_aligned:["M15","H1","H4","D"],trigger:"Wait for a completed M15 bearish rejection."}];
 feed.research_setups.push({...feed.research_setups[0],instrument:"GBP_ZAR"}); // Simulate next publisher reintroducing the excluded symbol.
 feed.signals.push({instrument:"GBP_ZAR",direction:"LONG",expires_at:new Date(Date.parse(feed.snapshot_at)+3600000).toISOString()});
+
+feed.learning.opportunity_audit={updated_at:feed.snapshot_at,recent:[{
+  id:"SMOKE-GBPUSD-EARLY-L",instrument:"GBP_USD",direction:"LONG",route:"EMA20_PULLBACK",
+  first_seen_at:feed.snapshot_at,
+  latest_quote_at:feed.snapshot_at,
+  expires_at:new Date(Date.parse(feed.snapshot_at)+4*3600000).toISOString(),
+  entry_low:1.33230,entry_high:1.33246,stop:1.33095,tp1:1.33550,tp2:1.3360,
+  hypothetical_move_pct:0.04,
+  tracking_status:"WATCH_ONLY_UNTRIGGERED",entry_confirmed:false,scored:false
+}]};
 const script=html.split("<script>")[1]?.split("</script>")[0];
 assert.ok(script, "Dashboard JavaScript is present");
 new vm.Script(script);
@@ -68,6 +78,18 @@ assert.ok(!$("journalPair").options.some(o=>o.value==="GBP_ZAR"),"Excluded pair 
 assert.ok(!$("rows").children.some(row=>row.children.some(c=>c.textContent==="GBP/ZAR")),"Excluded pair must not be in scanner");
 assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes("GBP/ZAR")),"Excluded pair must not be a priority card");
 assert.ok($("chart").children.length>30,"Completed candlesticks should render");
+assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
+const earlyCard=$("earlyGrid").children[0];
+assert.match(JSON.stringify(earlyCard.children),/GBP\/USD/);
+assert.match(JSON.stringify(earlyCard.children),/Entry zone/);
+assert.match(JSON.stringify(earlyCard.children),/Stop \/ invalidation/);
+assert.match(JSON.stringify(earlyCard.children),/Target 1/);
+assert.match(JSON.stringify(earlyCard.children),/Started/);
+const chartAction=earlyCard.children.at(-1).children.at(-1);
+chartAction.listeners.click();
+assert.match($("chartTime").textContent,/EARLY WATCH since/);
+assert.match($("chartFoot").textContent,/EARLY WATCH/);
+assert.match(JSON.stringify($("chart").children),/EARLY ENTRY ZONE/);
 assert.equal($("currentVisualStrip").children.length,3,
   "Dashboard must present current research counts ahead of archived plans");
 assert.ok($("hourlyCohortCards").children.length>=1,
