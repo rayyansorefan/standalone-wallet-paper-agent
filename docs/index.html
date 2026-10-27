@@ -384,8 +384,11 @@ function renderEarlyOpportunities(){
     Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at);
   });
   const shown=earlyExpanded?selected:selected.slice(0,6);
+  const audit=data.lifecycle_audit||{};
   el("earlyCount").textContent=selected.length+" RANKED · "+active.length+
-   " ACTIVE / "+valid.length+" TRACKED";
+   " ACTIVE · "+(audit.forward_watches??data.total_registered??valid.length)+" REGISTERED · "+
+   (audit.ever_meaningful_favourable??"—")+" FAVOURABLE / "+
+   (audit.ever_meaningful_adverse??"—")+" ADVERSE OBSERVATIONS";
   el("earlyToggle").textContent=earlyExpanded?"Show top 6":"Show all "+selected.length+" ranked";
   el("earlyToggle").disabled=selected.length<=6;
   if(!selected.length){holder.replaceChildren(make("p",valid.length?
