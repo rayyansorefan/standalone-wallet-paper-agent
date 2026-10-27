@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "as_of": "2026-10-26T16:22:59Z",
+  "as_of": "2026-10-27T17:39:30Z",
   "account_type": "PEPPERSTONE_SPREAD_BET_SCREENSHOT_EVIDENCE",
-  "evidence": "User-supplied Pepperstone screenshots: three 23 October closed demo trades, 26 October EUR/USD and GBP/USD wins, and 26 October AUD/NZD stop-loss. Prices, fees and P&L are transcribed, not broker-API verified.",
+  "evidence": "User-supplied Pepperstone closed-position screenshots from 23, 26 and 27 October; figures transcribed, not broker-API verified.",
   "signal_linkage": "Research-influenced according to the user, but individual trades remain PENDING linkage to an immutable earlier signal, confirmation and planned entry. Never count them as approved paper fills or use them as strategy-specific training labels until matched.",
-  "notes": "Six screenshot-evidenced closed trades: five gains and one AUD/NZD stop-out. These are execution observations, not confirmed approved research-signal fills. The account_snapshot is from 23 October and is not a current account balance. No current open-position inventory was provided.",
+  "notes": "Seven closed screenshot-evidenced trades: six gains and one loss. The 27 October EUR/USD was a profitable early manual entry, not verified as an original approved signal. Account snapshot remains dated 23 October.",
   "account_snapshot": {
     "observed_at": "2026-10-23T13:34:00Z",
     "balance_gbp": 1117.24,
@@ -139,6 +139,28 @@
         "lesson": "An unapproved paper watch must never be presented as an entry signal. Verify completed-M15 confirmation, broker spread and spread-adjusted reward/risk before entry. One losing trade does not justify changing strategy weights."
       },
       "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT"
+    },
+    {
+      "key": "2026-10-27-eurusd-closed-1739",
+      "instrument": "EUR_USD",
+      "direction": "SHORT",
+      "status": "CLOSED",
+      "opened_at": "2026-10-27T14:19:49Z",
+      "closed_at": "2026-10-27T17:39:30Z",
+      "entry_price": 1.1149,
+      "exit_price": 1.11408,
+      "net_pnl_gbp": 9.02,
+      "size_gbp_per_point": 1.1,
+      "commission_gbp": 0,
+      "swap_fees_gbp": 0,
+      "total_fees_gbp": 0,
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "related_research_plan_id": "20261027-1403-EURUSD-S-B03",
+      "entry_classification": "USER_EXECUTED_EARLY_BEFORE_M15_CONFIRMATION",
+      "provenance": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT",
+      "realised_pnl_gbp": 9.02,
+      "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT"
     }
   ],
   "execution_review": {
@@ -148,5 +170,27 @@
     "finding": "Your AUD/NZD buy was 3 pips above the suggested entry zone. The possible profit was too small once the spread was included, and the longer-term trend did not support the buy.",
     "action": "The dashboard will flag opportunities with limited upside or conflicting trends. This one loss is not enough to change the model's trading rules.",
     "signal_match": "PENDING"
+  },
+  "early_entry_study": {
+    "focus_trade_key": "2026-10-27-eurusd-closed-1739",
+    "classification": "EARLY_MANUAL_WIN_STANDARD_ORIGINAL_RETOUCH_NOT_OBSERVED",
+    "instrument": "EUR_USD",
+    "direction": "SHORT",
+    "original_plan_id": "20261027-1403-EURUSD-S-B03",
+    "planned_entry": 1.11495,
+    "manual_entry": 1.1149,
+    "manual_exit": 1.11408,
+    "captured_pips": 8.2,
+    "realised_pnl_gbp": 9.02,
+    "fees_gbp": 0,
+    "first_completed_m5_bearish_turn_at": "2026-10-27T14:20:00Z",
+    "original_m15_confirmation_at": "2026-10-27T14:45:00Z",
+    "original_plan_expires_at": "2026-10-27T16:00:00Z",
+    "max_oanda_bid_on_bars_after_confirmation_before_expiry": 1.11488,
+    "planned_sell_retouch_observed_after_confirmation": false,
+    "evidence_strength": "ACTUAL_CLOSE_SCREENSHOT_PLUS_HINDSIGHT_OANDA_COMPLETED_CANDLES",
+    "lesson": "Early manual execution captured +8.2 pips. Later M15-and-retouch route did not observe original sell price on saved OANDA bids. Prospective completed-M5 alternative needs symmetric wins, losses, spread, news and no-fill tests.",
+    "proposed_experiment": "M5_FAST_CONFIRMATION_SHADOW_ONLY",
+    "is_verified_strategy_win": false
   }
 }
