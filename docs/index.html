@@ -216,6 +216,7 @@ body{background:#07111f;color:#edf5ff}
 .early-action{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
 .early-action button{border:1px solid #ad8957;color:#ffedcd;background:#59462e;padding:7px 10px;border-radius:8px;font-weight:800;cursor:pointer}
 .early-empty{color:#bad0dd;background:#162e40;padding:15px;border:1px solid #3a586c;border-radius:10px}
+.early-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#c2d6e0;font-size:11px;margin:4px 0 12px;flex-wrap:wrap}.early-toolbar button{color:#ffe5b0;background:#4a3b2a;border:1px solid #a17d43;border-radius:8px;padding:8px 12px;font-weight:800;cursor:pointer}
 @media(max-width:750px){.early-grid{grid-template-columns:1fr}.early-board{padding:12px}.early-levels{gap:5px}.early-level b{font-size:12px}}
 </style></head>
 <body>
@@ -249,6 +250,7 @@ body{background:#07111f;color:#edf5ff}
 <section class="section" id="early-opportunities" aria-label="Early research opportunities and missed moves">
   <div class="early-board">
     <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>Chart-first research before full trade confirmation. Each card has its original entry zone, stop, target and tracking start. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
+    <div class="early-toolbar"><span id="earlyCount">Checking tracked watches…</span><button id="earlyToggle" type="button">Show all watches</button></div>
     <div id="earlyGrid" class="early-grid"></div>
     <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Only the latest publicly published cohort is available; older private watches are not backfilled.</p>
   </div>
@@ -312,7 +314,7 @@ body{background:#07111f;color:#edf5ff}
 </main></div></div><script>
 "use strict";
 const el=x=>document.getElementById(x),make=(tag,txt,cl)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=String(txt);if(cl)n.className=cl;return n},uk=t=>{try{return new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(t))+" UK"}catch{return "Unknown"}},n=(x,p=2)=>Number.isFinite(Number(x))&&x!==null?Number(x).toFixed(p):"—",money=x=>n(x,Math.abs(x)>10?3:5);
-let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true;
+let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true,earlyExpanded=false;
 const pricePct=(side,entry,exit)=>{const e=Number(entry),x=Number(exit);if(!(e>0)||!Number.isFinite(x))return "—";const value=(side==="SHORT"?e-x:x-e)/e*100;return (value>=0?"+":"")+value.toFixed(4)+"%"};
 const HIDDEN_PAIRS=new Set(["GBP_ZAR"]); // User-confirmed unavailable on Pepperstone; retain raw OANDA feed.
 const visiblePair=k=>!HIDDEN_PAIRS.has(k);
@@ -340,9 +342,13 @@ function renderEarlyOpportunities(){
     (b.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY"?1:0)-
     (a.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY"?1:0)||
     Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at));
+  const shown=earlyExpanded?selected:selected.slice(0,4);
+  el("earlyCount").textContent="SHOWING "+shown.length+" OF "+selected.length+" ACTIVE FORWARD-TRACKED WATCHES";
+  el("earlyToggle").textContent=earlyExpanded?"Show top 4":"Show all "+selected.length;
+  el("earlyToggle").disabled=selected.length<=4;
   if(!selected.length){holder.replaceChildren(make("p",
     rows.length?"Published early watches have expired or lack valid frozen levels. No active early entry is verified.":"No forward-tracked early ideas in this public feed.","early-empty"));return}
-  holder.replaceChildren(...selected.map(t=>{
+  holder.replaceChildren(...shown.map(t=>{
     const unfilled=t.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY",short=t.direction==="SHORT";
     const card=make("article",undefined,"early-card"+(unfilled?" unfilled":""));
     const head=make("div",undefined,"early-head");
@@ -978,6 +984,7 @@ function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(vis
 async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
 el("pair").addEventListener("change",e=>{pair=e.target.value;tf="M15";chart()});el("filter").addEventListener("input",()=>feed&&scanner());el("journal").addEventListener("submit",e=>{e.preventDefault();try{const a=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]");a.push({at:new Date().toISOString(),pair:el("journalPair").value,outcome:el("outcome").value,note:el("note").value});localStorage.setItem("fx-journal-local-v1",JSON.stringify(a.slice(-1000)));el("note").value="";journal()}catch{el("learningSummary").textContent="Browser local storage is unavailable."}});
 if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
+el("earlyToggle").addEventListener("click",()=>{earlyExpanded=!earlyExpanded;if(feed)renderEarlyOpportunities()});
 el("refreshView").addEventListener("click",async()=>{const b=el("refreshView");b.disabled=true;b.textContent="↻ Refreshing published data…";try{await Promise.all([load(),loadOutcomes()])}finally{b.disabled=false;b.textContent="↻ Refresh display"}});
 load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
 </script></body></html>
