@@ -122,9 +122,13 @@ assert.equal($("indicators").children.length,10);
 assert.equal($("headlines").children.length,Math.min(10,feed.headlines.length));
 assert.ok($("events").children.length>=1,"Calendar must render actual upcoming releases or an explicit no-events caveat");
 const approvedCount=feed.signals.filter(s=>s.instrument!=="GBP_ZAR"&&Date.parse(s.expires_at)>at.now).length;
-assert.equal($("verdict").textContent,approvedCount?"REVIEW":"WAIT");
+assert.ok(approvedCount ? $("verdict").textContent==="REVIEW" :
+  ["WAIT","EARLY WATCH"].includes($("verdict").textContent),
+  "unapproved early watches must remain labelled as research, not trade signals");
 assert.equal(String($("approved").textContent),String(approvedCount));
-assert.equal($("entryState").textContent,feed.signals.some(s=>s.instrument===$("pair").value&&Date.parse(s.expires_at)>at.now)?"REVIEW":"WAIT");
+assert.ok(feed.signals.some(s=>s.instrument===$("pair").value&&Date.parse(s.expires_at)>at.now)
+  ? $("entryState").textContent==="REVIEW"
+  : ["WAIT","EARLY WATCH"].includes($("entryState").textContent));
 assert.ok($("pair").options.length>=40,"Every screened quoted FX pair must be chart-selectable");
 assert.equal($("pair").options.length,Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length);
 const priorPair=$("pair").value;
