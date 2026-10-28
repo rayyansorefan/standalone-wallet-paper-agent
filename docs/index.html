@@ -1278,14 +1278,24 @@ function renderDeskPrimary(t, sourceFresh){
     currency.includes(e.currency)&&Number.isFinite(Date.parse(e.time))&&
     Math.abs(Date.parse(e.time)-now)<=45*60000);
  const event=relevantEvents[0]||null;
- const blocked=!valid||!!event;
  const canonical=t?!!t._canonical:false;
+ const closeSide=Number(t?.direction==="SHORT"?q.ask:q.bid);
+ const invalidated=!!(t&&Number.isFinite(closeSide)&&closeSide>0&&
+  (t.direction==="SHORT"?closeSide>=Number(t.stop):closeSide<=Number(t.stop)));
+ const blocked=!valid||!!event||invalidated;
  box.className="desk-action "+(blocked?"data-blocked":canonical?"confirmed-plan":"candidate");
  flag.textContent=blocked?"🔴 WAIT · NO APPROVED ENTRY":canonical?"🟡 CONDITIONAL PLAN · CONFIRM TRIGGER":"🟡 WATCH ONLY · DO NOT ENTER";
  el("deskActionPair").textContent=t?String(t.instrument).replace("_","/")+" · "+(t.direction==="SHORT"?"SELL":"BUY"):"No current verified FX setup";
+ const entrySide=Number(t?.direction==="SHORT"?q.bid:q.ask);
+ const lo=Number(t?.entry_low??t?.planned_entry??t?.entry),hi=Number(t?.entry_high??t?.planned_entry??t?.entry);
+ const pip=Number(q.pip_size),near=entrySide>0&&lo>0&&hi>=lo&&pip>0?
+  entrySide<lo?"Quote "+n((lo-entrySide)/pip,1)+" pips BELOW frozen entry zone":
+  entrySide>hi?"Quote "+n((entrySide-hi)/pip,1)+" pips ABOVE frozen entry zone":
+  "Quote inside frozen research zone; trigger NOT confirmed":"Quote/entry-zone comparison unavailable";
  el("deskActionReason").textContent=!t?"No eligible priced hypothesis is available. There is no trade to enter.":
-  canonical?"Immutable research signal exists, but a completed trigger and broker prices are not verified.":
-  "Leading directional hypothesis only. This is not a triggered trade or evidence of a profitable strategy.";
+  invalidated?"Research stop boundary has been breached. Do not use this setup.":
+  near+" · "+(canonical?"Original signal needs a validated completed trigger.": 
+    "Untriggered research watch, not an order instruction.");
  const entry=t?.entry_low!=null&&t?.entry_high!=null?
   money(t.entry_low)+"–"+money(t.entry_high):t?.planned_entry!=null?money(t.planned_entry):t?.entry!=null?money(t.entry):"—";
  el("deskActionEntry").textContent=entry;
@@ -1300,6 +1310,7 @@ function renderDeskPrimary(t, sourceFresh){
   !t?"No approved setup, no eligible entry levels":
   !quoteOk?"Pair-specific OANDA quote missing or older than 70m":
   !planOk?"Plan reference is stale or future-dated":
+  invalidated?"STOP / INVALIDATION LEVEL BREACHED AT LAST OANDA PRICE — CANCEL THIS VERSION":
   event?"HIGH-IMPACT EVENT NEAR: "+event.currency+" "+event.title+" · "+uk(event.time):
   canonical?"Trigger, official news clearance and executable Pepperstone bid/ask/spread still unverified":
   String(t.research_only_blocker||"Untriggered watch; completed entry evidence, news, spread and Pepperstone verification required");
