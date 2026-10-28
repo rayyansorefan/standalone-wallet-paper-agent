@@ -302,6 +302,33 @@ body{background:#07111f;color:#edf5ff}
 .desk-command strong{font-size:22px}.desk-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
 .desk-cards{grid-template-columns:1fr}.desk-levels b{font-size:16px}.desk-evidence{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+/* Decision-led institutional research layout: one primary action, then evidence.
+   Avoid implying that research-zone prices are executable broker quotes. */
+.desk-action{--action-accent:#efb866;position:relative;overflow:hidden;background:#0b1b2c;border:1px solid #445674;border-left:6px solid var(--action-accent);border-radius:15px;padding:23px 24px;margin:14px 0 15px;box-shadow:0 14px 34px #0003}
+.desk-action.data-blocked{--action-accent:#ff8f96}.desk-action.candidate{--action-accent:#f0c16c}.desk-action.confirmed-plan{--action-accent:#70d5b1}
+.desk-action-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.desk-action-eyebrow{font-size:10px;letter-spacing:1.6px;color:#99b2c8;font-weight:850}
+.desk-action-flag{font-size:22px;letter-spacing:-.3px;font-weight:950;margin-top:12px;color:var(--action-accent)}
+.desk-action-pair{font-size:clamp(27px,3vw,39px);line-height:1.15;letter-spacing:-.8px;margin:7px 0}
+.desk-action-reason{font-size:13px;color:#c4d7e8;max-width:690px;margin:4px 0 0}
+.desk-action-source{color:#bcd2e4;border:1px solid #35526b;background:#122b40;font-size:10px;font-weight:800;padding:7px 11px;border-radius:9px;white-space:nowrap}
+.desk-action-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 16px}
+.desk-action-levels>div{background:#142b40;border:1px solid #38536a;padding:14px 16px;border-radius:11px;min-width:0}
+.desk-action-levels small,.desk-action-bottom small{display:block;color:#9db6c9;font-size:10px;letter-spacing:.5px;font-weight:800}
+.desk-action-levels strong{display:block;color:#f5fbff;font-size:clamp(16px,2vw,23px);letter-spacing:-.3px;margin-top:7px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.desk-action-levels>div:first-child{border-color:#b88e50}
+.desk-action-bottom{display:grid;grid-template-columns:1.1fr 1fr;gap:11px}
+.desk-action-next,.desk-action-gate{border-top:1px solid #3b566d;padding:13px 3px}
+.desk-action-next b,.desk-action-gate b{display:block;font-size:13px;font-weight:720;line-height:1.45;margin-top:6px}
+.desk-action-next b{color:#dfeffb}.desk-action-gate b{color:#ffcd9c}
+.desk-action-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:11px;color:#a5bfce;background:#0b2638;border-radius:9px;padding:10px 12px}
+.desk-action-foot a{font-weight:800}.desk-kpi-disclosure{margin:0 0 14px;border:1px solid #2a455c;background:#0d2032;border-radius:10px}
+.desk-kpi-disclosure>summary{cursor:pointer;padding:9px 14px;font-weight:750;font-size:11px;color:#aac9d9}
+.desk-kpi-disclosure .desk-kpis{padding:4px 12px 12px;margin:0}
+.desk-action.data-blocked .desk-action-levels>div{opacity:.68}
+@media(max-width:780px){main#overview>.hero{display:none}.decision-desk{margin-top:12px}.desk-action{padding:17px 14px}.desk-action-top{display:block}.desk-action-source{display:inline-block;margin-top:10px}.desk-action-flag{font-size:24px}.desk-action-levels{gap:7px;margin:17px 0}.desk-action-levels>div{padding:11px 8px}.desk-action-levels strong{font-size:15px}.desk-action-levels small{font-size:9px}.desk-action-bottom{grid-template-columns:1fr;gap:0}.desk-action-gate,.desk-action-next{padding:10px 0}.desk-action-foot{font-size:10px}.desk-labelrow span{display:none}}
+
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -338,12 +365,33 @@ body{background:#07111f;color:#edf5ff}
     <div class="desk-command-next"><small>03 · WHAT TO DO</small><strong id="deskCommandNext">WAIT FOR ENTRY CONFIRMATION</strong><span id="deskCommandClock">Next scheduled assessment :15 UK</span></div>
   </div>
   <div id="deskVerdict" class="desk-verdict">Checking approved signal, source age and event risks…</div>
+  <section class="desk-action" id="deskAction" aria-label="Primary FX decision" aria-live="polite">
+    <div class="desk-action-top">
+      <div><div class="desk-action-eyebrow">01 / PRIMARY DECISION · WHAT TO DO NOW</div>
+        <div id="deskActionFlag" class="desk-action-flag">🔴 WAIT — CHECKING SOURCE</div>
+        <h3 id="deskActionPair" class="desk-action-pair">No verified setup</h3>
+        <p id="deskActionReason" class="desk-action-reason">Source evidence being checked.</p>
+      </div>
+      <div id="deskActionSource" class="desk-action-source">OANDA RESEARCH · NOT PEPPERSTONE</div>
+    </div>
+    <div class="desk-action-levels" id="deskActionLevels" aria-label="Research entry stop and target">
+      <div><small>ENTRY ZONE · RESEARCH</small><strong id="deskActionEntry">—</strong></div>
+      <div><small>STOP / INVALIDATION</small><strong id="deskActionStop">—</strong></div>
+      <div><small>TARGET 1</small><strong id="deskActionTarget">—</strong></div>
+    </div>
+    <div class="desk-action-bottom">
+      <div class="desk-action-next"><small>NEXT REQUIRED CONFIRMATION</small><b id="deskActionTrigger">A completed, verified entry trigger</b></div>
+      <div class="desk-action-gate"><small>WHY NOT ENTER IMMEDIATELY?</small><b id="deskActionBlocker">Broker, event and spread verification missing.</b></div>
+    </div>
+    <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><a href="#charts">Review chart ↓</a></div>
+  </section>
+  <details class="desk-kpi-disclosure"><summary>Research coverage and scored paper statistics</summary>
   <div class="desk-kpis">
     <div><small>Approved conditional signals</small><strong id="deskApproved">—</strong></div>
     <div><small>Monitored research watches</small><strong id="deskWatches">—</strong></div>
     <div><small>Scored paper results</small><strong id="deskPaperStats">—</strong></div>
     <div><small>Public tracking coverage</small><strong id="deskCoverage">—</strong></div>
-  </div>
+  </div></details>
   <div class="desk-layout">
     <div class="desk-primary"><div class="desk-labelrow"><h3>Entry plans to watch</h3><span>Evidence-ordered; NOT predicted win rates</span></div><div id="deskCards" class="desk-cards"></div></div>
     <aside class="desk-ledger"><h3>Paper-trade blotter</h3><p>Only triggered, filled and resolved simulations count as wins or losses.</p><div id="deskPaperRows"></div><a href="#learning" class="desk-link">Explore monitored performance ↓</a></aside>
@@ -1216,6 +1264,61 @@ async function loadOutcomes(){
 }
 function journal(){let x=[];try{x=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]")}catch{}const w=x.filter(i=>i.outcome==="WIN").length,l=x.filter(i=>i.outcome==="LOSS").length;el("learningSummary").textContent=x.length?x.length+" self-reported observations; "+w+" wins, "+l+" losses, "+(w+l?Math.round(100*w/(w+l))+"% self-reported win rate.":"no win rate yet.")+" These are not broker-verified and prove no predictive edge.":"Zero recorded personal trades or broker-verified win/loss outcomes. Cannot yet claim a successful learned strategy."}
 
+function renderDeskPrimary(t, sourceFresh){
+ const box=el("deskAction"),flag=el("deskActionFlag");
+ if(!box||!flag||!feed)return;
+ const q=t?(feed.pairs?.[t.instrument]?.quote||{}):{};
+ const now=Date.now(),quoteAt=Date.parse(q.time),quoteOk=Number.isFinite(quoteAt)&&
+   quoteAt<=now+300000&&now-quoteAt<4200000;
+ const researchAt=Date.parse(t?.source_quote_at||t?.first_seen_at||t?.created_at);
+ const planOk=!!t&&(t._canonical||Number.isFinite(researchAt)&&researchAt<=now+300000&&now-researchAt<4200000);
+ const valid=!!(t&&sourceFresh&&quoteOk&&planOk);
+ const currency=t?.instrument?.split("_")||[];
+ const relevantEvents=(feed.calendar||[]).filter(e=>String(e.impact).toLowerCase()==="high"&&
+    currency.includes(e.currency)&&Number.isFinite(Date.parse(e.time))&&
+    Math.abs(Date.parse(e.time)-now)<=45*60000);
+ const event=relevantEvents[0]||null;
+ const blocked=!valid||!!event;
+ const canonical=t?!!t._canonical:false;
+ box.className="desk-action "+(blocked?"data-blocked":canonical?"confirmed-plan":"candidate");
+ flag.textContent=blocked?"🔴 WAIT · NO APPROVED ENTRY":canonical?"🟡 CONDITIONAL PLAN · CONFIRM TRIGGER":"🟡 WATCH ONLY · DO NOT ENTER";
+ el("deskActionPair").textContent=t?String(t.instrument).replace("_","/")+" · "+(t.direction==="SHORT"?"SELL":"BUY"):"No current verified FX setup";
+ el("deskActionReason").textContent=!t?"No eligible priced hypothesis is available. There is no trade to enter.":
+  canonical?"Immutable research signal exists, but a completed trigger and broker prices are not verified.":
+  "Leading directional hypothesis only. This is not a triggered trade or evidence of a profitable strategy.";
+ const entry=t?.entry_low!=null&&t?.entry_high!=null?
+  money(t.entry_low)+"–"+money(t.entry_high):t?.planned_entry!=null?money(t.planned_entry):t?.entry!=null?money(t.entry):"—";
+ el("deskActionEntry").textContent=entry;
+ el("deskActionStop").textContent=t?.stop!=null?money(t.stop):"—";
+ el("deskActionTarget").textContent=t?.tp1!=null?money(t.tp1):"—";
+ const trigger=t?.trigger||t?.m5_confirmation||
+  (canonical?"Verify the original completed M15 alert and its expiry":
+   t?.route==="MOMENTUM_CONTINUATION"?"Independently completed M5 continuation after M15 impulse":
+   "Wait for a completed M15 rejection/pullback and independent validation");
+ el("deskActionTrigger").textContent=t?String(trigger):"New valid research and completed confirmation";
+ let reason=!sourceFresh?"OANDA source stale (>70m)":
+  !t?"No approved setup, no eligible entry levels":
+  !quoteOk?"Pair-specific OANDA quote missing or older than 70m":
+  !planOk?"Plan reference is stale or future-dated":
+  event?"HIGH-IMPACT EVENT NEAR: "+event.currency+" "+event.title+" · "+uk(event.time):
+  canonical?"Trigger, official news clearance and executable Pepperstone bid/ask/spread still unverified":
+  String(t.research_only_blocker||"Untriggered watch; completed entry evidence, news, spread and Pepperstone verification required");
+ el("deskActionBlocker").textContent=reason;
+ const entryQuote=Number(t?.direction==="SHORT"?q.bid:q.ask);
+ const spread=Number(q.spread_pips);
+ el("deskActionQuote").textContent=!t?"OANDA research only · Pepperstone UNKNOWN":
+  "OANDA "+(t.direction==="SHORT"?"bid":"ask")+" "+(entryQuote>0?money(entryQuote):"—")+
+  " · "+(Number.isFinite(spread)?"spread "+n(spread,1)+"p · ":"")+
+  (quoteOk?uk(q.time):"quote stale / missing")+
+  " · Pepperstone UNKNOWN";
+ el("deskActionProgress").textContent=!t?"No current tracked entry":t._freshResearch?
+  "NEW: performance not yet forward-tracked":Number.isFinite(Number(t.hypothetical_move_pct))&&t.hypothetical_move_pct!=null?
+  "Hypothetical move "+(Number(t.hypothetical_move_pct)>=0?"+":"")+n(t.hypothetical_move_pct,3)+"% · NO FILL":
+  "Entry / P&L not verified";
+ el("deskActionSource").textContent=blocked?"RESEARCH · ENTRY BLOCKED":
+  canonical?"SIGNAL PLAN · BROKER UNVERIFIED":"PAPER WATCH · NOT EXECUTABLE";
+}
+
 function renderDecisionDesk(){
  const lead=el("deskCards"),paper=el("deskPaperRows"),listing=el("deskIndex");
  if(!feed||!lead||!paper)return;
@@ -1310,6 +1413,7 @@ function renderDecisionDesk(){
    " · SL "+money(first.stop)+" · TP1 "+money(first.tp1)+" · hourly check :15 UK":
    "Next scheduled hourly :15 UK; no tick-by-tick alerts";
  // An institutional-looking ranking must never become a broker action itself.
+ renderDeskPrimary(proposed[0]||null,fresh);
  if(!proposed.length){lead.replaceChildren(make("p","No fresh, unexpired priced setups. The research engine has not confirmed an entry. Avoid forcing a trade.","desk-quiet"))}
  else{lead.replaceChildren(...proposed.map(t=>{
    const card=make("article",undefined,"desk-card"),p=feed.pairs?.[t.instrument]||{},q=p.quote||{},side=t.direction==="SHORT"?"SELL":"BUY";
