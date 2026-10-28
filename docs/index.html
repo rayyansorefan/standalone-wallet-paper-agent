@@ -392,6 +392,24 @@ main#overview>.hero p{font-size:12px;max-width:580px}
 .desk-diagnostic-note{padding:10px 12px;margin:0;color:#a4bfce;font-size:10px;line-height:1.6}
 .desk-diagnostic-empty{padding:15px;color:#ffc3ad;font-size:11px}
 @media(max-width:740px){.desk-diagnostic-header{display:none}.desk-diagnostic-line{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.desk-diagnostic-line>div:nth-child(4){grid-column:1/-1}.desk-diagnostic-line>div:nth-child(5){grid-column:1/-1}.desk-diagnostic-head{align-items:flex-start;flex-direction:column}}
+
+/* Entry radar: exact, timestamped market evidence instead of heuristic rank as trade advice. */
+.desk-entry-radar{border:1px solid #375169;background:#0d2537;border-radius:11px;margin:14px 0 12px;padding:13px}
+.radar-title{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.radar-title strong{font-size:14px;letter-spacing:-.1px;color:#e8f8ff}
+.radar-title small{font-size:10px;display:block;color:#9eb8cc;margin-top:3px}
+.radar-title>span{color:#9fd8dd;font-size:10px;font-weight:850}
+.radar-scroll{overflow-x:auto;max-width:100%}
+.radar-scroll table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.radar-scroll th{font-size:9px;white-space:nowrap;letter-spacing:.5px;color:#91adbf;padding:9px 7px;background:#152e41;text-align:left;border-bottom:1px solid #355269}
+.radar-scroll td{font-size:11px;white-space:nowrap;padding:11px 7px;color:#d9e7f1;border-bottom:1px solid #263f51}
+.radar-scroll td:last-child{white-space:normal;min-width:170px}
+.radar-scroll td:first-child{font-weight:800}
+.radar-side-buy{color:#81e8c0}.radar-side-sell{color:#ffb6b6}
+.radar-pill{display:inline-block;border-radius:6px;background:#483625;color:#ffe0a0;padding:4px 7px;font-size:10px;font-weight:800}
+.radar-pill.blocked{background:#4b2b30;color:#ffccd2}
+.radar-disclaimer{font-size:10px;color:#9fb9c9;margin:10px 1px 0;line-height:1.5}
+@media(max-width:640px){.desk-entry-radar{padding:10px}.radar-scroll th,.radar-scroll td{padding:9px 6px}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -436,6 +454,11 @@ main#overview>.hero p{font-size:12px;max-width:580px}
       <div class="desk-action-gate"><small>WHY NOT ENTER IMMEDIATELY?</small><b id="deskActionBlocker">Broker, event and spread verification missing.</b></div>
     </div>
     <div class="desk-gate-strip" id="deskActionGates" aria-label="Institutional-style entry readiness checks"></div>
+    <section class="desk-entry-radar" id="deskEntryRadar" aria-label="Upcoming entry triggers and reasons to wait">
+      <div class="radar-title"><div><strong>Next completed-candle checks</strong><small>Exactly what must happen next · no confirmed manual trades</small></div><span id="radarAsOf">AWAITING SOURCE</span></div>
+      <div class="radar-scroll"><table><thead><tr><th>PAIR / BIAS</th><th>OANDA QUOTE</th><th>PREVIOUS M15 LEVEL</th><th>DISTANCE</th><th>NEXT CHECK</th><th>ENTRY GATE</th></tr></thead><tbody id="radarRows"></tbody></table></div>
+      <p class="radar-disclaimer" id="radarDisclaimer">Directional scanner diagnostics. A level crossing is not an approved entry, profit estimate or executable Pepperstone quote.</p>
+    </section>
     <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><span class="desk-cadence">Next hourly review :15 UK · not tick-by-tick</span><a href="#charts">Review chart ↓</a></div>
   </section>
   <section class="desk-diagnostic" aria-label="Live FX entry readiness exceptions">
@@ -1484,6 +1507,56 @@ function renderEntryDiagnostics(){
  }));
 }
 
+function renderEntryRadar(){
+ const table=el("radarRows"),asof=el("radarAsOf"),note=el("radarDisclaimer");
+ if(!table||!feed)return;
+ const now=Date.now(),fresh=fresher();
+ asof.textContent="SOURCE "+uk(feed.snapshot_at)+(fresh?" · CURRENT":" · STALE");
+ const rows=(feed.learning?.entry_diagnostics||[]).filter(d=>visiblePair(d.instrument)&&
+    ["LONG","SHORT"].includes(d.direction)&&Number.isFinite(Number(d.reference_m15_level)));
+ if(!fresh||!rows.length){
+  table.replaceChildren(make("tr",undefined,"radar-empty"));
+  const td=make("td",!fresh?
+    "Source stale · NO ENTRY. Use the next verified collector snapshot.":
+    "Entry-level diagnostics not yet published · NO ENTRY. High research scores are not confirmed triggers.");
+  td.colSpan=6;table.children[0].append(td);
+  note.textContent="Scanner diagnostics do not authorize trades. The collector must publish fresh completed-bar evidence before these levels can be assessed.";
+  return;
+ }
+ const ordered=rows.slice().sort((a,b)=>{
+   const viable=x=>!(x.blockers||[]).some(c=>["STALE_QUOTE","QUOTE_UNUSABLE","COST_HIGH_OR_UNKNOWN","FOUNDATION_CONFLICT","HIGHER_FRAME_CONFLICT","TREND_STRENGTH","DMI_CONFLICT","OVEREXTENDED_OR_REVERSING"].includes(c.code));
+   return Number(viable(b))-Number(viable(a))||
+     Math.abs(Number(a.distance_to_reference_pips??999))-Math.abs(Number(b.distance_to_reference_pips??999))||
+     Number(b.priority||0)-Number(a.priority||0);
+ });
+ table.replaceChildren(...ordered.slice(0,5).map(d=>{
+   const tr=make("tr"),pair=make("td");
+   pair.append(make("strong",String(d.instrument).replace("_","/")+" "),
+     make("span",d.direction==="LONG"?"BUY":"SELL",d.direction==="LONG"?"radar-side-buy":"radar-side-sell"));
+   const q=feed.pairs?.[d.instrument]?.quote||{};
+   const side=d.direction==="LONG"?q.ask:q.bid,sourceAt=q.time||d.source_quote_at;
+   const dataRecent=Number.isFinite(Date.parse(sourceAt))&&now-Date.parse(sourceAt)>=-300000&&now-Date.parse(sourceAt)<4200000;
+   const quote=make("td",dataRecent?money(side)+" · "+uk(sourceAt):"STALE");
+   const level=make("td",money(d.reference_m15_level));
+   const dist=make("td",d.distance_to_reference_pips==null?"UNKNOWN":
+     (Number(d.distance_to_reference_pips)>0?"+":"")+n(d.distance_to_reference_pips,1)+" pips");
+   const check=make("td",d.next_m15_check_at?uk(d.next_m15_check_at):"Await completed M15");
+   const reasons=(d.blockers||[]).map(x=>x.code);
+   const triggerText=d.previous_m15_break_observed?"Historical breakout observed; NOT a live signal":
+     "Wait for "+(d.direction==="SHORT"?"completed SELL close below ":"completed BUY close above ")+money(d.reference_m15_level);
+   const blocker=reasons.includes("HIGHER_FRAME_CONFLICT")?"FRAME CONFLICT":reasons.includes("TREND_STRENGTH")?"WEAK M15 / H1 TREND":
+     reasons.includes("DMI_CONFLICT")?"DMI CONFLICT":reasons.includes("COST_HIGH_OR_UNKNOWN")?"SPREAD / COST":
+     reasons.includes("NEWS_PARTIAL")?"MACRO NOT CLEARED":reasons.includes("OVEREXTENDED_OR_REVERSING")?"REVERSAL RISK":
+     reasons.includes("FOUNDATION_CONFLICT")?"M15 / H1 CONFLICT":"NOT AN APPROVED ENTRY";
+   const gate=make("td");
+   gate.append(make("span",blocker,"radar-pill"+(blocker==="MACRO NOT CLEARED"?"":" blocked")),
+     make("div",triggerText,"radar-disclaimer"));
+   tr.append(pair,quote,level,dist,check,gate);return tr;
+ }));
+ note.textContent="Research hypotheses only · original unmodified signals.json must contain an approved conditional setup before a trade alert. All "+" "+
+   rows.length+" researched triggers remain blocked until fresh completed bars, news, spread and Pepperstone manual verification.";
+}
+
 function renderDecisionDesk(){
  const lead=el("deskCards"),paper=el("deskPaperRows"),listing=el("deskIndex");
  if(!feed||!lead||!paper)return;
@@ -1674,8 +1747,8 @@ function renderDecisionDesk(){
   "news "+(feed.news_status||"UNKNOWN")+" · Pepperstone executable quotes UNKNOWN · refresh hourly, not tick-by-tick.";
 }
 
-function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
-async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
+function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderEntryRadar();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
+async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderEntryRadar();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
 el("pair").addEventListener("change",e=>{pair=e.target.value;tf="M15";chart()});el("filter").addEventListener("input",()=>feed&&scanner());el("journal").addEventListener("submit",e=>{e.preventDefault();try{const a=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]");a.push({at:new Date().toISOString(),pair:el("journalPair").value,outcome:el("outcome").value,note:el("note").value});localStorage.setItem("fx-journal-local-v1",JSON.stringify(a.slice(-1000)));el("note").value="";journal()}catch{el("learningSummary").textContent="Browser local storage is unavailable."}});
 if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a, a[href='#charts'], a[href='#learning'], a[href='#demoEvidence'], a[href='#research-setups']").forEach(a=>a.addEventListener("click",()=>{
  document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));
@@ -1689,5 +1762,5 @@ el("earlyToggle").addEventListener("click",()=>{earlyExpanded=!earlyExpanded;if(
 el("earlyScope").addEventListener("change",e=>{earlyScope=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("earlySort").addEventListener("change",e=>{earlySort=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("refreshView").addEventListener("click",async()=>{const b=el("refreshView");b.disabled=true;b.textContent="↻ Refreshing published data…";try{await Promise.all([load(),loadOutcomes()])}finally{b.disabled=false;b.textContent="↻ Refresh display"}});
-load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderDecisionDesk();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
+load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderDecisionDesk();renderEntryRadar();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
 </script></body></html>
