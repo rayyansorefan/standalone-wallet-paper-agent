@@ -306,3 +306,21 @@ test('completed-bar entry radar preserves research-only gating', () => {
       x.blockers.some(y=>y.code==='NO_APPROVED_TRIGGER')),
     'All observational entry diagnostics must retain explicit non-approval');
 });
+
+test('paper-only M15 structural preview never becomes a broker trade', () => {
+  assert.match(page, /priced_paper_preview/);
+  assert.match(page, /STRUCTURE-PRICED M15 PAPER PREVIEW · NOT AN ENTRY/);
+  assert.match(page, /NO EXECUTABLE SIGNAL/);
+  assert.match(page, /PAPER STOP \/ TARGET/);
+  assert.match(page, /Next.*M15|NEXT M15|Next completed-candle checks/);
+  for(const row of feed.learning?.entry_diagnostics||[]){
+    const plan=row.priced_paper_preview;
+    if(!plan) continue;
+    assert.equal(plan.approved_entry,false);
+    assert.equal(plan.broker_verified,false);
+    assert.equal(plan.status,'PRICED_PAPER_RESEARCH_NOT_TRIGGERED');
+    assert.ok(plan.net_rr_estimate>=1.35);
+    assert.ok(plan.gross_rr_estimate>=1.5);
+    assert.ok(Date.parse(plan.expires_at)>Date.parse(plan.source_snapshot_at));
+  }
+});
