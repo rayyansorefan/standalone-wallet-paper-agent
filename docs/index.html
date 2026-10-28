@@ -1474,7 +1474,7 @@ function renderDecisionDesk(){
    Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&
    Number(x.stop)>0&&Number(x.tp1)>0&&
    validTime(x.source_quote_at)&&
-   Number(x.technical_checks_agree)===4&&
+   Number(x.technical_checks_agree)>=4&&
    (!Array.isArray(x.higher_timeframe_conflicts)||!x.higher_timeframe_conflicts.length)&&
    Number(x.net_rr_estimate)>=1.35)
   .map(x=>{
