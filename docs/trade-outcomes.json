@@ -192,5 +192,30 @@
     "lesson": "Early manual execution captured +8.2 pips. Later M15-and-retouch route did not observe original sell price on saved OANDA bids. Prospective completed-M5 alternative needs symmetric wins, losses, spread, news and no-fill tests.",
     "proposed_experiment": "M5_FAST_CONFIRMATION_SHADOW_ONLY",
     "is_verified_strategy_win": false
+  },
+  "broker_updates": {
+    "as_of": "2026-10-28T08:14:00Z",
+    "source": "USER_REPORT_ONLY",
+    "source_precision": "minute",
+    "heading": "28 Oct morning: three user-reported favourable trades — reconciliation pending",
+    "positions": [
+      {
+        "id": "Morning trade 1",
+        "status": "SUCCESS REPORTED · close unknown",
+        "detail": "Entered approximately one hour earlier; no verified realised P&L or matched instrument."
+      },
+      {
+        "id": "Morning trade 2",
+        "status": "OPEN · favourable",
+        "detail": "User reports beyond halfway toward the intended profit target; exact figures unknown."
+      },
+      {
+        "id": "Morning trade 3",
+        "status": "OPEN · favourable",
+        "detail": "Approximately +£5 floating profit reported; not booked as realised."
+      }
+    ],
+    "learning_note": "Encouraging early-entry observations deserve a matched forward audit. Do not increase a strategy's scored wins, ranking weights or live entry permissions without confirmed fills/exits and full losing sample.",
+    "reconciliation": "Pair names, actual entry/exit, costs, trade screenshots, original signal route and broker spread pending."
   }
 }
