@@ -331,6 +331,37 @@ body{background:#07111f;color:#edf5ff}
 
 .desk-top h2{font-size:24px}.desk-action{margin:10px 0 14px}.desk-action-flag{font-size:clamp(17px,2.5vw,26px);font-weight:900;letter-spacing:-.4px}.desk-action-pair{font-size:clamp(24px,3.4vw,36px)}.desk-action-levels strong{font-size:clamp(18px,2.5vw,27px)}.desk-cadence{font-size:10px;color:#a8bcca}.desk-verdict{display:none}
 @media(max-width:600px){.desk-action{margin-top:8px}.desk-action-flag{font-size:19px}.desk-action-pair{font-size:26px}.desk-action-levels{gap:5px}.desk-action-levels strong{font-size:17px}.desk-action-foot{gap:7px}}
+
+/* Clean entry-first institutional workflow: details remain accessible, but no repeated dashboards. */
+main#overview>.hero{padding:8px 0 15px;min-height:0}main#overview>.hero h1{font-size:clamp(22px,2.8vw,33px);letter-spacing:-.8px}
+main#overview>.hero p{font-size:12px;max-width:580px}
+.decision-desk{background:#0c1b2b;border:1px solid #314d65;box-shadow:0 16px 46px #0003;border-radius:17px;padding:clamp(13px,2vw,23px)}
+.desk-top{padding-bottom:12px;border-bottom:1px solid #263e53}
+.desk-top h2{font-size:clamp(22px,3vw,31px)}.desk-top p{font-size:12px;max-width:620px}
+.desk-action{margin:14px 0;padding:clamp(14px,2.2vw,23px);border-width:2px 2px 2px 7px;box-shadow:0 12px 36px #0004}
+.desk-action-flag{font-size:clamp(24px,3.8vw,40px)!important;line-height:1.1;font-weight:950;margin-top:8px}
+.desk-action-pair{font-size:clamp(22px,3vw,35px);margin:10px 0}
+.desk-action-levels{margin:16px 0;gap:8px}.desk-action-levels>div{border-color:#3a627b;background:#142f45}
+.desk-action-levels>div:first-child{background:#294051;border-color:#aa986f}
+.desk-action-levels strong{font-size:clamp(16px,2.2vw,27px);letter-spacing:-.6px}
+.desk-action-next,.desk-action-gate{border-top:1px solid #31566a}
+.desk-labelrow h3{font-size:17px}.desk-cards{grid-template-columns:repeat(auto-fit,minmax(255px,1fr))}
+.fx-drawer{margin:13px 0;background:#102437;border:1px solid #34546a;border-radius:13px}
+.fx-drawer>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 13px;list-style:none;cursor:pointer;padding:16px 20px}
+.fx-drawer>summary::-webkit-details-marker{display:none}
+.fx-drawer>summary::after{content:"＋";font-size:25px;grid-row:1/4;grid-column:2;align-self:center;color:#8ad9e8}
+.fx-drawer[open]>summary::after{content:"−"}
+.fx-drawer>summary span{color:#86d5e5;font-size:10px;font-weight:850;letter-spacing:1px}
+.fx-drawer>summary strong{color:#ecf7ff;font-size:17px;font-weight:800;line-height:1.35}
+.fx-drawer>summary small{color:#95b6c9;font-size:11px}
+.fx-drawer-body{padding:0 16px 17px}
+.fx-drawer-body>.section:first-child{margin-top:6px}
+@media(max-width:780px){
+ main#overview>.hero{display:none}.decision-desk{margin-top:8px}
+ .desk-top h2{font-size:22px}.desk-action-flag{font-size:26px!important}
+ .desk-action-levels>div{padding:10px 8px}.desk-action-levels strong{font-size:clamp(15px,4vw,22px)}
+ .fx-drawer>summary{padding:14px 12px}.fx-drawer-body{padding:0 9px 12px}
+}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -338,17 +369,12 @@ body{background:#07111f;color:#edf5ff}
   <a href="#overview" class="side-brand"><span class="side-mark">⌁</span><span><b>FX INTELLIGENCE</b><small>MARKET RESEARCH LAB</small></span></a>
   <div class="side-caption">RESEARCH DESK</div>
   <nav class="side-nav" aria-label="Dashboard sections">
-    <a class="active" href="#decision-desk"><span aria-hidden="true">◎</span> Best opportunities</a>
-    <a href="#overview"><span aria-hidden="true">◫</span> Overview</a>
-    <a href="#early-opportunities"><span aria-hidden="true">⚡</span> Early opportunities</a>
-    <a href="#learning"><span aria-hidden="true">▧</span> Today’s trades</a>
-    <a href="#demoEvidence"><span aria-hidden="true">✓</span> My results</a>
-    <a href="#research-setups"><span aria-hidden="true">◎</span> Trade setups</a>
-    <a href="#tradeplan"><span aria-hidden="true">◇</span> Entry decision</a>
-    <a href="#setups"><span aria-hidden="true">◈</span> Watchlist</a>
-    <a href="#charts"><span aria-hidden="true">◷</span> Chart analysis</a>
-    <a href="#scanner"><span aria-hidden="true">▤</span> Pair scanner</a>
-    <a href="#news"><span aria-hidden="true">◉</span> News &amp; calendar</a>
+    <a class="active" href="#decision-desk"><span aria-hidden="true">◉</span> Today's entry</a>
+    <a href="#deskCards"><span aria-hidden="true">▥</span> Best opportunities</a>
+    <a href="#deskPaperRows"><span aria-hidden="true">◷</span> Paper trade results</a>
+    <a href="#monitorLibrary"><span aria-hidden="true">⌁</span> Hourly monitoring</a>
+    <a href="#researchLibrary"><span aria-hidden="true">◇</span> Technical research</a>
+    <a href="#brokerLibrary"><span aria-hidden="true">◎</span> My broker results</a>
   </nav>
   <div class="side-foot"><span class="research-dot"></span><b>Research only</b><small>OANDA source · manual Pepperstone checks · no automated orders</small></div>
 </aside>
@@ -396,6 +422,7 @@ body{background:#07111f;color:#edf5ff}
   <details class="desk-history"><summary id="deskIndexSummary">Complete recorded candidate index</summary><div id="deskIndex" class="desk-index"></div></details>
   <div class="desk-end"><span id="deskDisclosure">Checking market-data quality…</span><a href="#charts">Technical chart desk ↓</a></div>
 </section>
+<details class="fx-drawer" id="monitorLibrary"><summary><span>02 / MONITORING</span><strong>Hourly tracking, prospective entries and missed moves</strong><small>Open all detailed observations and older watch versions</small></summary><div class="fx-drawer-body">
 <section class="section" id="research-setups"><div class="heading"><div><h2>Current conditional trade plans</h2><p>Prospective entry zones, stop-losses and targets from aligned M15 / H1 / H4 / D1 trends. Stale plans are hidden. These are <strong>conditional research plans</strong>, never automatic trades or confirmed entry alerts.</p></div><span class="label" id="researchCount">AWAITING RESEARCH</span></div><div id="researchCards" class="setupgrid"></div><p class="small">OANDA research quotes only · Models require a completed M15 confirmation, current official news review and your own Pepperstone prices/spread before any manual order. A listed plan is not an instruction to enter immediately.</p></section>
 
 <section class="section" id="early-opportunities" aria-label="Early research opportunities and missed moves">
@@ -435,6 +462,8 @@ body{background:#07111f;color:#edf5ff}
     </details>
   </div>
 </section>
+</div></details>
+<details class="fx-drawer" id="researchLibrary"><summary><span>03 / RESEARCH</span><strong>Analyst charts, full scanner, news and entry checks</strong><small>Detailed institutional-style analysis beneath the decision screen</small></summary><div class="fx-drawer-body">
 <div class="toolkit panel" aria-label="FX research shortcuts">
   <div class="toolkit-header"><div><div class="eyebrow">ADDITIONAL RESEARCH</div><h2>Charts, scanner and technical details.</h2><p>Jump to working tools and evidence. No button here places a trade or refreshes the external collector.</p></div><a class="toolkit-primary" href="#research-setups">View setups ↗</a></div>
   <div class="toolkit-grid">
@@ -460,7 +489,10 @@ body{background:#07111f;color:#edf5ff}
 <section class="section" id="charts"><div class="heading"><div><h2>Charts across all key timeframes</h2><p>Every quoted pair: M15/H1 close-bar charts. Strongest audited pairs: additional M5/H4/D1 history and expanded indicators. OANDA prices are research-only.</p></div><span class="label">M1 · M5 · M15 · M30 · H1 · H4 · D1 · W1 · MN</span></div><div class="two"><div class="panel"><div class="panelhead"><div><h3 id="chartName">Multi-timeframe price action</h3><div class="small" id="chartTime">Select instrument</div></div><div class="controls"><select id="pair" aria-label="Currency pair"></select><div id="frames" class="controls"></div></div></div><div class="chartbox"><svg id="chart" viewBox="0 0 910 340" role="img" aria-label="Historical candlestick chart"></svg></div><div class="small" id="chartFoot">OANDA historical candles—not current Pepperstone executable prices.</div></div><div class="panel"><div class="panelhead"><h3>Technical confluence</h3><div class="small">Independent indicators</div></div><div class="indicators" id="indicators"></div><div class="decision"><b id="entryState">WAIT</b><p id="entryDetail">No approved and freshly confirmed entry.</p></div><p class="small" id="brokerCaution">Pepperstone symbols and spreads are not verified.</p></div></div></section>
 <section class="section" id="scanner"><div class="heading"><div><h2>Currency-pair scanner</h2><p>OANDA pair universe filtered for confirmed Pepperstone exclusions. Availability of other broker symbols is not guaranteed.</p></div><span class="label" id="scannerLabel">FULL UNIVERSE</span></div><div class="panel"><div class="panelhead"><h3>M15 & H1 signals</h3><input id="filter" type="search" placeholder="Search e.g. EURUSD" style="background:#172d47;padding:8px 12px;border:1px solid #375572;border-radius:8px"></div><div class="tablewrap"><table><thead><tr><th>Pair</th><th>OANDA bid / ask</th><th>Spread (pips)</th><th>M15 RSI</th><th>M15 ADX</th><th>H1 RSI</th><th>Alignment</th><th>Entry</th></tr></thead><tbody id="rows"></tbody></table></div></div></section>
 <section class="section" id="news"><div class="heading"><div><h2>FX news & economic calendar</h2><p>Headline scans are unverified research leads; official primary releases must be confirmed independently.</p></div><span class="label" id="newsLabel">PARTIAL COVERAGE</span></div><div class="two"><div class="panel"><div class="panelhead"><h3>Latest relevant headlines</h3><div class="small" id="newsTime"></div></div><div id="headlines" class="scroll"></div></div><div class="panel"><div class="panelhead"><h3>Forthcoming macro events</h3><div class="small">UK time</div></div><div id="events" class="scroll"></div><p class="small">Third-party calendar times and consensus are not official-source verification. Block entries around unverified high-impact events rather than assuming safety.</p></div></div></section>
+</div></details>
+<details class="fx-drawer" id="brokerLibrary"><summary><span>04 / MY RESULTS</span><strong>Broker-evidenced closed positions and personal journal</strong><small>Kept separate from hypothetical and paper trades</small></summary><div class="fx-drawer-body">
 <section class="section" id="demoEvidence"><div class="heading"><div><h2>My closed trade results</h2><p>Closed trades evidenced by your Pepperstone screenshots, separate from hypothetical research performance.</p></div></div><div class="panel" style="margin-top:15px" id="demoOutcomesPanel"><div class="panelhead"><div><h3>Broker-screenshot trade history</h3><p class="small">Read-only closed trade records · separate from paper research</p></div><span class="label" id="outcomesAsOf">LOADING HISTORY</span></div><div class="outcomekpis"><div class="outcomekpi"><small>Closed screenshot trades</small><strong id="completedCount">—</strong></div><div class="outcomekpi"><small>Total realised net</small><strong id="realisedPnl">—</strong></div><div class="outcomekpi"><small>Latest closed-day net</small><strong id="todayNetPnl">—</strong></div><div class="outcomekpi"><small>Wins / losses</small><strong id="closedRecord">—</strong></div></div><div class="outcomenote" id="latestDemoBank" style="margin:12px 0;line-height:1.65">LATEST DEMO BANK · loading screenshot record...</div><div class="outcomenote" id="userPositionsReport" hidden style="margin:12px 0;line-height:1.65"></div><div class="outcometable"><table><thead><tr><th>Instrument</th><th>Direction</th><th>Position status</th><th>Net P&amp;L</th><th>Price move*</th><th>Observed (UK)</th><th>Signal match</th></tr></thead><tbody id="outcomesRows"></tbody></table></div><p class="small" id="outcomesSource">Reading evidence...</p><div id="earlyEntryReview" class="early-study" hidden></div><p class="outcomenote" id="outcomesLearning">These observations do not yet establish predictive accuracy or validate entry signals.</p></div><div class="panel" style="margin-top:15px"><h3>Personal trade journal · saved on this device</h3><p class="small">Optional self-reported win/loss notes, stored in your browser only. Not broker-verified.</p><form class="journal" id="journal"><select id="journalPair" aria-label="Traded currency pair"></select><select id="outcome" aria-label="Result"><option>WIN</option><option>LOSS</option><option>BREAKEVEN</option><option>NOT_TAKEN</option></select><input id="note" maxlength="200" placeholder="What worked or failed?" style="background:#172d47;padding:8px 12px;border-radius:8px;border:1px solid #375572"><button type="submit">Log outcome</button></form><p class="small" id="learningSummary">No verified outcomes are recorded.</p></div></section>
+</div></details>
 <footer class="footer">RESEARCH ONLY · This site does not execute trades, connect to Pepperstone, or guarantee a daily trade count. OANDA practice quotes are indicative. The private OANDA research collector and ChatGPT's hourly notifications are separate from this static site. Public sanitized snapshots may be stale; the page blocks entry labels after 70 minutes. This site cannot issue ChatGPT push alerts. © FX Intelligence.</footer>
 </main></div></div><script>
 "use strict";
@@ -1365,11 +1397,8 @@ function renderDecisionDesk(){
    Array.isArray(x)?{id:x[0],pair:x[1],side:x[2],created_at:x[3],
      status:x[4],entry:x[5],stop:x[6],tp1:x[7],move_pct:x[8],quote_at:x[9]}:x);
  el("deskCoverage").textContent=index.length?index.length+" / "+(totals.candidates??index.length):String(audit.candidates?.length||0)+" / "+(totals.candidates??0);
- const gate=el("deskVerdict");gate.className="desk-verdict";
- gate.textContent=!fresh?"SOURCE STALE — NO NEW ENTRY. Last snapshot "+date(feed.snapshot_at):
-  canonical.length?"CONDITIONAL PLANS EXIST — VERIFY ACTUAL M15 TRIGGER, NEWS AND PEPPERSTONE BID/ASK BEFORE CONSIDERING AN ENTRY":
-  "NO APPROVED ENTRY — WAIT. Research watches below are UNTRIGGERED paper hypotheses.";
- if(fresh&&canonical.length)gate.className+=" ready";
+ // The prominent primary decision now lives in #deskAction.
+ // Removed legacy #deskVerdict; do not reference its obsolete DOM node.
  // Display fresh research routes before older ledger observations; these are
  // untriggered, NON-CANONICAL hypotheses, never entry approvals or paper fills.
  const latestResearch=(feed.research_setups||[]).filter(x=>
@@ -1504,7 +1533,14 @@ function renderDecisionDesk(){
 function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
 async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
 el("pair").addEventListener("change",e=>{pair=e.target.value;tf="M15";chart()});el("filter").addEventListener("input",()=>feed&&scanner());el("journal").addEventListener("submit",e=>{e.preventDefault();try{const a=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]");a.push({at:new Date().toISOString(),pair:el("journalPair").value,outcome:el("outcome").value,note:el("note").value});localStorage.setItem("fx-journal-local-v1",JSON.stringify(a.slice(-1000)));el("note").value="";journal()}catch{el("learningSummary").textContent="Browser local storage is unavailable."}});
-if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
+if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a, a[href='#charts'], a[href='#learning'], a[href='#demoEvidence'], a[href='#research-setups']").forEach(a=>a.addEventListener("click",()=>{
+ document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));
+ if(a.closest&&a.closest(".side-nav"))a.classList.add("active");
+ const target=a.getAttribute?a.getAttribute("href"):"";
+ if(["#monitorLibrary","#learning","#early-opportunities","#research-setups"].includes(target))el("monitorLibrary").open=true;
+ if(["#researchLibrary","#charts","#scanner","#news","#tradeplan"].includes(target))el("researchLibrary").open=true;
+ if(["#brokerLibrary","#demoEvidence"].includes(target))el("brokerLibrary").open=true;
+}));
 el("earlyToggle").addEventListener("click",()=>{earlyExpanded=!earlyExpanded;if(feed)renderEarlyOpportunities()});
 el("earlyScope").addEventListener("change",e=>{earlyScope=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("earlySort").addEventListener("change",e=>{earlySort=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
