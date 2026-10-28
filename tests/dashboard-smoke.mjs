@@ -53,6 +53,18 @@ const ctx={document:doc,Date:TestDate,Intl,Number,String,Math,Object,Array,URL,P
 vm.runInNewContext(script,ctx);
 await new Promise(resolve=>setImmediate(resolve));
 const $=id=>map.get(id);
+// The primary decision must be immediately understandable without opening
+// the research tables, and no directional paper watch can become a trade alert.
+assert.ok($("deskAction"),"One-glance primary decision surface exists");
+assert.match($("deskActionFlag").textContent,/WAIT|WATCH ONLY|CONDITIONAL PLAN/);
+assert.ok($("deskActionPair").textContent.length>0);
+assert.ok($("deskActionTrigger").textContent.length>10);
+assert.ok($("deskActionBlocker").textContent.length>10);
+assert.match($("deskActionQuote").textContent,/OANDA|Pepperstone UNKNOWN/);
+assert.ok($("deskActionEntry").textContent.length>0);
+assert.ok($("deskActionStop").textContent.length>0);
+assert.ok($("deskActionTarget").textContent.length>0);
+assert.doesNotMatch($("deskActionFlag").textContent,/EXECUTABLE NOW|BROKER VERIFIED/);
 assert.equal($("screened").textContent,String(Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length));
 const closedEvidence = evidence.trades.filter(t => t.status === "CLOSED");
 const displayedRealised = closedEvidence.reduce((sum,t) => sum + t.realised_pnl_gbp, 0);
