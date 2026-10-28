@@ -1681,7 +1681,10 @@ function renderInstitutionalTerminal(){
    Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&Number(x.stop)>0&&Number(x.tp1)>0
  ).map(x=>({...x,_route:x.route||"WATCH",_canonical:false,_when:x.first_seen_at,_tracked:true}));
  const sorted=[...canonical,...research.sort((a,b)=>(Number(b.research_priority)||0)-(Number(a.research_priority)||0)),...watches.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))];
- if(!canonical.length&&!research.length){renderInstitutionalDiagnosticFallback(now,fresh,when,news);return;}
+ // Retain unexpired, forward-tracked, frozen priced research plans on the
+ // decision monitor even if the latest collector has zero newly generated
+ // research setups and zero canonical signals. ALWAYS label as WATCH ONLY.
+ if(!canonical.length&&!research.length&&!watches.length){renderInstitutionalDiagnosticFallback(now,fresh,when,news);return;}
  const rows=[],names=new Set();for(const x of sorted){if(names.has(x.instrument))continue;names.add(x.instrument);rows.push(x);if(rows.length>=5)break}
  if(!rows.some(x=>x.instrument===selectedInstitutionalPair))selectedInstitutionalPair=rows[0]?.instrument||null;
  const current=rows.find(x=>x.instrument===selectedInstitutionalPair)||rows[0]||null;
@@ -1691,7 +1694,9 @@ function renderInstitutionalTerminal(){
  el("itNews").textContent="NEWS "+news;
  const timing=x=>{
    if(!x)return null;
-   const t=Date.parse(x._when),span=x._route==="MOMENTUM_CONTINUATION"?5:15;
+   // Next independent bar is scheduled from the LAST source snapshot,
+   // not the original creation timestamp of an older retained research watch.
+   const t=Date.parse(feed.snapshot_at),span=x._route==="MOMENTUM_CONTINUATION"?5:15;
    if(!Number.isFinite(t))return null;
    const ms=span*60000;return new Date((Math.floor(t/ms)+1)*ms).toISOString();
  };
@@ -1777,9 +1782,9 @@ function renderInstitutionalTerminal(){
  el("itPriceCheck").textContent=choose?choose.zonePosition:"NO APPROVED PLAN";
  el("itFirst").textContent=current?when(current._when):"—";
  el("itQuote").textContent=choose&&choose.qOk?price(choose.brokerEntry)+" · "+when(choose.q.time):"STALE / UNAVAILABLE";
- el("itNextBar").textContent=choose?(choose.firstIndependent?
-   (choose.pattern?"PATTERN @ "+when(choose.observedAt):"NO FORWARD TRIGGER"):
-   "Next complete "+(current._route==="MOMENTUM_CONTINUATION"?"M5":"M15")+" no earlier than "+when(choose.ended)):"—";
+ el("itNextBar").textContent=choose?
+   "NEXT "+(current._route==="MOMENTUM_CONTINUATION"?"M5":"M15")+" CLOSE "+when(choose.ended)+
+   (choose.pattern?" · prior pattern "+when(choose.observedAt):" · entry not confirmed"):"—";
  el("itSourceNote").textContent=current?("Plan: "+when(current._when)+" · quote: "+when(choose.q.time)+" · "+
    "OANDA indicative only. No broker execution / prediction / guaranteed win."):"Source missing; no speculative quotes.";
  const fMove=el("itForwardMove"),fNote=el("itForwardNote"),fChart=el("itForwardChart");
