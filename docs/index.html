@@ -329,6 +329,8 @@ body{background:#07111f;color:#edf5ff}
 .desk-action.data-blocked .desk-action-levels>div{opacity:.68}
 @media(max-width:780px){main#overview>.hero{display:none}.decision-desk{margin-top:12px}.desk-action{padding:17px 14px}.desk-action-top{display:block}.desk-action-source{display:inline-block;margin-top:10px}.desk-action-flag{font-size:24px}.desk-action-levels{gap:7px;margin:17px 0}.desk-action-levels>div{padding:11px 8px}.desk-action-levels strong{font-size:15px}.desk-action-levels small{font-size:9px}.desk-action-bottom{grid-template-columns:1fr;gap:0}.desk-action-gate,.desk-action-next{padding:10px 0}.desk-action-foot{font-size:10px}.desk-labelrow span{display:none}}
 
+.desk-top h2{font-size:24px}.desk-action{margin:10px 0 14px}.desk-action-flag{font-size:clamp(17px,2.5vw,26px);font-weight:900;letter-spacing:-.4px}.desk-action-pair{font-size:clamp(24px,3.4vw,36px)}.desk-action-levels strong{font-size:clamp(18px,2.5vw,27px)}.desk-cadence{font-size:10px;color:#a8bcca}.desk-verdict{display:none}
+@media(max-width:600px){.desk-action{margin-top:8px}.desk-action-flag{font-size:19px}.desk-action-pair{font-size:26px}.desk-action-levels{gap:5px}.desk-action-levels strong{font-size:17px}.desk-action-foot{gap:7px}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -359,15 +361,9 @@ body{background:#07111f;color:#edf5ff}
 <div class="hero"><div><div class="eyebrow">THE FOREIGN EXCHANGE DESK</div><h1>FX Intelligence <span>Hub.</span></h1><p>Clear entry plans, hourly percentage tracking and trade outcomes. OANDA research prices are separate from your manual Pepperstone execution.</p></div><div class="clock"><b id="clock">--:-- UK</b><div id="sourceTime">OANDA source time unknown</div><div id="publishedTime">Feed not loaded</div></div></div>
 <section class="decision-desk" id="decision-desk" aria-label="FX opportunity and performance desk">
   <div class="desk-top"><div><div class="eyebrow">FX DECISION TERMINAL · MANUAL RESEARCH</div><h2>Best entry &amp; live research evidence</h2><p>Read the decision first. Exact trigger, original risk levels and monitored paper movement below.</p></div><span class="desk-source" id="deskSource">VERIFYING SOURCE</span></div>
-  <div class="desk-command" id="deskCommand" aria-live="polite">
-    <div class="desk-command-action"><small>01 · TRADE DECISION</small><strong id="deskCommandAction">🔴 NO APPROVED ENTRY</strong><span id="deskCommandContext">Waiting for verified completed-candle evidence.</span></div>
-    <div class="desk-command-pair"><small>02 · HIGHEST PRIORITY</small><strong id="deskCommandPair">—</strong><span id="deskCommandRoute">Research only · no entry confirmed</span></div>
-    <div class="desk-command-next"><small>03 · WHAT TO DO</small><strong id="deskCommandNext">WAIT FOR ENTRY CONFIRMATION</strong><span id="deskCommandClock">Next scheduled assessment :15 UK</span></div>
-  </div>
-  <div id="deskVerdict" class="desk-verdict">Checking approved signal, source age and event risks…</div>
   <section class="desk-action" id="deskAction" aria-label="Primary FX decision" aria-live="polite">
     <div class="desk-action-top">
-      <div><div class="desk-action-eyebrow">01 / PRIMARY DECISION · WHAT TO DO NOW</div>
+      <div><div class="desk-action-eyebrow">AT A GLANCE / ENTRY DECISION · NO AUTOMATED ORDERS</div>
         <div id="deskActionFlag" class="desk-action-flag">🔴 WAIT — CHECKING SOURCE</div>
         <h3 id="deskActionPair" class="desk-action-pair">No verified setup</h3>
         <p id="deskActionReason" class="desk-action-reason">Source evidence being checked.</p>
@@ -383,7 +379,7 @@ body{background:#07111f;color:#edf5ff}
       <div class="desk-action-next"><small>NEXT REQUIRED CONFIRMATION</small><b id="deskActionTrigger">A completed, verified entry trigger</b></div>
       <div class="desk-action-gate"><small>WHY NOT ENTER IMMEDIATELY?</small><b id="deskActionBlocker">Broker, event and spread verification missing.</b></div>
     </div>
-    <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><a href="#charts">Review chart ↓</a></div>
+    <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><span class="desk-cadence">Next hourly review :15 UK · not tick-by-tick</span><a href="#charts">Review chart ↓</a></div>
   </section>
   <details class="desk-kpi-disclosure"><summary>Research coverage and scored paper statistics</summary>
   <div class="desk-kpis">
@@ -1397,33 +1393,6 @@ function renderDecisionDesk(){
    listed.add(t.instrument);proposed.push(t);
    if(proposed.length>=3)break;
  }
- const first=proposed[0],sourceDate=validTime(feed.snapshot_at),priorityPair=first?.instrument;
- const sourceOkay=Boolean(fresh&&sourceDate);
- const bestOkay=first&&sourceOkay&&!(
-   Number(first.stop)>0&&Number(feed.pairs?.[priorityPair]?.quote?.[first.direction==="SHORT"?"ask":"bid"])>0&&
-   (first.direction==="SHORT"?
-      Number(feed.pairs?.[priorityPair]?.quote?.ask)>=Number(first.stop):
-      Number(feed.pairs?.[priorityPair]?.quote?.bid)<=Number(first.stop))
- );
- const cmd=el("deskCommand");
- cmd.className="desk-command"+(sourceOkay&&first?" evaluating":" source-blocked");
- el("deskCommandAction").textContent=!sourceOkay?"🔴 WAIT — SOURCE STALE":!first?"🔴 WAIT — NO APPROVED ENTRY":first._canonical?"🟡 CONDITIONAL — NOT EXECUTABLE":"🟡 WATCH ONLY — DO NOT ENTER";
- el("deskCommandContext").textContent=!sourceOkay?"Quote freshness not verified; do not use published levels for entry":
-   first?first._canonical?"Canonical research plan exists, but the broker and precise trigger remain unverified":
-   "Top-ranked directional research is NOT an approved entry and has no demonstrated win probability":
-   "No unexpired, verified research candidate currently qualifies.";
- el("deskCommandPair").textContent=first?String(first.instrument).replace("_","/")+" · "+(first.direction==="SHORT"?"SELL":"BUY"):"No priority pair";
- el("deskCommandRoute").textContent=first?(first.entry_route||first.route||"Research watch")+
-    (first._canonical?" · APPROVED PLAN, TRIGGER PENDING":" · UNTRIGGERED PAPER ONLY"):
-    "No price-validated trade plan";
- el("deskCommandNext").textContent=!sourceOkay?"DO NOT ENTER · REFRESH SOURCE":
-   !first?"WAIT FOR A QUALIFIED SIGNAL":!bestOkay?"INVALIDATED · DO NOT ENTER":
-   first._canonical?"VERIFY COMPLETED TRIGGER & BROKER":"WAIT FOR COMPLETED M15 SIGNAL";
- el("deskCommandClock").textContent=first?
-   "Entry "+(first.entry_low!=null?money(first.entry_low)+"–"+money(first.entry_high):money(first.entry))+
-   " · SL "+money(first.stop)+" · TP1 "+money(first.tp1)+" · hourly check :15 UK":
-   "Next scheduled hourly :15 UK; no tick-by-tick alerts";
- // An institutional-looking ranking must never become a broker action itself.
  renderDeskPrimary(proposed[0]||null,fresh);
  if(!proposed.length){lead.replaceChildren(make("p","No fresh, unexpired priced setups. The research engine has not confirmed an entry. Avoid forcing a trade.","desk-quiet"))}
  else{lead.replaceChildren(...proposed.map(t=>{
