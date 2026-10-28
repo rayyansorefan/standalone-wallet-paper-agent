@@ -1,18 +1,21 @@
 {
   "schema": 1,
-  "as_of": "2026-10-27T17:39:30Z",
+  "as_of": "2026-10-28T08:22:00Z",
   "account_type": "PEPPERSTONE_SPREAD_BET_SCREENSHOT_EVIDENCE",
-  "evidence": "User-supplied Pepperstone closed-position screenshots from 23, 26 and 27 October; figures transcribed, not broker-API verified.",
+  "evidence": "User-supplied Pepperstone demo closed-position screenshot 28 Oct 08:12 UK and open portfolio screenshot 28 Oct 08:22 UK, plus earlier screenshots. Timestamp of latest open snapshot is minute precision.",
   "signal_linkage": "Research-influenced according to the user, but individual trades remain PENDING linkage to an immutable earlier signal, confirmation and planned entry. Never count them as approved paper fills or use them as strategy-specific training labels until matched.",
-  "notes": "Seven closed screenshot-evidenced trades: six gains and one loss. The 27 October EUR/USD was a profitable early manual entry, not verified as an original approved signal. Account snapshot remains dated 23 October.",
+  "notes": "Eight closed screenshot-evidenced trades: seven realised gains and one realised loss. 28 Oct NZD/JPY +£22.90 CLOSED; NZD/CAD +£4.92 and NZD/SGD +£7.44 OPEN_AT_SNAPSHOT. All on user-shown Pepperstone demo; no live broker API access.",
   "account_snapshot": {
-    "observed_at": "2026-10-23T13:34:00Z",
-    "balance_gbp": 1117.24,
-    "equity_gbp": 1117.24,
-    "current_pnl_gbp": 0,
-    "used_margin_gbp": 0,
-    "free_margin_gbp": 1117.24,
-    "open_positions": 0
+    "observed_at": "2026-10-28T08:22:00Z",
+    "equity_gbp": 1171.86,
+    "current_pnl_gbp": 12.36,
+    "used_margin_gbp": 668.55,
+    "free_margin_gbp": 503.31,
+    "open_positions": 2,
+    "account_mode": "PEPPERSTONE_DEMO",
+    "source": "USER_SUPPLIED_PEPPERSTONE_PORTFOLIO_SCREENSHOT_0822_UK",
+    "balance_gbp": null,
+    "balance_note": "Screenshot displays £1,171.86 with margin figures summing to it; treated as equity, not proof of cash balance. Balance is not directly shown."
   },
   "trades": [
     {
@@ -161,6 +164,63 @@
       "provenance": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT",
       "realised_pnl_gbp": 9.02,
       "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT"
+    },
+    {
+      "key": "2026-10-28-nzdjpy-closed-0811",
+      "instrument": "NZD_JPY",
+      "direction": "SHORT",
+      "status": "CLOSED",
+      "opened_at": "2026-10-28T07:29:06Z",
+      "closed_at": "2026-10-28T08:11:36Z",
+      "entry_price": 88.657,
+      "exit_price": 88.428,
+      "net_pnl_gbp": 22.9,
+      "realised_pnl_gbp": 22.9,
+      "size_gbp_per_point": 1,
+      "commission_gbp": 0,
+      "swap_fees_gbp": 0,
+      "total_fees_gbp": 0,
+      "account_mode": "PEPPERSTONE_DEMO",
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "entry_classification": "USER_DISCRETIONARY_ENTRY_APPROVAL_UNCONFIRMED",
+      "provenance": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT_2026-10-28_0812_UK",
+      "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT",
+      "research_context_only": "This 07:29:06 UTC entry predated the 07:30 scheduled brief. Do not claim the 07:30 research caused, approved or filled this trade. Signal linkage, original entry criteria and market quotes at entry remain unverified."
+    },
+    {
+      "key": "2026-10-28-nzdcad-open-snapshot-0822",
+      "instrument": "NZD_CAD",
+      "direction": "UNKNOWN",
+      "status": "OPEN_AT_SNAPSHOT",
+      "observed_at": "2026-10-28T08:22:00Z",
+      "unrealised_pnl_gbp": 4.92,
+      "source": "USER_SUPPLIED_PEPPERSTONE_DEMO_PORTFOLIO_SCREENSHOT_2026-10-28_0822_UK",
+      "account_mode": "PEPPERSTONE_DEMO",
+      "entry_price": null,
+      "stop_price": null,
+      "tp_price": null,
+      "size_gbp_per_point": null,
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "is_open_snapshot_only": true
+    },
+    {
+      "key": "2026-10-28-nzdsgd-open-snapshot-0822",
+      "instrument": "NZD_SGD",
+      "direction": "UNKNOWN",
+      "status": "OPEN_AT_SNAPSHOT",
+      "observed_at": "2026-10-28T08:22:00Z",
+      "unrealised_pnl_gbp": 7.44,
+      "source": "USER_SUPPLIED_PEPPERSTONE_DEMO_PORTFOLIO_SCREENSHOT_2026-10-28_0822_UK",
+      "account_mode": "PEPPERSTONE_DEMO",
+      "entry_price": null,
+      "stop_price": null,
+      "tp_price": null,
+      "size_gbp_per_point": null,
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "is_open_snapshot_only": true
     }
   ],
   "execution_review": {
@@ -194,28 +254,27 @@
     "is_verified_strategy_win": false
   },
   "broker_updates": {
-    "as_of": "2026-10-28T08:14:00Z",
-    "source": "USER_REPORT_ONLY",
-    "source_precision": "minute",
-    "heading": "28 Oct morning: three user-reported favourable trades — reconciliation pending",
+    "as_of": "2026-10-28T08:22:00Z",
+    "source": "USER_SUPPLIED_PEPPERSTONE_DEMO_SCREENSHOTS",
+    "heading": "28 OCT DEMO | 1 CLOSED +£22.90 | 2 OPEN +£12.36",
     "positions": [
       {
-        "id": "Morning trade 1",
-        "status": "SUCCESS REPORTED · close unknown",
-        "detail": "Entered approximately one hour earlier; no verified realised P&L or matched instrument."
+        "id": "NZD/JPY short",
+        "status": "CLOSED · +£22.90 realised",
+        "detail": "Opened 07:29:06, closed 08:11:36 UK at 88.428; original research linkage pending."
       },
       {
-        "id": "Morning trade 2",
-        "status": "OPEN · favourable",
-        "detail": "User reports beyond halfway toward the intended profit target; exact figures unknown."
+        "id": "NZD/CAD",
+        "status": "OPEN at 08:22 · +£4.92",
+        "detail": "Floating demo P&L; direction, entry, stop, target and stake not shown."
       },
       {
-        "id": "Morning trade 3",
-        "status": "OPEN · favourable",
-        "detail": "Approximately +£5 floating profit reported; not booked as realised."
+        "id": "NZD/SGD",
+        "status": "OPEN at 08:22 · +£7.44",
+        "detail": "Floating demo P&L; direction, entry, stop, target and stake not shown."
       }
     ],
-    "learning_note": "Encouraging early-entry observations deserve a matched forward audit. Do not increase a strategy's scored wins, ranking weights or live entry permissions without confirmed fills/exits and full losing sample.",
-    "reconciliation": "Pair names, actual entry/exit, costs, trade screenshots, original signal route and broker spread pending."
+    "learning_note": "Positive broker screenshot evidence logged. Investigate whether original prospectively recorded research contributed to entries and audit adverse excursions and eventual closes. Do not train on two open positions as winners, or call NZD/JPY a 07:30 signal win (it opened at 07:29).",
+    "reconciliation": "NZD/JPY original setup and two open positions' precise entries, stops, targets, spreads and final exits remain unverified."
   }
 }
