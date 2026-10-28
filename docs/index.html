@@ -231,6 +231,7 @@ body{background:#07111f;color:#edf5ff}
 .early-study-grid>div{background:#092934;border:1px solid #3c766f;border-radius:8px;padding:10px}.early-study-grid small{display:block;color:#a9c4c8;font-size:10px}.early-study-grid b{color:#e7fff7;font-size:17px}
 @media(max-width:700px){.early-toolbar{flex-wrap:wrap}.early-toolbar select{max-width:100%;flex:1}.early-study-grid{grid-template-columns:1fr 1fr}}
 
+.desk-entryline{font-size:11px;font-weight:700;color:#c0e0ee;background:#102f41;border:1px solid #336477;border-radius:8px;padding:9px;margin-top:9px}
 /* Decision-first compact portfolio workflow: no trading controls or order submission. */
 .decision-desk{margin:12px 0 28px;padding:20px;border:1px solid #335775;border-radius:18px;background:linear-gradient(145deg,#162a3e,#101d2f)}
 .desk-top,.desk-labelrow,.desk-end{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -1245,6 +1246,23 @@ function renderDecisionDesk(){
     plot.append(poly);card.append(plot);
    }
    card.append(make("p","Tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · no verified fill","desk-quiet"));
+   // Make the timing problem explicit: observable completed-bar evidence is
+   // a research diagnostic, NOT an approved trade trigger or broker execution.
+   const m15=(p.frames?.M15?.candles||[]).filter(c=>c&&Number.isFinite(Number(c.o))&&
+     Number.isFinite(Number(c.c))&&Number.isFinite(Number(c.h))&&Number.isFinite(Number(c.l))&&
+     Number.isFinite(Date.parse(c.t)));
+   const last=m15.at(-1),previous=m15.at(-2),m15close=last?Date.parse(last.t)+15*60000:NaN;
+   let entryCheck="M15 entry candle unavailable · do not enter from directional ranking";
+   if(last&&previous&&Number.isFinite(m15close)&&m15close<=Date.parse(feed.snapshot_at)+60000){
+     const level=Number(t.direction==="SHORT"?previous.l:previous.h);
+     const directional=t.direction==="SHORT"?
+       Number(last.c)<Number(last.o)&&Number(last.c)<level:
+       Number(last.c)>Number(last.o)&&Number(last.c)>level;
+     entryCheck=(directional?"Completed M15 directional break observed · RESEARCH ONLY":
+       "NEXT M15 CHECK · needs completed "+(t.direction==="SHORT"?"SELL close below ":"BUY close above ")+money(level))+
+       " · last closed "+date(new Date(m15close).toISOString());
+   }
+   card.append(make("div",entryCheck+" · price in frozen zone, unchanged SL/TP, news/cost and Pepperstone checks still required.","desk-entryline"));
    const reason=invalidated?"INVALIDATED: stop boundary crossed. Do not use this plan.":!fresh?"Data not fresh":live?"Trigger/expiry, official news and Pepperstone spread still require confirmation":
     agreement.checked<4?"Missing full 4-frame alignment; cannot approve":agreement.agree<4?"Higher-timeframe conflict; no approved entry":"Await independent completed M15 trigger, event clearance and broker check";
    card.append(make("div",reason,"desk-check"));
