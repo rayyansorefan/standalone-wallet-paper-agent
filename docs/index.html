@@ -1826,9 +1826,10 @@ function renderInstitutionalTerminal(){
  el("itPriceCheck").textContent=choose?choose.zonePosition:"NO APPROVED PLAN";
  el("itFirst").textContent=current?when(current._when):"—";
  el("itQuote").textContent=choose&&choose.qOk?price(choose.brokerEntry)+" · "+when(choose.q.time):"STALE / UNAVAILABLE";
- el("itNextBar").textContent=choose?
-   "NEXT "+(current._route==="MOMENTUM_CONTINUATION"?"M5":"M15")+" CLOSE "+when(choose.ended)+
-   (choose.pattern?" · prior pattern "+when(choose.observedAt):" · entry not confirmed"):"—";
+ el("itNextBar").textContent=choose?(
+   (choose.ended&&Date.parse(choose.ended)<=now?"BAR DUE · AWAIT NEW OANDA COLLECTION: ":"NEXT ") +
+   (current._route==="MOMENTUM_CONTINUATION"?"M5":"M15")+" CLOSE "+when(choose.ended)+
+   (choose.pattern?" · earlier research pattern "+when(choose.observedAt):" · trigger not confirmed")):"—";
  el("itSourceNote").textContent=current?("Plan: "+when(current._when)+" · quote: "+when(choose.q.time)+" · "+
    "OANDA indicative only. No broker execution / prediction / guaranteed win."):"Source missing; no speculative quotes.";
  const fMove=el("itForwardMove"),fNote=el("itForwardNote"),fChart=el("itForwardChart");
