@@ -1063,6 +1063,8 @@ function renderHourlyCohorts(){
     const firstFrozenBase=Number(indexOrigins[0]?.reference_price);
     const base=Number.isFinite(firstFrozenBase)&&firstFrozenBase>0?
       firstFrozenBase:Number(track.reference_price);
+    const baselineAt=Number.isFinite(firstFrozenBase)&&firstFrozenBase>0?
+      indexOrigins[0]?.created_at:firstObserved;
     const valid=Number.isFinite(base)&&base>0&&Number.isFinite(price)&&price>0;
     const pct=valid?(short?base-price:price-base)/base*100:null;
     // Combine price observations of the same same-day directional watch, never
@@ -1075,6 +1077,12 @@ function renderHourlyCohorts(){
       at:x.at,m:valid?(short?base-Number(x.price):Number(x.price)-base)/base*100:NaN
     })).filter(x=>Number.isFinite(x.m)).sort((a,b)=>Date.parse(a.at)-Date.parse(b.at))
       .filter((x,i,all)=>i===0||Date.parse(x.at)!==Date.parse(all[i-1].at));
+    // Preserve the genuinely observed first quote as the zero-percent anchor.
+    // Missing intervening prices stay missing; the chart is a sparse sample.
+    if(valid&&Number.isFinite(firstFrozenBase)&&firstFrozenBase>0&&
+      Number.isFinite(Date.parse(baselineAt))&&
+      (!history.length||Date.parse(baselineAt)<Date.parse(history[0].at)))
+      history.unshift({at:baselineAt,m:0});
     if(valid&&fresh&&(!history.length||Date.parse(quote.time)>Date.parse(history.at(-1).at)))
       history.push({at:quote.time,m:pct});
     const enough=history.length>=2&&history.some(x=>Math.abs(x.m-history[0].m)>1e-9);
@@ -1116,10 +1124,14 @@ function renderHourlyCohorts(){
     }else if(vals.length>=2){
       const lo=Math.min(0,...vals),hi=Math.max(0,...vals),pad=Math.max((hi-lo)*0.24,.002);
       const min=lo-pad,max=hi+pad,y=v=>12+(max-v)/(max-min)*66;
-      const point=(v,i)=>[18+i*284/(vals.length-1),y(v)];
+      const firstMs=Date.parse(history[0].at),lastMs=Date.parse(history.at(-1).at);
+      const spanMs=Math.max(1,lastMs-firstMs);
+      const point=(v,i)=>[18+284*(Date.parse(history[i].at)-firstMs)/spanMs,y(v)];
+      const sparse=history.slice(1).some((x,i)=>
+        Date.parse(x.at)-Date.parse(history[i].at)>3600000);
       svg("line",{x1:10,y1:y(0),x2:310,y2:y(0),stroke:"#597184","stroke-width":1,"stroke-dasharray":"4 5"},graph);
       const path=vals.map((v,i)=>(i?"L":"M")+point(v,i).map(n=>n.toFixed(1)).join(",")).join(" ");
-      svg("path",{d:path,fill:"none",stroke:vals.at(-1)>=0?"#71e5b9":"#ff9eae","stroke-width":3.2,"stroke-linecap":"round","stroke-linejoin":"round"},graph);
+      svg("path",{d:path,fill:"none",stroke:vals.at(-1)>=0?"#71e5b9":"#ff9eae","stroke-width":3.2,"stroke-linecap":"round","stroke-linejoin":"round",...(sparse?{"stroke-dasharray":"5 5"}:{})},graph);
       const last=point(vals.at(-1),vals.length-1);
       svg("circle",{cx:last[0],cy:last[1],r:4.5,fill:vals.at(-1)>=0?"#71e5b9":"#ff9eae"},graph);
     }else{
@@ -1129,10 +1141,10 @@ function renderHourlyCohorts(){
     card.append(graph,make("small",drawCandleHistory?
       candles.length+" historical M15 candles · NOT measured monitoring performance":
       history.length>=2?
-      "MONITORED MOVEMENT · "+uk(history[0].at)+" → "+uk(history.at(-1).at)+" · "+history.length+" observations · not P/L":
+      "MONITORED QUOTE SAMPLES · "+uk(history[0].at)+" → "+uk(history.at(-1).at)+" · "+history.length+" timestamps (gaps unobserved) · not P/L":
       "Awaiting a second observed quote; no monitoring price chart yet","small"));
     const prices=make("div",undefined,"current-watch-prices");
-    const firstPrice=make("div");firstPrice.append(make("small","BASELINE PRICE · "+(firstObserved?uk(firstObserved):"TIME UNKNOWN")),make("b",Number.isFinite(base)&&base>0?money(base):"—"));
+    const firstPrice=make("div");firstPrice.append(make("small","BASELINE PRICE · "+(baselineAt?uk(baselineAt):"TIME UNKNOWN")),make("b",Number.isFinite(base)&&base>0?money(base):"—"));
     const last=make("div");last.append(make("small",fresh?"LATEST EXIT-SIDE":"LAST RECORDED · STALE"),make("b",Number.isFinite(price)&&price>0?money(price):"—"));
     prices.append(firstPrice,last);card.append(prices);
     const footer=make("div",undefined,"current-watch-footer");
