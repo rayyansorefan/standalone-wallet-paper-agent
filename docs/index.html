@@ -1624,7 +1624,7 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
  gates.replaceChildren(...checks.map(([name,ok,why])=>{const row=make("div",undefined,"it-gate "+(ok?"pass":"fail"));
    const b=make("div");b.append(make("span",name,"it-gate-name"),make("small",why,"it-gate-desc"));
    row.append(make("span",ok?"✓":"×","it-gate-icon"),b,make("span",ok?"OBSERVED":"BLOCKED","it-gate-status"));return row}));
- el("itPermission").textContent="NO ENTRY · WATCH ONLY";
+ el("itPermission").textContent="NO EXECUTABLE SIGNAL";
  el("itBlocker").textContent=problem+" · original stop/TP and event clearance not approved.";
  const table=el("itRows");
  table.replaceChildren(...(shown.length?shown.map(d=>{
