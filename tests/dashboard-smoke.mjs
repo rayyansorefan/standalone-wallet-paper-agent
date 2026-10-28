@@ -162,9 +162,19 @@ if(cad){
     String(x.created_at).slice(0,10)===session)
     .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
   assert.ok(daily.length,"CAD/CHF latest watch must have a recorded session baseline");
+  // The detailed window is intentionally capped. The compact all-candidate
+  // index is authoritative for the earliest immutable same-session baseline.
+  const fields=feed.learning.paper_audit.candidate_index_fields||[];
+  const originalRows=(feed.learning.paper_audit.candidate_index||[])
+    .map(tuple=>Array.isArray(tuple)?
+      Object.fromEntries(fields.map((field,i)=>[field,tuple[i]])):tuple)
+    .filter(x=>x.pair==="CAD_CHF"&&x.side==="LONG"&&
+      String(x.created_at).slice(0,10)===session&&Number.isFinite(Date.parse(x.created_at)))
+    .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+  const originalStart=originalRows[0]?.created_at||daily[0].created_at;
   const expectedUk=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",
     day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false})
-    .format(new Date(daily[0].created_at));
+    .format(new Date(originalStart));
   const startText=JSON.stringify(cad.children.filter(c=>String(c.className).includes("current-watch-start")));
   assert.ok(startText.includes(expectedUk),
     "Watch must display the first same-session immutable observation time");
