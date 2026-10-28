@@ -191,6 +191,19 @@ if(cad){
   const expectedMove=(observedPrice-originalRef)/originalRef*100;
   assert.ok(Math.abs(Number.parseFloat(move.textContent)-expectedMove)<0.001,
     "Published directional percentage must use the same original baseline as WATCH STARTED");
+  const baselinePrices=cad.children.find(c=>c.className==="current-watch-prices");
+  assert.ok(baselinePrices,"Every watch must show its timestamped original price");
+  const firstPrice=baselinePrices.children[0];
+  assert.ok(firstPrice.children[0].textContent.includes(expectedUk),
+    "Visible baseline timestamp must match the original watch, not a recent detailed slice");
+  assert.ok(Math.abs(Number(firstPrice.children[1].textContent)-originalRef)<0.00001,
+    "Visible baseline price must match the original immutable indexed price");
+  const chartNotes=cad.children.filter(c=>c.tagName==="small").map(c=>c.textContent);
+  assert.ok(chartNotes.some(s=>s.includes("gaps unobserved")),
+    "Historical watch chart must explicitly disclose sparse unobserved intervals");
+  const context=cad.children.find(c=>c.className==="current-watch-context");
+  assert.ok(context&&context.textContent.includes("Directional price change"),
+    "A nonzero observed move must not be labelled as no recorded price movement");
 }
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
