@@ -187,6 +187,27 @@ $("note").value="Stopped at original planned SL; unverified self-report";
 $("journal").listeners.submit({preventDefault(){}});
 assert.equal(JSON.parse(saved["fx-journal-local-v1"]).length,1);
 assert.match($("learningSummary").textContent,/self-reported/);
+// Entry diagnostics must show a real numeric M15 reference and the precise blocker,
+// not reclassify a prior-bar break into a live broker signal.
+feed.learning.entry_diagnostics=[{
+  instrument:"GBP_USD",direction:"LONG",priority:51.4,
+  frame_alignment:"2/4",m15_adx:17.3,h1_adx:38.9,
+  reference_m15_level:1.33019,last_m15_completed_at:feed.snapshot_at,
+  next_m15_check_at:new Date(Date.parse(feed.snapshot_at)+15*60000).toISOString(),
+  source_quote_at:feed.snapshot_at,approved_entry:false,broker_verified:false,
+  blockers:[{code:"HIGHER_FRAME_CONFLICT",detail:"2/4 EMA frames aligned"},
+            {code:"NEWS_PARTIAL",detail:"Independent event clearance absent"}]
+}];
+vm.runInNewContext("renderEntryDiagnostics()",ctx);
+assert.ok($("deskDiagnosticRows").children.length===1,
+  "Entry readiness table must render the explicit quantitative research check");
+const diagnostic=JSON.stringify($("deskDiagnosticRows").children);
+assert.match(diagnostic,/1\.33019/,"Numeric previous-candle reference must be visible");
+assert.match(diagnostic,/HIGHER FRAME CONFLICT|2\/4 EMA frames aligned/,
+  "Entry blocker must be visible without interpreting 10 indicators");
+assert.match(diagnostic,/RESEARCH/,"Research must not be mislabeled as an executable trade");
+assert.doesNotMatch(diagnostic,/EXECUTABLE NOW/);
+
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
