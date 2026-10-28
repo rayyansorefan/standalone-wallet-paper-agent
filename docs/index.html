@@ -1678,7 +1678,7 @@ function renderInstitutionalTerminal(){
    Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&Number(x.stop)>0&&Number(x.tp1)>0
  ).map(x=>({...x,_route:x.route||"WATCH",_canonical:false,_when:x.first_seen_at,_tracked:true}));
  const sorted=[...canonical,...research.sort((a,b)=>(Number(b.research_priority)||0)-(Number(a.research_priority)||0)),...watches.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))];
- if(!canonical.length&&!research.length&&!watches.length){renderInstitutionalDiagnosticFallback(now,fresh,when,news);return;}
+ if(!canonical.length&&!research.length){renderInstitutionalDiagnosticFallback(now,fresh,when,news);return;}
  const rows=[],names=new Set();for(const x of sorted){if(names.has(x.instrument))continue;names.add(x.instrument);rows.push(x);if(rows.length>=5)break}
  if(!rows.some(x=>x.instrument===selectedInstitutionalPair))selectedInstitutionalPair=rows[0]?.instrument||null;
  const current=rows.find(x=>x.instrument===selectedInstitutionalPair)||rows[0]||null;
