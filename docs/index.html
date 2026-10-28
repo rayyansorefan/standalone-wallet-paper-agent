@@ -261,6 +261,7 @@ body{background:#07111f;color:#edf5ff}
 .desk-paper-row strong{display:block}.desk-paper-row small{color:#a8c3d3;display:block;margin-top:4px}
 .desk-paper-row.win strong{color:#89eec4}.desk-paper-row.loss strong{color:#ffa5af}
 .desk-paper-warning{color:#ffdb9e;font-size:11px;padding:8px 0}
+.desk-learning{margin-top:13px;border:1px solid #315068;border-radius:9px;background:#0c2030;padding:0 12px}.desk-learning>summary{cursor:pointer;padding:11px 0;color:#bfe5ee;font-size:12px;font-weight:800}
 .desk-history{margin-top:14px;border:1px solid #315068;border-radius:9px;background:#0c2030}
 .desk-history>summary{cursor:pointer;padding:11px 13px;color:#bfe5ee;font-weight:800;font-size:12px}
 .desk-index{padding:4px 12px 13px;max-height:340px;overflow:auto}
@@ -309,6 +310,7 @@ body{background:#07111f;color:#edf5ff}
     <div class="desk-primary"><div class="desk-labelrow"><h3>Most compelling current setups</h3><span>Ranked research hypotheses, not win probabilities</span></div><div id="deskCards" class="desk-cards"></div></div>
     <aside class="desk-ledger"><h3>Paper-trade blotter</h3><p>Only triggered, filled and resolved simulations count as wins or losses.</p><div id="deskPaperRows"></div><a href="#learning" class="desk-link">Explore monitored performance ↓</a></aside>
   </div>
+  <details class="desk-learning"><summary>Strategy learning &amp; entry-route evidence (expand)</summary><div id="deskLearning"></div></details>
   <details class="desk-history"><summary id="deskIndexSummary">Complete recorded candidate index</summary><div id="deskIndex" class="desk-index"></div></details>
   <div class="desk-end"><span id="deskDisclosure">Checking market-data quality…</span><a href="#charts">Technical chart desk ↓</a></div>
 </section>
@@ -1280,6 +1282,20 @@ function renderDecisionDesk(){
    }))}else{
    paper.replaceChildren(make("p",(totals.scored||0)+" scored in the private audit ("+(totals.wins||0)+" win, "+(totals.losses||0)+" loss). Individual records are NOT included in this published snapshot; evidence display awaits next collector export.","desk-paper-warning"));
  }
+ const opp=feed.learning?.opportunity_audit||{},life=opp.lifecycle_audit||{},sampleN=Number(totals.scored||0);
+ const validation="UNVALIDATED · "+sampleN+" scored of 30 minimum · 10 independent days / 3 pairs also required";
+ const routes=Object.entries(opp.routes||{}).map(([route,v])=>
+   route.replaceAll("_"," ")+" "+Number(v.registered||0)+" registered / "+Number(v.expired||0)+" expired");
+ const lab=el("deskLearning");
+ lab.replaceChildren(
+   make("p",validation+"; do not infer winning probability or profitability from two results.","desk-paper-warning"),
+   make("p","Forward-only price watches "+(life.forward_watches??opp.total_registered??"—")+
+     " · favourable observations "+(life.ever_meaningful_favourable??"—")+
+     " · adverse "+(life.ever_meaningful_adverse??"—")+
+     " · both "+(life.both_favourable_and_adverse??"—")+
+     " · verified fills "+(life.verified_fills??0)+". Overlapping observations are not scored wins.","desk-quiet"),
+   make("p","Entry-route paper experiments: "+(routes.join(" · ")||"none recorded")+". Keep original risk, spread, expiry and news gates. Reassess costs and regime before any promotion.","desk-quiet")
+ );
  el("deskIndexSummary").textContent=index.length?"Full candidate index: "+index.length+" of "+(totals.candidates??index.length)+" · expand":"Candidate detail: "+(audit.candidates?.length||0)+" of "+(totals.candidates??0)+" public rows · older records not exported";
  if(index.length){
    listing.replaceChildren(...index.slice().reverse().map(x=>{
