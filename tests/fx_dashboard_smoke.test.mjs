@@ -260,3 +260,21 @@ test('user-confirmed GBP ZAR Pepperstone exclusion is applied to every dashboard
   assert.match(page, /!visiblePair\(pair\)/);
   assert.match(page, /visiblePair\(s\.instrument\)&&Date\.parse\(s\.expires_at\)/);
 });
+
+
+test('decision-first research setup freshness and paper blotter', () => {
+  assert.match(page, /id="decision-desk"/);
+  assert.match(page, /id="deskCards"/);
+  assert.match(page, /id="deskPaperRows"/);
+  assert.match(page, /const latestResearch=\(feed\.research_setups\|\|\[\]\)/);
+  assert.match(page, /validTime\(x\.source_quote_at\)/);
+  assert.match(page, /Number\(x\.technical_checks_agree\)===4/);
+  assert.match(page, /Number\(x\.net_rr_estimate\)>=1\.35/);
+  assert.match(page, /NEW SNAPSHOT, NOT YET LEDGER-SCORED/);
+  assert.match(page, /PAPER ONLY, NOT AN APPROVED TRADE/);
+  assert.match(page, /audit\.featured_scored/);
+  assert.match(page, /audit\.candidate_index/);
+  assert.equal(feed.learning.paper_audit.featured_scored.length, feed.learning.paper_audit.totals.scored);
+  assert.equal(feed.learning.paper_audit.candidate_index.length, feed.learning.paper_audit.totals.candidates);
+  assert.ok(feed.signals.length===0||feed.signals.every(s=>s.instrument!=="GBP_ZAR"));
+});
