@@ -126,7 +126,7 @@ test('top directional plans are displayed with labelled entry, stop, targets and
   assert.match(page, /Entry zone · OANDA/);
   assert.match(page, /Take-profit 1/);
   assert.match(page, /Take-profit 2/);
-  assert.match(page, /CONDITIONAL · NOT TRIGGERED/);
+  assert.match(page, /WATCH ONLY · NOT APPROVED/);
   assert.match(page, /STALE · DO NOT TRADE/);
   assert.match(page, /Pepperstone availability/);
 });
@@ -230,3 +230,10 @@ test('user-confirmed GBP ZAR Pepperstone exclusion is applied to every dashboard
   assert.match(page, /!visiblePair\(pair\)/);
   assert.match(page, /visiblePair\(s\.instrument\)&&Date\.parse\(s\.expires_at\)/);
 });
+
+ test('watch models cannot be labelled as approved conditional signals', () => {
+  assert.match(page, /Technical watches · not approved/);
+  assert.match(page, /WATCH-ONLY MODELS/);
+  assert.doesNotMatch(page, /CURRENT CONDITIONAL PLANS/);
+  assert.doesNotMatch(page, /M15 pullback with H1\/H4\/D1 trend alignment/);
+ });
