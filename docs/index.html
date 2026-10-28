@@ -1350,8 +1350,9 @@ function renderDeskPrimary(t, sourceFresh){
   " · "+(Number.isFinite(spread)?"spread "+n(spread,1)+"p · ":"")+
   (quoteOk?uk(q.time):"quote stale / missing")+
   " · Pepperstone UNKNOWN";
- el("deskActionProgress").textContent=!t?"No current tracked entry":t._freshResearch?
-  "NEW: performance not yet forward-tracked":Number.isFinite(Number(t.hypothetical_move_pct))&&t.hypothetical_move_pct!=null?
+ el("deskActionProgress").textContent=!t?"No current tracked entry":
+  t._freshResearch&&!t._hasAudit?"NEW: forward performance not yet published":
+  Number.isFinite(Number(t.hypothetical_move_pct))&&t.hypothetical_move_pct!=null?
   "Hypothetical move "+(Number(t.hypothetical_move_pct)>=0?"+":"")+n(t.hypothetical_move_pct,3)+"% · NO FILL":
   "Entry / P&L not verified";
  el("deskActionSource").textContent=blocked?"RESEARCH · ENTRY BLOCKED":
@@ -1409,9 +1410,24 @@ function renderDecisionDesk(){
    Number(x.technical_checks_agree)===4&&
    (!Array.isArray(x.higher_timeframe_conflicts)||!x.higher_timeframe_conflicts.length)&&
    Number(x.net_rr_estimate)>=1.35)
-  .map(x=>({...x,route:x.entry_route,first_seen_at:x.source_quote_at,
-    hypothetical_move_pct:null,best_observed_pct:null,worst_observed_pct:null,
-    observations:[],_freshResearch:true}))
+  .map(x=>{
+    // Match the exact immutable route and price levels in the forward ledger.
+    // Same pair/direction alone is NOT an identity match: recalibrations are
+    // independent hypotheses and cannot inherit another plan's returns.
+    const matches=rows.filter(y=>y.instrument===x.instrument&&y.direction===x.direction&&
+      y.route===x.entry_route&&Number(y.entry_low)===Number(x.entry_low)&&
+      Number(y.entry_high)===Number(x.entry_high)&&Number(y.stop)===Number(x.stop)&&
+      Number(y.tp1)===Number(x.tp1));
+    const observed=matches.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))[0];
+    return {...x,route:x.entry_route,first_seen_at:observed?.first_seen_at||x.source_quote_at,
+      expires_at:observed?.expires_at||x.expires_at,
+      id:observed?.id||null,
+      hypothetical_move_pct:observed?.hypothetical_move_pct??null,
+      best_observed_pct:observed?.best_observed_pct??null,
+      worst_observed_pct:observed?.worst_observed_pct??null,
+      observations:observed?.observations||[],_freshResearch:true,
+      _hasAudit:!!observed,_auditStatus:observed?.tracking_status||"UNTRACKED_NEW_RESEARCH"};
+  })
   .sort((a,b)=>Number(b.research_priority)-Number(a.research_priority)||
     Number(b.net_rr_estimate)-Number(a.net_rr_estimate));
  const proposed=[],listed=new Set();
@@ -1455,9 +1471,11 @@ function renderDecisionDesk(){
     poly.setAttribute("fill","none");poly.setAttribute("stroke",values.at(-1)>=0?"#72e5bc":"#ffa4ae");poly.setAttribute("stroke-width","2.5");
     plot.append(poly);card.append(plot);
    }
-   card.append(make("p",t._freshResearch?
-     "New research at "+date(t.source_quote_at)+" · tracked entry outcome NOT YET AVAILABLE · no verified fill":
-     "Tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · no verified fill","desk-quiet"));
+   card.append(make("p",t._freshResearch&&t._hasAudit?
+     "ORIGINAL PLAN "+String(t.id)+" · first tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · NO FILL":
+     t._freshResearch?
+     "Research at "+date(t.source_quote_at)+" · independent forward observations not yet published · NO FILL":
+     "Tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · NO FILL","desk-quiet"));
    // Make the timing problem explicit: observable completed-bar evidence is
    // a research diagnostic, NOT an approved trade trigger or broker execution.
    const m15=(p.frames?.M15?.candles||[]).filter(c=>c&&Number.isFinite(Number(c.o))&&
