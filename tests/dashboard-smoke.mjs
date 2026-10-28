@@ -181,6 +181,16 @@ if(cad){
   const move=cad.children.find(c=>String(c.className).includes("current-watch-move"));
   assert.ok(move&&Math.abs(Number.parseFloat(move.textContent))>0.001,
     "Later session observation should preserve its nonzero directional move");
+  const originalRef=Number(originalRows[0]?.reference_price);
+  assert.ok(Number.isFinite(originalRef)&&originalRef>0,
+    "Complete public index must preserve the earliest independent frozen research quote");
+  const quote=feed.pairs.CAD_CHF.quote;
+  const quoteAge=at.now-Date.parse(quote.time);
+  const quoteFresh=quote.time&&Number.isFinite(quoteAge)&&quoteAge>=-300000&&quoteAge<=4200000;
+  const observedPrice=quoteFresh?Number(quote.bid):Number(daily[0].tracking?.price);
+  const expectedMove=(observedPrice-originalRef)/originalRef*100;
+  assert.ok(Math.abs(Number.parseFloat(move.textContent)-expectedMove)<0.001,
+    "Published directional percentage must use the same original baseline as WATCH STARTED");
 }
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
