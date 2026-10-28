@@ -410,6 +410,81 @@ main#overview>.hero p{font-size:12px;max-width:580px}
 .radar-pill.blocked{background:#4b2b30;color:#ffccd2}
 .radar-disclaimer{font-size:10px;color:#9fb9c9;margin:10px 1px 0;line-height:1.5}
 @media(max-width:640px){.desk-entry-radar{padding:10px}.radar-scroll th,.radar-scroll td{padding:9px 6px}}
+
+/* Substantive institutional research terminal: compact multi-pane exception workflow.
+   No Bloomberg/BlackRock marks, proprietary assets, imitation claims or external services. */
+.institutional-terminal{background:#090d12;color:#e6e8eb;border:1px solid #39424b;margin:12px 0 18px;
+  font:12px/1.45 "SFMono-Regular",Consolas,"Liberation Mono",monospace;box-shadow:0 20px 45px #0004}
+.it-head{padding:14px 17px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;background:#13171d}
+.it-head .it-kicker{font-size:10px;font-weight:800;letter-spacing:1.3px;color:#ffad37}
+.it-head h2{font-size:clamp(19px,2.2vw,25px);letter-spacing:-.6px;margin:2px 0;color:#fff;font-family:Inter,system-ui,sans-serif}
+.it-head p{font:11px/1.5 Inter,system-ui,sans-serif;color:#a7b0bb;margin:0}
+.it-source{display:flex;flex-direction:column;gap:3px;text-align:right;font-size:10px;color:#afbdc5}
+.it-source span{font-weight:900;color:#ffd18a}.it-source strong{color:#eef7ff}.it-source small{font-size:9px}
+.it-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 14px;background:#1e242c;border-top:1px solid #303a43;border-bottom:1px solid #46515a}
+.it-toolbar>*{font-size:9px;white-space:nowrap;padding:3px 8px;background:#101923;color:#bdc9d2;border:1px solid #334552}
+.it-toolbar strong{background:#e89a29;color:#0b0e11;border-color:#e89a29;font-weight:900}
+.it-columns{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.86fr);gap:0}
+.it-primary,.it-gate-panel{min-width:0}.it-primary{border-right:1px solid #3c4955}
+.it-band{display:flex;justify-content:space-between;gap:9px;align-items:center;padding:7px 12px;background:#1a232e;border-bottom:1px solid #3a4856;font-size:10px;font-weight:900;color:#f6bc67;letter-spacing:.45px}
+.it-band span:last-child{font-size:9px;font-weight:750;color:#94b6c8}
+.it-verdict{font:900 clamp(23px,3vw,38px)/1.2 Inter,system-ui,sans-serif;padding:13px 16px 2px;color:#ff9696;letter-spacing:-.8px}
+.it-verdict.watch{color:#ffca70}.it-verdict.verified{color:#9bf2c2}.it-verdict.stale{color:#ff898f}
+.it-identity{padding:2px 16px 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.it-identity strong{font-size:20px;color:#fff}.it-identity span{color:#e9b26a;font-size:11px;font-weight:900;background:#34281e;padding:3px 8px}
+.it-why{padding:3px 16px 13px;color:#afc4d2;font-size:11px;min-height:33px}
+.it-levels{margin:2px 12px 9px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#283340;border:1px solid #334250}
+.it-levels>div{min-width:0;padding:11px 10px;background:#111b25}
+.it-levels>div:first-child{background:#1a2636}.it-levels small{display:block;color:#a0b1bf;font-size:9px;white-space:nowrap}
+.it-levels strong{display:block;color:#fff;font-size:clamp(12px,1.5vw,16px);margin-top:6px;overflow-wrap:anywhere;line-height:1.4;font-variant-numeric:tabular-nums}
+.it-levels>div:nth-child(2) strong{color:#ff9998}.it-levels>div:nth-child(3) strong{color:#80e3b3}
+.it-check-head{display:flex;gap:12px;justify-content:space-between;padding:6px 14px;font-size:10px}
+.it-check-head span{color:#ffb45a;font-weight:800}.it-check-head strong{color:#d2e3ea;max-width:76%;text-align:right}
+.it-price-map{margin:2px 12px 10px;background:#0e171f;border:1px solid #2b4050;min-height:83px;padding:7px 4px;display:flex;align-items:center;justify-content:center}
+.it-price-map svg{display:block;width:100%;height:88px}
+.it-timing{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0 12px 7px;border:1px solid #344453;background:#121d28}
+.it-timing>div{padding:8px 9px;min-width:0;border-right:1px solid #344453}.it-timing>div:last-child{border-right:0}
+.it-timing small{display:block;font-size:9px;color:#8daaba}.it-timing strong{display:block;margin-top:3px;color:#d7e7ee;font-size:10px;overflow-wrap:anywhere}
+.it-footline{padding:4px 12px 12px;color:#859baa;font-size:10px}
+.it-gates{padding:10px 12px 4px}
+.it-gate{display:grid;grid-template-columns:19px 1fr auto;align-items:start;gap:7px;padding:8px 0;border-bottom:1px solid #2a3b48}
+.it-gate-icon{font-size:12px;text-align:center}.it-gate-name{font-weight:850;font-size:10px;color:#e1e9ee}
+.it-gate-desc{display:block;color:#899eae;font-size:9px;font-weight:500;line-height:1.3;margin-top:3px}
+.it-gate-status{font-size:9px;font-weight:900;color:#edb46c;white-space:nowrap;text-align:right}
+.it-gate.pass .it-gate-icon,.it-gate.pass .it-gate-status{color:#81e4b6}
+.it-gate.fail .it-gate-icon,.it-gate.fail .it-gate-status{color:#ff8f9b}
+.it-gate-result{margin:10px 12px 12px;padding:11px;background:#2b2222;border-left:3px solid #f6a471}
+.it-gate-result small{display:block;color:#e6ad6d;font-size:9px;font-weight:900}
+.it-gate-result strong{display:block;color:#ffd29c;font-size:16px;margin-top:5px}
+.it-gate-result p{font-size:10px;color:#e0bdac;margin:5px 0 0}
+.it-lower{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(270px,.8fr);border-top:1px solid #394a59}
+.it-pane{min-width:0;border-right:1px solid #394a59}.it-pane:last-child{border-right:0}
+.it-table-scroll{overflow-x:auto;max-height:330px}.it-matrix{border-collapse:collapse;width:100%;table-layout:auto;font-size:10px}
+.it-matrix th{background:#192431;color:#8da9ba;font-size:9px;letter-spacing:.4px;padding:10px 9px;white-space:nowrap;border-bottom:1px solid #324450}
+.it-matrix td{padding:11px 8px;border-bottom:1px solid #293843;white-space:nowrap;color:#cbd6df;line-height:1.5}
+.it-matrix tr:hover td{background:#1a3041}.it-matrix tr.it-selected td{background:#183247;border-bottom-color:#3e6a86}
+.it-matrix button{background:transparent;border:0;color:#80d6ec;font-size:11px;font-weight:850;padding:0;text-decoration:underline;text-underline-offset:2px}
+.it-matrix .it-bias-long{color:#83ecc0;font-weight:800}.it-matrix .it-bias-short{color:#ffaaa1;font-weight:800}
+.it-matrix .it-wait{color:#ffca80;font-weight:850}.it-matrix .it-bad{color:#ff9c9c}
+.it-small{font-size:10px;color:#9eb1bd;line-height:1.6;padding:0 12px 10px;margin:8px 0}
+.it-results{padding:11px 12px;font-size:13px;border-bottom:1px solid #2c404d;color:#e9f2fa}
+.it-results strong{font-size:17px;color:#fff}
+.it-blotter{max-height:270px;overflow:auto;padding:0 12px}
+.it-blotter-row{display:grid;grid-template-columns:1fr auto;gap:6px;border-bottom:1px solid #2a3946;padding:10px 0;color:#c7d7e0;font-size:10px}
+.it-blotter-row b{font-size:11px;color:#f1f7fc}.it-blotter-row .win{color:#82e8b9}.it-blotter-row .loss{color:#ff9aa1}
+.it-blotter-row small{grid-column:1/-1;font-size:9px;color:#93abb8}
+.it-bottom{display:flex;align-items:center;flex-wrap:wrap;gap:13px;padding:10px 13px;background:#111c27;border-top:1px solid #374957;font-size:10px}
+.it-bottom span{flex:1;color:#a0b5c2}.it-bottom a{color:#9bdbe9;font-weight:850;font-size:10px}
+.it-legacy{border:1px solid #2e4659;margin:6px 0 15px;background:#0e1c2c;border-radius:8px}
+.it-legacy>summary{cursor:pointer;font-size:12px;font-weight:700;color:#a9c9d9;padding:12px 15px}
+.it-legacy-body{padding:0 12px 13px}
+@media(max-width:1150px){.it-columns,.it-lower{grid-template-columns:1fr}.it-primary,.it-pane{border-right:0;border-bottom:1px solid #374857}.it-gate-panel{display:block}.it-gates{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}}
+@media(max-width:700px){.institutional-terminal{margin:7px -5px 14px}.it-head{padding:12px}.it-toolbar{gap:4px;padding:5px}.it-toolbar>*{font-size:8px;padding:2px 5px}
+.it-verdict{font-size:26px}.it-head h2{font-size:22px}
+.it-levels{grid-template-columns:repeat(2,minmax(0,1fr))}.it-timing{grid-template-columns:1fr 1fr}.it-timing>div:last-child{grid-column:1/-1;border-top:1px solid #344453}
+.it-gates{display:block}.it-check-head{display:block}.it-check-head strong{display:block;text-align:left;max-width:100%;margin-top:5px}
+.it-matrix{min-width:710px}.it-lower{grid-template-columns:1fr}.it-bottom{gap:8px}
+}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -417,12 +492,12 @@ main#overview>.hero p{font-size:12px;max-width:580px}
   <a href="#overview" class="side-brand"><span class="side-mark">⌁</span><span><b>FX INTELLIGENCE</b><small>MARKET RESEARCH LAB</small></span></a>
   <div class="side-caption">RESEARCH DESK</div>
   <nav class="side-nav" aria-label="Dashboard sections">
-    <a class="active" href="#decision-desk"><span aria-hidden="true">◉</span> Today's entry</a>
-    <a href="#deskCards"><span aria-hidden="true">▥</span> Best opportunities</a>
-    <a href="#deskPaperRows"><span aria-hidden="true">◷</span> Paper trade results</a>
-    <a href="#monitorLibrary"><span aria-hidden="true">⌁</span> Hourly monitoring</a>
-    <a href="#researchLibrary"><span aria-hidden="true">◇</span> Technical research</a>
-    <a href="#brokerLibrary"><span aria-hidden="true">◎</span> My broker results</a>
+  <a class="active" href="#institutionalTerminal"><span aria-hidden="true">▣</span> Entry monitor</a>
+  <a href="#itRows"><span aria-hidden="true">▥</span> Opportunity matrix</a>
+  <a href="#itResults"><span aria-hidden="true">◷</span> Evidence &amp; results</a>
+  <a href="#monitorLibrary"><span aria-hidden="true">⌁</span> Hourly research</a>
+  <a href="#researchLibrary"><span aria-hidden="true">◇</span> Chart workbench</a>
+  <a href="#brokerLibrary"><span aria-hidden="true">◎</span> My broker history</a>
   </nav>
   <div class="side-foot"><span class="research-dot"></span><b>Research only</b><small>OANDA source · manual Pepperstone checks · no automated orders</small></div>
 </aside>
@@ -433,6 +508,42 @@ main#overview>.hero p{font-size:12px;max-width:580px}
 </header>
 <main class="wide" id="overview">
 <div class="hero"><div><div class="eyebrow">THE FOREIGN EXCHANGE DESK</div><h1>FX Intelligence <span>Hub.</span></h1><p>Clear entry plans, hourly percentage tracking and trade outcomes. OANDA research prices are separate from your manual Pepperstone execution.</p></div><div class="clock"><b id="clock">--:-- UK</b><div id="sourceTime">OANDA source time unknown</div><div id="publishedTime">Feed not loaded</div></div></div>
+<section id="institutionalTerminal" class="institutional-terminal" aria-label="FX institutional decision monitor">
+  <div class="it-head"><div><span class="it-kicker">FX MONITOR / RESEARCH EXECUTION</span><h2>Opportunity &amp; entry monitor</h2><p>Current plans · independent confirmation · risk · forward performance</p></div><div class="it-source"><span id="itFresh">SOURCE CHECK</span><strong id="itStamp">Awaiting OANDA</strong><small>Manual Pepperstone checks · no orders</small></div></div>
+  <div class="it-toolbar"><strong>DESK / FX</strong><span>PRICE DATA: OANDA INDICATIVE</span><span id="itUniverse">UNIVERSE —</span><span id="itNews">NEWS —</span><span>REVIEW CADENCE: HOURLY :15 UK</span></div>
+  <div class="it-columns">
+    <div class="it-primary">
+      <div class="it-band"><span>01 / ENTRY DECISION</span><span id="itPlanClass">RESEARCH ONLY</span></div>
+      <div class="it-verdict" id="itVerdict">🔴 WAIT · NO VERIFIED ENTRY</div>
+      <div class="it-identity"><strong id="itPair">No current qualifying proposal</strong><span id="itDirection">—</span></div>
+      <div class="it-why" id="itWhy">Original plan and independent evidence are being checked.</div>
+      <div class="it-levels">
+        <div><small>ENTRY ZONE</small><strong id="itEntry">—</strong></div>
+        <div><small>STOP / INVALIDATION</small><strong id="itStop">—</strong></div>
+        <div><small>TP1 · RESEARCH</small><strong id="itTarget">—</strong></div>
+        <div><small>REWARD / RISK*</small><strong id="itRR">—</strong></div>
+      </div>
+      <div class="it-check-head"><span>NEXT PRICE CHECK</span><strong id="itPriceCheck">—</strong></div>
+      <div class="it-price-map" id="itPriceMap"><span>Awaiting priced candidate</span></div>
+      <div class="it-timing"><div><small>FIRST OBSERVED</small><strong id="itFirst">—</strong></div><div><small>LAST PRICE</small><strong id="itQuote">—</strong></div><div><small>NEXT INDEPENDENT BAR</small><strong id="itNextBar">—</strong></div></div>
+      <div class="it-footline" id="itSourceNote">Data source and publication status pending.</div>
+    </div>
+    <aside class="it-gate-panel">
+      <div class="it-band"><span>02 / EXECUTION READINESS</span><span>EXCEPTIONS FIRST</span></div>
+      <div class="it-gates" id="itGates"><p>Awaiting gate audit…</p></div>
+      <div class="it-gate-result"><small>PERMISSION TO ENTER</small><strong id="itPermission">NOT VERIFIED</strong><p id="itBlocker">No approved manual entry yet.</p></div>
+    </aside>
+  </div>
+  <div class="it-lower">
+    <section class="it-pane it-matrix-pane"><div class="it-band"><span>03 / OPPORTUNITY MATRIX</span><span>SELECT ROW TO INSPECT ENTRY</span></div><div class="it-table-scroll"><table class="it-matrix"><thead><tr><th>PAIR</th><th>BIAS</th><th>RESEARCH ROUTE</th><th>ENTRY ZONE</th><th>PRICE vs ZONE</th><th>TRIGGER</th><th>STATUS</th></tr></thead><tbody id="itRows"><tr><td colspan="7">Loading independent research…</td></tr></tbody></table></div><p id="itRowsNote" class="it-small">No directional watch is an approved broker order.</p></section>
+    <section class="it-pane it-blotter-pane"><div class="it-band"><span>04 / FORWARD EVIDENCE</span><span>NO BACK-FILLED WINS</span></div>
+      <div id="itResults" class="it-results">Awaiting verified paper audit.</div><div id="itBlotter" class="it-blotter"></div>
+      <p class="it-small">Paper results are simulated. Manual broker trades are separate; directional movement is not profit.</p>
+    </section>
+  </div>
+  <div class="it-bottom"><span id="itWarning">Every suggested entry requires independent completed-candle evidence and event clearance.</span><a href="#researchLibrary">OPEN CHARTS / ALL INDICATORS</a><a href="#monitorLibrary">OPEN FULL PAPER HISTORY</a></div>
+</section>
+<details class="it-legacy" id="legacyDesk"><summary>ADDITIONAL VIEW · Previous detailed research cards and paper audit</summary><div class="it-legacy-body">
 <section class="decision-desk" id="decision-desk" aria-label="FX opportunity and performance desk">
   <div class="desk-top"><div><div class="eyebrow">FX DECISION TERMINAL · MANUAL RESEARCH</div><h2>Best entry &amp; live research evidence</h2><p>Read the decision first. Exact trigger, original risk levels and monitored paper movement below.</p></div><span class="desk-source" id="deskSource">VERIFYING SOURCE</span></div>
   <section class="desk-action" id="deskAction" aria-label="Primary FX decision" aria-live="polite">
@@ -482,6 +593,7 @@ main#overview>.hero p{font-size:12px;max-width:580px}
   <details class="desk-history"><summary id="deskIndexSummary">Complete recorded candidate index</summary><div id="deskIndex" class="desk-index"></div></details>
   <div class="desk-end"><span id="deskDisclosure">Checking market-data quality…</span><a href="#charts">Technical chart desk ↓</a></div>
 </section>
+</div></details>
 <details class="fx-drawer" id="monitorLibrary"><summary><span>02 / MONITORING</span><strong>Hourly tracking, prospective entries and missed moves</strong><small>Open all detailed observations and older watch versions</small></summary><div class="fx-drawer-body">
 <section class="section" id="research-setups"><div class="heading"><div><h2>Current conditional trade plans</h2><p>Prospective entry zones, stop-losses and targets from aligned M15 / H1 / H4 / D1 trends. Stale plans are hidden. These are <strong>conditional research plans</strong>, never automatic trades or confirmed entry alerts.</p></div><span class="label" id="researchCount">AWAITING RESEARCH</span></div><div id="researchCards" class="setupgrid"></div><p class="small">OANDA research quotes only · Models require a completed M15 confirmation, current official news review and your own Pepperstone prices/spread before any manual order. A listed plan is not an instruction to enter immediately.</p></section>
 
@@ -1384,6 +1496,181 @@ function deskCompletedBar(t,p,now){
     (!recent?" · wait for new completed candle":"");
   return {good,recent,label,details,closed_at:new Date(closed).toISOString()};
 }
+let selectedInstitutionalPair=null;
+function renderInstitutionalTerminal(){
+ const root=el("institutionalTerminal");
+ if(!root||!feed)return;
+ const now=Date.now(),at=Date.parse(feed.snapshot_at),fresh=Number.isFinite(at)&&at<=now+300000&&now-at<4200000;
+ const when=t=>Number.isFinite(Date.parse(t))?uk(t):"UNKNOWN";
+ const price=x=>x==null||!Number.isFinite(Number(x))?"—":money(x);
+ const news=String(feed.news_status||"UNKNOWN").toUpperCase();
+ const canonical=(feed.signals||[]).filter(x=>visiblePair(x.instrument)&&Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>now).map(x=>({...x,_route:"APPROVED_PLAN",_canonical:true,_when:x.created_at||feed.snapshot_at}));
+ const research=(feed.research_setups||[]).filter(x=>
+   visiblePair(x.instrument)&&["LONG","SHORT"].includes(x.direction)&&
+   Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&
+   Number(x.stop)>0&&Number(x.tp1)>0&&
+   Number.isFinite(Date.parse(x.source_quote_at))&&
+   Date.parse(x.source_quote_at)<=now+300000&&now-Date.parse(x.source_quote_at)<4200000
+ ).map(x=>({...x,_route:x.entry_route||"PULLBACK_RESEARCH",_canonical:false,_when:x.source_quote_at}));
+ const watches=(feed.learning?.opportunity_audit?.recent||[]).filter(x=>
+   visiblePair(x.instrument)&&["LONG","SHORT"].includes(x.direction)&&
+   Date.parse(x.expires_at)>now&&
+   Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&Number(x.stop)>0&&Number(x.tp1)>0
+ ).map(x=>({...x,_route:x.route||"WATCH",_canonical:false,_when:x.first_seen_at,_tracked:true}));
+ const sorted=[...canonical,...research.sort((a,b)=>(Number(b.research_priority)||0)-(Number(a.research_priority)||0)),...watches.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))];
+ const rows=[],names=new Set();for(const x of sorted){if(names.has(x.instrument))continue;names.add(x.instrument);rows.push(x);if(rows.length>=5)break}
+ if(!rows.some(x=>x.instrument===selectedInstitutionalPair))selectedInstitutionalPair=rows[0]?.instrument||null;
+ const current=rows.find(x=>x.instrument===selectedInstitutionalPair)||rows[0]||null;
+ const tick=el("itFresh");tick.textContent=fresh?"DATA CURRENT":"DATA STALE";tick.className=fresh?"it-ok":"it-stale";
+ el("itStamp").textContent="OANDA "+when(feed.snapshot_at);
+ el("itUniverse").textContent=String(feed.coverage?.screened??"—")+" FX PAIRS SCANNED";
+ el("itNews").textContent="NEWS "+news;
+ const timing=x=>{
+   if(!x)return null;
+   const t=Date.parse(x._when),span=x._route==="MOMENTUM_CONTINUATION"?5:15;
+   if(!Number.isFinite(t))return null;
+   const ms=span*60000;return new Date((Math.floor(t/ms)+1)*ms+ms).toISOString();
+ };
+ const info=x=>{
+   const p=feed.pairs?.[x.instrument]||{},q=p.quote||{},qt=Date.parse(q.time),qOk=Number.isFinite(qt)&&qt<=now+300000&&now-qt<4200000;
+   const side=x.direction==="SHORT"?"SELL":"BUY",isShort=x.direction==="SHORT";
+   const low=Number(x.entry_low??x.planned_entry??x.entry),high=Number(x.entry_high??x.planned_entry??x.entry),stop=Number(x.stop),target=Number(x.tp1);
+   const brokerEntry=Number(isShort?q.bid:q.ask),exitSide=Number(isShort?q.ask:q.bid),pip=Number(q.pip_size),spread=Number(q.spread_pips)*pip;
+   const bounded=low>0&&high>=low&&stop>0&&target>0;
+   const stopHit=bounded&&qOk&&exitSide>0&&(isShort?exitSide>=stop:exitSide<=stop);
+   const relative=bounded&&qOk&&brokerEntry>0&&pip>0?(brokerEntry<low?(low-brokerEntry)/pip:
+     brokerEntry>high?(brokerEntry-high)/pip:0):null;
+   const priceInZone=bounded&&qOk&&brokerEntry>=low&&brokerEntry<=high;
+   const zonePosition=relative==null?"PRICE UNKNOWN":priceInZone?"PRICE INSIDE FROZEN ZONE":
+     brokerEntry<low?Number(relative).toFixed(1)+" pips BELOW zone":Number(relative).toFixed(1)+" pips ABOVE zone";
+   const worstEntry=isShort?low:high,risk=Math.abs(stop-worstEntry),reward=Math.abs(target-worstEntry);
+   const rr=bounded&&risk>0&&Number.isFinite(spread)?(reward-spread)/(risk+spread):null;
+   const costOk=Number.isFinite(rr)&&rr>=1.35;
+   const diag=x.technical_checks_agree>=4&&(!x.higher_timeframe_conflicts||x.higher_timeframe_conflicts.length===0);
+   const frame=p.frames?.[x._route==="MOMENTUM_CONTINUATION"?"M5":"M15"]||{};
+   const minutes=x._route==="MOMENTUM_CONTINUATION"?5:15;
+   const observations=(frame.candles||[]).filter(c=>c&&Date.parse(c.t)>=Date.parse(x._when)&&
+     Date.parse(c.t)+minutes*60000<=Date.parse(feed.snapshot_at)+60000&&
+     [c.o,c.h,c.l,c.c].every(v=>Number.isFinite(Number(v))));
+   let pattern=false,observedAt=null;
+   for(const bar of observations){
+     const o=Number(bar.o),h=Number(bar.h),l=Number(bar.l),c=Number(bar.c),len=h-l;
+     if(len<=0||!(l<=high&&h>=low))continue;
+     if((isShort&&h>=stop)||(!isShort&&l<=stop))continue;
+     if(x._route==="MOMENTUM_CONTINUATION"){
+       // The original immutable M15 impulse is never an entry. Subsequent
+       // M5 candles are only diagnostic, never promoted into signals.json.
+       pattern= isShort?(c<o&&(h-c)/len>=.70&&(o-c)/len>=.5):
+         (c>o&&(c-l)/len>=.70&&(c-o)/len>=.5);
+     }else{
+       pattern=isShort?(c<o&&c<=low&&(h-c)/len>=.60):
+         (c>o&&c>=high&&(c-l)/len>=.60);
+     }
+     if(pattern){observedAt=new Date(Date.parse(bar.t)+minutes*60000).toISOString();break}
+   }
+   const ended=timing(x),firstIndependent=ended&&Date.parse(ended)<=Date.parse(feed.snapshot_at)+60000;
+   const patternStatus=pattern?"FORWARD CANDLE OBSERVED — PAPER ONLY":
+     firstIndependent?"NO QUALIFYING NEW CANDLE":"AWAIT NEXT FULLY INDEPENDENT BAR";
+   const macros=(feed.calendar||[]).filter(e=>String(e.impact||"").toUpperCase()==="HIGH"&&
+     x.instrument.split("_").includes(e.currency)&&Number.isFinite(Date.parse(e.time))&&Math.abs(Date.parse(e.time)-now)<=45*60000);
+   const gates=[
+     ["SOURCE / QUOTE",fresh&&qOk,fresh&&qOk?"Snapshot and pair quote current":"Missing or stale dated source"],
+     ["FROZEN PLAN",x._canonical,bounded?"Research levels exist; no canonical signal":"No validated immutable signal in signals.json"],
+     ["PRICE IN ENTRY ZONE",priceInZone,zonePosition],
+     ["ENTRY CANDLE",pattern,pattern?("New "+minutes+"m pattern @ "+when(observedAt)+"; research only"):patternStatus],
+     ["SPREAD / RISK",costOk,Number.isFinite(rr)?"Indicative spread-adjusted target ratio "+rr.toFixed(2):"Ratio cannot be calculated"],
+     ["NEWS / EVENT",news==="OK"&&!macros.length,news!=="OK"?"Primary macro coverage is "+news:macros.length?"High-impact event near":"Feed reports no current macro blocker; verify official source"],
+     ["PEPPERSTONE",false,"Executable broker bid/ask and available margin unverified"],
+   ];
+   return {p,q,qOk,side,isShort,low,high,stop,target,brokerEntry,exitSide,zonePosition,priceInZone,relative,rr,costOk,
+     stopHit,diag,pattern,patternStatus,observedAt,firstIndependent,ended,macros,gates};
+ };
+ const choose=current?info(current):null;
+ const verdict=el("itVerdict");verdict.className="it-verdict";
+ const safe=!fresh||!current||!choose?.qOk||choose.stopHit;
+ const message=!fresh?"🔴 NO ENTRY · STALE FEED":!current?"🔴 NO APPROVED ENTRY":
+   choose.stopHit?"🔴 CANCEL · STOP BREACHED":
+   current._canonical?"🟡 CONDITIONAL SIGNAL · BROKER CHECK":"🟡 WATCH · NOT APPROVED";
+ verdict.textContent=message;verdict.className+=" "+(safe?"stale":"watch");
+ el("itPair").textContent=current?current.instrument.replace("_","/")+" · "+choose.side:"No current qualified trade";
+ el("itDirection").textContent=current?(current._canonical?"CANONICAL SIGNAL":"RESEARCH ONLY"):"NO PLAN";
+ el("itPlanClass").textContent=current?(current._route.replaceAll("_"," ")+" · "+(current._canonical?"SIGNAL":"PAPER")):"NO SIGNAL";
+ el("itWhy").textContent=!fresh?"No current OANDA decision: price data older than 70 minutes.":
+   !current?"No unexpired proposed priced plan found. There is nothing to enter.":
+   choose.stopHit?"Current exit-side indicative quote crossed the frozen stop; not a valid new entry.":
+   choose.zonePosition+" · "+(choose.pattern?"A forward candle was observed, but no approved entry is established.":
+    "Await independent completed-candle evidence, news and broker confirmation.");
+ el("itEntry").textContent=current?price(choose.low)+(choose.high!==choose.low?" – "+price(choose.high):""):"—";
+ el("itStop").textContent=current?price(choose.stop):"—";
+ el("itTarget").textContent=current?price(choose.target):"—";
+ el("itRR").textContent=choose&&Number.isFinite(choose.rr)?choose.rr.toFixed(2):"—";
+ el("itPriceCheck").textContent=choose?choose.zonePosition:"NO APPROVED PLAN";
+ el("itFirst").textContent=current?when(current._when):"—";
+ el("itQuote").textContent=choose&&choose.qOk?price(choose.brokerEntry)+" · "+when(choose.q.time):"STALE / UNAVAILABLE";
+ el("itNextBar").textContent=choose?(choose.firstIndependent?
+   (choose.pattern?"PATTERN @ "+when(choose.observedAt):"NO FORWARD TRIGGER"):
+   "Next complete "+(current._route==="MOMENTUM_CONTINUATION"?"M5":"M15")+" no earlier than "+when(choose.ended)):"—";
+ el("itSourceNote").textContent=current?("Plan: "+when(current._when)+" · quote: "+when(choose.q.time)+" · "+
+   "OANDA indicative only. No broker execution / prediction / guaranteed win."):"Source missing; no speculative quotes.";
+ // Genuine price-level plot: compare all four immutable levels to the last
+ // appropriate entry-side indicative OANDA quote. Never imply a filled trade.
+ const plot=el("itPriceMap");plot.replaceChildren();
+ if(choose&&[choose.low,choose.high,choose.stop,choose.target,choose.brokerEntry].every(v=>Number.isFinite(v)&&v>0)){
+   const values=[choose.low,choose.high,choose.stop,choose.target,choose.brokerEntry],mn=Math.min(...values),mx=Math.max(...values),range=Math.max(.00001,mx-mn),lo=mn-range*.1,hi=mx+range*.1;
+   const X=v=>38+(v-lo)/(hi-lo)*625;
+   const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("viewBox","0 0 700 90");svg.setAttribute("role","img");svg.setAttribute("aria-label","Current OANDA research price relative to entry band, stop and TP1");
+   const add=(tag,attrs,txt)=>{const node=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,String(v));if(txt!=null)node.textContent=txt;svg.append(node);return node};
+   add("line",{x1:37,y1:43,x2:665,y2:43,stroke:"#4c6371","stroke-width":2});
+   add("rect",{x:Math.min(X(choose.low),X(choose.high)),y:27,width:Math.max(3,Math.abs(X(choose.high)-X(choose.low))),height:31,fill:"#3f7998",opacity:.65});
+   for(const [key,value,colour] of [["SL",choose.stop,"#ff858f"],["TP1",choose.target,"#80e4b4"]]){
+     add("line",{x1:X(value),y1:16,x2:X(value),y2:73,stroke:colour,"stroke-dasharray":"3 3","stroke-width":2});
+     add("text",{x:X(value),y:11,fill:colour,"font-size":"10","text-anchor":"middle"},key);
+   }
+   add("circle",{cx:X(choose.brokerEntry),cy:43,r:6,fill:"#fff",stroke:"#f0b44f","stroke-width":2});
+   add("text",{x:X(choose.brokerEntry),y:81,fill:"#fff","font-size":"10","text-anchor":"middle"},"OANDA "+price(choose.brokerEntry));
+   add("text",{x:(X(choose.low)+X(choose.high))/2,y:22,fill:"#9fd9f4","font-size":"10","text-anchor":"middle"},"ENTRY");
+   plot.append(svg);
+ }else plot.append(make("span","No valid current entry zone / OANDA quote available."));
+ const gates=el("itGates");gates.replaceChildren(...(choose?.gates||[
+   ["SOURCE / QUOTE",false,"No current research candidate"],
+   ["CANONICAL SIGNAL",false,"signals.json contains no approved plan"],
+   ["BROKER CONFIRMATION",false,"No Pepperstone executable quote"]
+ ]).map(([name,ok,why])=>{
+   const row=make("div",undefined,"it-gate "+(ok?"pass":"fail"));
+   const icon=make("span",ok?"✓":"×","it-gate-icon"),body=make("div"),status=make("span",ok?"PASS":"BLOCKED","it-gate-status");
+   body.append(make("span",name,"it-gate-name"),make("small",why,"it-gate-desc"));row.append(icon,body,status);return row;
+ }));
+ el("itPermission").textContent="NO EXECUTABLE SIGNAL";
+ el("itBlocker").textContent=!current?"Zero canonical signals. No manual trade instruction.":
+    current._canonical?"Even an approved conditional plan needs verified completed trigger, official events, Pepperstone spread and account risk.":
+    "Research bias is not an approved trade. All entry levels are prospective, not broker verified.";
+ const table=el("itRows");table.replaceChildren(...(rows.length?rows.map(x=>{
+   const z=info(x),row=make("tr",undefined,x.instrument===selectedInstitutionalPair?"it-selected":""),
+         cells=[[x.instrument.replace("_","/"),"link"],[z.side,z.isShort?"it-bias-short":"it-bias-long"],
+         [x._route.replaceAll("_"," "),"normal"],[price(z.low)+" – "+price(z.high),"normal"],
+         [z.zonePosition,"normal"],[z.pattern?"PAPER CANDLE OBSERVED":"NEXT NEW BAR","normal"],
+         [z.stopHit?"INVALIDATED":x._canonical?"VERIFY SIGNAL":"WATCH ONLY",z.stopHit?"it-bad":"it-wait"]];
+   cells.forEach(([label,cl])=>{const td=make("td");if(cl==="link"){const button=make("button",label);button.type="button";button.addEventListener("click",()=>{selectedInstitutionalPair=x.instrument;renderInstitutionalTerminal()});td.append(button)}
+     else td.append(make("span",label,cl));row.append(td)});return row;
+ }):[(()=>{const tr=make("tr"),td=make("td","No independent current priced proposals. Wait for a new research collection.");td.colSpan=7;tr.append(td);return tr})()]));
+ el("itRowsNote").textContent=(rows.length?rows.length+" eligible proposals shown. Click a pair to inspect its exact, independently timed entry gates. ":"No qualifying current opportunities.")+
+   "A ranked hypothesis never becomes an approved trade without canonical admission.";
+ const totals=feed.learning?.paper_audit?.totals||{},aud=feed.learning?.paper_audit?.featured_scored||[];
+ el("itResults").replaceChildren(make("strong",String(totals.wins||0)+" win / "+String(totals.losses||0)+" loss"),
+   make("span"," · "+String(totals.scored||0)+" scored paper of "+String(totals.candidates||0)+" tracked. No statistical edge established."));
+ const blotter=el("itBlotter");
+ blotter.replaceChildren(...(aud.length?aud.slice().reverse().slice(0,5).map(x=>{
+   const row=make("div",undefined,"it-blotter-row");
+   const kind=x.status==="WIN_TP1"?"win":"loss";
+   row.append(make("b",x.instrument.replace("_","/")+" "+(x.direction==="LONG"?"BUY":"SELL")),
+     make("b",x.status==="WIN_TP1"?"PAPER TP1":"PAPER STOP",kind),
+     make("small","entry "+price(x.entry)+" → exit "+price(x.exit)+" · "+(Number(x.move_pct)>=0?"+":"")+Number(x.move_pct).toFixed(3)+"% (underlying, no leverage) · "+when(x.at)));
+   return row;
+ }):[make("p","No scored paper outcomes in published feed.","it-small")]));
+ el("itWarning").textContent=(!fresh?"STALE RESEARCH — DO NOT TRADE. ":"")+String(totals.scored||0)+
+   " scored of "+String(totals.candidates||0)+" ideas; no verified profitable edge · macro "+news+" · no orders.";
+}
+
 function renderDeskPrimary(t, sourceFresh){
  const box=el("deskAction"),flag=el("deskActionFlag");
  if(!box||!flag||!feed)return;
@@ -1747,8 +2034,8 @@ function renderDecisionDesk(){
   "news "+(feed.news_status||"UNKNOWN")+" · Pepperstone executable quotes UNKNOWN · refresh hourly, not tick-by-tick.";
 }
 
-function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderEntryRadar();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
-async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderEntryRadar();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
+function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderInstitutionalTerminal();renderEntryRadar();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
+async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderDecisionDesk();renderInstitutionalTerminal();renderEntryRadar();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
 el("pair").addEventListener("change",e=>{pair=e.target.value;tf="M15";chart()});el("filter").addEventListener("input",()=>feed&&scanner());el("journal").addEventListener("submit",e=>{e.preventDefault();try{const a=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]");a.push({at:new Date().toISOString(),pair:el("journalPair").value,outcome:el("outcome").value,note:el("note").value});localStorage.setItem("fx-journal-local-v1",JSON.stringify(a.slice(-1000)));el("note").value="";journal()}catch{el("learningSummary").textContent="Browser local storage is unavailable."}});
 if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a, a[href='#charts'], a[href='#learning'], a[href='#demoEvidence'], a[href='#research-setups']").forEach(a=>a.addEventListener("click",()=>{
  document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));
@@ -1762,5 +2049,5 @@ el("earlyToggle").addEventListener("click",()=>{earlyExpanded=!earlyExpanded;if(
 el("earlyScope").addEventListener("change",e=>{earlyScope=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("earlySort").addEventListener("change",e=>{earlySort=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("refreshView").addEventListener("click",async()=>{const b=el("refreshView");b.disabled=true;b.textContent="↻ Refreshing published data…";try{await Promise.all([load(),loadOutcomes()])}finally{b.disabled=false;b.textContent="↻ Refresh display"}});
-load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderDecisionDesk();renderEntryRadar();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
+load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderInstitutionalTerminal();renderDecisionDesk();renderEntryRadar();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
 </script></body></html>
