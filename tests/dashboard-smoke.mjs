@@ -109,7 +109,22 @@ assert.equal($("currentVisualStrip").children.length,3,
   "Dashboard must present current research counts ahead of archived plans");
 assert.ok($("hourlyCohortCards").children.length>=1,
   "Timestamped hourly watches must render as separate graphical cards");
-const visualCard=$("hourlyCohortCards").children[0];
+let visualCard=$("hourlyCohortCards").children[0];
+// The simulated clock is 30 minutes after the real snapshot. Near midnight
+// this is legitimately the next London day: empty TODAY is correct, while
+// archived observations must still render when explicitly selected.
+if(visualCard.className==="setupempty"){
+  const londonDay=t=>new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(t));
+  const currentDayRows=feed.learning.paper_audit.candidates.filter(t=>
+    t.source==="AUTOMATED_RESEARCH_PRIORITY"&&t.instrument!=="GBP_ZAR"&&
+    londonDay(t.created_at)===londonDay(at.now));
+  assert.equal(currentDayRows.length,0,"A non-empty current cohort must never disappear");
+  assert.match(visualCard.textContent,/No timestamped research observations/,
+    "Empty current-day state must be explicit, without fabricating watches");
+  $("hourlyCohortScope").value="ALL";
+  $("hourlyCohortScope").onchange();
+  visualCard=$("hourlyCohortCards").children[0];
+}
 assert.match(visualCard.className,/current-watch-card/);
 assert.ok(visualCard.children.some(c=>c.tagName==="svg"&&c.attributes?.class==="current-watch-chart"),
   "Each hourly card must include an SVG chart");
