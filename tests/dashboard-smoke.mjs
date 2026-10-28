@@ -246,7 +246,7 @@ assert.notEqual($("itStop").textContent,"NOT SET","Keep research stop visible");
 assert.notEqual($("itTarget").textContent,"NOT SET","Keep research TP1 visible");
 assert.match($("itVerdict").textContent,/WATCH/,"A retained watch must NEVER be upgraded to live entry");
 assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
-assert.match($("itNextBar").textContent,/NEXT M15 CLOSE/,"Show NEXT bar from latest snapshot");
+assert.match($("itNextBar").textContent,/(?:NEXT M15 CLOSE|BAR DUE · AWAIT NEW OANDA COLLECTION: M15 CLOSE)/,"Show upcoming or overdue M15 close without pretending a refreshed candle exists");
 feed.research_setups=keptResearch;
 feed.learning.opportunity_audit.recent=keptRecent;
 vm.runInNewContext("renderInstitutionalTerminal()",ctx);
