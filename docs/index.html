@@ -1516,6 +1516,147 @@ function deskCompletedBar(t,p,now){
   return {good,recent,label,details,closed_at:new Date(closed).toISOString()};
 }
 let selectedInstitutionalPair=null;
+function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
+ // When there is NO frozen, fully priced setup, never leave the terminal
+ // blank or promote ranked bias into a trade. Show the closest *unapproved*
+ // completed-M15 research checkpoints and the exact blockers instead.
+ const source=feed.learning?.entry_diagnostics||[];
+ const candidates=source.filter(x=>x&&visiblePair(x.instrument)&&["LONG","SHORT"].includes(x.direction)&&
+   Number(x.reference_m15_level)>0&&
+   Number.isFinite(Date.parse(x.source_quote_at))&&
+   Date.parse(x.source_quote_at)<=now+300000&&
+   now-Date.parse(x.source_quote_at)<4200000&&
+   feed.pairs?.[x.instrument]?.quote);
+ const technicalBlockers=d=>(d.blockers||[]).filter(b=>!
+   ["NEWS_PARTIAL","NO_APPROVED_TRIGGER"].includes(b.code));
+ const rank=d=>{
+   const ratio=String(d.frame_alignment||"").split("/");
+   const align=Number(ratio[0])||0;
+   const blocks=technicalBlockers(d);
+   const adx=Number(d.m15_adx)||0,h1=Number(d.h1_adx)||0;
+   const priceGap=Math.abs(Number(d.distance_to_reference_pips));
+   const gap=Number.isFinite(priceGap)?Math.min(priceGap,100):100;
+   return 25*align-25*blocks.length+
+     ((adx>=20&&h1>=20)?15:0)-gap*.2+Number(d.priority||0)*.12;
+ };
+ candidates.sort((a,b)=>rank(b)-rank(a));
+ const shown=candidates.slice(0,5);
+ if(!shown.some(x=>x.instrument===selectedInstitutionalPair))
+   selectedInstitutionalPair=shown[0]?.instrument||null;
+ const current=shown.find(x=>x.instrument===selectedInstitutionalPair)||shown[0]||null;
+ const q=current?feed.pairs?.[current.instrument]?.quote||{}:{}, qt=Date.parse(q.time);
+ const quoteFresh=Number.isFinite(qt)&&qt<=now+300000&&now-qt<4200000;
+ const side=current?.direction==="SHORT"?"SELL":"BUY";
+ const px=current?(current.direction==="SHORT"?Number(q.bid):Number(q.ask)):NaN;
+ const ref=Number(current?.reference_m15_level);
+ const next=Date.parse(current?.next_m15_check_at);
+ const technical=current?technicalBlockers(current):[];
+ const labels={TREND_STRENGTH:"M15 trend strength is insufficient",DMI_CONFLICT:"Directional movement conflicts",
+   HIGHER_FRAME_CONFLICT:"Higher-timeframe alignment failed",FOUNDATION_CONFLICT:"M15/H1 trend mismatch",
+   OVEREXTENDED_OR_REVERSING:"Move overstretched; avoid chasing",COST_HIGH_OR_UNKNOWN:"Spread or transaction cost too high",
+   STALE_QUOTE:"Price snapshot not current",QUOTE_UNUSABLE:"No usable quote"};
+ const problem=!fresh?"Source stale":!quoteFresh?"Pair quote stale":
+   technical.length?String(technical[0].detail||labels[technical[0].code]||technical[0].code):
+   "Completed entry candle, news clearance, frozen stop/TP and spread-adjusted return missing";
+ const tick=el("itFresh");
+ tick.textContent=fresh?"DATA CURRENT · NO APPROVED SIGNAL":"DATA STALE";
+ tick.className=fresh?"it-ok":"it-stale";
+ el("itStamp").textContent="OANDA "+when(feed.snapshot_at);
+ el("itUniverse").textContent=String(feed.coverage?.screened??"—")+" FX PAIRS SCREENED";
+ el("itNews").textContent="NEWS "+news;
+ el("itVerdict").textContent="🔴 NO APPROVED ENTRY";
+ el("itVerdict").className="it-verdict stale";
+ el("itPair").textContent=current?current.instrument.replace("_","/")+" · "+side:"No qualifying priced research plan";
+ el("itDirection").textContent="DIRECTIONAL PAPER WATCH";
+ el("itPlanClass").textContent="M15 BREAK LEVEL · NOT ENTRY";
+ el("itWhy").textContent=current?(fresh?"Strongest unapproved research checkpoint, not a trade. "+problem:
+   "Source stale; no current entry research available."):
+   "No approved trade, priced proposal or valid independent entry checkpoint.";
+ // A directional checkpoint is not an executable entry and must never
+ // invent risk/reward, stop or take-profit levels.
+ el("itEntry").textContent="NOT APPROVED";
+ el("itStop").textContent="NOT SET";
+ el("itTarget").textContent="NOT SET";
+ el("itRR").textContent="NOT EVALUABLE";
+ el("itPriceCheck").textContent=current?
+   "NEXT M15 "+(side==="BUY"?"CLOSE ABOVE ":"CLOSE BELOW ")+money(ref)+" · "+
+   (Number.isFinite(Number(current.distance_to_reference_pips))?
+     Math.abs(Number(current.distance_to_reference_pips)).toFixed(1)+" pips from reference":"distance unknown"):
+   "No qualifying independent price level";
+ el("itFirst").textContent=current?when(current.last_m15_completed_at):"—";
+ el("itQuote").textContent=current&&quoteFresh?money(px)+" · "+when(q.time):"STALE / UNKNOWN";
+ el("itNextBar").textContent=current&&Number.isFinite(next)?
+   (next<=now?"CHECK DUE — AWAIT NEW COMPLETED BAR":when(current.next_m15_check_at)):"UNKNOWN";
+ el("itSourceNote").textContent="Directional reference "+(current?when(current.source_quote_at):"unknown")+
+   " · OANDA indicative, not Pepperstone. Breaking this reference alone NEVER qualifies a trade.";
+ const plot=el("itPriceMap");plot.replaceChildren();
+ if(current&&quoteFresh&&Number.isFinite(px)&&Number.isFinite(ref)&&Number(q.pip_size)>0){
+   const dist=Math.abs((px-ref)/Number(q.pip_size));
+   const root=document.createElementNS("http://www.w3.org/2000/svg","svg");
+   root.setAttribute("viewBox","0 0 700 90");root.setAttribute("role","img");
+   root.setAttribute("aria-label","Indicative OANDA price compared with next M15 research close checkpoint; no approved entry");
+   const add=(tag,attrs,text)=>{const e=document.createElementNS("http://www.w3.org/2000/svg",tag);
+     for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));
+     if(text!=null)e.textContent=String(text);root.append(e);return e};
+   const range=Math.max(Math.abs(ref-px)*1.4,Number(q.pip_size)*4);
+   const min=Math.min(ref,px)-range*.35,max=Math.max(ref,px)+range*.35;
+   const X=v=>40+(v-min)/(max-min)*620;
+   add("line",{x1:40,y1:42,x2:660,y2:42,stroke:"#466276","stroke-width":2});
+   add("line",{x1:X(ref),y1:15,x2:X(ref),y2:66,stroke:"#f4bd69","stroke-dasharray":"4 3","stroke-width":2});
+   add("text",{x:X(ref),y:11,"text-anchor":"middle",fill:"#f4bd69","font-size":10},"M15 CHECKPOINT");
+   add("circle",{cx:X(px),cy:42,r:6,fill:"#f6faff",stroke:"#67cfe3","stroke-width":2});
+   add("text",{x:X(px),y:81,"text-anchor":"middle",fill:"#d8f2ff","font-size":11},"OANDA "+money(px));
+   plot.append(root);
+ }else plot.append(make("span","Reference-price plot unavailable: stale quote or no valid research."));
+ const gates=el("itGates");
+ const checks=[
+  ["SOURCE / QUOTE",fresh&&quoteFresh,fresh&&quoteFresh?"Dated OANDA snapshot available":"Stale or missing data"],
+  ["TREND / STRUCTURE",technical.length===0,technical.length?problem:"No technical blocker on scanned M15/H1, not trade approval"],
+  ["COMPLETED TRIGGER",false,current?"Wait for independently completed M15 close "+(side==="BUY"?"above ":"below ")+money(ref):
+    "No completed entry test"],
+  ["IMMUTABLE RISK PLAN",false,"No approved entry, stop, TP and expiry in signals.json"],
+  ["NEWS / EVENTS",false,"Macro status "+news+" · official release verification required"],
+  ["PEPPERSTONE",false,"Executable bid/ask, margin and 0.25% equity risk unverified"]
+ ];
+ gates.replaceChildren(...checks.map(([name,ok,why])=>{const row=make("div",undefined,"it-gate "+(ok?"pass":"fail"));
+   const b=make("div");b.append(make("span",name,"it-gate-name"),make("small",why,"it-gate-desc"));
+   row.append(make("span",ok?"✓":"×","it-gate-icon"),b,make("span",ok?"OBSERVED":"BLOCKED","it-gate-status"));return row}));
+ el("itPermission").textContent="NO ENTRY · WATCH ONLY";
+ el("itBlocker").textContent=problem+" · original stop/TP and event clearance not approved.";
+ const table=el("itRows");
+ table.replaceChildren(...(shown.length?shown.map(d=>{
+   const row=make("tr",undefined,d.instrument===selectedInstitutionalPair?"it-selected":"");
+   const codes=technicalBlockers(d),first=codes[0],refs=Number(d.reference_m15_level);
+   const entries=[[d.instrument.replace("_","/"),"link"],[d.direction==="SHORT"?"SELL":"BUY",
+       d.direction==="SHORT"?"it-bias-short":"it-bias-long"],["M15 BREAK WATCH",""],
+     ["NOT AN ENTRY",""],[(Number.isFinite(Number(d.distance_to_reference_pips))?
+       Math.abs(Number(d.distance_to_reference_pips)).toFixed(1)+" pips from ":"")+"reference "+money(refs),""],
+     [(d.direction==="SHORT"?"CLOSE < ":"CLOSE > ")+money(refs),""],
+     [first?String(first.code).replaceAll("_"," "):"AWAIT TRIGGER","it-wait"]];
+   for(const [value,css] of entries){const td=make("td");
+     if(css==="link"){const btn=make("button",value);btn.type="button";
+       btn.addEventListener("click",()=>{selectedInstitutionalPair=d.instrument;renderInstitutionalTerminal()});td.append(btn)}
+     else td.append(make("span",value,css));row.append(td)}return row;
+ }):[(()=>{const row=make("tr"),cell=make("td","NO APPROVED ENTRY · no fresh M15 research reference available");
+     cell.colSpan=7;row.append(cell);return row})()]));
+ el("itRowsNote").textContent=shown.length+" independently recorded M15 break references, ranked by fewer technical blockers and proximity. "+
+   "These are directional observations only, NOT conditional manual trade signals.";
+ const totals=feed.learning?.paper_audit?.totals||{},outcomes=feed.learning?.paper_audit?.featured_scored||[];
+ el("itResults").replaceChildren(make("strong",String(totals.wins||0)+" paper wins / "+String(totals.losses||0)+" paper losses"),
+  make("span"," · "+String(totals.scored||0)+" resolved / "+String(totals.candidates||0)+" registered. No proven predictive edge."));
+ el("itBlotter").replaceChildren(...(outcomes.length?outcomes.slice().reverse().slice(0,5).map(x=>{
+   const row=make("div",undefined,"it-blotter-row");
+   row.append(make("b",x.instrument.replace("_","/")+" "+(x.direction==="SHORT"?"SELL":"BUY")),
+     make("b",x.status==="WIN_TP1"?"PAPER TARGET":x.status==="LOSS_STOP"?"PAPER STOP":"TIME EXIT",
+       x.status==="WIN_TP1"?"win":"loss"),
+     make("small","Entry "+priceText(x.entry)+" → exit "+priceText(x.exit)+" · "+when(x.at)+" · NOT broker P/L"));
+   return row;
+ }):[make("p","No scored paper trades published.","it-small")]));
+ function priceText(x){return x!=null&&Number.isFinite(Number(x))?money(x):"—"}
+ el("itWarning").textContent=(!fresh?"STALE RESEARCH · ":"")+"ZERO approved entries. "+
+  String(totals.scored||0)+" scored paper trades · news "+news+" · no automated orders.";
+}
+
 function renderInstitutionalTerminal(){
  const root=el("institutionalTerminal");
  if(!root||!feed)return;
@@ -1537,6 +1678,7 @@ function renderInstitutionalTerminal(){
    Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&Number(x.stop)>0&&Number(x.tp1)>0
  ).map(x=>({...x,_route:x.route||"WATCH",_canonical:false,_when:x.first_seen_at,_tracked:true}));
  const sorted=[...canonical,...research.sort((a,b)=>(Number(b.research_priority)||0)-(Number(a.research_priority)||0)),...watches.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))];
+ if(!canonical.length&&!research.length&&!watches.length){renderInstitutionalDiagnosticFallback(now,fresh,when,news);return;}
  const rows=[],names=new Set();for(const x of sorted){if(names.has(x.instrument))continue;names.add(x.instrument);rows.push(x);if(rows.length>=5)break}
  if(!rows.some(x=>x.instrument===selectedInstitutionalPair))selectedInstitutionalPair=rows[0]?.instrument||null;
  const current=rows.find(x=>x.instrument===selectedInstitutionalPair)||rows[0]||null;
@@ -1548,7 +1690,7 @@ function renderInstitutionalTerminal(){
    if(!x)return null;
    const t=Date.parse(x._when),span=x._route==="MOMENTUM_CONTINUATION"?5:15;
    if(!Number.isFinite(t))return null;
-   const ms=span*60000;return new Date((Math.floor(t/ms)+1)*ms+ms).toISOString();
+   const ms=span*60000;return new Date((Math.floor(t/ms)+1)*ms).toISOString();
  };
  const info=x=>{
    const p=feed.pairs?.[x.instrument]||{},q=p.quote||{},qt=Date.parse(q.time),qOk=Number.isFinite(qt)&&qt<=now+300000&&now-qt<4200000;
