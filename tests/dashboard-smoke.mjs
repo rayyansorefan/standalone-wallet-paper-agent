@@ -66,6 +66,19 @@ assert.ok($("deskActionEntry").textContent.length>0);
 assert.ok($("deskActionStop").textContent.length>0);
 assert.ok($("deskActionTarget").textContent.length>0);
 assert.doesNotMatch($("deskActionFlag").textContent,/EXECUTABLE NOW|BROKER VERIFIED/);
+
+assert.ok($("institutionalTerminal"),"Institutional research monitor must be the first decision screen");
+assert.ok($("itRows").children.length>=1,"Opportunity matrix must show independently priced research candidates");
+assert.ok($("itGates").children.length>=7,"Entry timing must expose individual source/candle/news/risk/broker gates");
+assert.match($("itVerdict").textContent,/WATCH|NO APPROVED ENTRY|CONDITIONAL|WAIT/);
+assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/,
+  "A research ranking cannot be promoted to a broker-verifiable entry");
+assert.match($("itSourceNote").textContent,/OANDA|Source missing/);
+assert.ok($("itEntry").textContent.length>0&&$("itStop").textContent.length>0&&$("itTarget").textContent.length>0);
+assert.match($("itResults").children[0].textContent,/win \/ .*loss/,
+  "Paper results must be visible without opening a historical archive");
+assert.ok($("itForwardMove").textContent.length>0,
+  "Forward observations must distinguish scored progress from a new untracked plan");
 assert.equal($("screened").textContent,String(Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length));
 const closedEvidence = evidence.trades.filter(t => t.status === "CLOSED");
 const displayedRealised = closedEvidence.reduce((sum,t) => sum + t.realised_pnl_gbp, 0);
@@ -214,6 +227,10 @@ for(const fn of timers)fn();
 assert.equal($("verdict").textContent,"NO DATA");
 assert.equal($("entryState").textContent,"NO ENTRY");
 assert.match($("health").textContent,/STALE DATA/);
+assert.match($("itVerdict").textContent,/STALE FEED/,"Institutional entry monitor must fail closed");
+assert.match($("itFresh").textContent,/DATA STALE/);
+assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
+
 assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
     ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
     t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) &&
