@@ -221,6 +221,36 @@ assert.match(diagnostic,/HIGHER FRAME CONFLICT|2\/4 EMA frames aligned/,
 assert.match(diagnostic,/RESEARCH/,"Research must not be mislabeled as an executable trade");
 assert.doesNotMatch(diagnostic,/EXECUTABLE NOW/);
 
+// If canonical and newly generated research are empty, the institutional desk
+// MUST STILL DISPLAY an unexpired frozen paper watch with stop/target and a
+// transparent no-entry warning. Never hide it behind an empty signal list.
+const keptResearch=feed.research_setups,keptRecent=feed.learning.opportunity_audit.recent;
+const testedQuote=feed.pairs.GBP_USD.quote,testPip=Number(testedQuote.pip_size);
+const mockWatch={
+ id:"TEST-UNAPPROVED-PRICED-OBSERVATION",instrument:"GBP_USD",direction:"LONG",
+ route:"EMA20_PULLBACK",first_seen_at:feed.snapshot_at,
+ expires_at:new Date(Date.parse(feed.snapshot_at)+4*3600000).toISOString(),
+ entry_low:Number(testedQuote.ask)+2*testPip,
+ entry_high:Number(testedQuote.ask)+4*testPip,
+ stop:Number(testedQuote.bid)-10*testPip,
+ tp1:Number(testedQuote.ask)+30*testPip,
+ hypothetical_move_pct:-0.02,entry_confirmed:false,scored:false,
+ observations:[]
+};
+feed.research_setups=[];
+feed.learning.opportunity_audit.recent=[mockWatch];
+vm.runInNewContext("renderInstitutionalTerminal()",ctx);
+assert.match($("itPair").textContent,/GBP\/USD/,"Frozen paper watch should not vanish when signals.json is empty");
+assert.notEqual($("itEntry").textContent,"NOT APPROVED","Keep real frozen research entry visible");
+assert.notEqual($("itStop").textContent,"NOT SET","Keep research stop visible");
+assert.notEqual($("itTarget").textContent,"NOT SET","Keep research TP1 visible");
+assert.match($("itVerdict").textContent,/WATCH/,"A retained watch must NEVER be upgraded to live entry");
+assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
+assert.match($("itNextBar").textContent,/NEXT M15 CLOSE/,"Show NEXT bar from latest snapshot");
+feed.research_setups=keptResearch;
+feed.learning.opportunity_audit.recent=keptRecent;
+vm.runInNewContext("renderInstitutionalTerminal()",ctx);
+
 // Research-only fallback never invents trade levels when no priced plan exists.
 const savedSetups=feed.research_setups,savedWatches=feed.learning.opportunity_audit.recent;
 feed.research_setups=[];feed.learning.opportunity_audit.recent=[];
