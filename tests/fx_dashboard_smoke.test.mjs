@@ -286,3 +286,23 @@ test('decision-first research setup freshness and paper blotter', () => {
   assert.equal(feed.learning.paper_audit.candidate_index.length, feed.learning.paper_audit.totals.candidates);
   assert.ok(feed.signals.length===0||feed.signals.every(s=>s.instrument!=="GBP_ZAR"));
 });
+
+
+test('completed-bar entry radar preserves research-only gating', () => {
+  assert.match(page, /id="deskEntryRadar"/);
+  assert.match(page, /id="radarRows"/);
+  assert.match(page, /function renderEntryRadar\(\)/);
+  assert.match(page, /learning\?\.entry_diagnostics/);
+  assert.match(page, /distance_to_reference_pips/);
+  assert.match(page, /next_m15_check_at/);
+  assert.match(page, /previous_m15_break_observed/);
+  assert.match(page, /original unmodified signals\.json/);
+  assert.match(page, /renderEntryRadar\(\);renderPlans\(\)/);
+  assert.ok((feed.learning.entry_diagnostics||[]).every(
+    x=>x.approved_entry===false&&x.broker_verified===false),
+    'A directional entry diagnostic must never be approved or broker-verified');
+  assert.ok((feed.learning.entry_diagnostics||[]).every(
+    x=>Array.isArray(x.blockers) &&
+      x.blockers.some(y=>y.code==='NO_APPROVED_TRIGGER')),
+    'All observational entry diagnostics must retain explicit non-approval');
+});
