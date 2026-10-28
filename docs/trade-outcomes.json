@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "as_of": "2026-10-28T08:22:00Z",
+  "as_of": "2026-10-28T09:10:52Z",
   "account_type": "PEPPERSTONE_SPREAD_BET_SCREENSHOT_EVIDENCE",
-  "evidence": "User-supplied Pepperstone demo closed-position screenshot 28 Oct 08:12 UK and open portfolio screenshot 28 Oct 08:22 UK, plus earlier screenshots. Timestamp of latest open snapshot is minute precision.",
-  "signal_linkage": "Research-influenced according to the user, but individual trades remain PENDING linkage to an immutable earlier signal, confirmation and planned entry. Never count them as approved paper fills or use them as strategy-specific training labels until matched.",
-  "notes": "Eight closed screenshot-evidenced trades: seven realised gains and one realised loss. 28 Oct NZD/JPY +£22.90 CLOSED; NZD/CAD +£4.92 and NZD/SGD +£7.44 OPEN_AT_SNAPSHOT. All on user-shown Pepperstone demo; no live broker API access.",
+  "evidence": "User-supplied Pepperstone demo closed-position history screenshots through 28 Oct 09:39 UK, earlier historical closures, and a separate 28 Oct 08:22 open-portfolio snapshot. A prior user report supplied GBP/USD entry/exit prices; they are not displayed in latest screenshot. A later 11:22 UK Pepperstone Demo #1 home screenshot shows £1,174.53 and no open orders or positions.",
+  "signal_linkage": "All nine closed demo results remain PENDING independent linkage to a frozen earlier approved signal, completed confirmation, actual fill and costs. Profit provides a positive research hypothesis to test; a loss triggers a process/risk review. Neither automatically changes strategy weighting, approval or win probabilities.",
+  "notes": "Nine closed demo trades: seven realised gains and two losses, cumulative +£153.50. 28 Oct NZD/JPY SHORT +£22.90 closed 08:11:36, GBP/USD SHORT −£5.61 stopped out 09:10:52; daily realised +£17.29. NZD/CAD +£4.92 and NZD/SGD +£7.44 were OPEN at 08:22 only and are not counted in realised results. All Pepperstone demo; no broker API access. Latest 11:22 account card displays £1,174.53 with zero open orders or positions. Earlier NZD/CAD and NZD/SGD floating P/L cannot be converted into closed P/L without close records.",
   "account_snapshot": {
     "observed_at": "2026-10-28T08:22:00Z",
     "equity_gbp": 1171.86,
@@ -221,14 +221,41 @@
       "signal_id": null,
       "signal_match": "PENDING",
       "is_open_snapshot_only": true
+    },
+    {
+      "key": "2026-10-28-gbpusd-stop-0910",
+      "instrument": "GBP_USD",
+      "direction": "SHORT",
+      "status": "CLOSED",
+      "closed_at": "2026-10-28T09:10:52Z",
+      "entry_price": 1.3292,
+      "exit_price": 1.32971,
+      "exit_reason": "STOP_LOSS",
+      "realised_pnl_gbp": -5.61,
+      "net_pnl_gbp": -5.61,
+      "size_gbp_per_point": 1.1,
+      "account_mode": "PEPPERSTONE_DEMO",
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "entry_classification": "USER_DISCRETIONARY_BEFORE_M15_CONFIRMATION",
+      "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT_2026-10-28_0939_UK",
+      "evidence_note": "Closure, stake, stop-out and P&L screenshot-confirmed; entry/exit prices from earlier user conversation. No confirmed original entry trigger or independent broker fill audit.",
+      "execution_review": {
+        "approved_signal_at_entry": false,
+        "reference_equity_gbp": 1174.1,
+        "loss_pct_of_reference_equity": 0.48,
+        "target_max_risk_pct": 0.25,
+        "risk_above_target": true,
+        "lesson": "Preserve the stop-loss outcome and require completed M15 confirmation and risk ≤0.25% of verified equity before considering a discretionary short."
+      }
     }
   ],
   "execution_review": {
-    "as_of": "2026-10-26T16:22:59Z",
-    "focus_trade_key": "2026-10-26-audnzd-stop-1622",
-    "status": "UNAPPROVED_RESEARCH_WATCH_EXECUTED",
-    "finding": "Your AUD/NZD buy was 3 pips above the suggested entry zone. The possible profit was too small once the spread was included, and the longer-term trend did not support the buy.",
-    "action": "The dashboard will flag opportunities with limited upside or conflicting trends. This one loss is not enough to change the model's trading rules.",
+    "as_of": "2026-10-28T09:10:52Z",
+    "focus_trade_key": "2026-10-28-gbpusd-stop-0910",
+    "status": "DISCRETIONARY_EARLY_ENTRY_STOPPED_OUT",
+    "finding": "GBP/USD short 1.32920 → 1.32971 lost £5.61 and was stopped out. The entry was made before completed bearish M15 confirmation, and its loss represented about 0.48% of previously reported £1,174.10 equity versus the 0.25% per-trade risk guideline.",
+    "action": "Respect the broker stop, require confirmed bearish M15 and current Pepperstone spread/news checks before the next short, and size the planned stop exposure at no more than 0.25% of verified current equity. Do not turn an unapproved watch into a trade signal.",
     "signal_match": "PENDING"
   },
   "early_entry_study": {
@@ -254,27 +281,82 @@
     "is_verified_strategy_win": false
   },
   "broker_updates": {
-    "as_of": "2026-10-28T08:22:00Z",
-    "source": "USER_SUPPLIED_PEPPERSTONE_DEMO_SCREENSHOTS",
-    "heading": "28 OCT DEMO | 1 CLOSED +£22.90 | 2 OPEN +£12.36",
+    "as_of": "2026-10-28T09:10:52Z",
+    "source": "USER_SUPPLIED_PEPPERSTONE_DEMO_CLOSED_HISTORY_0939_AND_OPEN_PORTFOLIO_0822_UK",
+    "heading": "28 OCT DEMO | 2 EVIDENCED CLOSES +£17.29 | BANK £1,174.53 AT 11:22 | 0 OPEN",
     "positions": [
       {
         "id": "NZD/JPY short",
         "status": "CLOSED · +£22.90 realised",
-        "detail": "Opened 07:29:06, closed 08:11:36 UK at 88.428; original research linkage pending."
+        "detail": "Opened 07:29:06; closed 08:11:36 UK. Earlier research linkage pending."
+      },
+      {
+        "id": "GBP/USD short",
+        "status": "STOP LOSS · −£5.61 realised",
+        "detail": "Closed 09:10:52 UK at 1.32971, £1.10/pt; entered at 1.32920 before M15 confirmation. Risk review required."
       },
       {
         "id": "NZD/CAD",
-        "status": "OPEN at 08:22 · +£4.92",
-        "detail": "Floating demo P&L; direction, entry, stop, target and stake not shown."
+        "status": "OPEN at 08:22 · no longer open by 11:22",
+        "detail": "Earlier floating +£4.92 was historical; 11:22 portfolio now empty, but closing time and realised result have not been evidenced."
       },
       {
         "id": "NZD/SGD",
-        "status": "OPEN at 08:22 · +£7.44",
-        "detail": "Floating demo P&L; direction, entry, stop, target and stake not shown."
+        "status": "OPEN at 08:22 · no longer open by 11:22",
+        "detail": "Earlier floating +£7.44 was historical; 11:22 portfolio now empty, but closing time and realised result have not been evidenced."
       }
     ],
-    "learning_note": "Positive broker screenshot evidence logged. Investigate whether original prospectively recorded research contributed to entries and audit adverse excursions and eventual closes. Do not train on two open positions as winners, or call NZD/JPY a 07:30 signal win (it opened at 07:29).",
-    "reconciliation": "NZD/JPY original setup and two open positions' precise entries, stops, targets, spreads and final exits remain unverified."
+    "learning_note": "Preserve both closed win and stop-out. Positive evidence prioritises prospective NZD/JPY pattern study; GBP/USD stop-out prioritises entry-confirmation and stake/risk audit. Neither is a confirmed research-signal fill; no automatic strategy-weight changes.",
+    "reconciliation": "All positions closed/no orders by 11:22 screenshot, but NZD/CAD and NZD/SGD final execution details/P&L remain unknown. Obtain closed-history rows; do not assign the bank movement to particular trades."
+  },
+  "execution_review_history": [
+    {
+      "as_of": "2026-10-26T16:22:59Z",
+      "focus_trade_key": "2026-10-26-audnzd-stop-1622",
+      "status": "UNAPPROVED_RESEARCH_WATCH_EXECUTED",
+      "finding": "Your AUD/NZD buy was 3 pips above the suggested entry zone. The possible profit was too small once the spread was included, and the longer-term trend did not support the buy.",
+      "action": "The dashboard will flag opportunities with limited upside or conflicting trends. This one loss is not enough to change the model's trading rules.",
+      "signal_match": "PENDING"
+    }
+  ],
+  "learning_feedback": {
+    "as_of": "2026-10-28T09:10:52Z",
+    "positive_review": [
+      {
+        "trade_key": "2026-10-28-nzdjpy-closed-0811",
+        "instrument": "NZD_JPY",
+        "direction": "SHORT",
+        "realised_pnl_gbp": 22.9,
+        "observation": "Profitable NZD/JPY short captured 22.9 pips; inspect the actual earlier entry conditions, M5/M15 structure and subsequent drawdown.",
+        "next_test": "Freeze a prospective NZD/JPY short hypothesis and compare completed-M5/M15 routes across all wins, losses, expired watches and no-fills, net of realistic spread.",
+        "strategy_weight_change": 0,
+        "signal_match": "PENDING"
+      }
+    ],
+    "risk_review": [
+      {
+        "trade_key": "2026-10-28-gbpusd-stop-0910",
+        "instrument": "GBP_USD",
+        "direction": "SHORT",
+        "realised_pnl_gbp": -5.61,
+        "observation": "Stopped out after an unconfirmed discretionary short; risk about 0.48% of previous equity, above 0.25% guidance.",
+        "next_test": "Require verified current equity, pre-entry stop distance/stake check, completed M15 trigger and positive cost-adjusted R:R; compare the avoided trade path with fills, no-fills and losses.",
+        "strategy_weight_change": 0,
+        "signal_match": "PENDING"
+      }
+    ],
+    "strategy_rule": "Reward repeatable cost-adjusted outcomes only after prospective signal linkage and sufficient independent samples. Do not treat broker demo outcomes or floating P&L as validated research-strategy wins. No relaxation of stop, spread, news or confirmation gates.",
+    "live_strategy_weights_changed": false
+  },
+  "latest_bank_snapshot": {
+    "observed_at": "2026-10-28T11:22:00Z",
+    "observed_time_precision": "minute",
+    "amount_gbp": 1174.53,
+    "displayed_value_label": "DEMO_1_ACCOUNT_CARD_VALUE",
+    "account_mode": "PEPPERSTONE_DEMO_SPREAD_BET",
+    "open_positions": 0,
+    "open_orders": 0,
+    "source": "USER_SUPPLIED_PEPPERSTONE_DEMO_HOME_SCREENSHOT_2026-10-28_1122_UK",
+    "note": "User identifies displayed £1,174.53 as latest bank. Home screen shows no open orders or positions. It does not itemise closing P&L of NZD/CAD or NZD/SGD, deposits, fees or the exact meaning of the card figure; do not retrospectively invent individual realised outcomes."
   }
 }

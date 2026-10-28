@@ -194,6 +194,27 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
    assert.equal(historical.filter(t => t.realised_pnl_gbp < 0).length, 1);
    assert.equal(Number(historical.reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 136.21);
    assert.equal(Number(closed.filter(t => t.closed_at?.startsWith('2026-10-26')).reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 9.95);
+
+   const latestStop = outcomes.trades.find(t => t.key === '2026-10-28-gbpusd-stop-0910');
+   assert.ok(latestStop && latestStop.exit_reason === 'STOP_LOSS');
+   assert.equal(latestStop.realised_pnl_gbp, -5.61);
+   assert.equal(latestStop.signal_match, 'PENDING');
+   assert.equal(latestStop.execution_review.risk_above_target, true);
+   const nzdWin = outcomes.trades.find(t => t.key === '2026-10-28-nzdjpy-closed-0811');
+   assert.ok(nzdWin && nzdWin.realised_pnl_gbp === 22.90);
+   assert.equal(Number(closed.filter(t => t.closed_at?.startsWith('2026-10-28')).reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 17.29);
+   assert.equal(Number(closed.reduce((s,t) => s+t.realised_pnl_gbp,0).toFixed(2)), 153.50);
+   assert.equal(closed.length, 9);
+   assert.equal(closed.filter(t => t.realised_pnl_gbp > 0).length, 7);
+   assert.equal(closed.filter(t => t.realised_pnl_gbp < 0).length, 2);
+   assert.equal(outcomes.learning_feedback.live_strategy_weights_changed, false);
+   assert.equal(outcomes.latest_bank_snapshot.amount_gbp, 1174.53);
+   assert.equal(outcomes.latest_bank_snapshot.open_positions, 0);
+   assert.equal(outcomes.latest_bank_snapshot.open_orders, 0);
+   assert.match(page, /id="latestDemoBank"/);
+   assert.equal(outcomes.learning_feedback.positive_review.length, 1);
+   assert.equal(outcomes.learning_feedback.risk_review.length, 1);
+
    assert.match(page, /id="todayNetPnl"/);
    assert.match(page, /id="closedRecord"/);
    assert.match(page, /Tracking began · /);
