@@ -127,10 +127,22 @@ assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watc
 const cad=$("hourlyCohortCards").children.find(c=>
   c.children.some(n=>n.tagName==="div"&&n.children.some(z=>z.textContent==="CAD/CHF")));
 if(cad){
+  const indexed=(feed.learning.paper_audit.candidate_index||[])
+    .filter(x=>x.pair==="CAD_CHF"&&x.side==="LONG"&&
+      String(x.created_at).startsWith("2026-10-26"))
+    .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
   const origin=feed.learning.paper_audit.candidates.find(x=>x.id==="PRIORITY-20261026-CAD_CHF-LONG");
-  assert.ok(cad.children.some(c=>String(c.className).includes("current-watch-start")&&
-    c.children.some(n=>String(n.textContent).includes("17:39"))),
-    "Repeated CAD/CHF snapshots must retain first directional watch timestamp");
+  const startText=JSON.stringify(cad.children.filter(c=>String(c.className).includes("current-watch-start")));
+  if(indexed.length||origin){
+    const firstStart=indexed[0]?.created_at||origin.created_at;
+    const expectedUk=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",
+      day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false})
+      .format(new Date(firstStart));
+    assert.ok(startText.includes(expectedUk),"Earliest known indexed watch time must be preserved");
+  }else{
+    assert.match(startText,/PUBLISHED WINDOW ONLY/,
+      "If the oldest watch is missing from the truncated feed, mark the first-seen time as partial instead of backdating it");
+  }
   const move=cad.children.find(c=>String(c.className).includes("current-watch-move"));
   assert.ok(move&&Math.abs(Number.parseFloat(move.textContent))>0.001,
     "CAD/CHF later snapshot must not reset the original nonzero observed movement to 0%");
