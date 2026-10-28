@@ -1680,12 +1680,56 @@ function renderInstitutionalTerminal(){
    Date.parse(x.expires_at)>now&&
    Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&Number(x.stop)>0&&Number(x.tp1)>0
  ).map(x=>({...x,_route:x.route||"WATCH",_canonical:false,_when:x.first_seen_at,_tracked:true}));
- const sorted=[...canonical,...research.sort((a,b)=>(Number(b.research_priority)||0)-(Number(a.research_priority)||0)),...watches.sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at))];
+ // An institutional opportunity matrix must rank READINESS, not historical
+ // favourable movement or a pair's repeated older recalibrations. All watches
+ // remain research-only and the canonical signal gate is NEVER bypassed.
+ const watchMetrics=x=>{
+   const p=feed.pairs?.[x.instrument]||{},q=p.quote||{},sg=x.direction==="SHORT"?-1:1,
+     entrySide=Number(x.direction==="SHORT"?q.bid:q.ask),
+     exitSide=Number(x.direction==="SHORT"?q.ask:q.bid),
+     low=Number(x.entry_low),high=Number(x.entry_high),stop=Number(x.stop),
+     worst=sg<0?low:high,pip=Number(q.pip_size),
+     spread=Number(q.spread_pips)*pip,
+     risk=(stop-worst)*-sg,reward=(Number(x.tp1)-worst)*sg;
+   const t=Date.parse(q.time),quoteFresh=Number.isFinite(t)&&t<=now+300000&&now-t<4200000;
+   const breached=quoteFresh&&exitSide>0&&(sg<0?exitSide>=stop:exitSide<=stop);
+   const distance=quoteFresh&&pip>0&&entrySide>0?(entrySide<low?(low-entrySide)/pip:entrySide>high?(entrySide-high)/pip:0):1000;
+   let checked=0,aligned=0;
+   for(const tf of ["M15","H1","H4","D"]){const i=p.frames?.[tf]?.indicators;
+     if(i&&Number.isFinite(Number(i.ema20))&&Number.isFinite(Number(i.ema50))){checked++;
+       if((Number(i.ema20)-Number(i.ema50))*sg>0)aligned++}}
+   return {quoteFresh,breached,distance,checked,aligned,
+     rr:risk>0&&reward>0&&Number.isFinite(spread)?(reward-spread)/(risk+spread):null};
+ };
+ const rankWatch=x=>{
+   const m=watchMetrics(x);
+   return (m.breached?-10000:0)+(m.quoteFresh?0:-5000)+
+     (m.checked===4&&m.aligned===4?170:m.aligned*18-(m.checked-m.aligned)*24)+
+     (m.rr==null?-90:Math.min(25,m.rr*8))-
+     Math.min(200,m.distance*1.5);
+ };
+ // Only the newest immutable research version of each pair competes for
+ // the homepage. Older versions remain visible in the full monitored archive.
+ const latestByPair=new Map();
+ for(const x of watches){
+   const prev=latestByPair.get(x.instrument);
+   if(!prev||Date.parse(x._when)>Date.parse(prev._when)||
+       (Date.parse(x._when)===Date.parse(prev._when)&&rankWatch(x)>rankWatch(prev)))
+     latestByPair.set(x.instrument,x);
+ }
+ const sorted=[...canonical,...research.sort((a,b)=>(Number(b.research_priority)||0)-(Number(a.research_priority)||0)),
+   ...[...latestByPair.values()].sort((a,b)=>rankWatch(b)-rankWatch(a)||Date.parse(b._when)-Date.parse(a._when))];
  // Retain unexpired, forward-tracked, frozen priced research plans on the
  // decision monitor even if the latest collector has zero newly generated
  // research setups and zero canonical signals. ALWAYS label as WATCH ONLY.
  if(!canonical.length&&!research.length&&!watches.length){renderInstitutionalDiagnosticFallback(now,fresh,when,news);return;}
- const rows=[],names=new Set();for(const x of sorted){if(names.has(x.instrument))continue;names.add(x.instrument);rows.push(x);if(rows.length>=5)break}
+ const rows=[],names=new Set();for(const x of sorted){
+   if(names.has(x.instrument))continue;
+   // Do not headline previously stopped-out frozen research at the current quote.
+   // Preserve it in historical tracking, without relabelling it a scored loss.
+   if(x._tracked&&watchMetrics(x).breached)continue;
+   names.add(x.instrument);rows.push(x);if(rows.length>=5)break
+ }
  if(!rows.some(x=>x.instrument===selectedInstitutionalPair))selectedInstitutionalPair=rows[0]?.instrument||null;
  const current=rows.find(x=>x.instrument===selectedInstitutionalPair)||rows[0]||null;
  const tick=el("itFresh");tick.textContent=fresh?"DATA CURRENT":"DATA STALE";tick.className=fresh?"it-ok":"it-stale";
