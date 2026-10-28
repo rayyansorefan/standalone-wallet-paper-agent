@@ -610,6 +610,7 @@ main#overview>.hero p{font-size:12px;max-width:580px}
   </div>
   <details class="desk-learning"><summary>Strategy learning &amp; entry-route evidence (expand)</summary><div id="deskLearning"></div></details>
   <details class="desk-history"><summary id="deskIndexSummary">Complete recorded candidate index</summary><div id="deskIndex" class="desk-index"></div></details>
+  <details class="desk-history"><summary id="deskOpportunitySummary">Complete entry-route watch index</summary><div id="deskOpportunityIndex" class="desk-index"></div></details>
   <div class="desk-end"><span id="deskDisclosure">Checking market-data quality…</span><a href="#charts">Technical chart desk ↓</a></div>
 </section>
 </div></details>
@@ -2273,6 +2274,11 @@ function renderDecisionDesk(){
  const validation="UNVALIDATED · "+sampleN+" scored of 30 minimum · 10 independent days / 3 pairs also required";
  const routes=Object.entries(opp.routes||{}).map(([route,v])=>
    route.replaceAll("_"," ")+" "+Number(v.registered||0)+" registered / "+Number(v.expired||0)+" expired");
+ const routeStudy=Object.entries(opp.route_study||{}).map(([name,v])=>
+   name.replaceAll("_"," ")+": "+Number(v.forward_patterns||0)+" independent paper patterns from "+
+   Number(v.registered||0)+" watches"+(Number.isFinite(Number(v.median_pattern_delay_minutes))&&v.median_pattern_delay_minutes!==null?
+   " · median confirmation "+Number(v.median_pattern_delay_minutes).toFixed(1)+" minutes":""));
+ const head=opp.head_to_head||{};
  const lab=el("deskLearning");
  lab.replaceChildren(
    make("p",validation+"; do not infer winning probability or profitability from two results.","desk-paper-warning"),
@@ -2281,7 +2287,14 @@ function renderDecisionDesk(){
      " · adverse "+(life.ever_meaningful_adverse??"—")+
      " · both "+(life.both_favourable_and_adverse??"—")+
      " · verified fills "+(life.verified_fills??0)+". Overlapping observations are not scored wins.","desk-quiet"),
-   make("p","Entry-route paper experiments: "+(routes.join(" · ")||"none recorded")+". Keep original risk, spread, expiry and news gates. Reassess costs and regime before any promotion.","desk-quiet")
+   make("p","Entry-route paper experiments: "+(routes.join(" · ")||"none recorded")+". Keep original risk, spread, expiry and news gates. Reassess costs and regime before any promotion.","desk-quiet"),
+   make("p","Prospective entry timing: "+(routeStudy.join(" · ")||"awaiting route evidence")+". Matched M5/M15 cohorts "+Number(head.paired_cohorts||0)+
+     "; M5 earlier "+Number(head.m5_earlier||0)+", M15 earlier "+Number(head.m15_earlier||0)+
+     ". PAPER OBSERVATIONS ONLY — not fills or verified profitability.","desk-quiet"),
+   make("p","Admission audit: "+Number(feed.learning?.entry_gate_summary?.evaluated||0)+" researched pairs; "+
+     Number(feed.learning?.entry_gate_summary?.technical_or_cost_gate_clear||0)+" technical/cost gate clear; "+
+     Number(feed.learning?.entry_gate_summary?.priced_paper_research_previews||0)+" priced paper previews. News "+
+     (feed.learning?.entry_gate_summary?.news_status||feed.news_status||"UNKNOWN")+". No automatic promotion to trade signals.","desk-quiet")
  );
  el("deskIndexSummary").textContent=index.length?"Full candidate index: "+index.length+" of "+(totals.candidates??index.length)+" · expand":"Candidate detail: "+(audit.candidates?.length||0)+" of "+(totals.candidates??0)+" public rows · older records not exported";
  if(index.length){
@@ -2293,6 +2306,24 @@ function renderDecisionDesk(){
     return row;
    }));
  }else listing.replaceChildren(make("p","A compact all-candidate index is not yet published; the totals cover private observations, not broker fills.","desk-quiet"));
+ const opportunityRows=opp.candidate_index||[],opportunityFields=opp.candidate_index_fields||[];
+ const opportunityIndex=el("deskOpportunityIndex"),opportunitySummary=el("deskOpportunitySummary");
+ opportunitySummary.textContent=opportunityRows.length?
+   "Entry-route watch index: "+opportunityRows.length+" of "+(opp.total_registered||opportunityRows.length)+
+   " · "+(opp.recent?.length||0)+" detailed recent rows":"Entry-route watch index unavailable";
+ if(opportunityRows.length&&opportunityFields.length){
+   const named=opportunityRows.map(tuple=>Object.fromEntries(opportunityFields.map((field,i)=>[field,tuple[i]])));
+   opportunityIndex.replaceChildren(...named.filter(t=>visiblePair(t.instrument)).reverse().map(t=>{
+     const row=make("div",undefined,"desk-index-line");
+     row.append(make("span",String(t.instrument||"?").replace("_","/")+" "+
+       (t.direction==="SHORT"?"SELL":"BUY")+" · "+String(t.route||"?").replaceAll("_"," ")),
+       make("span",String(t.tracking_status||"UNTESTABLE")),
+       make("span",fmt(t.hypothetical_move_pct)),
+       make("small","Frozen zone "+money(t.entry_low)+"–"+money(t.entry_high)+
+         " · stop "+money(t.stop)+" · TP1 "+money(t.tp1)));
+     return row;
+   }));
+ }else opportunityIndex.replaceChildren(make("p","Older entry-route watches remain in the private database; full public index has not yet been exported.","desk-quiet"));
  renderEntryDiagnostics();
  el("deskDisclosure").textContent="All outcomes OANDA paper research unless explicitly marked broker evidenced · "+
   "news "+(feed.news_status||"UNKNOWN")+" · Pepperstone executable quotes UNKNOWN · refresh hourly, not tick-by-tick.";
