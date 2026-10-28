@@ -1564,7 +1564,7 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
  el("itStamp").textContent="OANDA "+when(feed.snapshot_at);
  el("itUniverse").textContent=String(feed.coverage?.screened??"—")+" FX PAIRS SCREENED";
  el("itNews").textContent="NEWS "+news;
- el("itVerdict").textContent="🔴 NO APPROVED ENTRY";
+ el("itVerdict").textContent=fresh?"🔴 NO APPROVED ENTRY":"🔴 NO ENTRY · STALE FEED";
  el("itVerdict").className="it-verdict stale";
  el("itPair").textContent=current?current.instrument.replace("_","/")+" · "+side:"No qualifying priced research plan";
  el("itDirection").textContent="DIRECTIONAL PAPER WATCH";
@@ -1578,6 +1578,9 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
  el("itStop").textContent="NOT SET";
  el("itTarget").textContent="NOT SET";
  el("itRR").textContent="NOT EVALUABLE";
+ el("itForwardMove").textContent="NOT SCORED";
+ el("itForwardNote").textContent="A directional breakpoint without a frozen approved entry is not a trade or measurable return.";
+ el("itForwardChart").replaceChildren();
  el("itPriceCheck").textContent=current?
    "NEXT M15 "+(side==="BUY"?"CLOSE ABOVE ":"CLOSE BELOW ")+money(ref)+" · "+
    (Number.isFinite(Number(current.distance_to_reference_pips))?
@@ -1631,14 +1634,14 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
        d.direction==="SHORT"?"it-bias-short":"it-bias-long"],["M15 BREAK WATCH",""],
      ["NOT AN ENTRY",""],[(Number.isFinite(Number(d.distance_to_reference_pips))?
        Math.abs(Number(d.distance_to_reference_pips)).toFixed(1)+" pips from ":"")+"reference "+money(refs),""],
-     [(d.direction==="SHORT"?"CLOSE < ":"CLOSE > ")+money(refs),""],
+     ["NOT SCORED",""],[(d.direction==="SHORT"?"CLOSE < ":"CLOSE > ")+money(refs),""],
      [first?String(first.code).replaceAll("_"," "):"AWAIT TRIGGER","it-wait"]];
    for(const [value,css] of entries){const td=make("td");
      if(css==="link"){const btn=make("button",value);btn.type="button";
        btn.addEventListener("click",()=>{selectedInstitutionalPair=d.instrument;renderInstitutionalTerminal()});td.append(btn)}
      else td.append(make("span",value,css));row.append(td)}return row;
  }):[(()=>{const row=make("tr"),cell=make("td","NO APPROVED ENTRY · no fresh M15 research reference available");
-     cell.colSpan=7;row.append(cell);return row})()]));
+     cell.colSpan=8;row.append(cell);return row})()]));
  el("itRowsNote").textContent=shown.length+" independently recorded M15 break references, ranked by fewer technical blockers and proximity. "+
    "These are directional observations only, NOT conditional manual trade signals.";
  const totals=feed.learning?.paper_audit?.totals||{},outcomes=feed.learning?.paper_audit?.featured_scored||[];
