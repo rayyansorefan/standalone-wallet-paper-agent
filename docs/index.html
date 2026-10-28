@@ -485,6 +485,10 @@ main#overview>.hero p{font-size:12px;max-width:580px}
 .it-gates{display:block}.it-check-head{display:block}.it-check-head strong{display:block;text-align:left;max-width:100%;margin-top:5px}
 .it-matrix{min-width:710px}.it-lower{grid-template-columns:1fr}.it-bottom{gap:8px}
 }
+
+.desk-diagnostic-details{margin:10px 0 18px;border:1px solid #334e60;border-radius:10px;background:#102738}
+.desk-diagnostic-details>summary{padding:12px 15px;cursor:pointer;font-size:12px;color:#b5d7e8;font-weight:800}
+.desk-diagnostic-details>.desk-diagnostic{margin:0;border:0;border-radius:0}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -572,12 +576,14 @@ main#overview>.hero p{font-size:12px;max-width:580px}
     </section>
     <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><span class="desk-cadence">Next hourly review :15 UK · not tick-by-tick</span><a href="#charts">Review chart ↓</a></div>
   </section>
+  <details class="desk-diagnostic-details"><summary>Expand full institutional entry-gate audit · all monitored candidates</summary>
   <section class="desk-diagnostic" aria-label="Live FX entry readiness exceptions">
     <div class="desk-diagnostic-head"><div><strong>ENTRY READINESS · NEXT COMPLETED CANDLE</strong><small>Institutional exception blotter: exactly which gate blocks a trade, with numerical research reference levels. These are NOT approved entry prices.</small></div><span id="deskDiagnosticStatus" class="desk-diagnostic-counter">Awaiting latest collector</span></div>
     <div class="desk-diagnostic-header" aria-hidden="true"><span>CANDIDATE</span><span>M15 REFERENCE LEVEL</span><span>FRAME CHECK</span><span>PRIMARY BLOCKER</span><span>NEXT REVIEW</span></div>
     <div id="deskDiagnosticRows" class="desk-diagnostic-rows"></div>
     <p class="desk-diagnostic-note">A close beyond the reference is only one research observation. No entry until an independently validated canonical conditional plan, news clearance, spread/risk checks and your current Pepperstone bid/ask.</p>
   </section>
+</details>
   <details class="desk-kpi-disclosure"><summary>Research coverage and scored paper statistics</summary>
   <div class="desk-kpis">
     <div><small>Approved conditional signals</small><strong id="deskApproved">—</strong></div>
@@ -1827,7 +1833,7 @@ function renderEntryRadar(){
    const level=make("td",money(d.reference_m15_level));
    const dist=make("td",d.distance_to_reference_pips==null?"UNKNOWN":
      (Number(d.distance_to_reference_pips)>0?"+":"")+n(d.distance_to_reference_pips,1)+" pips");
-   const check=make("td",d.next_m15_check_at?uk(d.next_m15_check_at):"Await completed M15");
+   const check=make("td",!d.next_m15_check_at?"Await completed M15":Date.parse(d.next_m15_check_at)<=now?"CHECK DUE · WAIT FOR NEW DATA":uk(d.next_m15_check_at));
    const reasons=(d.blockers||[]).map(x=>x.code);
    const triggerText=d.previous_m15_break_observed?"Historical breakout observed; NOT a live signal":
      "Wait for "+(d.direction==="SHORT"?"completed SELL close below ":"completed BUY close above ")+money(d.reference_m15_level);
