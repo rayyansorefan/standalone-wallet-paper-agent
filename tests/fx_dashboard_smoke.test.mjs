@@ -149,9 +149,16 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
   assert.equal(closed.length + open.length, outcomes.trades.length);
   assert.equal(Number(outcomes.trades.slice(0, 5).reduce((s, t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 134.19);
   assert.equal(outcomes.trades[2].prior_floating_snapshot.unrealised_pnl_gbp, 55.90);
-  assert.equal(outcomes.account_snapshot.equity_gbp, 1117.24);
-  assert.equal(outcomes.account_snapshot.used_margin_gbp, 0);
-  assert.equal(outcomes.account_snapshot.open_positions, 0);
+  // Snapshot evidence is time-stamped; new user screenshots must not break deployment.
+  // Verify internal accounting and provenance rather than freezing an old balance.
+  const snapshot = outcomes.account_snapshot;
+  assert.ok(Number.isFinite(snapshot.equity_gbp) && snapshot.equity_gbp > 0);
+  assert.ok(Number.isFinite(snapshot.used_margin_gbp) && snapshot.used_margin_gbp >= 0);
+  assert.ok(Number.isFinite(snapshot.free_margin_gbp) && snapshot.free_margin_gbp >= 0);
+  assert.equal(Number((snapshot.used_margin_gbp + snapshot.free_margin_gbp).toFixed(2)), snapshot.equity_gbp);
+  assert.equal(snapshot.open_positions, open.length);
+  assert.match(snapshot.source, /USER_SUPPLIED_/);
+  assert.ok(Number.isFinite(Date.parse(snapshot.observed_at)));
   assert.equal(Number((outcomes.trades[2].entry_price-outcomes.trades[2].exit_price)*100).toFixed(2), '43.00');
   assert.ok(outcomes.trades.every(t => t.signal_match !== 'VERIFIED' || (typeof t.signal_id === 'string' && t.signal_id.length > 0)));
   assert.ok(outcomes.trades.every(t => /^[A-Z]{3}_[A-Z]{3}$/.test(t.instrument)));
@@ -180,10 +187,12 @@ test('separate Pepperstone demo evidence is accurate, attributed and never count
    assert.equal(early.signal_match, 'PENDING');
    assert.equal(outcomes.early_entry_study.original_plan_id, '20261027-1403-EURUSD-S-B03');
    assert.equal(outcomes.early_entry_study.planned_sell_retouch_observed_after_confirmation, false);
-   assert.equal(outcomes.trades.length, 7);
-   assert.equal(closed.filter(t => t.realised_pnl_gbp > 0).length, 6);
-   assert.equal(closed.filter(t => t.realised_pnl_gbp < 0).length, 1);
-   assert.equal(Number(closed.reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 136.21);
+   // Verify the original seven historical closes without rejecting newer evidence.
+   const historical = closed.filter(t => t.closed_at && t.closed_at < '2026-10-28');
+   assert.equal(historical.length, 7);
+   assert.equal(historical.filter(t => t.realised_pnl_gbp > 0).length, 6);
+   assert.equal(historical.filter(t => t.realised_pnl_gbp < 0).length, 1);
+   assert.equal(Number(historical.reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 136.21);
    assert.equal(Number(closed.filter(t => t.closed_at?.startsWith('2026-10-26')).reduce((s,t) => s + t.realised_pnl_gbp, 0).toFixed(2)), 9.95);
    assert.match(page, /id="todayNetPnl"/);
    assert.match(page, /id="closedRecord"/);
