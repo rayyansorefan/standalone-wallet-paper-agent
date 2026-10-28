@@ -1219,7 +1219,27 @@ function renderDecisionDesk(){
   canonical.length?"CONDITIONAL PLANS EXIST — VERIFY ACTUAL M15 TRIGGER, NEWS AND PEPPERSTONE BID/ASK BEFORE CONSIDERING AN ENTRY":
   "NO APPROVED ENTRY — WAIT. Research watches below are UNTRIGGERED paper hypotheses.";
  if(fresh&&canonical.length)gate.className+=" ready";
- const proposed=[...canonical.map(x=>({...x,_canonical:true})),...watches.filter(x=>!canonical.some(y=>y.instrument===x.instrument))].slice(0,3);
+ // Display fresh research routes before older ledger observations; these are
+ // untriggered, NON-CANONICAL hypotheses, never entry approvals or paper fills.
+ const latestResearch=(feed.research_setups||[]).filter(x=>
+   visiblePair(x.instrument)&&["LONG","SHORT"].includes(x.direction)&&
+   Number(x.entry_low)>0&&Number(x.entry_high)>=Number(x.entry_low)&&
+   Number(x.stop)>0&&Number(x.tp1)>0&&
+   validTime(x.source_quote_at)&&
+   Number(x.technical_checks_agree)===4&&
+   (!Array.isArray(x.higher_timeframe_conflicts)||!x.higher_timeframe_conflicts.length)&&
+   Number(x.net_rr_estimate)>=1.35)
+  .map(x=>({...x,route:x.entry_route,first_seen_at:x.source_quote_at,
+    hypothetical_move_pct:null,best_observed_pct:null,worst_observed_pct:null,
+    observations:[],_freshResearch:true}))
+  .sort((a,b)=>Number(b.research_priority)-Number(a.research_priority)||
+    Number(b.net_rr_estimate)-Number(a.net_rr_estimate));
+ const proposed=[],listed=new Set();
+ for(const t of [...canonical.map(x=>({...x,_canonical:true})),...latestResearch,...watches]){
+   if(listed.has(t.instrument))continue;
+   listed.add(t.instrument);proposed.push(t);
+   if(proposed.length>=3)break;
+ }
  if(!proposed.length){lead.replaceChildren(make("p","No fresh, unexpired priced setups. The research engine has not confirmed an entry. Avoid forcing a trade.","desk-quiet"))}
  else{lead.replaceChildren(...proposed.map(t=>{
    const card=make("article",undefined,"desk-card"),p=feed.pairs?.[t.instrument]||{},q=p.quote||{},side=t.direction==="SHORT"?"SELL":"BUY";
@@ -1228,7 +1248,8 @@ function renderDecisionDesk(){
    const agreement=frameAgreement(t),net=rr(t),live=t._canonical===true;
    const title=make("div",undefined,"desk-card-head");
    title.append(make("strong",String(t.instrument).replace("_","/")+" · "+side),tag(invalidated?"STOP LEVEL BREACHED":live?"CONDITIONAL PLAN":"WATCH ONLY",invalidated?"invalid":live?"conditional":""));
-   card.append(title,make("p",live?"Canonical plan · broker entry still unverified":(t.route||"Directional research")+" · UNTRIGGERED / PAPER ONLY","desk-card-sub"));
+   card.append(title,make("p",live?"Canonical plan · broker entry still unverified":
+     (t.route||"Directional research")+" · UNTRIGGERED / PAPER ONLY"+(t._freshResearch?" · NEW SNAPSHOT, NOT YET LEDGER-SCORED":""),"desk-card-sub"));
    const levels=make("div",undefined,"desk-levels");
    for(const [label,value] of [["Entry",t.entry_low!=null&&t.entry_high!=null?money(t.entry_low)+"–"+money(t.entry_high):money(t.entry)],["Stop",money(t.stop)],["TP1",money(t.tp1)]]){
     const box=make("div");box.append(make("small",label),make("b",value));levels.append(box);
@@ -1247,7 +1268,9 @@ function renderDecisionDesk(){
     poly.setAttribute("fill","none");poly.setAttribute("stroke",values.at(-1)>=0?"#72e5bc":"#ffa4ae");poly.setAttribute("stroke-width","2.5");
     plot.append(poly);card.append(plot);
    }
-   card.append(make("p","Tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · no verified fill","desk-quiet"));
+   card.append(make("p",t._freshResearch?
+     "New research at "+date(t.source_quote_at)+" · tracked entry outcome NOT YET AVAILABLE · no verified fill":
+     "Tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · no verified fill","desk-quiet"));
    // Make the timing problem explicit: observable completed-bar evidence is
    // a research diagnostic, NOT an approved trade trigger or broker execution.
    const m15=(p.frames?.M15?.candles||[]).filter(c=>c&&Number.isFinite(Number(c.o))&&
@@ -1266,6 +1289,9 @@ function renderDecisionDesk(){
    }
    card.append(make("div",entryCheck+" · price in frozen zone, unchanged SL/TP, news/cost and Pepperstone checks still required.","desk-entryline"));
    const reason=invalidated?"INVALIDATED: stop boundary crossed. Do not use this plan.":!fresh?"Data not fresh":live?"Trigger/expiry, official news and Pepperstone spread still require confirmation":
+    t._freshResearch?"NEXT ENTRY CHECK: "+String(t.trigger||t.m5_confirmation||"Completed independent entry candle required")+
+      " · "+String(t.research_only_blocker||"Broker spread, news and event window not verified")+
+      " · PAPER ONLY, NOT AN APPROVED TRADE":
     agreement.checked<4?"Missing full 4-frame alignment; cannot approve":agreement.agree<4?"Higher-timeframe conflict; no approved entry":"Await independent completed M15 trigger, event clearance and broker check";
    card.append(make("div",reason,"desk-check"));
    const link=make("a","View M15 chart ↓","desk-mini-link");link.href="#charts";
