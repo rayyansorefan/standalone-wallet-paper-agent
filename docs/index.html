@@ -362,6 +362,16 @@ main#overview>.hero p{font-size:12px;max-width:580px}
  .desk-action-levels>div{padding:10px 8px}.desk-action-levels strong{font-size:clamp(15px,4vw,22px)}
  .fx-drawer>summary{padding:14px 12px}.fx-drawer-body{padding:0 9px 12px}
 }
+/* Explicit entry readiness: technical evidence is NOT an approved broker order. */
+.desk-gate-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 13px}
+.desk-gate-cell{padding:11px 10px;background:#122b3e;border:1px solid #35536a;border-radius:9px;min-width:0}
+.desk-gate-cell small{display:block;color:#95b8c6;font-size:9px;font-weight:900;letter-spacing:.6px}
+.desk-gate-cell strong{display:block;color:#f5d39d;font-size:11px;margin:4px 0 3px;line-height:1.3}
+.desk-gate-cell span{display:block;color:#b0c9d8;font-size:10px;line-height:1.35;overflow-wrap:anywhere}
+.desk-gate-cell.confirmed strong{color:#a2f0cb}.desk-gate-cell.blocked strong{color:#ffb1bb}
+.desk-action-risk{font-size:10px;color:#aecbdd;padding:8px 0 5px}
+.desk-card-identity{font-weight:850}
+@media(max-width:760px){.desk-gate-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.desk-gate-cell{padding:8px}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -405,6 +415,7 @@ main#overview>.hero p{font-size:12px;max-width:580px}
       <div class="desk-action-next"><small>NEXT REQUIRED CONFIRMATION</small><b id="deskActionTrigger">A completed, verified entry trigger</b></div>
       <div class="desk-action-gate"><small>WHY NOT ENTER IMMEDIATELY?</small><b id="deskActionBlocker">Broker, event and spread verification missing.</b></div>
     </div>
+    <div class="desk-gate-strip" id="deskActionGates" aria-label="Institutional-style entry readiness checks"></div>
     <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><span class="desk-cadence">Next hourly review :15 UK · not tick-by-tick</span><a href="#charts">Review chart ↓</a></div>
   </section>
   <details class="desk-kpi-disclosure"><summary>Research coverage and scored paper statistics</summary>
@@ -1292,6 +1303,38 @@ async function loadOutcomes(){
 }
 function journal(){let x=[];try{x=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]")}catch{}const w=x.filter(i=>i.outcome==="WIN").length,l=x.filter(i=>i.outcome==="LOSS").length;el("learningSummary").textContent=x.length?x.length+" self-reported observations; "+w+" wins, "+l+" losses, "+(w+l?Math.round(100*w/(w+l))+"% self-reported win rate.":"no win rate yet.")+" These are not broker-verified and prove no predictive edge.":"Zero recorded personal trades or broker-verified win/loss outcomes. Cannot yet claim a successful learned strategy."}
 
+function deskCompletedBar(t,p,now){
+  // This reads supplied completed OHLC only; no future candle or current tick
+  // is inferred. A historical pattern is never a canonical approved signal.
+  const route=t?.entry_route||t?.route,continuation=route==="MOMENTUM_CONTINUATION";
+  const tf=continuation?"M5":"M15",duration=continuation?300000:900000;
+  const candles=(p?.frames?.[tf]?.candles||[]).filter(b=>b&&
+    [b.o,b.h,b.l,b.c].every(v=>v!==null&&Number.isFinite(Number(v)))&&
+    Number.isFinite(Date.parse(b.t))).sort((a,b)=>Date.parse(a.t)-Date.parse(b.t));
+  const at=Date.parse(feed?.snapshot_at);
+  const completed=candles.filter(b=>Date.parse(b.t)+duration<=at+60000);
+  const last=completed.at(-1),prior=completed.at(-2);
+  if(!last||!prior)return {good:false,recent:false,label:"NO COMPLETED BAR",details:tf+" candle data missing"};
+  const closed=Date.parse(last.t)+duration,age=now-closed;
+  const recent=age>=-60000&&age<=(continuation?10:20)*60000;
+  const hi=Number(t.entry_high),lo=Number(t.entry_low);
+  const open=Number(last.o),c=Number(last.c),h=Number(last.h),l=Number(last.l);
+  let good=false;
+  if(continuation){
+    good=t.direction==="SHORT"?c<open&&c<Number(prior.c):
+      c>open&&c>Number(prior.c);
+  }else if(Number.isFinite(hi)&&Number.isFinite(lo)&&hi>=lo){
+    const range=h-l,body=Math.abs(c-open);
+    const wick=t.direction==="SHORT"?h-Math.max(open,c):Math.min(open,c)-l;
+    good=l<=hi&&h>=lo&&range>0&&wick>=.2*range&&wick>=.4*body&&
+      (t.direction==="SHORT"?c<open&&c<=lo:c>open&&c>=hi);
+  }
+  const label=!recent?"HISTORICAL ONLY":good?"PATTERN OBSERVED":"TRIGGER MISSING";
+  const details=(continuation?"M5 continuation":"M15 rejection")+" · closed "+uk(new Date(closed).toISOString())+
+    (good?" · pattern observed, NOT approved":" · no qualifying pattern")+
+    (!recent?" · wait for new completed candle":"");
+  return {good,recent,label,details,closed_at:new Date(closed).toISOString()};
+}
 function renderDeskPrimary(t, sourceFresh){
  const box=el("deskAction"),flag=el("deskActionFlag");
  if(!box||!flag||!feed)return;
@@ -1357,6 +1400,30 @@ function renderDeskPrimary(t, sourceFresh){
   "Entry / P&L not verified";
  el("deskActionSource").textContent=blocked?"RESEARCH · ENTRY BLOCKED":
   canonical?"SIGNAL PLAN · BROKER UNVERIFIED":"PAPER WATCH · NOT EXECUTABLE";
+ const gates=el("deskActionGates");
+ if(gates){
+   const pt=t?feed.pairs?.[t.instrument]:null;
+   const candle=t?deskCompletedBar(t,pt,now):{good:false,recent:false,label:"NO PLAN",details:"Await current research"};
+   const mark=t?valid&&quoteOk&&!invalidated:false;
+   const barState=candle.good&&candle.recent?"OBSERVED · NOT APPROVED":candle.label;
+   const newsOk=String(feed.news_status||"").toUpperCase()==="CLEAR"&&!event;
+   const checks=[
+     ["01 · ORIGINAL PLAN",mark?"PRESENT · VALID":"NOT READY",
+      !t?"No qualified research":invalidated?"Stop invalidated":
+        "Planned zone "+entry+"; "+near,mark],
+     ["02 · COMPLETED BAR",barState,candle.details,false],
+     ["03 · MACRO EVENTS",newsOk?"REVIEW DATED RELEASES":"NOT CLEARED",
+      event?"High impact "+String(event.title||"event")+" at "+uk(event.time):
+        "Status "+String(feed.news_status||"UNKNOWN")+" · official release verification required",false],
+     ["04 · BROKER / RISK","UNVERIFIED · NO ORDER",
+      "Pepperstone bid/ask, spread, available margin and ≤0.25% verified equity risk required",false]
+   ];
+   gates.replaceChildren(...checks.map(([name,state,detail,good])=>{
+     const box=make("div",undefined,"desk-gate-cell"+(good?" confirmed":state.includes("NOT")||state.includes("HISTORICAL")?" blocked":""));
+     box.append(make("small",name),make("strong",state),make("span",detail));
+     return box;
+   }));
+ }
 }
 
 function renderDecisionDesk(){
