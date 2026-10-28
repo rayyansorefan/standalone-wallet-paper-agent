@@ -53,6 +53,7 @@ const ctx={document:doc,Date:TestDate,Intl,Number,String,Math,Object,Array,URL,P
 vm.runInNewContext(script,ctx);
 await new Promise(resolve=>setImmediate(resolve));
 const $=id=>map.get(id);
+try {vm.runInNewContext("renderDecisionDesk()",ctx)} catch (e) {throw new Error("Direct decision-desk render failed: "+(e?.stack||String(e)))}
 // The primary decision must be immediately understandable without opening
 // the research tables, and no directional paper watch can become a trade alert.
 assert.ok($("deskAction"),"One-glance primary decision surface exists");
