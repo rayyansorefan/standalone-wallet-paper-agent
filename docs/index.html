@@ -1036,8 +1036,10 @@ function renderHourlyCohorts(){
       Number.isFinite(Date.parse(x.tracking?.reference_at)))||t;
     // Prefer full public candidate index to recover the earliest same-day
     // timestamp when the detailed rolling window has dropped earlier rows.
+    const indexFields=feed?.learning?.paper_audit?.candidate_index_fields||[];
     const indexOrigins=(feed?.learning?.paper_audit?.candidate_index||[])
-      .map(x=>Array.isArray(x)?{pair:x[1],side:x[2],created_at:x[3]}:x).filter(x=>
+      .map(x=>Array.isArray(x)?
+        Object.fromEntries(indexFields.map((field,i)=>[field,x[i]])):x).filter(x=>
       x.pair===t.instrument&&x.side===t.direction&&
       londonDate(x.created_at)===londonDate(t.created_at)&&Number.isFinite(Date.parse(x.created_at)))
       .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
@@ -1058,7 +1060,9 @@ function renderHourlyCohorts(){
     const fresh=!stale&&quote.time&&Number.isFinite(Date.parse(quote.time))&&
       Date.now()-Date.parse(quote.time)<=4200000&&Date.now()-Date.parse(quote.time)>=-300000;
     const price=fresh?Number(short?quote.ask:quote.bid):Number(track.price);
-    const base=Number(track.reference_price);
+    const firstFrozenBase=Number(indexOrigins[0]?.reference_price);
+    const base=Number.isFinite(firstFrozenBase)&&firstFrozenBase>0?
+      firstFrozenBase:Number(track.reference_price);
     const valid=Number.isFinite(base)&&base>0&&Number.isFinite(price)&&price>0;
     const pct=valid?(short?base-price:price-base)/base*100:null;
     // Combine price observations of the same same-day directional watch, never
@@ -1079,14 +1083,14 @@ function renderHourlyCohorts(){
     card.append(move,make("div",!valid?"Not enough price evidence":history.length<2?
       "New observation · M15 candle context below · next percentage check pending":!enough?
       "No price movement recorded yet":
-      "Underlying directional move since first observation · not trading profit",
+      "Directional price change since original watch · chart uses recent samples · not trading profit",
       "current-watch-context"));
     const graph=document.createElementNS("http://www.w3.org/2000/svg","svg");
     graph.setAttribute("viewBox","0 0 320 90");
     graph.setAttribute("preserveAspectRatio","none");
     graph.setAttribute("class","current-watch-chart");
     graph.setAttribute("role","img");
-    graph.setAttribute("aria-label",enough?"Historical directional movement chart in percent":"New observation: price change history not yet available");
+    graph.setAttribute("aria-label",enough?"Sampled recent directional movement relative to original watch price in percent":"New observation: price change history not yet available");
     const vals=history.map(x=>x.m);
     const candles=(feed.pairs?.[t.instrument]?.frames?.M15?.candles||[])
       .filter(c=>[c.o,c.h,c.l,c.c].every(v=>Number.isFinite(Number(v)))&&
