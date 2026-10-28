@@ -730,7 +730,8 @@ function renderHourlyCohorts(){
       Number.isFinite(Date.parse(x.tracking?.reference_at)))||t;
     // Prefer full public candidate index to recover the earliest same-day
     // timestamp when the detailed rolling window has dropped earlier rows.
-    const indexOrigins=(feed?.learning?.paper_audit?.candidate_index||[]).filter(x=>
+    const indexOrigins=(feed?.learning?.paper_audit?.candidate_index||[])
+      .map(x=>Array.isArray(x)?{pair:x[1],side:x[2],created_at:x[3]}:x).filter(x=>
       x.pair===t.instrument&&x.side===t.direction&&
       londonDate(x.created_at)===londonDate(t.created_at)&&Number.isFinite(Date.parse(x.created_at)))
       .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
@@ -1212,7 +1213,9 @@ function renderDecisionDesk(){
  el("deskApproved").textContent=String(fresh?canonical.length:0);
  el("deskWatches").textContent=String(watches.length);
  el("deskPaperStats").textContent=Number(totals.wins||0)+" W / "+Number(totals.losses||0)+" L";
- const index=Array.isArray(audit.candidate_index)?audit.candidate_index:[];
+ const index=(Array.isArray(audit.candidate_index)?audit.candidate_index:[]).map(x=>
+   Array.isArray(x)?{id:x[0],pair:x[1],side:x[2],created_at:x[3],
+     status:x[4],entry:x[5],stop:x[6],tp1:x[7],move_pct:x[8],quote_at:x[9]}:x);
  el("deskCoverage").textContent=index.length?index.length+" / "+(totals.candidates??index.length):String(audit.candidates?.length||0)+" / "+(totals.candidates??0);
  const gate=el("deskVerdict");gate.className="desk-verdict";
  gate.textContent=!fresh?"SOURCE STALE — NO NEW ENTRY. Last snapshot "+date(feed.snapshot_at):
