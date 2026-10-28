@@ -61,7 +61,12 @@ assert.equal($("realisedPnl").textContent,(displayedRealised>=0?"+":"−")+"£"+
 const todayEvidence = closedEvidence.filter(t => t.closed_at?.startsWith(evidence.as_of.slice(0,10)));
 const todayProfit = todayEvidence.reduce((sum,t) => sum + t.realised_pnl_gbp, 0);
 assert.equal($("todayNetPnl").textContent,(todayProfit>=0?"+":"−")+"£"+Math.abs(todayProfit).toFixed(2));
-assert.equal($("closedRecord").textContent,closedEvidence.filter(t=>t.realised_pnl_gbp>0).length+" wins / "+closedEvidence.filter(t=>t.realised_pnl_gbp<0).length+" loss");
+const lossCount = closedEvidence.filter(t=>t.realised_pnl_gbp<0).length;
+assert.equal($("closedRecord").textContent,closedEvidence.filter(t=>t.realised_pnl_gbp>0).length+" wins / "+lossCount+" loss"+(lossCount===1?"":"es"));
+assert.ok($("latestDemoBank").textContent.includes("£1174.53"));
+assert.match($("latestDemoBank").textContent,/0 open positions/);
+assert.match($("outcomesLearning").textContent,/POSITIVE REVIEW/);
+assert.match($("outcomesLearning").textContent,/RISK REINFORCEMENT/);
 assert.equal($("outcomesRows").children.length,evidence.trades.length);
 assert.match($("outcomesLearning").textContent,/PENDING/);
 assert.equal($("rows").children.length,Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length);
