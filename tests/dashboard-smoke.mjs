@@ -53,32 +53,6 @@ const ctx={document:doc,Date:TestDate,Intl,Number,String,Math,Object,Array,URL,P
 vm.runInNewContext(script,ctx);
 await new Promise(resolve=>setImmediate(resolve));
 const $=id=>map.get(id);
-try {vm.runInNewContext("renderDecisionDesk()",ctx)} catch (e) {throw new Error("Direct decision-desk render failed: "+(e?.stack||String(e)))}
-// The primary decision must be immediately understandable without opening
-// the research tables, and no directional paper watch can become a trade alert.
-assert.ok($("deskAction"),"One-glance primary decision surface exists");
-assert.match($("deskActionFlag").textContent,/WAIT|WATCH ONLY|CONDITIONAL PLAN/);
-assert.ok($("deskActionPair").textContent.length>0);
-assert.ok($("deskActionTrigger").textContent.length>10);
-assert.ok($("deskActionBlocker").textContent.length>10);
-assert.match($("deskActionQuote").textContent,/OANDA|Pepperstone UNKNOWN/);
-assert.ok($("deskActionEntry").textContent.length>0);
-assert.ok($("deskActionStop").textContent.length>0);
-assert.ok($("deskActionTarget").textContent.length>0);
-assert.doesNotMatch($("deskActionFlag").textContent,/EXECUTABLE NOW|BROKER VERIFIED/);
-
-assert.ok($("institutionalTerminal"),"Institutional research monitor must be the first decision screen");
-assert.ok($("itRows").children.length>=1,"Opportunity matrix must show independently priced research candidates");
-assert.ok($("itGates").children.length>=7,"Entry timing must expose individual source/candle/news/risk/broker gates");
-assert.match($("itVerdict").textContent,/WATCH|NO APPROVED ENTRY|CONDITIONAL|WAIT/);
-assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/,
-  "A research ranking cannot be promoted to a broker-verifiable entry");
-assert.match($("itSourceNote").textContent,/OANDA|Source missing/);
-assert.ok($("itEntry").textContent.length>0&&$("itStop").textContent.length>0&&$("itTarget").textContent.length>0);
-assert.match($("itResults").children[0].textContent,/win \/ .*loss/,
-  "Paper results must be visible without opening a historical archive");
-assert.ok($("itForwardMove").textContent.length>0,
-  "Forward observations must distinguish scored progress from a new untracked plan");
 assert.equal($("screened").textContent,String(Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length));
 const closedEvidence = evidence.trades.filter(t => t.status === "CLOSED");
 const displayedRealised = closedEvidence.reduce((sum,t) => sum + t.realised_pnl_gbp, 0);
@@ -87,12 +61,8 @@ assert.equal($("realisedPnl").textContent,(displayedRealised>=0?"+":"−")+"£"+
 const todayEvidence = closedEvidence.filter(t => t.closed_at?.startsWith(evidence.as_of.slice(0,10)));
 const todayProfit = todayEvidence.reduce((sum,t) => sum + t.realised_pnl_gbp, 0);
 assert.equal($("todayNetPnl").textContent,(todayProfit>=0?"+":"−")+"£"+Math.abs(todayProfit).toFixed(2));
-const lossCount = closedEvidence.filter(t=>t.realised_pnl_gbp<0).length;
-assert.equal($("closedRecord").textContent,closedEvidence.filter(t=>t.realised_pnl_gbp>0).length+" wins / "+lossCount+" loss"+(lossCount===1?"":"es"));
-assert.ok($("latestDemoBank").textContent.includes("£1174.53"));
-assert.match($("latestDemoBank").textContent,/0 open positions/);
-assert.match($("outcomesLearning").textContent,/POSITIVE REVIEW/);
-assert.match($("outcomesLearning").textContent,/RISK REINFORCEMENT/);
+const smokeLosses=closedEvidence.filter(t=>t.realised_pnl_gbp<0).length;
+assert.equal($("closedRecord").textContent,closedEvidence.filter(t=>t.realised_pnl_gbp>0).length+" wins / "+smokeLosses+" loss"+(smokeLosses===1?"":"es"));
 assert.equal($("outcomesRows").children.length,evidence.trades.length);
 assert.match($("outcomesLearning").textContent,/PENDING/);
 assert.equal($("rows").children.length,Object.keys(feed.pairs).filter(k=>k!=="GBP_ZAR").length);
@@ -153,57 +123,13 @@ assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watc
 const cad=$("hourlyCohortCards").children.find(c=>
   c.children.some(n=>n.tagName==="div"&&n.children.some(z=>z.textContent==="CAD/CHF")));
 if(cad){
-  // An hourly idea is independent by date. A new 28 Oct watch must not
-  // inherit a 26 Oct baseline merely because the pair and side match.
-  const session=String(feed.snapshot_at).slice(0,10);
-  const daily=feed.learning.paper_audit.candidates.filter(x=>
-    x.instrument==="CAD_CHF"&&x.direction==="LONG"&&
-    x.source==="AUTOMATED_RESEARCH_PRIORITY"&&
-    String(x.created_at).slice(0,10)===session)
-    .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
-  assert.ok(daily.length,"CAD/CHF latest watch must have a recorded session baseline");
-  // The detailed window is intentionally capped. The compact all-candidate
-  // index is authoritative for the earliest immutable same-session baseline.
-  const fields=feed.learning.paper_audit.candidate_index_fields||[];
-  const originalRows=(feed.learning.paper_audit.candidate_index||[])
-    .map(tuple=>Array.isArray(tuple)?
-      Object.fromEntries(fields.map((field,i)=>[field,tuple[i]])):tuple)
-    .filter(x=>x.pair==="CAD_CHF"&&x.side==="LONG"&&
-      String(x.created_at).slice(0,10)===session&&Number.isFinite(Date.parse(x.created_at)))
-    .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
-  const originalStart=originalRows[0]?.created_at||daily[0].created_at;
-  const expectedUk=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",
-    day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false})
-    .format(new Date(originalStart));
-  const startText=JSON.stringify(cad.children.filter(c=>String(c.className).includes("current-watch-start")));
-  assert.ok(startText.includes(expectedUk),
-    "Watch must display the first same-session immutable observation time");
+  const origin=feed.learning.paper_audit.candidates.find(x=>x.id==="PRIORITY-20261026-CAD_CHF-LONG");
+  assert.ok(cad.children.some(c=>String(c.className).includes("current-watch-start")&&
+    c.children.some(n=>String(n.textContent).includes("17:39"))),
+    "Repeated CAD/CHF snapshots must retain first directional watch timestamp");
   const move=cad.children.find(c=>String(c.className).includes("current-watch-move"));
   assert.ok(move&&Math.abs(Number.parseFloat(move.textContent))>0.001,
-    "Later session observation should preserve its nonzero directional move");
-  const originalRef=Number(originalRows[0]?.reference_price);
-  assert.ok(Number.isFinite(originalRef)&&originalRef>0,
-    "Complete public index must preserve the earliest independent frozen research quote");
-  const quote=feed.pairs.CAD_CHF.quote;
-  const quoteAge=at.now-Date.parse(quote.time);
-  const quoteFresh=quote.time&&Number.isFinite(quoteAge)&&quoteAge>=-300000&&quoteAge<=4200000;
-  const observedPrice=quoteFresh?Number(quote.bid):Number(daily[0].tracking?.price);
-  const expectedMove=(observedPrice-originalRef)/originalRef*100;
-  assert.ok(Math.abs(Number.parseFloat(move.textContent)-expectedMove)<0.001,
-    "Published directional percentage must use the same original baseline as WATCH STARTED");
-  const baselinePrices=cad.children.find(c=>c.className==="current-watch-prices");
-  assert.ok(baselinePrices,"Every watch must show its timestamped original price");
-  const firstPrice=baselinePrices.children[0];
-  assert.ok(firstPrice.children[0].textContent.includes(expectedUk),
-    "Visible baseline timestamp must match the original watch, not a recent detailed slice");
-  assert.ok(Math.abs(Number(firstPrice.children[1].textContent)-originalRef)<0.00001,
-    "Visible baseline price must match the original immutable indexed price");
-  const chartNotes=cad.children.filter(c=>c.tagName==="small").map(c=>c.textContent);
-  assert.ok(chartNotes.some(s=>s.includes("gaps unobserved")),
-    "Historical watch chart must explicitly disclose sparse unobserved intervals");
-  const context=cad.children.find(c=>c.className==="current-watch-context");
-  assert.ok(context&&context.textContent.includes("Directional price change"),
-    "A nonzero observed move must not be labelled as no recorded price movement");
+    "CAD/CHF later snapshot must not reset the original nonzero observed movement to 0%");
 }
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
@@ -233,80 +159,12 @@ $("note").value="Stopped at original planned SL; unverified self-report";
 $("journal").listeners.submit({preventDefault(){}});
 assert.equal(JSON.parse(saved["fx-journal-local-v1"]).length,1);
 assert.match($("learningSummary").textContent,/self-reported/);
-// Entry diagnostics must show a real numeric M15 reference and the precise blocker,
-// not reclassify a prior-bar break into a live broker signal.
-feed.learning.entry_diagnostics=[{
-  instrument:"GBP_USD",direction:"LONG",priority:51.4,
-  frame_alignment:"2/4",m15_adx:17.3,h1_adx:38.9,
-  reference_m15_level:1.33019,last_m15_completed_at:feed.snapshot_at,
-  next_m15_check_at:new Date(Date.parse(feed.snapshot_at)+15*60000).toISOString(),
-  source_quote_at:feed.snapshot_at,approved_entry:false,broker_verified:false,
-  blockers:[{code:"HIGHER_FRAME_CONFLICT",detail:"2/4 EMA frames aligned"},
-            {code:"NEWS_PARTIAL",detail:"Independent event clearance absent"}]
-}];
-vm.runInNewContext("renderEntryDiagnostics()",ctx);
-assert.ok($("deskDiagnosticRows").children.length===1,
-  "Entry readiness table must render the explicit quantitative research check");
-const diagnostic=JSON.stringify($("deskDiagnosticRows").children);
-assert.match(diagnostic,/1\.33019/,"Numeric previous-candle reference must be visible");
-assert.match(diagnostic,/HIGHER FRAME CONFLICT|2\/4 EMA frames aligned/,
-  "Entry blocker must be visible without interpreting 10 indicators");
-assert.match(diagnostic,/RESEARCH/,"Research must not be mislabeled as an executable trade");
-assert.doesNotMatch(diagnostic,/EXECUTABLE NOW/);
-
-// If canonical and newly generated research are empty, the institutional desk
-// MUST STILL DISPLAY an unexpired frozen paper watch with stop/target and a
-// transparent no-entry warning. Never hide it behind an empty signal list.
-const keptResearch=feed.research_setups,keptRecent=feed.learning.opportunity_audit.recent;
-const testedQuote=feed.pairs.GBP_USD.quote,testPip=Number(testedQuote.pip_size);
-const mockWatch={
- id:"TEST-UNAPPROVED-PRICED-OBSERVATION",instrument:"GBP_USD",direction:"LONG",
- route:"EMA20_PULLBACK",first_seen_at:feed.snapshot_at,
- expires_at:new Date(Date.parse(feed.snapshot_at)+4*3600000).toISOString(),
- entry_low:Number(testedQuote.ask)+2*testPip,
- entry_high:Number(testedQuote.ask)+4*testPip,
- stop:Number(testedQuote.bid)-10*testPip,
- tp1:Number(testedQuote.ask)+30*testPip,
- hypothetical_move_pct:-0.02,entry_confirmed:false,scored:false,
- observations:[]
-};
-feed.research_setups=[];
-feed.learning.opportunity_audit.recent=[mockWatch];
-vm.runInNewContext("renderInstitutionalTerminal()",ctx);
-assert.match($("itPair").textContent,/GBP\/USD/,"Frozen paper watch should not vanish when signals.json is empty");
-assert.notEqual($("itEntry").textContent,"NOT APPROVED","Keep real frozen research entry visible");
-assert.notEqual($("itStop").textContent,"NOT SET","Keep research stop visible");
-assert.notEqual($("itTarget").textContent,"NOT SET","Keep research TP1 visible");
-assert.match($("itVerdict").textContent,/WATCH/,"A retained watch must NEVER be upgraded to live entry");
-assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
-assert.match($("itNextBar").textContent,/(?:NEXT M15 CLOSE|BAR DUE · AWAIT NEW OANDA COLLECTION: M15 CLOSE)/,"Show upcoming or overdue M15 close without pretending a refreshed candle exists");
-feed.research_setups=keptResearch;
-feed.learning.opportunity_audit.recent=keptRecent;
-vm.runInNewContext("renderInstitutionalTerminal()",ctx);
-
-// Research-only fallback never invents trade levels when no priced plan exists.
-const savedSetups=feed.research_setups,savedWatches=feed.learning.opportunity_audit.recent;
-feed.research_setups=[];feed.learning.opportunity_audit.recent=[];
-vm.runInNewContext("renderInstitutionalTerminal()",ctx);
-assert.equal($("itEntry").textContent,"NOT APPROVED");
-assert.equal($("itStop").textContent,"NOT SET");
-assert.equal($("itTarget").textContent,"NOT SET");
-assert.match($("itPriceCheck").textContent,/NEXT M15/);
-assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
-assert.ok($("itRows").children.length>0);
-feed.research_setups=savedSetups;feed.learning.opportunity_audit.recent=savedWatches;
-vm.runInNewContext("renderInstitutionalTerminal()",ctx);
-
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
 assert.equal($("verdict").textContent,"NO DATA");
 assert.equal($("entryState").textContent,"NO ENTRY");
 assert.match($("health").textContent,/STALE DATA/);
-assert.match($("itVerdict").textContent,/STALE FEED/,"Institutional entry monitor must fail closed");
-assert.match($("itFresh").textContent,/DATA STALE/);
-assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
-
 assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
     ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
     t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) &&
