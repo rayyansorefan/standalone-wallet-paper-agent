@@ -230,6 +230,43 @@ body{background:#07111f;color:#edf5ff}
 .early-study-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
 .early-study-grid>div{background:#092934;border:1px solid #3c766f;border-radius:8px;padding:10px}.early-study-grid small{display:block;color:#a9c4c8;font-size:10px}.early-study-grid b{color:#e7fff7;font-size:17px}
 @media(max-width:700px){.early-toolbar{flex-wrap:wrap}.early-toolbar select{max-width:100%;flex:1}.early-study-grid{grid-template-columns:1fr 1fr}}
+
+/* Decision-first compact portfolio workflow: no trading controls or order submission. */
+.decision-desk{margin:12px 0 28px;padding:20px;border:1px solid #335775;border-radius:18px;background:linear-gradient(145deg,#162a3e,#101d2f)}
+.desk-top,.desk-labelrow,.desk-end{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.desk-top h2{font-size:25px;line-height:1.18;margin:4px 0}.desk-top p,.desk-ledger p{color:#aac4d9;font-size:12px;margin:5px 0 9px}
+.desk-source{font-size:10px;color:#a9d5df;background:#102738;border:1px solid #31556b;border-radius:18px;padding:7px 10px;font-weight:800}
+.desk-verdict{margin:14px 0;padding:12px 14px;background:#2d2520;border-left:4px solid #ffce85;border-radius:9px;font-size:14px;font-weight:850;color:#ffe3ad}.desk-verdict.ready{background:#13352e;border-color:#67d4ac;color:#c8f7e1}
+.desk-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.desk-kpis>div{background:#0b1d2c;border:1px solid #29495d;border-radius:11px;padding:12px;min-width:0}
+.desk-kpis small{color:#94b6cd;font-size:10px;display:block}.desk-kpis strong{display:block;font-size:20px;margin-top:4px;color:#eff9ff}
+.desk-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(250px,1fr);gap:13px;align-items:start}
+.desk-primary,.desk-ledger{min-width:0}.desk-labelrow{margin-bottom:11px}.desk-labelrow h3,.desk-ledger h3{margin:0;font-size:16px}.desk-labelrow span{font-size:10px;color:#98b6c9}
+.desk-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.desk-card,.desk-ledger{border:1px solid #36536a;background:#10243a;border-radius:12px;padding:14px}
+.desk-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.desk-card-head strong{font-size:17px}.desk-chip{font-size:10px;font-weight:900;color:#ffda9c;border:1px solid #997547;padding:4px 7px;border-radius:6px}
+.desk-chip.invalid{color:#ff9caa;border-color:#a45161}.desk-chip.conditional{color:#88f4c9;border-color:#4fba93}
+.desk-card-sub,.desk-quiet,.desk-quote{font-size:11px;color:#aec5d7;margin:8px 0}
+.desk-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.desk-levels div{background:#091e30;border:1px solid #2b455b;border-radius:7px;padding:8px 6px;min-width:0}
+.desk-levels small{display:block;color:#95b1c8;font-size:9px}.desk-levels b{display:block;font-size:12px;overflow-wrap:anywhere}
+.desk-progress{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:10px;font-size:11px}
+.desk-progress strong{color:#ebf8ff}.desk-spark{width:100%;height:50px;margin:4px 0 0;display:block;background:#0b2032;border-radius:7px}
+.desk-check{font-size:11px;color:#f2cc9b;border-top:1px solid #315166;padding-top:9px;margin-top:10px}
+.desk-link,.desk-mini-link{font-size:11px;font-weight:850;color:#91d9f3;text-decoration:none}
+.desk-paper-row{padding:10px 0;border-bottom:1px solid #2f485a;font-size:12px}
+.desk-paper-row:last-child{border-bottom:0}
+.desk-paper-row strong{display:block}.desk-paper-row small{color:#a8c3d3;display:block;margin-top:4px}
+.desk-paper-row.win strong{color:#89eec4}.desk-paper-row.loss strong{color:#ffa5af}
+.desk-paper-warning{color:#ffdb9e;font-size:11px;padding:8px 0}
+.desk-history{margin-top:14px;border:1px solid #315068;border-radius:9px;background:#0c2030}
+.desk-history>summary{cursor:pointer;padding:11px 13px;color:#bfe5ee;font-weight:800;font-size:12px}
+.desk-index{padding:4px 12px 13px;max-height:340px;overflow:auto}
+.desk-index-line{display:grid;grid-template-columns:1.1fr .8fr .8fr 1fr;gap:5px;padding:7px 0;border-bottom:1px solid #28435a;font-size:11px}
+.desk-index-line span{overflow-wrap:anywhere}.desk-index-line small{color:#a2bdcb}
+.desk-end{font-size:10px;color:#a4bacd;margin-top:11px}
+@media(max-width:850px){.desk-layout{grid-template-columns:1fr}.desk-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.desk-top h2{font-size:22px}.decision-desk{padding:13px}.desk-index-line{grid-template-columns:1fr 1fr}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -237,7 +274,8 @@ body{background:#07111f;color:#edf5ff}
   <a href="#overview" class="side-brand"><span class="side-mark">⌁</span><span><b>FX INTELLIGENCE</b><small>MARKET RESEARCH LAB</small></span></a>
   <div class="side-caption">RESEARCH DESK</div>
   <nav class="side-nav" aria-label="Dashboard sections">
-    <a class="active" href="#overview"><span aria-hidden="true">◫</span> Overview</a>
+    <a class="active" href="#decision-desk"><span aria-hidden="true">◎</span> Best opportunities</a>
+    <a href="#overview"><span aria-hidden="true">◫</span> Overview</a>
     <a href="#early-opportunities"><span aria-hidden="true">⚡</span> Early opportunities</a>
     <a href="#learning"><span aria-hidden="true">▧</span> Today’s trades</a>
     <a href="#demoEvidence"><span aria-hidden="true">✓</span> My results</a>
@@ -257,6 +295,22 @@ body{background:#07111f;color:#edf5ff}
 </header>
 <main class="wide" id="overview">
 <div class="hero"><div><div class="eyebrow">THE FOREIGN EXCHANGE DESK</div><h1>FX Intelligence <span>Hub.</span></h1><p>Clear entry plans, hourly percentage tracking and trade outcomes. OANDA research prices are separate from your manual Pepperstone execution.</p></div><div class="clock"><b id="clock">--:-- UK</b><div id="sourceTime">OANDA source time unknown</div><div id="publishedTime">Feed not loaded</div></div></div>
+<section class="decision-desk" id="decision-desk" aria-label="FX opportunity and performance desk">
+  <div class="desk-top"><div><div class="eyebrow">DECISION FIRST · RESEARCH ONLY</div><h2>Today's opportunities &amp; performance</h2><p>Original levels · completed entry conditions · hourly movement · audited results. No automated orders.</p></div><span class="desk-source" id="deskSource">VERIFYING SOURCE</span></div>
+  <div id="deskVerdict" class="desk-verdict">Checking approved signal, source age and event risks…</div>
+  <div class="desk-kpis">
+    <div><small>Approved conditional signals</small><strong id="deskApproved">—</strong></div>
+    <div><small>Monitored research watches</small><strong id="deskWatches">—</strong></div>
+    <div><small>Scored paper results</small><strong id="deskPaperStats">—</strong></div>
+    <div><small>Public tracking coverage</small><strong id="deskCoverage">—</strong></div>
+  </div>
+  <div class="desk-layout">
+    <div class="desk-primary"><div class="desk-labelrow"><h3>Most compelling current setups</h3><span>Ranked research hypotheses, not win probabilities</span></div><div id="deskCards" class="desk-cards"></div></div>
+    <aside class="desk-ledger"><h3>Paper-trade blotter</h3><p>Only triggered, filled and resolved simulations count as wins or losses.</p><div id="deskPaperRows"></div><a href="#learning" class="desk-link">Explore monitored performance ↓</a></aside>
+  </div>
+  <details class="desk-history"><summary id="deskIndexSummary">Complete recorded candidate index</summary><div id="deskIndex" class="desk-index"></div></details>
+  <div class="desk-end"><span id="deskDisclosure">Checking market-data quality…</span><a href="#charts">Technical chart desk ↓</a></div>
+</section>
 <section class="section" id="research-setups"><div class="heading"><div><h2>Current conditional trade plans</h2><p>Prospective entry zones, stop-losses and targets from aligned M15 / H1 / H4 / D1 trends. Stale plans are hidden. These are <strong>conditional research plans</strong>, never automatic trades or confirmed entry alerts.</p></div><span class="label" id="researchCount">AWAITING RESEARCH</span></div><div id="researchCards" class="setupgrid"></div><p class="small">OANDA research quotes only · Models require a completed M15 confirmation, current official news review and your own Pepperstone prices/spread before any manual order. A listed plan is not an instruction to enter immediately.</p></section>
 
 <section class="section" id="early-opportunities" aria-label="Early research opportunities and missed moves">
@@ -1112,13 +1166,116 @@ async function loadOutcomes(){
  }catch(e){if(!outcomeEvidence){el("outcomesAsOf").textContent="EVIDENCE UNAVAILABLE";el("outcomesSource").textContent="Could not load saved demo trade history: "+e.message;el("outcomesLearning").textContent="No trade win rate can be inferred while evidence is unavailable."}}
 }
 function journal(){let x=[];try{x=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]")}catch{}const w=x.filter(i=>i.outcome==="WIN").length,l=x.filter(i=>i.outcome==="LOSS").length;el("learningSummary").textContent=x.length?x.length+" self-reported observations; "+w+" wins, "+l+" losses, "+(w+l?Math.round(100*w/(w+l))+"% self-reported win rate.":"no win rate yet.")+" These are not broker-verified and prove no predictive edge.":"Zero recorded personal trades or broker-verified win/loss outcomes. Cannot yet claim a successful learned strategy."}
-function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderEarlyOpportunities();renderResearchSetups();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
-async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderEarlyOpportunities();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
+
+function renderDecisionDesk(){
+ const lead=el("deskCards"),paper=el("deskPaperRows"),listing=el("deskIndex");
+ if(!feed||!lead||!paper)return;
+ const now=Date.now(),fresh=fresher(),validTime=t=>t&&Number.isFinite(Date.parse(t))&&Date.parse(t)<=now+300000&&now-Date.parse(t)<4200000;
+ const rows=feed.learning?.opportunity_audit?.recent||[],audit=feed.learning?.paper_audit||{},totals=audit.totals||{};
+ const canonical=approved().filter(x=>visiblePair(x.instrument));
+ const all=rows.filter(t=>visiblePair(t.instrument)&&["LONG","SHORT"].includes(t.direction)&&
+  Number(t.entry_low)>0&&Number(t.entry_high)>=Number(t.entry_low)&&Number(t.stop)>0&&Number(t.tp1)>0&&
+  Number.isFinite(Date.parse(t.first_seen_at)));
+ const current=all.filter(t=>fresh&&Date.parse(t.expires_at)>now&&validTime(feed.pairs?.[t.instrument]?.quote?.time));
+ const grouped=new Map();
+ for(const t of current){const prior=grouped.get(t.instrument);if(!prior||Date.parse(prior.first_seen_at)<Date.parse(t.first_seen_at))grouped.set(t.instrument,t)}
+ const frameAgreement=t=>{
+  const p=feed.pairs?.[t.instrument],sign=t.direction==="SHORT"?-1:1;let checked=0,agree=0;
+  for(const key of ["M15","H1","H4","D"]){const z=p?.frames?.[key]?.indicators;if(z&&Number.isFinite(Number(z.ema20))&&Number.isFinite(Number(z.ema50))){checked++;if((Number(z.ema20)-Number(z.ema50))*sign>0)agree++}}
+  return {checked,agree};
+ };
+ const rr=t=>{
+  const p=feed.pairs?.[t.instrument]?.quote||{},e=(Number(t.entry_low)+Number(t.entry_high))/2,sg=t.direction==="SHORT"?-1:1;
+  const risk=(Number(t.stop)-e)*-sg,reward=(Number(t.tp1)-e)*sg,sp=Number(p.spread_pips)*Number(p.pip_size);
+  return risk>0&&reward>0&&Number.isFinite(sp)?(reward-sp)/(risk+sp):null;
+ };
+ const rank=t=>{const m=frameAgreement(t),p=feed.pairs?.[t.instrument]?.quote||{},e=(Number(t.entry_low)+Number(t.entry_high))/2;
+   const gap=Number(p.pip_size)>0?Math.abs(Number(t.direction==="SHORT"?p.ask:p.bid)-e)/Number(p.pip_size):99;
+   const risk=rr(t);
+   return (m.agree*12)-(m.checked-m.agree)*9+(Number.isFinite(risk)?Math.min(15,risk*6):0)-Math.min(gap,25);
+ };
+ const watches=[...grouped.values()].sort((a,b)=>rank(b)-rank(a)||Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at));
+ const fmt=v=>v==null||!Number.isFinite(Number(v))?"—":(Number(v)>=0?"+":"")+Number(v).toFixed(3)+"%";
+ const date=t=>t&&Number.isFinite(Date.parse(t))?uk(t):"unknown";
+ const tag=(text,cl)=>make("span",text,"desk-chip"+(cl?" "+cl:""));
+ el("deskSource").textContent="OANDA "+date(feed.snapshot_at)+(fresh?" · FRESH":" · STALE");
+ el("deskApproved").textContent=String(fresh?canonical.length:0);
+ el("deskWatches").textContent=String(watches.length);
+ el("deskPaperStats").textContent=Number(totals.wins||0)+" W / "+Number(totals.losses||0)+" L";
+ const index=Array.isArray(audit.candidate_index)?audit.candidate_index:[];
+ el("deskCoverage").textContent=index.length?index.length+" / "+(totals.candidates??index.length):String(audit.candidates?.length||0)+" / "+(totals.candidates??0);
+ const gate=el("deskVerdict");gate.className="desk-verdict";
+ gate.textContent=!fresh?"SOURCE STALE — NO NEW ENTRY. Last snapshot "+date(feed.snapshot_at):
+  canonical.length?"CONDITIONAL PLANS EXIST — VERIFY ACTUAL M15 TRIGGER, NEWS AND PEPPERSTONE BID/ASK BEFORE CONSIDERING AN ENTRY":
+  "NO APPROVED ENTRY — WAIT. Research watches below are UNTRIGGERED paper hypotheses.";
+ if(fresh&&canonical.length)gate.className+=" ready";
+ const proposed=[...canonical.map(x=>({...x,_canonical:true})),...watches.filter(x=>!canonical.some(y=>y.instrument===x.instrument))].slice(0,3);
+ if(!proposed.length){lead.replaceChildren(make("p","No fresh, unexpired priced setups. The research engine has not confirmed an entry. Avoid forcing a trade.","desk-quiet"))}
+ else{lead.replaceChildren(...proposed.map(t=>{
+   const card=make("article",undefined,"desk-card"),p=feed.pairs?.[t.instrument]||{},q=p.quote||{},side=t.direction==="SHORT"?"SELL":"BUY";
+   const quote=Number(t.direction==="SHORT"?q.ask:q.bid),stop=Number(t.stop);
+   const invalidated=Number.isFinite(quote)&&quote>0&&(t.direction==="SHORT"?quote>=stop:quote<=stop);
+   const agreement=frameAgreement(t),net=rr(t),live=t._canonical===true;
+   const title=make("div",undefined,"desk-card-head");
+   title.append(make("strong",String(t.instrument).replace("_","/")+" · "+side),tag(invalidated?"STOP LEVEL BREACHED":live?"CONDITIONAL PLAN":"WATCH ONLY",invalidated?"invalid":live?"conditional":""));
+   card.append(title,make("p",live?"Canonical plan · broker entry still unverified":(t.route||"Directional research")+" · UNTRIGGERED / PAPER ONLY","desk-card-sub"));
+   const levels=make("div",undefined,"desk-levels");
+   for(const [label,value] of [["Entry",t.entry_low!=null&&t.entry_high!=null?money(t.entry_low)+"–"+money(t.entry_high):money(t.entry)],["Stop",money(t.stop)],["TP1",money(t.tp1)]]){
+    const box=make("div");box.append(make("small",label),make("b",value));levels.append(box);
+   }card.append(levels);
+   const price=make("div","OANDA close-side "+money(quote)+" · "+date(q.time)+" · spread "+n(q.spread_pips,1)+" pips","desk-quote");card.append(price);
+   const movement=make("div",undefined,"desk-progress");
+   movement.append(make("span","Since first research quote: "+fmt(t.hypothetical_move_pct)),
+     make("strong",agreement.agree+"/"+agreement.checked+" frames aligned · "+(net==null?"net reward unverified":"net reward/risk "+n(net,2))));
+   card.append(movement);
+   const observations=(Array.isArray(t.observations)?t.observations:[]).filter(x=>x&&Number.isFinite(Number(x.move_pct))&&Number.isFinite(Date.parse(x.at)));
+   if(observations.length>=2){
+    const values=observations.map(x=>Number(x.move_pct)),lo=Math.min(0,...values),hi=Math.max(0,...values),range=Math.max(.00001,hi-lo);
+    const plot=document.createElementNS("http://www.w3.org/2000/svg","svg");plot.setAttribute("class","desk-spark");plot.setAttribute("viewBox","0 0 290 54");plot.setAttribute("preserveAspectRatio","none");
+    const poly=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+    poly.setAttribute("points",values.map((v,i)=>(7+i*276/(values.length-1)).toFixed(1)+","+(48-(v-lo)/range*40).toFixed(1)).join(" "));
+    poly.setAttribute("fill","none");poly.setAttribute("stroke",values.at(-1)>=0?"#72e5bc":"#ffa4ae");poly.setAttribute("stroke-width","2.5");
+    plot.append(poly);card.append(plot);
+   }
+   card.append(make("p","Tracked "+date(t.first_seen_at)+" · Best "+fmt(t.best_observed_pct)+" / Worst "+fmt(t.worst_observed_pct)+" · no verified fill","desk-quiet"));
+   const reason=invalidated?"INVALIDATED: stop boundary crossed. Do not use this plan.":!fresh?"Data not fresh":live?"Trigger/expiry, official news and Pepperstone spread still require confirmation":
+    agreement.checked<4?"Missing full 4-frame alignment; cannot approve":agreement.agree<4?"Higher-timeframe conflict; no approved entry":"Await independent completed M15 trigger, event clearance and broker check";
+   card.append(make("div",reason,"desk-check"));
+   const link=make("a","View M15 chart ↓","desk-mini-link");link.href="#charts";
+   link.addEventListener("click",()=>{if(feed.pairs?.[t.instrument]){pair=t.instrument;el("pair").value=pair;tf="M15";chart()}});
+   card.append(link);return card;
+  }))}
+ const scored=Array.isArray(audit.featured_scored)?audit.featured_scored:[];
+ if(scored.length){paper.replaceChildren(...scored.slice().reverse().slice(0,8).map(t=>{
+    const won=t.status==="WIN_TP1",loss=t.status==="LOSS_STOP",row=make("div",undefined,"desk-paper-row "+(won?"win":loss?"loss":""));
+    row.append(make("strong",(won?"✓ WIN":loss?"✕ LOSS":"TIME EXIT")+" · "+String(t.instrument).replace("_","/")+" "+(t.direction==="SHORT"?"SELL":"BUY")));
+    row.append(make("small","Paper · entry "+money(t.entry)+" → exit "+money(t.exit)+" · "+fmt(t.move_pct)));
+    row.append(make("small","Trigger "+date(t.triggered_at)+" · fill "+date(t.entry_at)+" · outcome "+date(t.at)));
+    row.append(make("small","Frozen stop "+money(t.stop)+" | TP1 "+money(t.tp1)+" · NOT broker P/L"));return row;
+   }))}else{
+   paper.replaceChildren(make("p",(totals.scored||0)+" scored in the private audit ("+(totals.wins||0)+" win, "+(totals.losses||0)+" loss). Individual records are NOT included in this published snapshot; evidence display awaits next collector export.","desk-paper-warning"));
+ }
+ el("deskIndexSummary").textContent=index.length?"Full candidate index: "+index.length+" of "+(totals.candidates??index.length)+" · expand":"Candidate detail: "+(audit.candidates?.length||0)+" of "+(totals.candidates??0)+" public rows · older records not exported";
+ if(index.length){
+   listing.replaceChildren(...index.slice().reverse().map(x=>{
+    const row=make("div",undefined,"desk-index-line");
+    row.append(make("span",String(x.pair||"").replace("_","/")+" "+(x.side==="SHORT"?"SELL":"BUY")),
+      make("span",String(x.status||"UNKNOWN")),
+      make("span",fmt(x.move_pct)),make("small",date(x.quote_at)+" · "+(x.entry?"entry "+money(x.entry):"no planned entry")));
+    return row;
+   }));
+ }else listing.replaceChildren(make("p","A compact all-candidate index is not yet published; the totals cover private observations, not broker fills.","desk-quiet"));
+ el("deskDisclosure").textContent="All outcomes OANDA paper research unless explicitly marked broker evidenced · "+
+  "news "+(feed.news_status||"UNKNOWN")+" · Pepperstone executable quotes UNKNOWN · refresh hourly, not tick-by-tick.";
+}
+
+function init(){el("pair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort((a,b)=>((feed.pairs[b].deep?1:0)-(feed.pairs[a].deep?1:0))||a.localeCompare(b)).map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));if(!feed.pairs[pair]||!visiblePair(pair))pair=(feed.priorities||[]).map(x=>x.pair).find(k=>visiblePair(k)&&feed.pairs[k]?.deep&&feed.pairs[k]?.frames?.M15?.candles?.length>=6)||["EUR_USD","GBP_USD","USD_JPY"].find(k=>feed.pairs[k]?.deep)||el("pair").options[0]?.value||"";el("pair").value=pair;el("journalPair").replaceChildren(...Object.keys(feed.pairs).filter(visiblePair).sort().map(k=>{const o=make("option",k.replace("_","/"));o.value=k;return o}));health();renderDecisionDesk();renderEarlyOpportunities();renderResearchSetups();renderPlans();picks();chart();scanner();macro();renderPaperAudit();journal()}
+async function load(){try{const res=await fetch("./fx-feed.json?fresh="+Date.now(),{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const next=await res.json();if(next.schema!==1||!next.snapshot_at||!next.pairs)throw Error("invalid schema");const changed=next.published_at!==feed?.published_at;feed=next;if(changed)init();else {health();renderDecisionDesk();renderEarlyOpportunities();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}}catch(e){if(!feed){el("health").textContent="DATA UNAVAILABLE";el("alert").replaceChildren(make("b","FEED FAILED · DO NOT TRADE"),make("small","Source error: "+e.message))}}}
 el("pair").addEventListener("change",e=>{pair=e.target.value;tf="M15";chart()});el("filter").addEventListener("input",()=>feed&&scanner());el("journal").addEventListener("submit",e=>{e.preventDefault();try{const a=JSON.parse(localStorage.getItem("fx-journal-local-v1")||"[]");a.push({at:new Date().toISOString(),pair:el("journalPair").value,outcome:el("outcome").value,note:el("note").value});localStorage.setItem("fx-journal-local-v1",JSON.stringify(a.slice(-1000)));el("note").value="";journal()}catch{el("learningSummary").textContent="Browser local storage is unavailable."}});
 if(typeof document.querySelectorAll==="function")document.querySelectorAll(".side-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".side-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
 el("earlyToggle").addEventListener("click",()=>{earlyExpanded=!earlyExpanded;if(feed)renderEarlyOpportunities()});
 el("earlyScope").addEventListener("change",e=>{earlyScope=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("earlySort").addEventListener("change",e=>{earlySort=e.target.value;earlyExpanded=false;if(feed)renderEarlyOpportunities()});
 el("refreshView").addEventListener("click",async()=>{const b=el("refreshView");b.disabled=true;b.textContent="↻ Refreshing published data…";try{await Promise.all([load(),loadOutcomes()])}finally{b.disabled=false;b.textContent="↻ Refresh display"}});
-load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
+load();loadOutcomes();setInterval(load,60000);setInterval(loadOutcomes,300000);setInterval(()=>{health();if(feed){renderDecisionDesk();renderResearchSetups();renderPlans();picks();chart();renderPaperAudit()}},60000);
 </script></body></html>
