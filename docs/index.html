@@ -489,6 +489,14 @@ main#overview>.hero p{font-size:12px;max-width:580px}
 .desk-diagnostic-details{margin:10px 0 18px;border:1px solid #334e60;border-radius:10px;background:#102738}
 .desk-diagnostic-details>summary{padding:12px 15px;cursor:pointer;font-size:12px;color:#b5d7e8;font-weight:800}
 .desk-diagnostic-details>.desk-diagnostic{margin:0;border:0;border-radius:0}
+
+.it-forward-monitor{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(0,1.2fr);gap:4px 10px;margin:0 12px 10px;padding:11px 12px;border:1px solid #344956;background:#0f202b}
+.it-forward-monitor>span{grid-column:1/-1;color:#94b8cc;font-size:9px;font-weight:850;letter-spacing:.5px}
+.it-forward-monitor>strong{grid-row:2/4;font-size:clamp(19px,2.3vw,27px);color:#f1f9ff;align-self:center}
+.it-forward-monitor>small{color:#a7bfcc;font-size:10px}
+#itForwardChart{min-height:34px}#itForwardChart svg{width:100%;height:52px;display:block}
+@media(max-width:650px){.it-forward-monitor{grid-template-columns:1fr}.it-forward-monitor>strong{grid-row:auto}.it-forward-monitor>span{grid-column:1}}
+
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -528,7 +536,12 @@ main#overview>.hero p{font-size:12px;max-width:580px}
         <div><small>REWARD / RISK*</small><strong id="itRR">—</strong></div>
       </div>
       <div class="it-check-head"><span>NEXT PRICE CHECK</span><strong id="itPriceCheck">—</strong></div>
-      <div class="it-price-map" id="itPriceMap"><span>Awaiting priced candidate</span></div>
+      <div class="it-price-map" id="itPriceMap"><span>Awaiting priced candidate</span></div><div class="it-forward-monitor">
+  <span>FORWARD-TRACKED MOVEMENT · INDICATIVE, NOT PROFIT</span>
+  <strong id="itForwardMove">—</strong>
+  <small id="itForwardNote">No independent price observations yet.</small>
+  <div id="itForwardChart"></div>
+</div>
       <div class="it-timing"><div><small>FIRST OBSERVED</small><strong id="itFirst">—</strong></div><div><small>LAST PRICE</small><strong id="itQuote">—</strong></div><div><small>NEXT INDEPENDENT BAR</small><strong id="itNextBar">—</strong></div></div>
       <div class="it-footline" id="itSourceNote">Data source and publication status pending.</div>
     </div>
@@ -539,7 +552,7 @@ main#overview>.hero p{font-size:12px;max-width:580px}
     </aside>
   </div>
   <div class="it-lower">
-    <section class="it-pane it-matrix-pane"><div class="it-band"><span>03 / OPPORTUNITY MATRIX</span><span>SELECT ROW TO INSPECT ENTRY</span></div><div class="it-table-scroll"><table class="it-matrix"><thead><tr><th>PAIR</th><th>BIAS</th><th>RESEARCH ROUTE</th><th>ENTRY ZONE</th><th>PRICE vs ZONE</th><th>TRIGGER</th><th>STATUS</th></tr></thead><tbody id="itRows"><tr><td colspan="7">Loading independent research…</td></tr></tbody></table></div><p id="itRowsNote" class="it-small">No directional watch is an approved broker order.</p></section>
+    <section class="it-pane it-matrix-pane"><div class="it-band"><span>03 / OPPORTUNITY MATRIX</span><span>SELECT ROW TO INSPECT ENTRY</span></div><div class="it-table-scroll"><table class="it-matrix"><thead><tr><th>PAIR</th><th>BIAS</th><th>RESEARCH ROUTE</th><th>ENTRY ZONE</th><th>PRICE vs ZONE</th><th>OBSERVED %</th><th>TRIGGER</th><th>STATUS</th></tr></thead><tbody id="itRows"><tr><td colspan="7">Loading independent research…</td></tr></tbody></table></div><p id="itRowsNote" class="it-small">No directional watch is an approved broker order.</p></section>
     <section class="it-pane it-blotter-pane"><div class="it-band"><span>04 / FORWARD EVIDENCE</span><span>NO BACK-FILLED WINS</span></div>
       <div id="itResults" class="it-results">Awaiting verified paper audit.</div><div id="itBlotter" class="it-blotter"></div>
       <p class="it-small">Paper results are simulated. Manual broker trades are separate; directional movement is not profit.</p>
@@ -1624,6 +1637,27 @@ function renderInstitutionalTerminal(){
    "Next complete "+(current._route==="MOMENTUM_CONTINUATION"?"M5":"M15")+" no earlier than "+when(choose.ended)):"—";
  el("itSourceNote").textContent=current?("Plan: "+when(current._when)+" · quote: "+when(choose.q.time)+" · "+
    "OANDA indicative only. No broker execution / prediction / guaranteed win."):"Source missing; no speculative quotes.";
+ const fMove=el("itForwardMove"),fNote=el("itForwardNote"),fChart=el("itForwardChart");
+ const move=current?.hypothetical_move_pct,hasMove=move!==null&&move!==undefined&&Number.isFinite(Number(move));
+ fMove.textContent=hasMove?(Number(move)>=0?"+":"")+Number(move).toFixed(3)+"%":"NOT YET OBSERVED";
+ fNote.textContent=current?(hasMove?
+   "Best "+String(current.best_observed_pct??"—")+"% / worst "+String(current.worst_observed_pct??"—")+
+   "% from original research baseline; no verified fill.":
+   "New setup: no subsequent independent price observation. No profit claimed."):"No candidate or forward movement.";
+ fChart.replaceChildren();
+ const trail=(Array.isArray(current?.observations)?current.observations:[]).filter(z=>
+   z&&Number.isFinite(Number(z.move_pct))&&Number.isFinite(Date.parse(z.at)));
+ if(trail.length>=2){
+   const vals=trail.map(x=>Number(x.move_pct)),min=Math.min(0,...vals),max=Math.max(0,...vals),range=Math.max(.000001,max-min);
+   const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.setAttribute("viewBox","0 0 360 52");
+   svg.setAttribute("preserveAspectRatio","none");svg.setAttribute("role","img");
+   svg.setAttribute("aria-label","Observed forward percentage price changes, not a filled position");
+   const poly=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+   poly.setAttribute("fill","none");poly.setAttribute("stroke",vals.at(-1)>=0?"#82e8ba":"#ff9da4");
+   poly.setAttribute("stroke-width","3");
+   poly.setAttribute("points",vals.map((v,i)=>(8+i*344/(vals.length-1)).toFixed(1)+","+(46-36*(v-min)/range).toFixed(1)).join(" "));
+   svg.append(poly);fChart.append(svg);
+ }else fChart.append(make("span","Forward performance chart requires at least two later price observations.","it-small"));
  // Genuine price-level plot: compare all four immutable levels to the last
  // appropriate entry-side indicative OANDA quote. Never imply a filled trade.
  const plot=el("itPriceMap");plot.replaceChildren();
@@ -1660,11 +1694,11 @@ function renderInstitutionalTerminal(){
    const z=info(x),row=make("tr",undefined,x.instrument===selectedInstitutionalPair?"it-selected":""),
          cells=[[x.instrument.replace("_","/"),"link"],[z.side,z.isShort?"it-bias-short":"it-bias-long"],
          [x._route.replaceAll("_"," "),"normal"],[price(z.low)+" – "+price(z.high),"normal"],
-         [z.zonePosition,"normal"],[z.pattern?"PAPER CANDLE OBSERVED":"NEXT NEW BAR","normal"],
+         [z.zonePosition,"normal"],[x.hypothetical_move_pct!=null?((Number(x.hypothetical_move_pct)>=0?"+":"")+Number(x.hypothetical_move_pct).toFixed(3)+"%"):"NOT SCORED","normal"],[z.pattern?"PAPER CANDLE OBSERVED":"NEXT NEW BAR","normal"],
          [z.stopHit?"INVALIDATED":x._canonical?"VERIFY SIGNAL":"WATCH ONLY",z.stopHit?"it-bad":"it-wait"]];
    cells.forEach(([label,cl])=>{const td=make("td");if(cl==="link"){const button=make("button",label);button.type="button";button.addEventListener("click",()=>{selectedInstitutionalPair=x.instrument;renderInstitutionalTerminal()});td.append(button)}
      else td.append(make("span",label,cl));row.append(td)});return row;
- }):[(()=>{const tr=make("tr"),td=make("td","No independent current priced proposals. Wait for a new research collection.");td.colSpan=7;tr.append(td);return tr})()]));
+ }):[(()=>{const tr=make("tr"),td=make("td","No independent current priced proposals. Wait for a new research collection.");td.colSpan=8;tr.append(td);return tr})()]));
  el("itRowsNote").textContent=(rows.length?rows.length+" eligible proposals shown. Click a pair to inspect its exact, independently timed entry gates. ":"No qualifying current opportunities.")+
    "A ranked hypothesis never becomes an approved trade without canonical admission.";
  const totals=feed.learning?.paper_audit?.totals||{},aud=feed.learning?.paper_audit?.featured_scored||[];
