@@ -372,6 +372,26 @@ main#overview>.hero p{font-size:12px;max-width:580px}
 .desk-action-risk{font-size:10px;color:#aecbdd;padding:8px 0 5px}
 .desk-card-identity{font-weight:850}
 @media(max-width:760px){.desk-gate-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.desk-gate-cell{padding:8px}}
+
+/* Bloomberg/Aladdin-inspired exception table: quantified entry blockers, not just scorecards. */
+.desk-diagnostic{margin:12px 0 18px;background:#0d2336;border:1px solid #35556b;border-radius:11px;overflow:hidden}
+.desk-diagnostic-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#142d42}
+.desk-diagnostic-head strong{font-size:12px;letter-spacing:.6px;color:#e8f6ff}
+.desk-diagnostic-head small{display:block;max-width:760px;color:#aac3d4;font-size:10px;margin-top:4px;line-height:1.4}
+.desk-diagnostic-counter{border:1px solid #85694b;background:#352a24;color:#ffdda9;padding:5px 9px;border-radius:6px;white-space:nowrap;font-size:10px;font-weight:850}
+.desk-diagnostic-header,.desk-diagnostic-line{display:grid;grid-template-columns:minmax(94px,.85fr) minmax(115px,1.15fr) minmax(82px,.65fr) minmax(190px,2.2fr) minmax(95px,.9fr);gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid #29455c}
+.desk-diagnostic-header{background:#091c2c;color:#8fa9ba;font-size:9px;letter-spacing:.5px;font-weight:850}
+.desk-diagnostic-line{font-size:11px;background:#0e2639}.desk-diagnostic-line:nth-child(even){background:#102b40}
+.desk-diagnostic-line:hover{background:#18364b}
+.desk-diagnostic-line small{display:block;color:#a8c0cf;font-size:10px;line-height:1.35;margin-top:3px}
+.desk-diagnostic-pair{font-size:13px;font-weight:850;color:#f3fbff}
+.desk-diagnostic-level{font-size:12px;font-weight:870;color:#c7eafa;font-variant-numeric:tabular-nums}
+.desk-diagnostic-check{font-size:11px;font-weight:850;color:#f1cc91}
+.desk-diagnostic-line .desk-diagnostic-problem{font-size:10px;color:#ffc3ad;line-height:1.5}
+.desk-diagnostic-status{display:inline-block;font-size:9px;color:#ffe0af;border:1px solid #735f49;border-radius:5px;padding:4px 6px;background:#322a29;margin-top:4px}
+.desk-diagnostic-note{padding:10px 12px;margin:0;color:#a4bfce;font-size:10px;line-height:1.6}
+.desk-diagnostic-empty{padding:15px;color:#ffc3ad;font-size:11px}
+@media(max-width:740px){.desk-diagnostic-header{display:none}.desk-diagnostic-line{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.desk-diagnostic-line>div:nth-child(4){grid-column:1/-1}.desk-diagnostic-line>div:nth-child(5){grid-column:1/-1}.desk-diagnostic-head{align-items:flex-start;flex-direction:column}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -417,6 +437,12 @@ main#overview>.hero p{font-size:12px;max-width:580px}
     </div>
     <div class="desk-gate-strip" id="deskActionGates" aria-label="Institutional-style entry readiness checks"></div>
     <div class="desk-action-foot"><span id="deskActionQuote">OANDA quote pending</span><span id="deskActionProgress">Performance not yet measured</span><span class="desk-cadence">Next hourly review :15 UK · not tick-by-tick</span><a href="#charts">Review chart ↓</a></div>
+  </section>
+  <section class="desk-diagnostic" aria-label="Live FX entry readiness exceptions">
+    <div class="desk-diagnostic-head"><div><strong>ENTRY READINESS · NEXT COMPLETED CANDLE</strong><small>Institutional exception blotter: exactly which gate blocks a trade, with numerical research reference levels. These are NOT approved entry prices.</small></div><span id="deskDiagnosticStatus" class="desk-diagnostic-counter">Awaiting latest collector</span></div>
+    <div class="desk-diagnostic-header" aria-hidden="true"><span>CANDIDATE</span><span>M15 REFERENCE LEVEL</span><span>FRAME CHECK</span><span>PRIMARY BLOCKER</span><span>NEXT REVIEW</span></div>
+    <div id="deskDiagnosticRows" class="desk-diagnostic-rows"></div>
+    <p class="desk-diagnostic-note">A close beyond the reference is only one research observation. No entry until an independently validated canonical conditional plan, news clearance, spread/risk checks and your current Pepperstone bid/ask.</p>
   </section>
   <details class="desk-kpi-disclosure"><summary>Research coverage and scored paper statistics</summary>
   <div class="desk-kpis">
@@ -1426,6 +1452,38 @@ function renderDeskPrimary(t, sourceFresh){
  }
 }
 
+function renderEntryDiagnostics(){
+ const holder=el("deskDiagnosticRows"),counter=el("deskDiagnosticStatus");
+ if(!holder||!feed)return;
+ const rows=(feed.learning?.entry_diagnostics||[]).filter(x=>x&&visiblePair(x.instrument));
+ const format=v=>v==null||!Number.isFinite(Number(v))?"NOT AVAILABLE":money(v);
+ const time=t=>t&&Number.isFinite(Date.parse(t))?uk(t):"NEXT BAR UNKNOWN";
+ const sourceFresh=fresher();
+ counter.textContent=!sourceFresh?"STALE · NO ENTRY":rows.length?rows.length+" RESEARCH CHECKS · NO ENTRY":"NOT YET PUBLISHED";
+ if(!sourceFresh){holder.replaceChildren(make("div","🔴 NO ENTRY · OANDA source older than the 70-minute research freshness limit.","desk-diagnostic-empty"));return}
+ if(!rows.length){holder.replaceChildren(make("div","Research diagnostic source not yet present; do not infer entry readiness from the ranking. Await next collector.","desk-diagnostic-empty"));return}
+ holder.replaceChildren(...rows.slice(0,6).map(x=>{
+  const row=make("div",undefined,"desk-diagnostic-line"),direction=x.direction==="SHORT"?"SELL":"BUY",
+    quote=feed.pairs?.[x.instrument]?.quote||{};
+  const blockers=Array.isArray(x.blockers)?x.blockers:[],
+    primary=blockers.find(b=>!["NEWS_PARTIAL","NO_APPROVED_TRIGGER"].includes(b.code))||
+      blockers.find(b=>b.code==="NEWS_PARTIAL")||{code:"NO_APPROVED_ENTRY",detail:"No canonical completed trigger"};
+  const cells=[make("div"),make("div"),make("div"),make("div"),make("div")];
+  cells[0].append(make("b",x.instrument.replace("_","/")+" · "+direction,"desk-diagnostic-pair"),
+    make("small","Priority "+n(x.priority,1)+" · RESEARCH"));
+  cells[1].append(make("b",(direction==="SELL"?"CLOSE BELOW ":"CLOSE ABOVE ")+format(x.reference_m15_level),"desk-diagnostic-level"),
+    make("small","Prior M15 candle · not an entry quote"));
+  cells[2].append(make("b",String(x.frame_alignment||"?")+" aligned","desk-diagnostic-check"),
+    make("small","ADX M15 "+n(x.m15_adx,1)+" / H1 "+n(x.h1_adx,1)));
+  cells[3].append(make("b",String(primary.detail||"No validated entry trigger"),"desk-diagnostic-problem"),
+    make("span",String(primary.code||"UNQUALIFIED").replaceAll("_"," "),"desk-diagnostic-status"));
+  cells[4].append(make("b",time(x.next_m15_check_at),"desk-diagnostic-level"),
+    make("small","Last quote "+time(x.source_quote_at)));
+  cells.forEach(c=>row.append(c));
+  return row;
+ }));
+}
+
 function renderDecisionDesk(){
  const lead=el("deskCards"),paper=el("deskPaperRows"),listing=el("deskIndex");
  if(!feed||!lead||!paper)return;
@@ -1611,6 +1669,7 @@ function renderDecisionDesk(){
     return row;
    }));
  }else listing.replaceChildren(make("p","A compact all-candidate index is not yet published; the totals cover private observations, not broker fills.","desk-quiet"));
+ renderEntryDiagnostics();
  el("deskDisclosure").textContent="All outcomes OANDA paper research unless explicitly marked broker evidenced · "+
   "news "+(feed.news_status||"UNKNOWN")+" · Pepperstone executable quotes UNKNOWN · refresh hourly, not tick-by-tick.";
 }
