@@ -221,6 +221,19 @@ assert.match(diagnostic,/HIGHER FRAME CONFLICT|2\/4 EMA frames aligned/,
 assert.match(diagnostic,/RESEARCH/,"Research must not be mislabeled as an executable trade");
 assert.doesNotMatch(diagnostic,/EXECUTABLE NOW/);
 
+// Research-only fallback never invents trade levels when no priced plan exists.
+const savedSetups=feed.research_setups,savedWatches=feed.learning.opportunity_audit.recent;
+feed.research_setups=[];feed.learning.opportunity_audit.recent=[];
+vm.runInNewContext("renderInstitutionalTerminal()",ctx);
+assert.equal($("itEntry").textContent,"NOT APPROVED");
+assert.equal($("itStop").textContent,"NOT SET");
+assert.equal($("itTarget").textContent,"NOT SET");
+assert.match($("itPriceCheck").textContent,/NEXT M15/);
+assert.match($("itPermission").textContent,/NO EXECUTABLE SIGNAL/);
+assert.ok($("itRows").children.length>0);
+feed.research_setups=savedSetups;feed.learning.opportunity_audit.recent=savedWatches;
+vm.runInNewContext("renderInstitutionalTerminal()",ctx);
+
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
