@@ -1550,8 +1550,10 @@ function renderInstitutionalTerminal(){
    const zonePosition=relative==null?"PRICE UNKNOWN":priceInZone?"PRICE INSIDE FROZEN ZONE":
      brokerEntry<low?Number(relative).toFixed(1)+" pips BELOW zone":Number(relative).toFixed(1)+" pips ABOVE zone";
    const worstEntry=isShort?low:high,risk=Math.abs(stop-worstEntry),reward=Math.abs(target-worstEntry);
-   const rr=bounded&&risk>0&&Number.isFinite(spread)?(reward-spread)/(risk+spread):null;
-   const costOk=Number.isFinite(rr)&&rr>=1.35;
+   const directional=bounded&&(isShort?stop>high&&target<low:stop<low&&target>high);
+   const rr=directional&&risk>0&&Number.isFinite(spread)?(reward-spread)/(risk+spread):null;
+   const maxSpreadOk=x.max_oanda_spread_pips==null||Number(q.spread_pips)<=Number(x.max_oanda_spread_pips);
+   const costOk=Number.isFinite(rr)&&rr>=1.35&&maxSpreadOk;
    const diag=x.technical_checks_agree>=4&&(!x.higher_timeframe_conflicts||x.higher_timeframe_conflicts.length===0);
    const frame=p.frames?.[x._route==="MOMENTUM_CONTINUATION"?"M5":"M15"]||{};
    const minutes=x._route==="MOMENTUM_CONTINUATION"?5:15;
@@ -1559,15 +1561,17 @@ function renderInstitutionalTerminal(){
      Date.parse(c.t)+minutes*60000<=Date.parse(feed.snapshot_at)+60000&&
      [c.o,c.h,c.l,c.c].every(v=>Number.isFinite(Number(v))));
    let pattern=false,observedAt=null;
-   for(const bar of observations){
+   for(const [bi,bar] of observations.entries()){
      const o=Number(bar.o),h=Number(bar.h),l=Number(bar.l),c=Number(bar.c),len=h-l;
      if(len<=0||!(l<=high&&h>=low))continue;
      if((isShort&&h>=stop)||(!isShort&&l<=stop))continue;
      if(x._route==="MOMENTUM_CONTINUATION"){
        // The original immutable M15 impulse is never an entry. Subsequent
        // M5 candles are only diagnostic, never promoted into signals.json.
-       pattern= isShort?(c<o&&(h-c)/len>=.70&&(o-c)/len>=.5):
-         (c>o&&(c-l)/len>=.70&&(c-o)/len>=.5);
+       const prior=bi>0?observations[bi-1]:null,ph=Number(prior?.h),pl=Number(prior?.l);
+       pattern=!!prior&&Number.isFinite(ph)&&Number.isFinite(pl)&&(isShort?
+         (c<o&&c<pl&&(h-c)/len>=.70&&(o-c)/len>=.5):
+         (c>o&&c>ph&&(c-l)/len>=.70&&(c-o)/len>=.5));
      }else{
        pattern=isShort?(c<o&&c<=low&&(h-c)/len>=.60):
          (c>o&&c>=high&&(c-l)/len>=.60);
@@ -1584,9 +1588,11 @@ function renderInstitutionalTerminal(){
      ["FROZEN PLAN",x._canonical,bounded?"Research levels exist; no canonical signal":"No validated immutable signal in signals.json"],
      ["PRICE IN ENTRY ZONE",priceInZone,zonePosition],
      ["ENTRY CANDLE",pattern,pattern?("New "+minutes+"m pattern @ "+when(observedAt)+"; research only"):patternStatus],
-     ["SPREAD / RISK",costOk,Number.isFinite(rr)?"Indicative spread-adjusted target ratio "+rr.toFixed(2):"Ratio cannot be calculated"],
+     ["SPREAD / RISK",costOk,!directional?"Stop/TP fail directional validity":Number.isFinite(rr)?
+        "Indicative spread-adjusted ratio "+rr.toFixed(2)+(maxSpreadOk?"":"; above max spread"):"Ratio unavailable"],
      ["NEWS / EVENT",news==="OK"&&!macros.length,news!=="OK"?"Primary macro coverage is "+news:macros.length?"High-impact event near":"Feed reports no current macro blocker; verify official source"],
      ["PEPPERSTONE",false,"Executable broker bid/ask and available margin unverified"],
+     ["ACCOUNT RISK",false,"Verified equity and ≤0.25% maximum trade risk unavailable"],
    ];
    return {p,q,qOk,side,isShort,low,high,stop,target,brokerEntry,exitSide,zonePosition,priceInZone,relative,rr,costOk,
      stopHit,diag,pattern,patternStatus,observedAt,firstIndependent,ended,macros,gates};
