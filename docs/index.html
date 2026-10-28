@@ -1551,6 +1551,7 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
  const ref=Number(current?.reference_m15_level);
  const next=Date.parse(current?.next_m15_check_at);
  const technical=current?technicalBlockers(current):[];
+ const preview=current?.priced_paper_preview||null;
  const labels={TREND_STRENGTH:"M15 trend strength is insufficient",DMI_CONFLICT:"Directional movement conflicts",
    HIGHER_FRAME_CONFLICT:"Higher-timeframe alignment failed",FOUNDATION_CONFLICT:"M15/H1 trend mismatch",
    OVEREXTENDED_OR_REVERSING:"Move overstretched; avoid chasing",COST_HIGH_OR_UNKNOWN:"Spread or transaction cost too high",
@@ -1568,18 +1569,18 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
  el("itVerdict").className="it-verdict stale";
  el("itPair").textContent=current?current.instrument.replace("_","/")+" · "+side:"No qualifying priced research plan";
  el("itDirection").textContent="DIRECTIONAL PAPER WATCH";
- el("itPlanClass").textContent="M15 BREAK LEVEL · NOT ENTRY";
+ el("itPlanClass").textContent=preview?"STRUCTURE-PRICED M15 PAPER PREVIEW · NOT AN ENTRY":"M15 BREAK LEVEL · NOT ENTRY";
  el("itWhy").textContent=current?(fresh?"Strongest unapproved research checkpoint, not a trade. "+problem:
    "Source stale; no current entry research available."):
    "No approved trade, priced proposal or valid independent entry checkpoint.";
  // A directional checkpoint is not an executable entry and must never
  // invent risk/reward, stop or take-profit levels.
- el("itEntry").textContent="NOT APPROVED";
- el("itStop").textContent="NOT SET";
- el("itTarget").textContent="NOT SET";
- el("itRR").textContent="NOT EVALUABLE";
+ el("itEntry").textContent=preview?money(preview.entry_zone_low)+" – "+money(preview.entry_zone_high)+" · PAPER":"NOT APPROVED";
+ el("itStop").textContent=preview?money(preview.stop)+" · PAPER":"NOT SET";
+ el("itTarget").textContent=preview?money(preview.tp1)+" · PAPER":"NOT SET";
+ el("itRR").textContent=preview?String(preview.net_rr_estimate)+" · RESEARCH":"NOT EVALUABLE";
  el("itForwardMove").textContent="NOT SCORED";
- el("itForwardNote").textContent="A directional breakpoint without a frozen approved entry is not a trade or measurable return.";
+ el("itForwardNote").textContent=preview?"Preliminary structural paper plan: NO completed signal, fill, broker verification or scored return. Reprice after the next independent candle.":"A directional breakpoint without a frozen approved entry is not a trade or measurable return.";
  el("itForwardChart").replaceChildren();
  el("itPriceCheck").textContent=current?
    "NEXT M15 "+(side==="BUY"?"CLOSE ABOVE ":"CLOSE BELOW ")+money(ref)+" · "+
@@ -1593,7 +1594,28 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
  el("itSourceNote").textContent="Directional reference "+(current?when(current.source_quote_at):"unknown")+
    " · OANDA indicative, not Pepperstone. Breaking this reference alone NEVER qualifies a trade.";
  const plot=el("itPriceMap");plot.replaceChildren();
- if(current&&quoteFresh&&Number.isFinite(px)&&Number.isFinite(ref)&&Number(q.pip_size)>0){
+ if(preview&&current&&quoteFresh&&Number.isFinite(px)){
+   const vals=[px,preview.entry_zone_low,preview.entry_zone_high,preview.stop,preview.tp1].map(Number);
+   if(vals.every(x=>Number.isFinite(x)&&x>0)){
+     const min=Math.min(...vals),max=Math.max(...vals),pad=Math.max((max-min)*.1,Number(q.pip_size)*3);
+     const X=v=>38+(v-min+pad)/(max-min+2*pad)*625;
+     const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+     svg.setAttribute("viewBox","0 0 700 90");svg.setAttribute("role","img");
+     svg.setAttribute("aria-label","Structural paper entry, stop, target versus OANDA quote; NOT a trade");
+     const add=(tag,attrs,txt)=>{const node=document.createElementNS("http://www.w3.org/2000/svg",tag);
+       for(const [k,v] of Object.entries(attrs))node.setAttribute(k,String(v));
+       if(txt!=null)node.textContent=String(txt);svg.append(node)};
+     add("line",{x1:38,y1:42,x2:663,y2:42,stroke:"#516779","stroke-width":2});
+     add("rect",{x:X(preview.entry_zone_low),y:27,width:Math.max(3,X(preview.entry_zone_high)-X(preview.entry_zone_low)),height:31,fill:"#3f7795",opacity:.7});
+     for(const [tag,v,color] of [["SL",preview.stop,"#ff8e95"],["TP1",preview.tp1,"#83e1b2"]]){
+       add("line",{x1:X(v),y1:15,x2:X(v),y2:69,stroke:color,"stroke-dasharray":"4 3","stroke-width":2});
+       add("text",{x:X(v),y:11,"text-anchor":"middle",fill:color,"font-size":10},tag);
+     }
+     add("circle",{cx:X(px),cy:42,r:6,fill:"#fff",stroke:"#66cbd9","stroke-width":2});
+     add("text",{x:X(px),y:82,"text-anchor":"middle",fill:"#d8f6ff","font-size":11},"OANDA "+money(px));
+     plot.append(svg);
+   }
+ }else if(current&&quoteFresh&&Number.isFinite(px)&&Number.isFinite(ref)&&Number(q.pip_size)>0){
    const dist=Math.abs((px-ref)/Number(q.pip_size));
    const root=document.createElementNS("http://www.w3.org/2000/svg","svg");
    root.setAttribute("viewBox","0 0 700 90");root.setAttribute("role","img");
@@ -1617,6 +1639,7 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
   ["TREND / STRUCTURE",technical.length===0,technical.length?problem:"No technical blocker on scanned M15/H1, not trade approval"],
   ["COMPLETED TRIGGER",false,current?"Wait for independently completed M15 close "+(side==="BUY"?"above ":"below ")+money(ref):
     "No completed entry test"],
+  ["PAPER STOP / TARGET",!!preview,preview?"Indicative risk "+preview.net_rr_estimate+" spread-adjusted; NOT signal approval":"Structural swing target or spread-adjusted return failed; no priced plan"],
   ["IMMUTABLE RISK PLAN",false,"No approved entry, stop, TP and expiry in signals.json"],
   ["NEWS / EVENTS",false,"Macro status "+news+" · official release verification required"],
   ["PEPPERSTONE",false,"Executable bid/ask, margin and 0.25% equity risk unverified"]
@@ -1632,7 +1655,7 @@ function renderInstitutionalDiagnosticFallback(now,fresh,when,news){
    const codes=technicalBlockers(d),first=codes[0],refs=Number(d.reference_m15_level);
    const entries=[[d.instrument.replace("_","/"),"link"],[d.direction==="SHORT"?"SELL":"BUY",
        d.direction==="SHORT"?"it-bias-short":"it-bias-long"],["M15 BREAK WATCH",""],
-     ["NOT AN ENTRY",""],[(Number.isFinite(Number(d.distance_to_reference_pips))?
+     [d.priced_paper_preview?(money(d.priced_paper_preview.entry_zone_low)+" – "+money(d.priced_paper_preview.entry_zone_high)+" · PAPER"):"NOT AN ENTRY",""],[(Number.isFinite(Number(d.distance_to_reference_pips))?
        Math.abs(Number(d.distance_to_reference_pips)).toFixed(1)+" pips from ":"")+"reference "+money(refs),""],
      ["NOT SCORED",""],[(d.direction==="SHORT"?"CLOSE < ":"CLOSE > ")+money(refs),""],
      [first?String(first.code).replaceAll("_"," "):"AWAIT TRIGGER","it-wait"]];
