@@ -315,3 +315,21 @@ test('priced potential rating does not reward hindsight directional movement', (
   assert.equal(positive.score,negative.score,
     'later directional movement must not change a contemporaneous setup score');
 });
+
+
+test('today monitored trade and hourly watch cards offer honest, independent sorting', () => {
+  assert.match(page, /id="hourlyCohortSort"/);
+  assert.match(page, /id="paperSort"/);
+  assert.match(page, /Highest setup rating/);
+  assert.match(page, /Best tracked move · not P\/L/);
+  assert.match(page, /Latest analysis/);
+  assert.match(page, /function compareMonitored\(a,b,sort\)/);
+  assert.match(page, /watchPotential\(t\)\.score/);
+  assert.match(page, /tracking\?\.move_pct/);
+  assert.match(page, /scope\.onchange=renderHourlyCohorts;/);
+  assert.match(page, /sort\.onchange=renderHourlyCohorts;/);
+  assert.match(page, /el\("paperSort"\)\.onchange=renderPaperAudit;/);
+  assert.match(page, /compareMonitored\(a,b,el\("paperSort"\)\.value\)/);
+  assert.match(page, /card\.append\(head,watchPotentialLine\(t\)/);
+  assert.match(page, /card\.append\(head\);[\s\S]*?card\.append\(head,watchPotentialLine/);
+});
