@@ -84,8 +84,10 @@ assert.ok($("scoutGrid").children.length>=5,
   "Fresh research scouts must remain visible alongside live or expired watches");
 const firstScout=$("scoutGrid").children[0];
 assert.match(JSON.stringify(firstScout.children),/TECHNICAL WATCH|POTENTIAL UNRATED/);
-assert.match(JSON.stringify(firstScout.children),/NOT PRICED|PAPER PRICING ONLY/,
-  "Research scouts must never invent an entry stop or target");
+assert.match(JSON.stringify(firstScout.children),/Entry zone/);
+assert.match(JSON.stringify(firstScout.children),/Stop \/ target/);
+assert.match(JSON.stringify(firstScout.children),/NOT PRICED|INCOMPLETE|PAPER-ONLY/,
+  "Every scout shows priced research levels or an explicit reason they cannot be priced");
 const earlyCard=$("earlyGrid").children[0];
 assert.match(JSON.stringify(earlyCard.children),/GBP\/USD/);
 assert.match(JSON.stringify(earlyCard.children),/Entry zone/);
