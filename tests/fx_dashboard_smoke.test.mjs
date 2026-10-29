@@ -435,7 +435,7 @@ test('scout setup popup uses the original priced paper preview instead of silent
   const now=Date.now();
   const context={feed:{pairs:{USD_MXN:{quote:{
     tradeable:true,bid:18.7851,ask:18.7928,time:new Date(now).toISOString(),
-    pip_size:.0001,spread_pips:77},frames:{M15:{indicators:{atr14:.042,ema20:18.78}}}}}};
+    pip_size:.0001,spread_pips:77},frames:{M15:{indicators:{atr14:.042,ema20:18.78}}}}}}};
   new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
   const s=context.scenario({instrument:'USD_MXN',direction:'LONG',
     created_at:new Date(now).toISOString(),scout_reference_rule:'New M15 close required',
