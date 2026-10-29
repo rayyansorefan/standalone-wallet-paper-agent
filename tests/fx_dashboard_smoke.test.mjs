@@ -260,3 +260,26 @@ test('fast research and export-compaction metadata cannot imply delivery or brok
     }
   }
 });
+
+test('monitored FX plan and directional watch ratings reuse priced early-opportunity logic without invented scores', () => {
+  const helper=page.match(/function watchPotential\(t\)\{[\s\S]*?(?=function renderEarlyOpportunities)/)?.[0];
+  assert.ok(helper, 'shared opportunity rating helper exists');
+  const context = {
+    feed:{learning:{opportunity_audit:{recent:[{
+      instrument:'EUR_USD',direction:'LONG',first_seen_at:'2026-10-29T08:00:00Z',
+      expires_at:'2999-01-01T00:00:00Z',entry_low:1.10,entry_high:1.11,stop:1.09,tp1:1.14
+    }]}}},
+    rankEarlyWatch: t => ({score:71,label:'HIGH POTENTIAL',reason:'priced structural test',priced:t})
+  };
+  new Script(helper+';this.probePotential=watchPotential;').runInNewContext(context);
+  assert.equal(context.probePotential({instrument:'EUR_USD',direction:'LONG'}).score,71);
+  assert.equal(context.probePotential({instrument:'USD_CAD',direction:'SHORT'}).score,null,
+    'unpriced directional bias must not receive a fabricated trade score');
+  const direct=context.probePotential({instrument:'GBP_USD',direction:'SHORT',
+    entry:1.30,stop:1.31,tp1:1.28});
+  assert.equal(direct.priced.entry_low,1.30);
+  assert.equal(direct.priced.entry_high,1.30);
+  assert.match(page,/function renderHourlyCohorts\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\)\)/);
+  assert.match(page,/function renderPaperAudit\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\),make\("p","Assessed/);
+  assert.match(page,/Heuristic, not entry approval or win probability/);
+});
