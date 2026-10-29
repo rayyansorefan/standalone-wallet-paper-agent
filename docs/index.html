@@ -720,7 +720,25 @@ const es=feed.calendar.filter(x=>Date.parse(x.time)>Date.now()-1800000).slice(0,
 // inflate the setup-potential score; it is an independent optional sort.
 function compareMonitored(a,b,sort){
   const score=t=>{const v=watchPotential(t).score;return v==null?-1:Number(v)};
-  const move=t=>{const v=t.tracking?.move_pct;return v==null||!Number.isFinite(Number(v))?-Infinity:Number(v)};
+  const move=t=>{
+    const quote=feed?.pairs?.[t.instrument]?.quote||{};
+    const basePrice=Number(t.entry)>0?Number(t.entry):null;
+    const key=v=>{try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(v))}catch{return ""}};
+    const sameDay=(feed?.learning?.paper_audit?.candidates||[]).filter(x=>
+      x.source==="AUTOMATED_RESEARCH_PRIORITY"&&x.instrument===t.instrument&&
+      x.direction===t.direction&&key(x.created_at)===key(t.created_at)&&
+      Date.parse(x.created_at)<=Date.parse(t.created_at))
+      .sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+    const first=sameDay.find(x=>Number(x.tracking?.reference_price)>0)||t;
+    const base=basePrice||Number(first.tracking?.reference_price);
+    const fresh=quote.time&&Number.isFinite(Date.parse(quote.time))&&
+      Date.now()-Date.parse(quote.time)<=4200000&&Date.now()-Date.parse(quote.time)>=-300000;
+    const price=fresh?Number(t.direction==="SHORT"?quote.ask:quote.bid):
+      Number(t.tracking?.price||first.tracking?.price);
+    if(base>0&&price>0)return (t.direction==="SHORT"?base-price:price-base)/base*100;
+    const v=t.tracking?.move_pct;
+    return v==null||!Number.isFinite(Number(v))?-Infinity:Number(v);
+  };
   if(sort==="POTENTIAL")return score(b)-score(a)||Date.parse(b.created_at)-Date.parse(a.created_at);
   if(sort==="PERFORMANCE")return move(b)-move(a)||Date.parse(b.created_at)-Date.parse(a.created_at);
   return Date.parse(b.created_at)-Date.parse(a.created_at);
