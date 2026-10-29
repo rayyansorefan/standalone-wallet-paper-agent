@@ -333,3 +333,23 @@ test('today monitored trade and hourly watch cards offer honest, independent sor
   assert.match(page, /card\.append\(head,watchPotentialLine\(t\)/);
   assert.match(page, /card\.append\(head\);[\s\S]*?card\.append\(head,watchPotentialLine/);
 });
+
+
+test('best tracked move sort uses the same frozen baseline and current exit-side price shown on cards', () => {
+  const helper=page.match(/function compareMonitored\(a,b,sort\)\{[\s\S]*?(?=function renderHourlyCohorts)/)?.[0];
+  assert.ok(helper);
+  const now=new Date().toISOString();
+  const good={instrument:'EUR_USD',direction:'LONG',created_at:now,
+    tracking:{reference_price:1.10,move_pct:-20}};
+  const bad={instrument:'GBP_USD',direction:'LONG',created_at:now,
+    tracking:{reference_price:1.20,move_pct:20}};
+  const context={feed:{pairs:{
+    EUR_USD:{quote:{time:now,bid:1.11,ask:1.1102}},
+    GBP_USD:{quote:{time:now,bid:1.19,ask:1.1902}}
+  },learning:{paper_audit:{candidates:[]}}},watchPotential:t=>({score:t.instrument==='GBP_USD'?80:40})};
+  new Script(helper+';this.compareMonitored=compareMonitored;').runInNewContext(context);
+  assert.ok(context.compareMonitored(good,bad,'PERFORMANCE')<0,
+    'live observed +0.91% must beat -0.83%, irrespective of stale tracker percentages');
+  assert.ok(context.compareMonitored(good,bad,'POTENTIAL')>0,
+    'prospective rating must remain independent from observed price movement');
+});
