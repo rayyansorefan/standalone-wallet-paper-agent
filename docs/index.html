@@ -168,6 +168,17 @@ body{background:#07111f;color:#edf5ff}
 .current-watch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0 10px}
 .current-watch-card{border:1px solid #315971;border-top:3px solid #63dcc0;background:linear-gradient(160deg,#12344a,#091b2f);border-radius:14px;padding:16px;min-width:0}
 .current-watch-card.short{border-top-color:#ff9aa6}
+.monitored-setup-panel{margin:12px 0;padding:12px;border:1px solid #447a8e;border-left:4px solid #71ddc3;border-radius:10px;background:#102d40}
+.current-watch-card.short .monitored-setup-panel{border-left-color:#ffadb6}
+.monitored-setup-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px;margin-bottom:10px;font-size:11px;color:#e5fbff;letter-spacing:.3px}
+.monitored-setup-status{font-size:10px;color:#ffcc96;background:#5c3a24;padding:5px 7px;border-radius:5px;font-weight:800}
+.monitored-setup-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:9px}
+.monitored-setup-levels>div{padding:8px 6px;border:1px solid #315a72;border-radius:7px;background:#0b2234;min-width:0}
+.monitored-setup-levels small{display:block;color:#9ec3d2;font-size:9px;letter-spacing:.2px}
+.monitored-setup-levels strong{display:block;color:#f5fbff;font-size:12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;margin-top:3px}
+.monitored-setup-panel>small{display:block;color:#a9d6e4;font-size:10px}
+.monitored-setup-reason{font-size:10px;color:#f4cdb5;margin:8px 0 0;line-height:1.5}
+@media(max-width:680px){.monitored-setup-levels{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .current-watch-start{display:flex;justify-content:space-between;align-items:center;gap:8px;
   margin:12px 0 7px;padding:9px 10px;background:#10384a;border:1px solid #437789;border-radius:8px;
   font-variant-numeric:tabular-nums;color:#e4faff}
@@ -743,6 +754,111 @@ function compareMonitored(a,b,sort){
   if(sort==="PERFORMANCE")return move(b)-move(a)||Date.parse(b.created_at)-Date.parse(a.created_at);
   return Date.parse(b.created_at)-Date.parse(a.created_at);
 }
+
+function buildMonitoredScenario(t){
+  // OBSERVATION-TIME technical reference only. No strategy approval, broker
+  // quote, immutable plan or historical fill is created from these levels.
+  const source=feed?.pairs?.[t.instrument]||{},q=source.quote||{},frames=source.frames||{};
+  const m=frames.M15?.indicators||{},h=frames.H1?.indicators||{};
+  const pip=Number(q.pip_size),spread=Number(q.spread_pips)*pip,
+    atr=Number(m.atr14),ema=Number(m.ema20),bid=Number(q.bid),ask=Number(q.ask);
+  const short=t.direction==="SHORT",sign=short?-1:1;
+  const invalid=(reason)=>({status:"UNPRICED · NO DEFENSIBLE SETUP",route:"NONE",
+    reason,trigger:null,entry:null,stop:null,tp1:null,netRR:null,grossRR:null,expiry:null});
+  if(!["LONG","SHORT"].includes(t.direction)||q.tradeable!==true||
+    ![pip,spread,atr,ema,bid,ask].every(Number.isFinite)||
+    !(pip>0&&spread>0&&atr>0&&ema>0&&bid>0&&ask>bid))
+    return invalid("Current tradeable bid/ask, EMA20, ATR or direction is missing.");
+  const asOf=Date.parse(q.time);
+  if(!Number.isFinite(asOf)||Math.abs(Date.now()-asOf)>70*60000)
+    return invalid("Quote is stale; levels must be recalculated from a fresh completed M15 snapshot.");
+  const completed=(frames.M15?.candles||[]).filter(b=>
+    Number.isFinite(Date.parse(b.t))&&Date.parse(b.t)+15*60000<=asOf&&
+    [b.o,b.h,b.l,b.c].every(v=>Number.isFinite(Number(v)))&&
+    Number(b.l)<=Math.min(Number(b.o),Number(b.c))&&
+    Math.max(Number(b.o),Number(b.c))<=Number(b.h))
+    .sort((a,b)=>Date.parse(a.t)-Date.parse(b.t)).slice(-3);
+  if(completed.length<3)return invalid("At least three independently completed M15 price candles are required.");
+  const swingHigh=Math.max(...completed.map(b=>Number(b.h))),
+    swingLow=Math.min(...completed.map(b=>Number(b.l)));
+  const mid=(bid+ask)/2,extension=sign*(mid-ema)/atr,
+    pullback=extension>1.55;
+  const route=pullback?"EMA20 PULLBACK / RETEST":"NEW M15 BREAKOUT";
+  const trigger=pullback?ema:(short?swingLow-pip:swingHigh+pip);
+  const entry=short?trigger-spread:trigger+spread;
+  const stop=short?Math.max(swingHigh+.12*atr,entry+1.05*atr):
+    Math.min(swingLow-.12*atr,entry-1.05*atr);
+  const structures=["M15","H1","H4","D"].map(tf=>frames[tf]?.indicators||{});
+  const targets=structures.map(i=>Number(short?i.support20:i.resistance20))
+    .filter(v=>Number.isFinite(v)&&v>0&&(short?v<entry:v>entry))
+    .sort((a,b)=>short?b-a:a-b);
+  const tp1=targets.length?targets[0]:null;
+  const risk=Math.abs(entry-stop),reward=tp1==null?null:Math.abs(tp1-entry);
+  const cappedSpread=Math.min(10,Number(q.spread_pips)*1.15)*pip;
+  const grossRR=reward!=null&&risk>0?reward/risk:null,
+    netRR=reward!=null&&risk>0?(reward-cappedSpread)/(risk+cappedSpread):null;
+  const reasons=[];
+  if(Number(q.spread_pips)>10)reasons.push("spread exceeds 10-pip research cap");
+  if(spread>.5*atr)reasons.push("spread is over half M15 volatility");
+  if(!Number.isFinite(Number(h.adx14)))reasons.push("H1 trend strength is unavailable");
+  if(!pullback&&(short?bid<=trigger:ask>=trigger))
+    reasons.push("breakout level has already passed; do not chase");
+  if(pullback)reasons.push("move is extended: wait for a NEW completed M15 pullback confirmation");
+  if(!tp1)reasons.push("no independent structure target remains");
+  else if(grossRR<1.5||netRR<1.35)
+    reasons.push("structure TP1 fails gross 1.50 / conservative net 1.35 reward:risk floors");
+  if(!(risk>=.75*atr&&risk<=3.5*atr))reasons.push("structural stop outside 0.75–3.5 ATR");
+  const news=feed?.news_status||"UNVERIFIED";
+  const relevant=(feed?.calendar||[]).filter(ev=>{
+    const at=Date.parse(ev.time);
+    return String(ev.impact||"").toLowerCase().includes("high")&&
+      t.instrument.split("_").includes(ev.currency)&&Number.isFinite(at)&&
+      at>=asOf-45*60000&&at<=asOf+135*60000;
+  });
+  if(relevant.length)reasons.push("high-impact event window: "+relevant[0].title);
+  if(news!=="OK")reasons.push("official news coverage is not fully verified");
+  if(!Number.isFinite(Date.parse(t.created_at)))
+    reasons.push("original research observation time missing");
+  const expiry=new Date(asOf+90*60000).toISOString();
+  const decimals=Math.min(6,Math.max(2,Math.round(-Math.log10(pip))+1));
+  const round=v=>v==null?null:Number(v.toFixed(decimals));
+  return {status:reasons.length?"WATCH ONLY · NOT APPROVED":"WATCH ONLY · M15 TRIGGER PENDING",
+    route,direction:t.direction,trigger:round(trigger),entry:round(entry),
+    entryZoneLow:pullback?round(ema-.2*atr):null,
+    entryZoneHigh:pullback?round(ema+.2*atr):null,
+    stop:round(stop),tp1:round(tp1),grossRR,netRR,expiry,
+    news,spreadPips:Number(q.spread_pips),reasons,asOf:q.time,
+    note:"Reference levels recalculated from completed OANDA candles; NOT an immutable admitted plan or confirmed entry."};
+}
+function monitoredSetupPanel(t){
+  const s=buildMonitoredScenario(t),panel=make("section",undefined,"monitored-setup-panel");
+  const heading=make("div",undefined,"monitored-setup-head");
+  heading.append(make("b","TRADE SETUP · "+(s.route==="NONE"?"NOT AVAILABLE":s.route)),
+    make("span",s.status,"monitored-setup-status"));
+  panel.append(heading);
+  const grid=make("div",undefined,"monitored-setup-levels");
+  const fmt=v=>v==null?"—":money(v);
+  const fields=[
+    ["TRIGGER",fmt(s.trigger)],["INDICATIVE ENTRY",fmt(s.entry)],
+    ["STOP / INVALIDATION",fmt(s.stop)],["NEAREST TP1",fmt(s.tp1)],
+    ["NET REWARD / RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"],
+    ["EXPIRES",s.expiry?uk(s.expiry):"—"]
+  ];
+  for(const [label,value] of fields){
+    const cell=make("div");
+    cell.append(make("small",label),make("strong",value));
+    grid.append(cell);
+  }
+  panel.append(grid);
+  if(s.entryZoneLow!=null)panel.append(make("small",
+    "EMA20 pullback zone "+fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh)+
+    " · must touch zone and close back in direction on a NEW completed M15 bar."));
+  else if(s.trigger!=null)panel.append(make("small",
+    "Future breakout requires a NEW completed M15 close beyond trigger; no retrospective fill."));
+  panel.append(make("p",(s.reasons||[s.reason]).join(" · ")+
+    " · "+(s.note||"No hypothetical entry may be acted on."),"monitored-setup-reason"));
+  return panel;
+}
 function renderHourlyCohorts(){
   const holder=el("hourlyCohortCards"),summary=el("hourlyCohortSummary"),scope=el("hourlyCohortScope"),sort=el("hourlyCohortSort");
   if(!holder||!summary||!scope||!sort)return;
@@ -801,7 +917,7 @@ function renderHourlyCohorts(){
     const card=make("article",undefined,"current-watch-card"+(short?" short":""));
     const head=make("div",undefined,"current-watch-head");
     head.append(make("strong",t.instrument.replace("_","/")),make("span",short?"▼ SELL BIAS":"▲ BUY BIAS","current-watch-tag"));
-    card.append(head,watchPotentialLine(t));
+    card.append(head,watchPotentialLine(t),monitoredSetupPanel(t));
     const started=make("div",undefined,"current-watch-start");
     started.append(make("b","WATCH STARTED "+(Number.isFinite(Date.parse(watchStarted))?uk(watchStarted):"UNKNOWN")),
       make("strong","AGE "+elapsedLabel(Date.now()-Date.parse(watchStarted))));
