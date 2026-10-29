@@ -353,3 +353,60 @@ test('best tracked move sort uses the same frozen baseline and current exit-side
   assert.ok(context.compareMonitored(good,bad,'POTENTIAL')>0,
     'prospective rating must remain independent from observed price movement');
 });
+
+
+test('monitored directional cards expose honest prospective trigger, stop, TP1, net RR and expiry', () => {
+  assert.match(page, /function buildMonitoredScenario\(t\)/);
+  assert.match(page, /function monitoredSetupPanel\(t\)/);
+  assert.match(page, /card\.append\(head,watchPotentialLine\(t\),monitoredSetupPanel\(t\)\)/);
+  for(const field of ['TRIGGER','INDICATIVE ENTRY','STOP / INVALIDATION','NEAREST TP1','NET REWARD / RISK','EXPIRES'])
+    assert.ok(page.includes(field), 'missing visible setup field '+field);
+  assert.match(page, /Reference levels recalculated from completed OANDA candles/);
+  assert.match(page, /NOT an immutable admitted plan or confirmed entry/);
+  assert.match(page, /gross 1\.50 \/ conservative net 1\.35/);
+  assert.match(page, /current-watch-card\.short \.monitored-setup-panel/);
+});
+
+test('stretched EUR/SEK-like short shows pullback reference but rejects wide-spread uneconomic chase', () => {
+  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
+  assert.ok(helper);
+  const now=Date.now(),floor=Math.floor(now/900000)*900000;
+  const bars=[60,45,30].map((mins,i)=>({
+    t:new Date(floor-mins*60000).toISOString(),
+    o:11.051-i*.007,h:11.052-i*.007,
+    l:11.045-i*.007,c:11.047-i*.007
+  }));
+  const context={feed:{news_status:'PARTIAL',calendar:[],pairs:{EUR_SEK:{
+    quote:{time:new Date(now).toISOString(),bid:11.0235,ask:11.0267,
+      pip_size:.0001,spread_pips:32,tradeable:true},
+    frames:{
+      M15:{indicators:{ema20:11.04352,atr14:.00483,support20:11.03029,resistance20:11.05264},candles:bars},
+      H1:{indicators:{adx14:52,support20:11.03811,resistance20:11.06578}},
+      H4:{indicators:{support20:11.03811,resistance20:11.1485}},
+      D:{indicators:{support20:11.04252,resistance20:11.36626}}
+    }
+  }}}};
+  new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
+  const s=context.scenario({instrument:'EUR_SEK',direction:'SHORT',created_at:new Date(now).toISOString()});
+  assert.match(s.status,/WATCH ONLY/);
+  assert.equal(s.route,'EMA20 PULLBACK / RETEST');
+  assert.ok(s.entry>s.tp1);
+  assert.ok(s.stop>s.entry);
+  assert.ok(s.netRR<1.35);
+  assert.ok(s.reasons.some(r=>r.includes('spread exceeds 10-pip')));
+  assert.ok(s.reasons.some(r=>r.includes('reward:risk floors')));
+  assert.ok(s.reasons.some(r=>r.includes('wait for a NEW completed M15')));
+  assert.equal(s.note.includes('NOT an immutable admitted plan'),true);
+});
+
+test('incomplete watched pair cannot fabricate a priced setup', () => {
+  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
+  assert.ok(helper);
+  const context={feed:{pairs:{EUR_USD:{quote:{tradeable:true,bid:1.1,ask:1.1001},frames:{}}}}};
+  new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
+  const s=context.scenario({instrument:'EUR_USD',direction:'LONG'});
+  assert.equal(s.route,'NONE');
+  assert.equal(s.entry,null);
+  assert.equal(s.stop,null);
+  assert.equal(s.tp1,null);
+});
