@@ -290,7 +290,7 @@ test('monitored FX plan and directional watch ratings reuse priced early-opportu
     entry:1.30,stop:1.31,tp1:1.28});
   assert.equal(direct.priced.entry_low,1.30);
   assert.equal(direct.priced.entry_high,1.30);
-  assert.match(page,/function renderHourlyCohorts\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\)\)/);
+  assert.match(page,/function renderHourlyCohorts\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\),monitoredSetupPanel\(t\)\)/);
   assert.match(page,/function renderPaperAudit\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\),make\("p","Assessed/);
   assert.match(page,/Heuristic, not entry approval or win probability/);
 });
