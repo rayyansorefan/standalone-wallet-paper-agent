@@ -401,6 +401,33 @@ function rankEarlyWatch(t){
  return {score,label:rr<1?"LOW POTENTIAL":score>=70?"HIGH POTENTIAL":score>=50?"MEDIUM POTENTIAL":"LOW POTENTIAL",
   reason:aligned+"/"+checks.length+" trend checks · net R:R "+rr.toFixed(2)+" · "+gap.toFixed(1)+" pips from zone"};
 }
+function directionalTechnicalPotential(t){
+  // An unpriced hourly bias receives a separately labelled technical-context
+  // score, never the cost-adjusted trade-setup score from Early Opportunities.
+  const p=feed?.pairs?.[t.instrument]||{},q=p.quote||{},sign=t.direction==="SHORT"?-1:1;
+  const m=p.frames?.M15?.indicators||{},h=p.frames?.H1?.indicators||{};
+  const bid=Number(q.bid),ask=Number(q.ask),pip=Number(q.pip_size);
+  const atr=Number(m.atr14),ema=Number(m.ema20),spread=Number(q.spread_pips)*pip;
+  const age=Date.now()-Date.parse(q.time),checks=[];
+  for(const f of [m,h]){
+    if(Number.isFinite(f.ema20)&&Number.isFinite(f.ema50))checks.push((f.ema20-f.ema50)*sign>0);
+    if(Number.isFinite(f.plus_di14)&&Number.isFinite(f.minus_di14))checks.push((f.plus_di14-f.minus_di14)*sign>0);
+    if(Number.isFinite(f.macd_12_26_9?.histogram))checks.push(f.macd_12_26_9.histogram*sign>0);
+  }
+  if(stale||q.tradeable!==true||!Number.isFinite(age)||age< -300000||age>4200000||
+     !(ask>bid&&bid>0&&atr>0&&pip>0&&spread>0)||!Number.isFinite(ema)||checks.length<4)
+    return {score:null,label:"POTENTIAL UNRATED",reason:"Current completed technical evidence is insufficient · NO PRICED ENTRY / STOP / TARGET"};
+  const aligned=checks.filter(Boolean).length;
+  const distance=Math.abs((bid+ask)/2-ema)/atr;
+  const adx=Number(h.adx14),strength=Number.isFinite(adx)?Math.max(0,Math.min(10,(adx-15)/2)):0;
+  // Cap below 70 so technical-only watches cannot be mistaken for high-potential
+  // priced trades. The two /100 labels are intentionally non-comparable.
+  const score=Math.max(0,Math.min(69,Math.round(12+50*aligned/checks.length+strength-
+    Math.min(15,60*spread/atr)-Math.min(12,Math.max(0,distance-1)*10))));
+  return {score,label:"TECHNICAL WATCH · NOT PRICED",
+    reason:aligned+"/"+checks.length+" M15/H1 checks · "+distance.toFixed(1)+
+      " ATR from EMA20 · NO PRICED ENTRY/STOP/TARGET; not comparable with trade potential"};
+}
 function watchPotential(t){
   // Reuse the exact Early Opportunities rating when a priced current plan exists.
   // An unpriced directional bias MUST NOT be given a fabricated reward/risk score.
@@ -417,8 +444,7 @@ function watchPotential(t){
       priced=current[0];
     }
   }
-  return priced?rankEarlyWatch(priced):{score:null,label:"POTENTIAL UNRATED",
-    reason:"Directional watch only · no current priced entry/stop/target to score"};
+  return priced?rankEarlyWatch(priced):directionalTechnicalPotential(t);
 }
 function watchPotentialLine(t){
   const potential=watchPotential(t),rated=potential.score!=null;
