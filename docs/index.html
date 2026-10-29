@@ -292,14 +292,14 @@ body{background:#07111f;color:#edf5ff}
       <div class="audit-toolbar"><b>CURRENT PRICED PLANS · NOT BROKER ORDERS</b><span>Entry, stop and target require independent verification</span></div>
       <div id="paperToday" class="audit-live-grid"></div>
     </div>
-    <div class="audit-toolbar" style="margin-top:12px"><b>LATEST HOURLY DIRECTIONAL WATCHES · NOT TRADES</b><label for="hourlyCohortScope">SHOW <select id="hourlyCohortScope"><option value="LATEST" selected>Latest assessment</option><option value="TODAY">All today</option><option value="ALL">Available history</option></select></label></div>
+    <div class="audit-toolbar" style="margin-top:12px"><b>LATEST HOURLY DIRECTIONAL WATCHES · NOT TRADES</b><label for="hourlyCohortScope">SHOW <select id="hourlyCohortScope"><option value="LATEST" selected>Latest assessment</option><option value="TODAY">All today</option><option value="ALL">Available history</option></select></label><label for="hourlyCohortSort">SORT <select id="hourlyCohortSort"><option value="POTENTIAL" selected>Highest setup rating</option><option value="PERFORMANCE">Best tracked move · not P/L</option><option value="LATEST">Latest analysis</option></select></label></div>
     <p class="small" id="hourlyCohortSummary">Loading timestamped research observations…</p>
     <div id="hourlyCohortCards" class="current-watch-grid"></div>
     <p class="small">These are hourly research hypotheses, not approved entries. Percentages show hypothetical movement from frozen first-observed OANDA prices, not returns. Without independently checked entry, stop and target, a directional watch is not a trade plan.</p>
     <details class="archive-details current-archive" id="paperArchive" style="margin-top:22px">
       <summary style="cursor:pointer;font-weight:750;padding:14px;border:1px solid #355b6e;border-radius:10px">Today's monitored trades · Previous assessments and expired plans (open history)</summary>
       <div style="padding-top:15px">
-        <div class="audit-toolbar"><label for="paperScope">PLAN HISTORY <select id="paperScope"><option value="HISTORY" selected>Expired / previous plans</option><option value="TODAY">Current only</option><option value="ALL">All priced plans</option></select></label><span id="paperCoverage">Checking saved shortlist…</span></div>
+        <div class="audit-toolbar"><label for="paperScope">PLAN HISTORY <select id="paperScope"><option value="HISTORY" selected>Expired / previous plans</option><option value="TODAY">Current only</option><option value="ALL">All priced plans</option></select></label><label for="paperSort">SORT <select id="paperSort"><option value="POTENTIAL" selected>Highest setup rating</option><option value="PERFORMANCE">Best tracked move · not P/L</option><option value="LATEST">Latest analysis</option></select></label><span id="paperCoverage">Checking saved shortlist…</span></div>
         <div class="outcomekpis">
           <div class="outcomekpi"><small>Unexpired plans today</small><strong id="paperCandidates">—</strong></div>
           <div class="outcomekpi"><small>Awaiting confirmation</small><strong id="paperScored">—</strong></div>
@@ -716,9 +716,18 @@ function macro(){const srcGood=feed.sources.filter(s=>s.status==="OK").length;el
 el("headlines").replaceChildren(...feed.headlines.slice(0,10).map(h=>{const d=make("div",undefined,"newsitem"),a=make("b");try{const u=new URL(h.url);if(["https:","http:"].includes(u.protocol)){const link=make("a",h.title);link.href=u.href;link.rel="noopener noreferrer";link.target="_blank";a.append(link)}else a.textContent=h.title}catch{a.textContent=h.title}d.append(a,make("small",h.source+" · "+uk(h.time)+" · Unverified headline"));return d}));
 const es=feed.calendar.filter(x=>Date.parse(x.time)>Date.now()-1800000).slice(0,18);el("events").replaceChildren(...(es.length?es.map(v=>{const e=make("div",undefined,"event");e.append(make("span",uk(v.time)),make("b",v.currency));const d=make("div");d.append(make("b",v.title+(String(v.impact).toLowerCase()==="high"?" ⚠":"")),make("small",(v.forecast?" Forecast "+v.forecast:"")+(v.official?" · Official verified":" · Third-party calendar")));e.append(d);return e}):[make("p","No forthcoming events in the saved feed. This is NOT proof of a clear calendar.","small")]));}
 
+// Preserve prospective ratings: monitored price movement is NEVER used to
+// inflate the setup-potential score; it is an independent optional sort.
+function compareMonitored(a,b,sort){
+  const score=t=>{const v=watchPotential(t).score;return v==null?-1:Number(v)};
+  const move=t=>{const v=t.tracking?.move_pct;return v==null||!Number.isFinite(Number(v))?-Infinity:Number(v)};
+  if(sort==="POTENTIAL")return score(b)-score(a)||Date.parse(b.created_at)-Date.parse(a.created_at);
+  if(sort==="PERFORMANCE")return move(b)-move(a)||Date.parse(b.created_at)-Date.parse(a.created_at);
+  return Date.parse(b.created_at)-Date.parse(a.created_at);
+}
 function renderHourlyCohorts(){
-  const holder=el("hourlyCohortCards"),summary=el("hourlyCohortSummary"),scope=el("hourlyCohortScope");
-  if(!holder||!summary||!scope)return;
+  const holder=el("hourlyCohortCards"),summary=el("hourlyCohortSummary"),scope=el("hourlyCohortScope"),sort=el("hourlyCohortSort");
+  if(!holder||!summary||!scope||!sort)return;
   const rows=(feed?.learning?.paper_audit?.candidates||[]).filter(t=>
     t.source==="AUTOMATED_RESEARCH_PRIORITY"&&visiblePair(t.instrument));
   const londonDate=v=>{try{const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date(v));const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+"-"+p.month+"-"+p.day}catch{return ""}};
@@ -727,8 +736,9 @@ function renderHourlyCohorts(){
   const latestTime=dayRows.length?Math.max(...dayRows.map(t=>Date.parse(t.created_at)||0)):0;
   const selected=(scope.value==="ALL"?rows:scope.value==="LATEST"?
     dayRows.filter(t=>Date.parse(t.created_at)===latestTime):dayRows)
-    .slice().sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
+    .slice().sort((a,b)=>compareMonitored(a,b,sort.value));
   scope.onchange=renderHourlyCohorts;
+  sort.onchange=renderHourlyCohorts;
   const window=feed?.learning?.paper_audit?.public_window||{};
   const latestCount=dayRows.filter(t=>Date.parse(t.created_at)===latestTime).length;
   const freshFeed=!stale;
@@ -899,9 +909,10 @@ function renderPaperAudit() {
   const isCurrent = t => !t.expires_at || Date.parse(t.expires_at)>Date.now();
   const currentPlans = todayPlans.filter(isCurrent);
   const scope = el("paperScope").value;
-  const selected = scope==="HISTORY" ? priced.filter(t=>!isCurrent(t)||dateKey(t.created_at)!==todayKey)
-    : scope==="ALL" ? priced : currentPlans;
+  const selected = (scope==="HISTORY" ? priced.filter(t=>!isCurrent(t)||dateKey(t.created_at)!==todayKey)
+    : scope==="ALL" ? priced : currentPlans).slice().sort((a,b)=>compareMonitored(a,b,el("paperSort").value));
   el("paperScope").onchange=renderPaperAudit;
+  el("paperSort").onchange=renderPaperAudit;
   el("paperAsOf").textContent = "CHECKED "+uk(audit.updated_at || feed.snapshot_at)+(audit.public_window?.truncated?" · PUBLIC ROLLING WINDOW "+audit.public_window.published_candidates+"/"+audit.public_window.private_total_candidates:"");
   const done = new Set(["WIN_TP1","LOSS_STOP","TIME_EXIT"]);
   const latest = t => {
@@ -1113,7 +1124,7 @@ function renderPaperAudit() {
     if(t.reason)details.append(make("p","Paper replay: "+t.reason));
     card.append(details);return card;
   });
-  const currentCards=renderCards(currentPlans);
+  const currentCards=renderCards(currentPlans.slice().sort((a,b)=>compareMonitored(a,b,el("paperSort").value)));
   holder.replaceChildren(...currentCards);
   el("currentPlansSurface").hidden=currentCards.length===0;
   const cards=renderCards(selected);
