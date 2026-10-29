@@ -262,19 +262,30 @@ test('fast research and export-compaction metadata cannot imply delivery or brok
 });
 
 test('monitored FX plan and directional watch ratings reuse priced early-opportunity logic without invented scores', () => {
-  const helper=page.match(/function watchPotential\(t\)\{[\s\S]*?(?=function renderEarlyOpportunities)/)?.[0];
+  const helper=page.match(/function directionalTechnicalPotential\(t\)\{[\s\S]*?(?=function renderEarlyOpportunities)/)?.[0];
   assert.ok(helper, 'shared opportunity rating helper exists');
   const context = {
+    stale:false,
     feed:{learning:{opportunity_audit:{recent:[{
       instrument:'EUR_USD',direction:'LONG',first_seen_at:'2026-10-29T08:00:00Z',
       expires_at:'2999-01-01T00:00:00Z',entry_low:1.10,entry_high:1.11,stop:1.09,tp1:1.14
-    }]}}},
+    }]}},pairs:{USD_CAD:{
+      quote:{time:new Date().toISOString(),tradeable:true,bid:1.3900,ask:1.3901,pip_size:.0001,spread_pips:1},
+      frames:{M15:{indicators:{atr14:.001,ema20:1.3899,ema50:1.3890,
+        plus_di14:23,minus_di14:14,macd_12_26_9:{histogram:.0001}}},
+        H1:{indicators:{ema20:1.3898,ema50:1.3891,plus_di14:24,
+          minus_di14:15,adx14:23,macd_12_26_9:{histogram:.0001}}}}
+    }}},
     rankEarlyWatch: t => ({score:71,label:'HIGH POTENTIAL',reason:'priced structural test',priced:t})
   };
   new Script(helper+';this.probePotential=watchPotential;').runInNewContext(context);
   assert.equal(context.probePotential({instrument:'EUR_USD',direction:'LONG'}).score,71);
-  assert.equal(context.probePotential({instrument:'USD_CAD',direction:'SHORT'}).score,null,
-    'unpriced directional bias must not receive a fabricated trade score');
+  const unpriced=context.probePotential({instrument:'USD_CAD',direction:'LONG'});
+  assert.equal(unpriced.label,'TECHNICAL WATCH · NOT PRICED');
+  assert.ok(unpriced.score>=0&&unpriced.score<=69);
+  assert.match(unpriced.reason,/NO PRICED ENTRY\/STOP\/TARGET/);
+  assert.equal(context.probePotential({instrument:'EUR_JPY',direction:'SHORT'}).score,null,
+    'unpriced watch without fresh evidence must remain unrated');
   const direct=context.probePotential({instrument:'GBP_USD',direction:'SHORT',
     entry:1.30,stop:1.31,tp1:1.28});
   assert.equal(direct.priced.entry_low,1.30);
