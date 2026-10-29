@@ -230,6 +230,16 @@ body{background:#07111f;color:#edf5ff}
 .early-study-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
 .early-study-grid>div{background:#092934;border:1px solid #3c766f;border-radius:8px;padding:10px}.early-study-grid small{display:block;color:#a9c4c8;font-size:10px}.early-study-grid b{color:#e7fff7;font-size:17px}
 @media(max-width:700px){.early-toolbar{flex-wrap:wrap}.early-toolbar select{max-width:100%;flex:1}.early-study-grid{grid-template-columns:1fr 1fr}}
+
+.fast-entry-hero{margin-top:10px;padding:18px 19px;border:1px solid #377b91;border-radius:17px;background:linear-gradient(120deg,#143047,#0f2235 64%);box-shadow:0 12px 34px #0003}
+.fast-entry-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.fast-entry-kicker{display:block;font-size:10px;letter-spacing:1.5px;color:#75d8e9;font-weight:900}
+.fast-entry-headline{display:block;font-size:clamp(24px,3vw,39px);line-height:1.18;letter-spacing:-1.2px;color:#ffce85;margin-top:6px}
+.fast-entry-headline.ready{color:#70e3b2}
+.fast-entry-note{color:#b2cbe0;font-size:12px;max-width:680px;margin:7px 0 0}
+.fast-entry-meta{text-align:right;min-width:180px}.fast-entry-meta small{display:block;color:#93b4c8;margin-top:11px;font-size:11px}
+.fast-entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:15px}.fast-entry-grid .panel{background:#0c1d2e;padding:14px}
+@media(max-width:780px){.fast-entry-top{display:block}.fast-entry-meta{text-align:left;margin-top:13px}.fast-entry-grid{grid-template-columns:1fr}.fast-entry-hero{padding:15px}}
 </style></head>
 <body>
 <div class="terminal-shell">
@@ -257,6 +267,13 @@ body{background:#07111f;color:#edf5ff}
 </header>
 <main class="wide" id="overview">
 <div class="hero"><div><div class="eyebrow">THE FOREIGN EXCHANGE DESK</div><h1>FX Intelligence <span>Hub.</span></h1><p>Clear entry plans, hourly percentage tracking and trade outcomes. OANDA research prices are separate from your manual Pepperstone execution.</p></div><div class="clock"><b id="clock">--:-- UK</b><div id="sourceTime">OANDA source time unknown</div><div id="publishedTime">Feed not loaded</div></div></div>
+<section class="section fast-entry-hero" id="fastEntrySection">
+  <div class="fast-entry-top">
+    <div><span class="fast-entry-kicker">ENTRY DESK · CURRENT DECISION</span><strong class="fast-entry-headline" id="fastEntryHeadline">WAIT · FIRST FAST CHECK PENDING</strong><p class="fast-entry-note" id="fastEntrySummary">No verified conditional entry. Faster monitoring is scheduled; no result can be assumed before a completed check.</p></div>
+    <div class="fast-entry-meta"><span class="label" id="fastEntryTime">FAST SCAN NOT RUN</span><small>15-minute checks · weekdays 07:00–09:00 and 13:00–15:00 UK</small></div>
+  </div>
+  <div id="fastEntryCards" class="fast-entry-grid"><div class="panel"><b>WAIT</b><p>Next qualified entry will show its direction, level, stop and target here.</p></div></div>
+</section>
 <section class="section" id="research-setups"><div class="heading"><div><h2>Technical watches · not approved</h2><p>Prospective technical zones, stops and targets. Alignment and news approval may be missing. Stale watches are hidden. These are <strong>watch-only models</strong>; approved conditional signals appear in the entry decision below.</p></div><span class="label" id="researchCount">AWAITING RESEARCH</span></div><div id="researchCards" class="setupgrid"></div><p class="small">OANDA research quotes only · Models require a completed M15 confirmation, current official news review and your own Pepperstone prices/spread before any manual order. A listed plan is not an instruction to enter immediately.</p></section>
 
 <section class="section" id="early-opportunities" aria-label="Early research opportunities and missed moves">
@@ -316,7 +333,7 @@ body{background:#07111f;color:#edf5ff}
   <div class="gate gate-amber" id="gateBroker"><small>03 · BROKER VERIFICATION</small><strong>MANUAL CHECK</strong><span>Pepperstone price, spread &amp; news</span></div>
 </div>
 
-<section class="section" id="fastEntrySection"><div class="heading"><div><h2>Fast entry checks · shortlisted</h2><p>Completed M15 confirmation, fresh OANDA quote and news recheck. Research only; check Pepperstone before acting.</p></div><span class="label" id="fastEntryTime">AWAITING FAST SCAN</span></div><div id="fastEntryCards" class="grid4"><div class="panel"><b>WAIT</b><p>No verified fast entry event yet.</p></div></div></section>
+
 <section class="section" id="tradeplan"><div class="heading"><div><h2>Trade decision · Live status</h2><p>Only fully approved, unexpired research ideas appear here. A LONG / SHORT label is conditional and never a live broker order.</p></div><span class="label">ENTRY · STOP · TARGET</span></div><div class="panel" id="activePlan"><div class="decision"><b>WAIT</b><p>No approved entries verified.</p></div></div></section>
 <section class="section" id="setups"><div class="heading"><div><h2>Top instruments to watch</h2><p>Research ranking is not trade approval. We seek 2–4 quality trade opportunities per day, but never force entries to hit a quota.</p></div><span class="label">RESEARCH PRIORITIES</span></div><div id="picks" class="grid4"></div></section>
 <section class="section" id="charts"><div class="heading"><div><h2>Charts across all key timeframes</h2><p>Every quoted pair: M15/H1 close-bar charts. Strongest audited pairs: additional M5/H4/D1 history and expanded indicators. OANDA prices are research-only.</p></div><span class="label">M1 · M5 · M15 · M30 · H1 · H4 · D1 · W1 · MN</span></div><div class="two"><div class="panel"><div class="panelhead"><div><h3 id="chartName">Multi-timeframe price action</h3><div class="small" id="chartTime">Select instrument</div></div><div class="controls"><select id="pair" aria-label="Currency pair"></select><div id="frames" class="controls"></div></div></div><div class="chartbox"><svg id="chart" viewBox="0 0 910 340" role="img" aria-label="Historical candlestick chart"></svg></div><div class="small" id="chartFoot">OANDA historical candles—not current Pepperstone executable prices.</div></div><div class="panel"><div class="panelhead"><h3>Technical confluence</h3><div class="small">Independent indicators</div></div><div class="indicators" id="indicators"></div><div class="decision"><b id="entryState">WAIT</b><p id="entryDetail">No approved and freshly confirmed entry.</p></div><p class="small" id="brokerCaution">Pepperstone symbols and spreads are not verified.</p></div></div></section>
@@ -570,20 +587,28 @@ card.append(decisionCheck);
 const rule=make("div",undefined,"setuprule");rule.append(make("b",s.trigger||"Wait for technical confirmation."),make("p","Timeframes aligned: "+(s.timeframes_aligned||[]).map(t=>t==="D"?"D1":t).join(" · ")+" · Source "+uk(s.source_quote_at)+".","small"),make("p",stale?"SOURCE STALE: levels are historical. No entry clearance.":"News clearance and Pepperstone availability, price and spread are unverified; check these before any order.","small"));card.append(rule);
 const button=make("button","Inspect chart","setupaction");button.onclick=()=>{if(!p)return;pair=s.instrument;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth"})};card.append(button);holder.append(card)}}
 function renderFastEntry(){
-const holder=el("fastEntryCards"),stamp=el("fastEntryTime");holder.replaceChildren();
+const holder=el("fastEntryCards"),stamp=el("fastEntryTime"),headline=el("fastEntryHeadline"),note=el("fastEntrySummary");
+holder.replaceChildren();
 const f=feed?.fast_entry_monitor||{},time=Date.parse(f.checked_at||"");
 const current=f.freshness==="CURRENT"&&Number.isFinite(time)&&Date.now()-time<=40*60000&&Date.now()>=time-60000;
-stamp.textContent=Number.isFinite(time)?("CHECK "+new Date(time).toLocaleTimeString("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit"})+" UK"):"NOT RUN";
-if(!current){const d=make("div",undefined,"panel");d.append(make("b","WAIT · FAST RESEARCH UNAVAILABLE"),make("p","No current fast scan. Never use an old entry price as a live instruction."));holder.append(d);return}
+stamp.textContent=Number.isFinite(time)?("LAST CHECK "+new Date(time).toLocaleTimeString("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit"})+" UK"):"FAST SCAN NOT RUN";
+headline.classList.remove("ready");
+if(!current){
+headline.textContent="WAIT · NO CURRENT FAST CHECK";
+note.textContent=f.checked_at?"Last fast scan is stale or unavailable. Do not use old entries.":"The faster scheduled checks have not produced their first result. No entry is verified.";
+const d=make("div",undefined,"panel");d.append(make("b","NO ACTIONABLE ENTRY"),make("p","Await a fresh completed scan. Hourly research and existing watches continue."));holder.append(d);return}
 const rows=(Array.isArray(f.observations)?f.observations:[]).slice(0,3);
-if(!rows.length){const d=make("div",undefined,"panel");d.append(make("b","WAIT · NO APPROVED TRIGGER"),make("p","Fast shortlist checked; no trade entry has been confirmed."));holder.append(d);return}
+const live=rows.find(x=>x.status==="PRICE_REASSESSMENT_ALERT_READY");
+if(live){headline.textContent="TRIGGER DETECTED · CHECK BROKER";headline.classList.add("ready");note.textContent="A completed M15 research trigger was recorded. Verify Pepperstone spread, news and risk before any manual entry; delivery to you is not independently confirmed."}
+else{headline.textContent="WAIT · NO APPROVED ENTRY";note.textContent="The shortlisted pairs were checked, but no confirmed entry trigger has passed every required check."}
+if(!rows.length){const d=make("div",undefined,"panel");d.append(make("b","NO QUALIFIED TRIGGERS"),make("p","The next complete entry plan will appear here when independently confirmed."));holder.append(d);return}
 for(const x of rows){
 const ready=x.status==="PRICE_REASSESSMENT_ALERT_READY",card=make("article",undefined,"pick");
 card.style.borderColor=ready?"#327b68":"#6d5960";
-card.append(make("div",ready?"TRIGGER DETECTED · MANUAL CHECK":"WATCH · NO ENTRY","rank"),make("b",String(x.pair||"").replace("_","/")+" · "+String(x.direction||"")));
+card.append(make("div",ready?"TRIGGER · VERIFY MANUALLY":"WATCH · NO ENTRY","rank"),make("b",String(x.pair||"").replace("_","/")+" · "+String(x.direction||"")));
 const levels=(x.entry!=null&&x.stop!=null&&x.tp1!=null)?("Entry "+x.entry+" · Stop "+x.stop+" · TP "+x.tp1):"No approved entry levels";
 card.append(make("p",levels),make("div",String(x.status||"NO SIGNAL").replaceAll("_"," "),"small"));
-if(ready)card.append(make("small","Pattern detected; alert delivery and Pepperstone execution NOT verified.","gold"));
+if(ready)card.append(make("small","Alert delivery and broker execution NOT verified.","gold"));
 else if(x.reason)card.append(make("small",String(x.reason).replaceAll("_"," "),"small"));
 holder.append(card)}
 }
