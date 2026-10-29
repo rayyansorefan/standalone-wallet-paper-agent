@@ -410,3 +410,17 @@ test('incomplete watched pair cannot fabricate a priced setup', () => {
   assert.equal(s.stop,null);
   assert.equal(s.tp1,null);
 });
+
+test('monitored setup opens a real keyboard-dismissable modal on tap, without approving a trade', () => {
+  assert.match(page, /function openMonitoredSetupPopup\(t\)/);
+  assert.match(page, /open\.type="button"/);
+  assert.match(page, /open\.setAttribute\("aria-label","Open "/);
+  assert.match(page, /open\.addEventListener\("click",\(\)=>openMonitoredSetupPopup\(t\)\)/);
+  assert.match(page, /const dialog=make\("dialog",undefined,"monitored-setup-dialog"\)/);
+  assert.match(page, /dialog\.showModal\(\)/);
+  assert.match(page, /close\.addEventListener\("click",\(\)=>dialog\.close\(\)\)/);
+  assert.match(page, /dialog\.addEventListener\("close",\(\)=>dialog\.remove\(\)/);
+  assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
+  assert.match(page, /\.monitored-setup-dialog::backdrop/);
+  assert.match(page, /WATCH ONLY: Technical scenario, not a confirmed trigger/);
+});
