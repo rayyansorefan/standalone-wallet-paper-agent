@@ -567,7 +567,7 @@ function renderCurrentScouts(){
     const action=make("div",undefined,"early-action");
     action.append(make("small",fullyPriced?
       (scenario.netRR>=1.35?"PAPER-ONLY PRICE LEVELS · Trigger and risk gates not approved.":
-        "PAPER-ONLY LEVELS · NET R:R BELOW 1.35 · DO NOT ENTER.") :
+        "PAPER-ONLY LEVELS · reward/risk below 1.35 · DO NOT ENTER.") :
       "INCOMPLETE · "+(scenario?.reason||"No complete structural target / verified trigger")+
       " · DO NOT ENTER."));
     const open=make("button","⤢ OPEN SETUP","monitored-setup-open");
