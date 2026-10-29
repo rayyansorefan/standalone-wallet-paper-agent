@@ -17,7 +17,7 @@ test('public payload fits monitoring budget and retains authorised conditional s
   assert.ok(Array.isArray(feed.research_setups));
   const allowed = new Set(['schema','snapshot_at','news_at','published_at','status',
     'news_status','coverage','priorities','pairs','signals','research_setups',
-    'hourly','sources','headlines','calendar','learning']);
+    'hourly','sources','headlines','calendar','learning','public_compaction','fast_entry_monitor']);
   assert.ok(Object.keys(feed).every(k => allowed.has(k)), 'no unexpected fields');
   for (const item of feed.research_setups) {
     assert.equal(item.status, 'CONDITIONAL_RESEARCH_NOT_TRIGGERED');
@@ -237,3 +237,26 @@ test('user-confirmed GBP ZAR Pepperstone exclusion is applied to every dashboard
   assert.doesNotMatch(page, /CURRENT CONDITIONAL PLANS/);
   assert.doesNotMatch(page, /M15 pullback with H1\/H4\/D1 trend alignment/);
  });
+
+test('fast research and export-compaction metadata cannot imply delivery or broker execution', () => {
+  const fast = feed.fast_entry_monitor;
+  if (fast) {
+    assert.equal(fast.research_only, true);
+    assert.equal(fast.manual_pepperstone_check_required, true);
+    assert.equal(fast.user_delivery_verified, false);
+    assert.ok(Array.isArray(fast.observations));
+    for (const row of fast.observations) {
+      assert.equal(row.user_delivery_verified, false);
+      assert.equal(row.requires_manual_pepperstone_check, true);
+    }
+  }
+  if (feed.public_compaction) {
+    assert.equal(feed.public_compaction.optional_pattern_details_omitted, true);
+    for (const pair of Object.values(feed.pairs)) {
+      for (const frame of Object.values(pair.frames)) {
+        assert.ok(frame.candles.length >= 6);
+        assert.ok(Number.isFinite(frame.indicators.ema20));
+      }
+    }
+  }
+});

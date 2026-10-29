@@ -31,7 +31,8 @@ jobs:
           assert size < 950_000, f'Public feed exceeds 950 KB: {size} bytes'
           allowed = {'schema','snapshot_at','news_at','published_at','status',
                      'news_status','coverage','priorities','pairs','signals',
-                     'research_setups','hourly','sources','headlines','calendar','learning'}
+                     'research_setups','hourly','sources','headlines','calendar','learning',
+                     'public_compaction','fast_entry_monitor'}
           assert set(d) <= allowed, f'Unknown public fields: {set(d)-allowed}'
           assert d['schema']==1 and d['snapshot_at'] and d['pairs']
           assert isinstance(d['signals'],list)
