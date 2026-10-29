@@ -418,7 +418,9 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /function openMonitoredSetupPopup\(t\)/);
   assert.match(page, /open\.type="button"/);
   assert.match(page, /open\.setAttribute\("aria-label","Open "\+name\.replace/);
-  assert.match(page, /open\.addEventListener\("click",\(\)=>openMonitoredSetupPopup\(\{/);
+  assert.match(page, /open\.addEventListener\("click",\(\)=>openMonitoredSetupPopup\(scoutContext\)/);
+  assert.match(page, /const researchByPair=new Map/);
+  assert.match(page, /const scenario=fresh\?buildMonitoredScenario\(scoutContext\):null/);
   assert.match(page, /scout_plan:plan&&fresh\?plan:null/);
   assert.match(page, /const dialog=make\("dialog",undefined,"monitored-setup-dialog"\)/);
   assert.match(page, /dialog\.showModal\(\)/);
@@ -444,5 +446,7 @@ test('scout setup popup uses the original priced paper preview instead of silent
   assert.equal(s.status,'PAPER WATCH · NOT APPROVED');
   assert.equal(s.entryZoneLow,18.77);
   assert.equal(s.tp1,18.86);
+  assert.ok(Number.isFinite(s.netRR),'priced scout must show calculated net RR');
+  assert.ok(Number.isFinite(Date.parse(s.expiry)),'priced scout must show expiry');
   assert.match(s.reasons.join(' '),/New M15 close required/);
 });
