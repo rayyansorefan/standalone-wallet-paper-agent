@@ -294,3 +294,24 @@ test('monitored FX plan and directional watch ratings reuse priced early-opportu
   assert.match(page,/function renderPaperAudit\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\),make\("p","Assessed/);
   assert.match(page,/Heuristic, not entry approval or win probability/);
 });
+
+test('priced potential rating does not reward hindsight directional movement', () => {
+  const helper=page.match(/function rankEarlyWatch\(t\)\{[\s\S]*?(?=function directionalTechnicalPotential)/)?.[0];
+  assert.ok(helper);
+  const context={stale:false,feed:{pairs:{GBP_USD:{
+    quote:{time:new Date().toISOString(),tradeable:true,bid:1.3000,ask:1.3001,
+      pip_size:.0001,spread_pips:1},
+    frames:{M15:{indicators:{atr14:.001,ema20:1.2998,ema50:1.2980,
+      plus_di14:25,minus_di14:15,macd_12_26_9:{histogram:.001}}},
+      H1:{indicators:{ema20:1.2990,ema50:1.2975,plus_di14:26,minus_di14:14,
+        macd_12_26_9:{histogram:.001}}}}
+  }}}};
+  new Script(helper+';this.probeRank=rankEarlyWatch;').runInNewContext(context);
+  const plan={instrument:'GBP_USD',direction:'LONG',entry_low:1.3001,entry_high:1.3002,
+    stop:1.2985,tp1:1.3040};
+  const positive=context.probeRank({...plan,hypothetical_move_pct:9});
+  const negative=context.probeRank({...plan,hypothetical_move_pct:-9});
+  assert.ok(positive.score!=null);
+  assert.equal(positive.score,negative.score,
+    'later directional movement must not change a contemporaneous setup score');
+});
