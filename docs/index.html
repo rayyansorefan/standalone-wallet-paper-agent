@@ -401,6 +401,32 @@ function rankEarlyWatch(t){
  return {score,label:rr<1?"LOW POTENTIAL":score>=70?"HIGH POTENTIAL":score>=50?"MEDIUM POTENTIAL":"LOW POTENTIAL",
   reason:aligned+"/"+checks.length+" trend checks · net R:R "+rr.toFixed(2)+" · "+gap.toFixed(1)+" pips from zone"};
 }
+function watchPotential(t){
+  // Reuse the exact Early Opportunities rating when a priced current plan exists.
+  // An unpriced directional bias MUST NOT be given a fabricated reward/risk score.
+  let priced=t;
+  if(!(Number(t.entry_low)>0&&Number(t.entry_high)>=Number(t.entry_low)&&Number(t.stop)>0&&Number(t.tp1)>0)){
+    if(Number(t.entry)>0&&Number(t.stop)>0&&Number(t.tp1)>0){
+      priced={...t,entry_low:Number(t.entry),entry_high:Number(t.entry),hypothetical_move_pct:null};
+    }else{
+      const current=(feed?.learning?.opportunity_audit?.recent||[]).filter(x=>
+        x.instrument===t.instrument&&x.direction===t.direction&&
+        Date.parse(x.expires_at)>Date.now()&&Number(x.entry_low)>0&&
+        Number(x.entry_high)>=Number(x.entry_low)&&Number(x.stop)>0&&Number(x.tp1)>0)
+        .sort((a,b)=>Date.parse(b.first_seen_at)-Date.parse(a.first_seen_at));
+      priced=current[0];
+    }
+  }
+  return priced?rankEarlyWatch(priced):{score:null,label:"POTENTIAL UNRATED",
+    reason:"Directional watch only · no current priced entry/stop/target to score"};
+}
+function watchPotentialLine(t){
+  const potential=watchPotential(t),rated=potential.score!=null;
+  const line=make("div",undefined,"early-scoreline"+(!rated||potential.score<50?" weak":""));
+  line.append(make("b",rated?potential.label+" · "+potential.score+"/100":"POTENTIAL UNRATED"),
+    make("span",potential.reason+" · Heuristic, not entry approval or win probability"));
+  return line;
+}
 function renderEarlyOpportunities(){
   const holder=el("earlyGrid");if(!holder)return;
   const data=feed?.learning?.opportunity_audit||{},rows=Array.isArray(data.recent)?data.recent:[];
@@ -721,7 +747,7 @@ function renderHourlyCohorts(){
     const card=make("article",undefined,"current-watch-card"+(short?" short":""));
     const head=make("div",undefined,"current-watch-head");
     head.append(make("strong",t.instrument.replace("_","/")),make("span",short?"▼ SELL BIAS":"▲ BUY BIAS","current-watch-tag"));
-    card.append(head);
+    card.append(head,watchPotentialLine(t));
     const started=make("div",undefined,"current-watch-start");
     started.append(make("b","WATCH STARTED "+(Number.isFinite(Date.parse(watchStarted))?uk(watchStarted):"UNKNOWN")),
       make("strong","AGE "+elapsedLabel(Date.now()-Date.parse(watchStarted))));
@@ -974,7 +1000,7 @@ function renderPaperAudit() {
     badges.append(make("span","ANALYSIS "+(quality==="BAD"?"RISKY":quality),"audit-status "+(quality==="GOOD"?"good":quality==="BAD"?"bad":"waiting")),
       make("span",status,"audit-status "+state));
     head.append(name,badges);
-    card.append(head,make("p","Assessed "+uk(t.created_at),"small"));
+    card.append(head,watchPotentialLine(t),make("p","Assessed "+uk(t.created_at),"small"));
     const levels=make("div",undefined,"audit-live-levels");
     const fields=[["Proposed entry",t.entry],["Stop loss",t.stop],
       ["Target 1",t.tp1],["Target 2",t.tp2]];
