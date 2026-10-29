@@ -100,7 +100,7 @@ test('today main-assessment cards show only frozen priced plans and hourly perfo
   assert.match(page, /id="paperHistory"/);
   assert.match(page, /id="hourlyCohortCards" class="current-watch-grid"/);
   assert.match(page, /current-watch-chart/);
-  assert.match(page, /renderCards\(currentPlans\)/);
+  assert.match(page, /renderCards\(currentPlans\.slice\(\)\.sort\(/);
   assert.match(page, /historyHolder\.replaceChildren/);
   assert.match(page, /SCHEDULED_MAIN_ASSESSMENT/);
   assert.match(page, /id="paperScope"/);
