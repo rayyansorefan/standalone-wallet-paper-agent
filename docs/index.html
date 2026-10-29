@@ -542,6 +542,14 @@ function renderCurrentScouts(){
     card.append(make("p",reasons.length?"Why WAIT: "+reasons.join(" · "):"Why WAIT: no completed and broker-verified entry confirmation; news and Pepperstone spread require review.","early-caption"));
     const action=make("div",undefined,"early-action");
     action.append(make("small",plan&&fresh?"PAPER PRICING ONLY · No approved order or fill.":"NO DEFENSIBLE ENTRY / STOP / TARGET YET · DO NOT ENTER."));
+    const open=make("button","⤢ OPEN SETUP","monitored-setup-open");
+    open.type="button";
+    open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
+    open.addEventListener("click",()=>openMonitoredSetupPopup({
+      instrument:name,direction:side,created_at:quoteAt,
+      scout_plan:plan&&fresh?plan:null,scout_reference_rule:rule
+    }));
+    action.append(open);
     const btn=make("button","Full chart");btn.type="button";
     btn.addEventListener("click",()=>{if(!feed.pairs?.[name])return;pair=name;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
     action.append(btn);card.append(action);
@@ -859,6 +867,23 @@ function buildMonitoredScenario(t){
   const asOf=Date.parse(q.time);
   if(!Number.isFinite(asOf)||Math.abs(Date.now()-asOf)>70*60000)
     return invalid("Quote is stale; levels must be recalculated from a fresh completed M15 snapshot.");
+  // When the scout publishes a priced paper preview, show THAT plan rather
+  // than replacing it with unrelated newly calculated prices in the popup.
+  // This is never a canonical signal or permission to execute.
+  if(t.scout_plan){
+    const p=t.scout_plan;
+    const low=Number(p.entry_zone_low),high=Number(p.entry_zone_high),
+      stop=Number(p.stop),tp1=Number(p.tp1);
+    const valid=[low,high,stop,tp1].every(v=>Number.isFinite(v)&&v>0)&&
+      high>=low&&(short?stop>high&&tp1<low:stop<low&&tp1>high);
+    if(!valid)return invalid("Current scout preview has incomplete or inconsistent entry, stop or target levels.");
+    return {status:"PAPER WATCH · NOT APPROVED",route:"SCOUT PROVISIONAL PLAN",
+      trigger:null,entry:null,entryZoneLow:low,entryZoneHigh:high,stop,tp1,
+      grossRR:null,netRR:null,expiry:p.expires_at||null,asOf:q.time,
+      reasons:[t.scout_reference_rule||"No new completed entry trigger verified",
+        "This scout plan is a provisional research preview, not an approved or filled signal."],
+      note:"OANDA indicative preview; check new completed candles, event coverage and live Pepperstone spread."};
+  }
   const completed=(frames.M15?.candles||[]).filter(b=>
     Number.isFinite(Date.parse(b.t))&&Date.parse(b.t)+15*60000<=asOf&&
     [b.o,b.h,b.l,b.c].every(v=>Number.isFinite(Number(v)))&&
@@ -932,7 +957,6 @@ function openMonitoredSetupPopup(t){
   close.addEventListener("click",()=>dialog.close());
   bar.append(close);
   const detail=monitoredSetupPanel(t);
-  detail.querySelector(".monitored-setup-open")?.remove();
   dialog.append(bar,detail,make("p",
     "WATCH ONLY: Technical scenario, not a confirmed trigger or Pepperstone execution quote. Verify a new completed candle, source freshness, actual broker spread and event risk; no stake without verified equity.",
     "monitored-setup-dialog-note"));
@@ -947,15 +971,11 @@ function monitoredSetupPanel(t){
   const heading=make("div",undefined,"monitored-setup-head");
   heading.append(make("b","TRADE SETUP · "+(s.route==="NONE"?"NOT AVAILABLE":s.route)),
     make("span",s.status,"monitored-setup-status"));
-  const open=make("button","⤢ OPEN SETUP","monitored-setup-open");
-  open.type="button";
-  open.setAttribute("aria-label","Open "+t.instrument.replace("_","/")+" trade setup");
-  open.addEventListener("click",()=>openMonitoredSetupPopup(t));
-  panel.append(heading,open);
+  panel.append(heading);
   const grid=make("div",undefined,"monitored-setup-levels");
   const fmt=v=>v==null?"—":money(v);
   const fields=[
-    ["TRIGGER",fmt(s.trigger)],["INDICATIVE ENTRY",fmt(s.entry)],
+    ["TRIGGER",fmt(s.trigger)],["INDICATIVE ENTRY",s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry)],
     ["STOP / INVALIDATION",fmt(s.stop)],["NEAREST TP1",fmt(s.tp1)],
     ["NET REWARD / RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"],
     ["EXPIRES",s.expiry?uk(s.expiry):"—"]
@@ -967,8 +987,10 @@ function monitoredSetupPanel(t){
   }
   panel.append(grid);
   if(s.entryZoneLow!=null)panel.append(make("small",
-    "EMA20 pullback zone "+fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh)+
-    " · must touch zone and close back in direction on a NEW completed M15 bar."));
+    (s.route==="SCOUT PROVISIONAL PLAN"?
+      "Scout paper entry zone · no verified trigger, NOT approved for live entry.":
+      "EMA20 pullback zone "+fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh)+
+      " · must touch zone and close back in direction on a NEW completed M15 bar.")));
   else if(s.trigger!=null)panel.append(make("small",
     "Future breakout requires a NEW completed M15 close beyond trigger; no retrospective fill."));
   panel.append(make("p",(s.reasons||[s.reason]).join(" · ")+
@@ -1033,7 +1055,7 @@ function renderHourlyCohorts(){
     const card=make("article",undefined,"current-watch-card"+(short?" short":""));
     const head=make("div",undefined,"current-watch-head");
     head.append(make("strong",t.instrument.replace("_","/")),make("span",short?"▼ SELL BIAS":"▲ BUY BIAS","current-watch-tag"));
-    card.append(head,watchPotentialLine(t),monitoredSetupPanel(t));
+    card.append(head,watchPotentialLine(t));
     const started=make("div",undefined,"current-watch-start");
     started.append(make("b","WATCH STARTED "+(Number.isFinite(Date.parse(watchStarted))?uk(watchStarted):"UNKNOWN")),
       make("strong","AGE "+elapsedLabel(Date.now()-Date.parse(watchStarted))));
