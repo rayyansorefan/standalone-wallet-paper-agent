@@ -138,13 +138,36 @@ assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watc
 const cad=$("hourlyCohortCards").children.find(c=>
   c.children.some(n=>n.tagName==="div"&&n.children.some(z=>z.textContent==="CAD/CHF")));
 if(cad){
-  const origin=feed.learning.paper_audit.candidates.find(x=>x.id==="PRIORITY-20261026-CAD_CHF-LONG");
+  // The public detailed window rolls forward. Do not hard-code an October 26
+  // timestamp when that older candidate is no longer in the retained window.
+  // Instead verify the rendered watch against the earliest retained same-day
+  // directional observation and its immutable first-observed price.
+  const londonDay=t=>new Intl.DateTimeFormat("en-GB",{
+    timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"
+  }).format(new Date(t));
+  const direction=cad.children[0].children.some(n=>String(n.textContent).includes("SELL BIAS"))?"SHORT":"LONG";
+  const retained=feed.learning.paper_audit.candidates.filter(x=>
+    x.source==="AUTOMATED_RESEARCH_PRIORITY"&&x.instrument==="CAD_CHF"&&x.direction===direction)
+    .sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
+  assert.ok(retained.length,"CAD/CHF card must have a retained source observation");
+  const latest=retained[0];
+  const peers=retained.filter(x=>londonDay(x.created_at)===londonDay(latest.created_at));
+  const origin=peers.filter(x=>Number(x.tracking?.reference_price)>0&&
+    Number.isFinite(Date.parse(x.tracking?.reference_at))).at(-1)||latest;
+  const expectedStart=new Intl.DateTimeFormat("en-GB",{
+    timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",hour12:false
+  }).format(new Date(origin.created_at));
   assert.ok(cad.children.some(c=>String(c.className).includes("current-watch-start")&&
-    c.children.some(n=>String(n.textContent).includes("17:39"))),
-    "Repeated CAD/CHF snapshots must retain first directional watch timestamp");
+    c.children.some(n=>String(n.textContent).includes(expectedStart))),
+    "CAD/CHF watch start must match earliest retained same-day directional observation");
   const move=cad.children.find(c=>String(c.className).includes("current-watch-move"));
-  assert.ok(move&&Math.abs(Number.parseFloat(move.textContent))>0.001,
-    "CAD/CHF later snapshot must not reset the original nonzero observed movement to 0%");
+  const base=Number(origin.tracking?.reference_price);
+  const quote=feed.pairs?.CAD_CHF?.quote||{};
+  const price=Number(direction==="SHORT"?quote.ask:quote.bid);
+  const expectedPct=(direction==="SHORT"?base-price:price-base)/base*100;
+  assert.ok(move&&Number.isFinite(expectedPct)&&
+    Math.abs(Number.parseFloat(move.textContent)-expectedPct)<0.002,
+    "CAD/CHF movement must use its frozen original quote, not reset on a later snapshot");
 }
 assert.ok(visualCard.children.some(c=>String(c.className).includes("current-watch-move")),
   "Hourly cards must clearly display hypothetical directional price movement");
