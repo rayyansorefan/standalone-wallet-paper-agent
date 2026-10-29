@@ -211,7 +211,7 @@ body{background:#07111f;color:#edf5ff}
 .early-board .heading{margin-bottom:12px}
 .early-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
 .early-card{min-width:0;background:#11293c;border:1px solid #496476;border-top:3px solid #f7be61;border-radius:12px;padding:14px}
-.early-card.unfilled{border-top-color:#6bdac2}
+.early-card.unfilled{border-top-color:#6bdac2}.early-scout-heading{margin:20px 0 7px;border-top:1px solid #385468;padding-top:16px}.early-scout-heading h3{margin:0 0 4px;color:#a7eed2;font-size:18px}.early-scout-heading p{margin:0;color:#bbcfda;font-size:12px}
 .early-head{display:flex;justify-content:space-between;align-items:flex-start;gap:9px}
 .early-head strong{font-size:20px}
 .early-state{display:inline-block;border:1px solid #9c7640;color:#ffdc97;background:#463a2b;font-size:10px;font-weight:850;padding:5px 7px;border-radius:8px;line-height:1.4;text-align:right}
@@ -292,6 +292,9 @@ body{background:#07111f;color:#edf5ff}
     <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>One current primary watch per currency pair, ranked against other pairs. Older signals remain in each pair’s audit history, not competing entry plans. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
     <div class="early-toolbar"><span id="earlyCount">Ranking watches…</span><select id="earlyScope" aria-label="Watch cohort"><option value="ACTIVE">Active watches</option><option value="EXPIRED">Expired &amp; missed</option><option value="ALL">All tracked</option></select><select id="earlySort" aria-label="Ranking method"><option value="POTENTIAL">Highest potential</option><option value="PERFORMANCE">Best past move</option><option value="NEWEST">Newest first</option></select><button id="earlyToggle" type="button">Show all ranked</button></div>
     <div id="earlyGrid" class="early-grid"></div>
+    <div class="early-scout-heading"><h3>Current market scouts · updated each snapshot</h3><p>Top research candidates remain visible even when no full entry plan qualifies. A directional bias or reference level is NOT an entry signal.</p></div>
+    <p id="scoutSummary" class="early-times">Awaiting current research.</p>
+    <div id="scoutGrid" class="early-grid"></div>
     <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Ranking scores are heuristic, not winning probabilities. Past favourable movement is not a filled trade or permission to chase.</p>
   </div>
 </section>
@@ -464,8 +467,68 @@ function watchPotentialLine(t){
     make("span",potential.reason+" · Heuristic, not entry approval or win probability"));
   return line;
 }
+
+function renderCurrentScouts(){
+  const holder=el("scoutGrid"),status=el("scoutSummary");
+  if(!holder||!status||!feed)return;
+  const diagnostics=new Map((feed.learning?.entry_diagnostics||[]).filter(x=>visiblePair(x.instrument)).map(x=>[x.instrument,x]));
+  const supplied=(feed.learning?.current_scouts||[]).filter(x=>visiblePair(x.instrument));
+  const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
+    .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
+  const scouts=(supplied.length?supplied:fallback).slice(0,10);
+  const current=scouts.filter(x=>{const at=Date.parse(x.source_quote_at||feed.pairs?.[x.instrument]?.quote?.time);
+    return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
+  status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
+    " SHOWN · "+(stale?"SOURCE STALE — NO LIVE ENTRY":"SOURCE "+uk(feed.snapshot_at))+
+    " · NOT BROKER TRADES";
+  if(!scouts.length){holder.replaceChildren(make("p","No current research candidates published. This is a research coverage gap, not evidence of no market movement.","early-empty"));return}
+  holder.replaceChildren(...scouts.map((item,index)=>{
+    const name=item.instrument,p=feed.pairs?.[name]||{},q=p.quote||{},diag=diagnostics.get(name)||{};
+    const bias=(frame)=>{const i=frame?.indicators||{},a=Number(i.ema20),b=Number(i.ema50);
+      return i.ema20!=null&&i.ema50!=null&&Number.isFinite(a)&&Number.isFinite(b)?(a>b?"LONG":a<b?"SHORT":"MIXED"):"MIXED"};
+    const m15=bias(p.frames?.M15),h1=bias(p.frames?.H1);
+    const side=item.direction||diag.direction||(m15===h1?m15:"MIXED");
+    const quoteAt=item.source_quote_at||q.time;
+    const fresh=!stale&&Number.isFinite(Date.parse(quoteAt))&&Date.parse(quoteAt)<=Date.now()+300000&&Date.now()-Date.parse(quoteAt)<4200000;
+    const score=Number(item.score_100??item.priority_score??item.priority);
+    const scored=Number.isFinite(score)&&score>=0&&score<=100;
+    const plan=item.plan||diag.priced_paper_preview||null;
+    const blockers=(item.blockers||diag.blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER");
+    const reference=item.reference_level??diag.reference_m15_level;
+    const rule=item.reference_rule||diag.reference_rule||"No independently verified entry trigger calculated";
+    const card=make("article",undefined,"early-card");
+    const head=make("div",undefined,"early-head");
+    head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+(side==="LONG"?"BUY BIAS":side==="SHORT"?"SELL BIAS":"MIXED BIAS")),
+      make("span",fresh?"🟠 WAIT · NOT APPROVED":"🔴 STALE · NO ENTRY","early-state"));
+    card.append(head);
+    const scoreline=make("div",undefined,"early-scoreline"+(!scored||score<50?" weak":""));
+    scoreline.append(make("b",scored?"RESEARCH SCORE "+Number(score.toFixed(1))+"/100":"UNRATED RESEARCH PRIORITY"),
+      make("span","Heuristic ranking only · NOT a success probability"));card.append(scoreline);
+    card.append(make("p","OANDA bid "+money(q.bid)+" · ask "+money(q.ask)+" · "+(quoteAt?uk(quoteAt):"quote unavailable"),"early-times"));
+    const levels=make("div",undefined,"early-levels");
+    const fields=[
+      ["M15 reference",reference==null?"NOT CALCULATED":money(reference),""],
+      ["Entry zone",plan&&fresh?money(plan.entry_zone_low)+"–"+money(plan.entry_zone_high):"NOT PRICED",""],
+      ["Stop / target",plan&&fresh?money(plan.stop)+" / "+money(plan.tp1):"NOT PRICED",""]
+    ];
+    for(const [label,value,cls] of fields){const cell=make("div",undefined,"early-level "+cls);
+      cell.append(make("small",label),make("b",value));levels.append(cell)}
+    card.append(levels);
+    card.append(make("p","Trigger research: "+rule+" · "+(item.next_m15_check_at||diag.next_m15_check_at?"Next M15 check "+uk(item.next_m15_check_at||diag.next_m15_check_at):"No confirmed next check"),"early-caption"));
+    const reasons=blockers.slice(0,3).map(x=>x.detail||x.code);
+    card.append(make("p",reasons.length?"Why WAIT: "+reasons.join(" · "):"Why WAIT: no completed and broker-verified entry confirmation; news and Pepperstone spread require review.","early-caption"));
+    const action=make("div",undefined,"early-action");
+    action.append(make("small",plan&&fresh?"PAPER PRICING ONLY · No approved order or fill.":"NO DEFENSIBLE ENTRY / STOP / TARGET YET · DO NOT ENTER."));
+    const btn=make("button","Full chart");btn.type="button";
+    btn.addEventListener("click",()=>{if(!feed.pairs?.[name])return;pair=name;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
+    action.append(btn);card.append(action);
+    return card;
+  }));
+}
+
 function renderEarlyOpportunities(){
   const holder=el("earlyGrid");if(!holder)return;
+  renderCurrentScouts();
   const data=feed?.learning?.opportunity_audit||{},rows=Array.isArray(data.recent)?data.recent:[];
   el("earlyAsOf").textContent="TRACKED "+rows.length+" LATEST · "+uk(data.updated_at||feed.snapshot_at);
   const valid=rows.filter(t=>visiblePair(t.instrument)&&Number(t.entry_low)>0&&
@@ -490,8 +553,9 @@ function renderEarlyOpportunities(){
    (audit.ever_meaningful_adverse??"—")+" ADVERSE OBSERVATIONS";
   el("earlyToggle").textContent=earlyExpanded?"Show top 6 pairs":"Show all "+selected.length+" pairs";
   el("earlyToggle").disabled=selected.length<=6;
-  if(!selected.length){holder.replaceChildren(make("p",valid.length?
-   "No watches in this category; switch filters.":"No forward-tracked watches in the latest feed.","early-empty"));return}
+  if(!selected.length){holder.replaceChildren(make("p",earlyScope==="ACTIVE"?
+   "No active priced watches: recent plans expired and no new one has met the entry-pricing checks. Current market scouts appear below; switch to All tracked for expired history.":
+   "No watches in this category; current market scouts are shown separately below.","early-empty"));return}
   holder.replaceChildren(...shown.map(t=>{
     const unfilled=t.tracking_status==="FAVOURABLE_MOVE_WITHOUT_VERIFIED_ENTRY",short=t.direction==="SHORT";
     const archived=Date.parse(t.expires_at)<=Date.now(),potential=t._potential,ordinal=selected.indexOf(t)+1;
