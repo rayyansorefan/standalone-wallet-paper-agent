@@ -484,6 +484,9 @@ function renderCurrentScouts(){
   if(!holder||!status||!feed)return;
   const diagnostics=new Map((feed.learning?.entry_diagnostics||[]).filter(x=>visiblePair(x.instrument)).map(x=>[x.instrument,x]));
   const supplied=(feed.learning?.current_scouts||[]).filter(x=>visiblePair(x.instrument));
+  const researchByPair=new Map((feed.research_setups||[])
+    .filter(s=>visiblePair(s.instrument)&&s.approved_entry===false)
+    .map(s=>[s.instrument,s]));
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
     .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
   const scouts=(supplied.length?supplied:fallback).slice(0,10);
@@ -495,7 +498,7 @@ function renderCurrentScouts(){
     if(!previous||Date.parse(watch.created_at)>Date.parse(previous.created_at))
       latestHourly.set(watch.instrument,watch);
   }
-  const current=scouts.filter(x=>{const at=Date.parse(x.source_quote_at||feed.pairs?.[x.instrument]?.quote?.time);
+  const current=scouts.filter(x=>{const at=Date.parse(feed.pairs?.[x.instrument]?.quote?.time||x.source_quote_at);
     return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
   status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
     " SHOWN · "+(stale?"SOURCE STALE — NO LIVE ENTRY":"SOURCE "+uk(feed.snapshot_at))+
@@ -507,17 +510,37 @@ function renderCurrentScouts(){
       return i.ema20!=null&&i.ema50!=null&&Number.isFinite(a)&&Number.isFinite(b)?(a>b?"LONG":a<b?"SHORT":"MIXED"):"MIXED"};
     const m15=bias(p.frames?.M15),h1=bias(p.frames?.H1);
     const side=item.direction||latestHourly.get(name)?.direction||diag.direction||(m15===h1?m15:"MIXED");
-    const quoteAt=item.source_quote_at||q.time;
+    const quoteAt=q.time||item.source_quote_at;
     const fresh=!stale&&Number.isFinite(Date.parse(quoteAt))&&Date.parse(quoteAt)<=Date.now()+300000&&Date.now()-Date.parse(quoteAt)<4200000;
     const context=["LONG","SHORT"].includes(side)?
       directionalTechnicalPotential({instrument:name,direction:side}):
       {score:null,label:"POTENTIAL UNRATED",reason:"M15/H1 directional conflict"};
     const score=context.score,scored=score!=null&&Number.isFinite(score);
     const screening=Number(item.priority_score??item.priority);
-    const plan=item.plan||diag.priced_paper_preview||null;
     const blockers=(item.blockers||diag.blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER");
     const reference=item.reference_level??diag.reference_m15_level;
     const rule=item.reference_rule||diag.reference_rule||"No independently verified entry trigger calculated";
+    const research=researchByPair.get(name);
+    const r=research&&Number.isFinite(Date.parse(research.source_quote_at))&&
+      Math.abs(Date.parse(quoteAt)-Date.parse(research.source_quote_at))<=20*60000?research:null;
+    const proposed=item.plan||diag.priced_paper_preview||(r?{
+      entry_zone_low:r.entry_low,entry_zone_high:r.entry_high,stop:r.stop,tp1:r.tp1,tp2:r.tp2,
+      net_rr_estimate:r.net_rr_estimate,source_quote_at:r.source_quote_at,
+      trigger_rule:r.trigger,entry_route:r.entry_route,approved_entry:false
+    }:null);
+    const plan=proposed&&Number.isFinite(Date.parse(proposed.source_quote_at||quoteAt))&&
+      Math.abs(Date.parse(quoteAt)-Date.parse(proposed.source_quote_at||quoteAt))<=20*60000?
+      proposed:null;
+    const scoutContext={instrument:name,direction:side,created_at:quoteAt,
+      scout_plan:plan&&fresh?plan:null,scout_reference_rule:rule,
+      scout_blockers:item.blockers||diag.blockers||[]};
+    const scenario=fresh?buildMonitoredScenario(scoutContext):null;
+    const displayLevel=v=>v==null||!Number.isFinite(Number(v))?"—":money(v);
+    const showZone=scenario?.entryZoneLow!=null?
+      displayLevel(scenario.entryZoneLow)+"–"+displayLevel(scenario.entryZoneHigh):
+      displayLevel(scenario?.entry);
+    const haveEntry=scenario&&(scenario.entryZoneLow!=null||scenario.entry!=null);
+    const fullyPriced=haveEntry&&scenario.stop!=null&&scenario.tp1!=null&&scenario.netRR!=null;
     const card=make("article",undefined,"early-card");
     const head=make("div",undefined,"early-head");
     head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+(side==="LONG"?"BUY BIAS":side==="SHORT"?"SELL BIAS":"MIXED BIAS")),
@@ -531,8 +554,9 @@ function renderCurrentScouts(){
     const levels=make("div",undefined,"early-levels");
     const fields=[
       ["M15 reference",reference==null?"NOT CALCULATED":money(reference),""],
-      ["Entry zone",plan&&fresh?money(plan.entry_zone_low)+"–"+money(plan.entry_zone_high):"NOT PRICED",""],
-      ["Stop / target",plan&&fresh?money(plan.stop)+" / "+money(plan.tp1):"NOT PRICED",""]
+      ["Entry zone",haveEntry?showZone:"NOT PRICED",""],
+      ["Stop / target",scenario?.stop!=null?displayLevel(scenario.stop)+" / "+displayLevel(scenario.tp1):"NOT PRICED",""],
+      ["Net reward / risk",scenario?.netRR!=null?scenario.netRR.toFixed(2)+":1":"NOT CALCULABLE",""]
     ];
     for(const [label,value,cls] of fields){const cell=make("div",undefined,"early-level "+cls);
       cell.append(make("small",label),make("b",value));levels.append(cell)}
@@ -541,14 +565,15 @@ function renderCurrentScouts(){
     const reasons=blockers.slice(0,3).map(x=>x.detail||x.code);
     card.append(make("p",reasons.length?"Why WAIT: "+reasons.join(" · "):"Why WAIT: no completed and broker-verified entry confirmation; news and Pepperstone spread require review.","early-caption"));
     const action=make("div",undefined,"early-action");
-    action.append(make("small",plan&&fresh?"PAPER PRICING ONLY · No approved order or fill.":"NO DEFENSIBLE ENTRY / STOP / TARGET YET · DO NOT ENTER."));
+    action.append(make("small",fullyPriced?
+      (scenario.netRR>=1.35?"PAPER-ONLY PRICE LEVELS · Trigger and risk gates not approved.":
+        "PAPER-ONLY LEVELS · NET R:R BELOW 1.35 · DO NOT ENTER.") :
+      "INCOMPLETE · "+(scenario?.reason||"No complete structural target / verified trigger")+
+      " · DO NOT ENTER."));
     const open=make("button","⤢ OPEN SETUP","monitored-setup-open");
     open.type="button";
     open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
-    open.addEventListener("click",()=>openMonitoredSetupPopup({
-      instrument:name,direction:side,created_at:quoteAt,
-      scout_plan:plan&&fresh?plan:null,scout_reference_rule:rule
-    }));
+    open.addEventListener("click",()=>openMonitoredSetupPopup(scoutContext));
     action.append(open);
     const btn=make("button","Full chart");btn.type="button";
     btn.addEventListener("click",()=>{if(!feed.pairs?.[name])return;pair=name;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
@@ -872,17 +897,25 @@ function buildMonitoredScenario(t){
   // This is never a canonical signal or permission to execute.
   if(t.scout_plan){
     const p=t.scout_plan;
-    const low=Number(p.entry_zone_low),high=Number(p.entry_zone_high),
+    const low=Number(p.entry_zone_low??p.entry_low),high=Number(p.entry_zone_high??p.entry_high),
       stop=Number(p.stop),tp1=Number(p.tp1);
     const valid=[low,high,stop,tp1].every(v=>Number.isFinite(v)&&v>0)&&
       high>=low&&(short?stop>high&&tp1<low:stop<low&&tp1>high);
     if(!valid)return invalid("Current scout preview has incomplete or inconsistent entry, stop or target levels.");
+    const worst=short?low:high,risk=Math.abs(worst-stop),reward=Math.abs(worst-tp1);
+    const grossRR=risk>0?reward/risk:null;
+    const netRR=Number.isFinite(Number(p.net_rr_estimate))&&p.net_rr_estimate!=null?
+      Number(p.net_rr_estimate):
+      (risk>0?(reward-spread)/(risk+spread):null);
+    const blockers=(t.scout_blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER")
+      .slice(0,3).map(x=>x.detail||x.code);
     return {status:"PAPER WATCH · NOT APPROVED",route:"SCOUT PROVISIONAL PLAN",
-      trigger:null,entry:null,entryZoneLow:low,entryZoneHigh:high,stop,tp1,
-      grossRR:null,netRR:null,expiry:p.expires_at||null,asOf:q.time,
-      reasons:[t.scout_reference_rule||"No new completed entry trigger verified",
-        "This scout plan is a provisional research preview, not an approved or filled signal."],
-      note:"OANDA indicative preview; check new completed candles, event coverage and live Pepperstone spread."};
+      trigger:null,triggerText:p.trigger_rule||p.trigger||t.scout_reference_rule||"New completed candle required",
+      entry:null,entryZoneLow:low,entryZoneHigh:high,stop,tp1,
+      grossRR,netRR,expiry:p.expires_at||new Date(asOf+90*60000).toISOString(),asOf:q.time,
+      reasons:[p.trigger_rule||p.trigger||t.scout_reference_rule||"New completed confirmation candle required",
+        ...blockers,"This is a provisional research preview, not an approved or filled signal."],
+      note:"OANDA indicative levels; 90-minute research validity, subject to a fresh snapshot, new completed candle, event coverage and live Pepperstone spread."};
   }
   const completed=(frames.M15?.candles||[]).filter(b=>
     Number.isFinite(Date.parse(b.t))&&Date.parse(b.t)+15*60000<=asOf&&
@@ -906,9 +939,9 @@ function buildMonitoredScenario(t){
     .sort((a,b)=>short?b-a:a-b);
   const tp1=targets.length?targets[0]:null;
   const risk=Math.abs(entry-stop),reward=tp1==null?null:Math.abs(tp1-entry);
-  const cappedSpread=Math.min(10,Number(q.spread_pips)*1.15)*pip;
+  const conservativeSpread=Number(q.spread_pips)*1.15*pip;
   const grossRR=reward!=null&&risk>0?reward/risk:null,
-    netRR=reward!=null&&risk>0?(reward-cappedSpread)/(risk+cappedSpread):null;
+    netRR=reward!=null&&risk>0?(reward-conservativeSpread)/(risk+conservativeSpread):null;
   const reasons=[];
   if(Number(q.spread_pips)>10)reasons.push("spread exceeds 10-pip research cap");
   if(spread>.5*atr)reasons.push("spread is over half M15 volatility");
@@ -975,9 +1008,9 @@ function monitoredSetupPanel(t){
   const grid=make("div",undefined,"monitored-setup-levels");
   const fmt=v=>v==null?"—":money(v);
   const fields=[
-    ["TRIGGER",fmt(s.trigger)],["INDICATIVE ENTRY",s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry)],
+    ["TRIGGER",s.triggerText||fmt(s.trigger)],["INDICATIVE ENTRY",s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry)],
     ["STOP / INVALIDATION",fmt(s.stop)],["NEAREST TP1",fmt(s.tp1)],
-    ["NET REWARD / RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"],
+    ["NET REWARD / RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"+(s.netRR<1.35?" · BELOW MINIMUM":"")],
     ["EXPIRES",s.expiry?uk(s.expiry):"—"]
   ];
   for(const [label,value] of fields){
