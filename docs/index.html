@@ -476,6 +476,14 @@ function renderCurrentScouts(){
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
     .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
   const scouts=(supplied.length?supplied:fallback).slice(0,10);
+  const latestHourly=new Map();
+  for(const watch of feed.learning?.paper_audit?.candidates||[]){
+    if(watch.source!=="AUTOMATED_RESEARCH_PRIORITY"||!visiblePair(watch.instrument)||
+       !["LONG","SHORT"].includes(watch.direction))continue;
+    const previous=latestHourly.get(watch.instrument);
+    if(!previous||Date.parse(watch.created_at)>Date.parse(previous.created_at))
+      latestHourly.set(watch.instrument,watch);
+  }
   const current=scouts.filter(x=>{const at=Date.parse(x.source_quote_at||feed.pairs?.[x.instrument]?.quote?.time);
     return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
   status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
@@ -487,11 +495,14 @@ function renderCurrentScouts(){
     const bias=(frame)=>{const i=frame?.indicators||{},a=Number(i.ema20),b=Number(i.ema50);
       return i.ema20!=null&&i.ema50!=null&&Number.isFinite(a)&&Number.isFinite(b)?(a>b?"LONG":a<b?"SHORT":"MIXED"):"MIXED"};
     const m15=bias(p.frames?.M15),h1=bias(p.frames?.H1);
-    const side=item.direction||diag.direction||(m15===h1?m15:"MIXED");
+    const side=item.direction||latestHourly.get(name)?.direction||diag.direction||(m15===h1?m15:"MIXED");
     const quoteAt=item.source_quote_at||q.time;
     const fresh=!stale&&Number.isFinite(Date.parse(quoteAt))&&Date.parse(quoteAt)<=Date.now()+300000&&Date.now()-Date.parse(quoteAt)<4200000;
-    const score=Number(item.score_100??item.priority_score??item.priority);
-    const scored=Number.isFinite(score)&&score>=0&&score<=100;
+    const context=["LONG","SHORT"].includes(side)?
+      directionalTechnicalPotential({instrument:name,direction:side}):
+      {score:null,label:"POTENTIAL UNRATED",reason:"M15/H1 directional conflict"};
+    const score=context.score,scored=score!=null&&Number.isFinite(score);
+    const screening=Number(item.priority_score??item.priority);
     const plan=item.plan||diag.priced_paper_preview||null;
     const blockers=(item.blockers||diag.blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER");
     const reference=item.reference_level??diag.reference_m15_level;
@@ -502,8 +513,9 @@ function renderCurrentScouts(){
       make("span",fresh?"🟠 WAIT · NOT APPROVED":"🔴 STALE · NO ENTRY","early-state"));
     card.append(head);
     const scoreline=make("div",undefined,"early-scoreline"+(!scored||score<50?" weak":""));
-    scoreline.append(make("b",scored?"RESEARCH SCORE "+Number(score.toFixed(1))+"/100":"UNRATED RESEARCH PRIORITY"),
-      make("span","Heuristic ranking only · NOT a success probability"));card.append(scoreline);
+    scoreline.append(make("b",scored?"TECHNICAL WATCH · "+score+"/100":"POTENTIAL UNRATED"),
+      make("span",(Number.isFinite(screening)?"Screening priority "+screening.toFixed(1)+" · ":"")+
+        "Same technical scoring as Today's watches · NOT entry probability"));card.append(scoreline);
     card.append(make("p","OANDA bid "+money(q.bid)+" · ask "+money(q.ask)+" · "+(quoteAt?uk(quoteAt):"quote unavailable"),"early-times"));
     const levels=make("div",undefined,"early-levels");
     const fields=[
