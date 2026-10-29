@@ -80,6 +80,12 @@ assert.ok(!$("rows").children.some(row=>row.children.some(c=>c.textContent==="GB
 assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes("GBP/ZAR")),"Excluded pair must not be a priority card");
 assert.ok($("chart").children.length>30,"Completed candlesticks should render");
 assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
+assert.ok($("scoutGrid").children.length>=5,
+  "Fresh research scouts must remain visible alongside live or expired watches");
+const firstScout=$("scoutGrid").children[0];
+assert.match(JSON.stringify(firstScout.children),/RESEARCH SCORE|UNRATED RESEARCH PRIORITY/);
+assert.match(JSON.stringify(firstScout.children),/NOT PRICED|PAPER PRICING ONLY/,
+  "Research scouts must never invent an entry stop or target");
 const earlyCard=$("earlyGrid").children[0];
 assert.match(JSON.stringify(earlyCard.children),/GBP\/USD/);
 assert.match(JSON.stringify(earlyCard.children),/Entry zone/);
@@ -197,6 +203,15 @@ $("note").value="Stopped at original planned SL; unverified self-report";
 $("journal").listeners.submit({preventDefault(){}});
 assert.equal(JSON.parse(saved["fx-journal-local-v1"]).length,1);
 assert.match($("learningSummary").textContent,/self-reported/);
+// When all registered watches expire, current-ranked research must not disappear.
+feed.learning.opportunity_audit.recent.forEach(t=>{
+  t.expires_at=new Date(at.now-15*60*1000).toISOString();
+});
+$("earlyScope").listeners.change({target:{value:"ACTIVE"}});
+assert.equal($("earlyGrid").children.length,1);
+assert.match($("earlyGrid").children[0].textContent,/No active priced watches/);
+assert.ok($("scoutGrid").children.length>=5,
+  "Expired registered watches must not hide current unpriced scouts");
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
