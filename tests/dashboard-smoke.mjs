@@ -83,7 +83,7 @@ assert.equal($("earlyGrid").children.length,1,"Early opportunity card must rende
 assert.ok($("scoutGrid").children.length>=5,
   "Fresh research scouts must remain visible alongside live or expired watches");
 const firstScout=$("scoutGrid").children[0];
-assert.match(JSON.stringify(firstScout.children),/RESEARCH SCORE|UNRATED RESEARCH PRIORITY/);
+assert.match(JSON.stringify(firstScout.children),/TECHNICAL WATCH|POTENTIAL UNRATED/);
 assert.match(JSON.stringify(firstScout.children),/NOT PRICED|PAPER PRICING ONLY/,
   "Research scouts must never invent an entry stop or target");
 const earlyCard=$("earlyGrid").children[0];
