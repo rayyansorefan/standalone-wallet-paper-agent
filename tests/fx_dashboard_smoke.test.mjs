@@ -290,7 +290,8 @@ test('monitored FX plan and directional watch ratings reuse priced early-opportu
     entry:1.30,stop:1.31,tp1:1.28});
   assert.equal(direct.priced.entry_low,1.30);
   assert.equal(direct.priced.entry_high,1.30);
-  assert.match(page,/function renderHourlyCohorts\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\),monitoredSetupPanel\(t\)\)/);
+  assert.match(page,/function renderCurrentScouts\(\)[\s\S]*?action\.append\(open\)/);
+  assert.match(page,/function renderHourlyCohorts\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\)\)/);
   assert.match(page,/function renderPaperAudit\(\)[\s\S]*?card\.append\(head,watchPotentialLine\(t\),make\("p","Assessed/);
   assert.match(page,/Heuristic, not entry approval or win probability/);
 });
@@ -358,13 +359,15 @@ test('best tracked move sort uses the same frozen baseline and current exit-side
 test('monitored directional cards expose honest prospective trigger, stop, TP1, net RR and expiry', () => {
   assert.match(page, /function buildMonitoredScenario\(t\)/);
   assert.match(page, /function monitoredSetupPanel\(t\)/);
-  assert.match(page, /card\.append\(head,watchPotentialLine\(t\),monitoredSetupPanel\(t\)\)/);
+  assert.match(page, /card\.append\(head,watchPotentialLine\(t\)\)/);
+  assert.doesNotMatch(page, /card\.append\(head,watchPotentialLine\(t\),monitoredSetupPanel\(t\)\)/);
+  assert.match(page, /action\.append\(open\)/);
   for(const field of ['TRIGGER','INDICATIVE ENTRY','STOP / INVALIDATION','NEAREST TP1','NET REWARD / RISK','EXPIRES'])
     assert.ok(page.includes(field), 'missing visible setup field '+field);
   assert.match(page, /Reference levels recalculated from completed OANDA candles/);
   assert.match(page, /NOT an immutable admitted plan or confirmed entry/);
   assert.match(page, /gross 1\.50 \/ conservative net 1\.35/);
-  assert.match(page, /current-watch-card\.short \.monitored-setup-panel/);
+  assert.match(page, /\.monitored-setup-dialog \.monitored-setup-panel/);
 });
 
 test('stretched EUR/SEK-like short shows pullback reference but rejects wide-spread uneconomic chase', () => {
@@ -414,8 +417,9 @@ test('incomplete watched pair cannot fabricate a priced setup', () => {
 test('monitored setup opens a real keyboard-dismissable modal on tap, without approving a trade', () => {
   assert.match(page, /function openMonitoredSetupPopup\(t\)/);
   assert.match(page, /open\.type="button"/);
-  assert.match(page, /open\.setAttribute\("aria-label","Open "/);
-  assert.match(page, /open\.addEventListener\("click",\(\)=>openMonitoredSetupPopup\(t\)\)/);
+  assert.match(page, /open\.setAttribute\("aria-label","Open "\+name\.replace/);
+  assert.match(page, /open\.addEventListener\("click",\(\)=>openMonitoredSetupPopup\(\{/);
+  assert.match(page, /scout_plan:plan&&fresh\?plan:null/);
   assert.match(page, /const dialog=make\("dialog",undefined,"monitored-setup-dialog"\)/);
   assert.match(page, /dialog\.showModal\(\)/);
   assert.match(page, /close\.addEventListener\("click",\(\)=>dialog\.close\(\)\)/);
@@ -423,4 +427,22 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
   assert.match(page, /\.monitored-setup-dialog::backdrop/);
   assert.match(page, /WATCH ONLY: Technical scenario, not a confirmed trigger/);
+});
+
+test('scout setup popup uses the original priced paper preview instead of silently repricing it', () => {
+  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
+  assert.ok(helper);
+  const now=Date.now();
+  const context={feed:{pairs:{USD_MXN:{quote:{
+    tradeable:true,bid:18.7851,ask:18.7928,time:new Date(now).toISOString(),
+    pip_size:.0001,spread_pips:77},frames:{M15:{indicators:{atr14:.042,ema20:18.78}}}}}};
+  new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
+  const s=context.scenario({instrument:'USD_MXN',direction:'LONG',
+    created_at:new Date(now).toISOString(),scout_reference_rule:'New M15 close required',
+    scout_plan:{entry_zone_low:18.77,entry_zone_high:18.78,stop:18.71,tp1:18.86}});
+  assert.equal(s.route,'SCOUT PROVISIONAL PLAN');
+  assert.equal(s.status,'PAPER WATCH · NOT APPROVED');
+  assert.equal(s.entryZoneLow,18.77);
+  assert.equal(s.tp1,18.86);
+  assert.match(s.reasons.join(' '),/New M15 close required/);
 });
