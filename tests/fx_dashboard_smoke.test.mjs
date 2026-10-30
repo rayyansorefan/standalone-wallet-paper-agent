@@ -462,6 +462,45 @@ test('extended GBP/USD BUY is a non-chasing retest watch with frozen source leve
   assert.equal(s.trigger,null);
 });
 
+test('single FX desk decision shows green only for a fresh canonical confirmed trigger', () => {
+  const helper=page.match(/function renderFastEntry\\(\\)\\{[\\s\\S]*?(?=function renderPlans)/)?.[0];
+  assert.ok(helper,'decision renderer present');
+  const now=Date.now(),iso=m=>new Date(now+m*60000).toISOString();
+  const plan={id:'CANONICAL',instrument:'GBP_USD',direction:'LONG',
+    created_at:iso(-10),expires_at:iso(45),planned_entry:1.34,
+    stop:1.338,tp1:1.345,net_rr_at_spread_cap:1.7};
+  const event={id:'CANONICAL',pair:'GBP_USD',direction:'LONG',
+    entry:1.34,stop:1.338,tp1:1.345,expires_at:iso(45),
+    status:'PRICE_REASSESSMENT_ALERT_READY',alert_detected_at:iso(-2)};
+  const pair={quote:{time:iso(-1),tradeable:true,spread_pips:1.2}};
+  function run({eventRow=event,planRow=plan,quote=pair.quote,age=2,freshness='CURRENT',stale=false}={}){
+    const nodes={};
+    const make=(tag,value,cls)=>({tag,textContent:value,className:cls,style:{},children:[],
+      append(...parts){this.children.push(...parts)}});
+    const el=k=>nodes[k]||(nodes[k]={textContent:'',children:[],
+      replaceChildren(...parts){this.children=parts},
+      append(...parts){this.children.push(...parts)},
+      classList:{remove(){},add(){}}});
+    const ctx={el,make,stale,visiblePair:p=>p!=='GBP_ZAR',money:x=>String(x),uk:x=>x,n:x=>String(x),
+      feed:{fast_entry_monitor:{freshness,checked_at:iso(-age),
+        observations:eventRow?[eventRow]:[]},
+        signals:planRow?[planRow]:[],pairs:{GBP_USD:{quote}}}};
+    new Script(helper+';this.render=renderFastEntry;').runInNewContext(ctx);
+    ctx.render();
+    return {headline:nodes.fastEntryHeadline.textContent,cards:nodes.fastEntryCards.children};
+  }
+  assert.match(run().headline,/GREEN/);
+  assert.equal(run().cards.length,1);
+  assert.match(run({eventRow:null}).headline,/AMBER/);
+  assert.match(run({eventRow:null,planRow:null}).headline,/RED/);
+  assert.doesNotMatch(run({age:25}).headline,/GREEN/);
+  assert.doesNotMatch(run({freshness:'STALE'}).headline,/GREEN/);
+  assert.doesNotMatch(run({quote:{...pair.quote,time:iso(-10)}}).headline,/GREEN/);
+  assert.doesNotMatch(run({eventRow:{...event,id:'UNREGISTERED'}}).headline,/GREEN/);
+  assert.doesNotMatch(run({stale:true}).headline,/GREEN/);
+  assert.doesNotMatch(run({eventRow:{...event,expires_at:iso(-1)}}).headline,/GREEN/);
+});
+
 test('scout setup popup uses the original priced paper preview instead of silently repricing it', () => {
   const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
   assert.ok(helper);
