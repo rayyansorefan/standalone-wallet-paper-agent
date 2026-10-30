@@ -217,7 +217,7 @@ assert.ok($("scoutGrid").children.length>=5,
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
-assert.equal($("verdict").textContent,"NO DATA");
+assert.equal($("verdict").textContent,"🔴 NO TRADE");
 assert.equal($("entryState").textContent,"NO ENTRY");
 assert.match($("health").textContent,/STALE DATA/);
 assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
