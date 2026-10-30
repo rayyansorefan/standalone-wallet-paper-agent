@@ -533,7 +533,8 @@ function renderCurrentScouts(){
       proposed:null;
     const scoutContext={instrument:name,direction:side,created_at:quoteAt,
       scout_plan:plan&&fresh?plan:null,scout_reference_rule:rule,
-      scout_blockers:item.blockers||diag.blockers||[]};
+      scout_blockers:item.blockers||diag.blockers||[],
+      scout_phase:item.entry_phase||"UNPRICED_WATCH",scout_action:item.next_action||""};
     const scenario=fresh?buildMonitoredScenario(scoutContext):null;
     const displayLevel=v=>v==null||!Number.isFinite(Number(v))?"—":money(v);
     const showZone=scenario?.entryZoneLow!=null?
@@ -543,8 +544,15 @@ function renderCurrentScouts(){
     const fullyPriced=haveEntry&&scenario.stop!=null&&scenario.tp1!=null&&scenario.netRR!=null;
     const card=make("article",undefined,"early-card");
     const head=make("div",undefined,"early-head");
+    const phaseLabels={
+      EXTENDED_WAIT_RETEST:"🟠 RETEST ONLY · NOT APPROVED",
+      BREAKOUT_OBSERVED_REVIEW:"🟡 BREAKOUT SEEN · REVIEW",
+      EARLY_CONDITIONAL_WATCH:"🟡 EARLY SETUP · WAIT TRIGGER",
+      DATA_OR_COST_BLOCKED:"🔴 PRICE/COST BLOCKED",
+      UNPRICED_WATCH:"🟠 UNPRICED · NO ENTRY"
+    };
     head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+(side==="LONG"?"BUY BIAS":side==="SHORT"?"SELL BIAS":"MIXED BIAS")),
-      make("span",fresh?"🟠 WAIT · NOT APPROVED":"🔴 STALE · NO ENTRY","early-state"));
+      make("span",fresh?(phaseLabels[item.entry_phase]||"🟠 WATCH · NOT APPROVED"):"🔴 STALE · NO ENTRY","early-state"));
     card.append(head);
     const scoreline=make("div",undefined,"early-scoreline"+(!scored||score<50?" weak":""));
     scoreline.append(make("b",scored?"TECHNICAL WATCH · "+score+"/100":"POTENTIAL UNRATED"),
@@ -561,7 +569,8 @@ function renderCurrentScouts(){
     for(const [label,value,cls] of fields){const cell=make("div",undefined,"early-level "+cls);
       cell.append(make("small",label),make("b",value));levels.append(cell)}
     card.append(levels);
-    card.append(make("p","Trigger research: "+rule+" · "+(item.next_m15_check_at||diag.next_m15_check_at?"Next M15 check "+uk(item.next_m15_check_at||diag.next_m15_check_at):"No confirmed next check"),"early-caption"));
+    card.append(make("p","NEXT ACTION: "+(fresh?(item.next_action||"WAIT · next completed candle and broker/news check"):"NO ENTRY · source stale"),"early-caption"));
+    card.append(make("p","Trigger research: "+(plan?.trigger_rule||rule)+" · "+(item.next_m15_check_at||diag.next_m15_check_at?"Next M15 check "+uk(item.next_m15_check_at||diag.next_m15_check_at):"No confirmed next check"),"early-caption"));
     const reasons=blockers.slice(0,3).map(x=>x.detail||x.code);
     card.append(make("p",reasons.length?"Why WAIT: "+reasons.join(" · "):"Why WAIT: no completed and broker-verified entry confirmation; news and Pepperstone spread require review.","early-caption"));
     const action=make("div",undefined,"early-action");
@@ -909,11 +918,12 @@ function buildMonitoredScenario(t){
       (risk>0?(reward-spread)/(risk+spread):null);
     const blockers=(t.scout_blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER")
       .slice(0,3).map(x=>x.detail||x.code);
-    return {status:"PAPER WATCH · NOT APPROVED",route:"SCOUT PROVISIONAL PLAN",
+    return {status:p.requires_future_retest?"RETEST PENDING · NOT APPROVED":"PAPER WATCH · NOT APPROVED",
+      route:p.requires_future_retest?"M15 EMA20 RETEST · PAPER":"SCOUT PROVISIONAL PLAN",
       trigger:null,triggerText:p.trigger_rule||p.trigger||t.scout_reference_rule||"New completed candle required",
       entry:null,entryZoneLow:low,entryZoneHigh:high,stop,tp1,
       grossRR,netRR,expiry:p.expires_at||new Date(asOf+90*60000).toISOString(),asOf:q.time,
-      reasons:[p.trigger_rule||p.trigger||t.scout_reference_rule||"New completed confirmation candle required",
+      reasons:[t.scout_action||"Await a future completed candle",p.trigger_rule||p.trigger||t.scout_reference_rule||"New completed confirmation candle required",
         ...blockers,"This is a provisional research preview, not an approved or filled signal."],
       note:"OANDA indicative levels; 90-minute research validity, subject to a fresh snapshot, new completed candle, event coverage and live Pepperstone spread."};
   }
@@ -1020,7 +1030,7 @@ function monitoredSetupPanel(t){
   }
   panel.append(grid);
   if(s.entryZoneLow!=null)panel.append(make("small",
-    (s.route==="SCOUT PROVISIONAL PLAN"?
+    (s.route==="SCOUT PROVISIONAL PLAN"||s.route==="M15 EMA20 RETEST · PAPER"?
       "Scout paper entry zone · no verified trigger, NOT approved for live entry.":
       "EMA20 pullback zone "+fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh)+
       " · must touch zone and close back in direction on a NEW completed M15 bar.")));
