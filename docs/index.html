@@ -317,7 +317,7 @@ body{background:#07111f;color:#edf5ff}
   </div>
 </section>
 <section class="section today-focus" id="learning" aria-label="Today's monitored FX trades">
-  <div class="heading"><div><div class="eyebrow">LATEST RESEARCH · DECISION FIRST</div><h2>Today's monitored research — not entry approval</h2><p>🔴 NO TRADE unless the Decision Desk shows a new GREEN approved trigger. These watches track opportunities; the engine decides whether they qualify.</p></div><span class="label" id="paperAsOf">LOADING RESEARCH</span></div>
+  <div class="heading"><div><div class="eyebrow">LATEST RESEARCH · DECISION FIRST</div><h2>Monitored FX recommendations</h2><p>Best-ranked watches first. Open a recommendation to see BUY/SELL, entry zone, stop, target and the next condition. 🟡 WATCH is conditional research; only 🟢 GREEN is an approved trigger.</p></div><span class="label" id="paperAsOf">LOADING RESEARCH</span></div>
   <div class="panel" id="paperAuditPanel">
     <div class="current-visual-strip" id="currentVisualStrip" aria-label="Current FX research snapshot"></div>
     <div id="currentPlansSurface">
@@ -1064,7 +1064,7 @@ function monitoredSetupPanel(t){
   const economicsOK=priced&&s.netRR!=null&&s.netRR>=1.35&&s.grossRR!=null&&s.grossRR>=1.5&&
     !reasons.some(x=>/spread exceeds|spread is over|stop outside|no independent structure target/i.test(x));
   const eventClear=feed?.news_status==="OK"&&!reasons.some(x=>/high-impact event window/i.test(x));
-  const candidate=quoteOK&&priced&&expiryOK&&economicsOK&&eventClear;
+  const candidate=quoteOK&&priced&&expiryOK&&economicsOK; // news may remain pending for WATCH, never for GREEN
   const side=t.direction==="SHORT"?"SELL":"BUY";
   const condition=s.triggerText||t.scout_action||(s.trigger!=null?
     "NEW completed M15 close beyond "+money(s.trigger):"NEW completed M15 confirmation and plan admission");
@@ -1076,13 +1076,13 @@ function monitoredSetupPanel(t){
     "A future completed price trigger and canonical plan approval are still required.";
   const banner=make("div",undefined,"monitored-setup-verdict");
   banner.classList.add(candidate?"watch":"");
-  banner.append(make("strong",candidate?"🟡 WATCH "+side+" — WAIT FOR TRIGGER":"🔴 SKIP "+side+" — NO ENTRY"),
+  banner.append(make("strong",candidate?"🟡 WATCH "+side+" — "+(eventClear?"WAIT FOR TRIGGER":"NEWS + TRIGGER PENDING"):"🔴 SKIP "+side+" — NO ENTRY"),
     make("p",candidate?"A priced conditional research idea, not a confirmed entry.":"Not suitable for entry at this review. "+primary));
   panel.append(banner);
   const action=make("p",undefined,"monitored-setup-next");
   action.append(make("b","WHAT TO DO: "+(candidate?"WAIT — ":"DO NOT ENTER — ")),
     document.createTextNode(candidate?
-      "Watch for "+condition+". The engine must confirm the completed trigger, clear news/cost checks and admit the plan before GREEN.":
+      "Watch for "+condition+". "+(eventClear?"":"Official news clearance is still pending. ")+"The engine must confirm the completed trigger and admit the plan before GREEN.":
       "The engine will reassess on its next snapshot; you do not need to interpret the indicators."));
   panel.append(action);
   const heading=make("div",undefined,"monitored-setup-head");
@@ -1121,6 +1121,7 @@ function renderHourlyCohorts(){
   const selected=(scope.value==="ALL"?rows:scope.value==="LATEST"?
     dayRows.filter(t=>Date.parse(t.created_at)===latestTime):dayRows)
     .slice().sort((a,b)=>compareMonitored(a,b,sort.value));
+  const visibleRecommendations=scope.value==="LATEST"?selected.slice(0,3):selected;
   scope.onchange=renderHourlyCohorts;
   sort.onchange=renderHourlyCohorts;
   const window=feed?.learning?.paper_audit?.public_window||{};
@@ -1144,14 +1145,14 @@ function renderHourlyCohorts(){
   }
   summary.textContent=(window.truncated?"PUBLIC HISTORY LIMITED: "+window.published_candidates+" / "+window.private_total_candidates+". · ":"")+dayRows.length+
     " observations today · "+new Set(dayRows.map(t=>t.created_at)).size+" independent assessments · "+
-    selected.length+" shown · last collected "+uk(feed.snapshot_at)+". Directional research only.";
+    visibleRecommendations.length+" shown · last collected "+uk(feed.snapshot_at)+". Directional research only.";
   if(!selected.length){holder.replaceChildren(make("p","No timestamped research observations in this selection. Future hourly snapshots will be recorded independently; earlier hours cannot be backfilled.","setupempty"));return}
   const elapsedLabel=ms=>{
     if(!Number.isFinite(ms)||ms<0)return "UNKNOWN";
     const n=Math.floor(ms/60000),d=Math.floor(n/1440),h=Math.floor((n%1440)/60),m=n%60;
     return (d?d+"d ":"")+(h?h+"h ":"")+m+"m";
   };
-  holder.replaceChildren(...selected.map(t=>{
+  holder.replaceChildren(...visibleRecommendations.map(t=>{
     const short=t.direction==="SHORT";
     // Repeated hourly snapshots are distinct observations, but the same directional
     // watch retains its first same-day immutable observed-price baseline.
@@ -1165,6 +1166,15 @@ function renderHourlyCohorts(){
     const track=first.tracking||{};
     const firstObserved=track.reference_at||track.history?.[0]?.at||null;
     const card=make("article",undefined,"current-watch-card"+(short?" short":""));
+    const preview=buildMonitoredScenario(t),hasLevels=preview?.stop!=null&&preview?.tp1!=null&&
+      (preview?.entry!=null||preview?.entryZoneLow!=null);
+    const watchReadyForReview=!stale&&hasLevels&&preview.netRR!=null&&preview.netRR>=1.35&&
+      preview.grossRR!=null&&preview.grossRR>=1.5&&
+      (!preview.expiry||Date.parse(preview.expiry)>Date.now());
+    card.append(make("div",watchReadyForReview?
+      "🟡 WATCH "+(short?"SELL":"BUY")+" · TRIGGER PENDING":
+      "🔴 SKIP "+(short?"SELL":"BUY")+" · NO QUALIFIED ENTRY",
+      "current-watch-tag"));
     const head=make("div",undefined,"current-watch-head");
     head.append(make("strong",t.instrument.replace("_","/")),make("span",short?"▼ SELL BIAS":"▲ BUY BIAS","current-watch-tag"));
     card.append(head,watchPotentialLine(t));
@@ -1258,7 +1268,10 @@ function renderHourlyCohorts(){
     const openChart=make("button","View chart","current-watch-chartbtn");
     openChart.type="button";
     openChart.addEventListener("click",()=>{if(!feed.pairs[t.instrument])return;pair=t.instrument;el("pair").value=pair;tf="M15";chart();el("charts").scrollIntoView({behavior:"smooth",block:"start"})});
-    footer.append(openChart);card.append(footer);
+    const openRecommendation=make("button","ENTRY · STOP · TARGET","monitored-setup-open");
+    openRecommendation.type="button";
+    openRecommendation.addEventListener("click",()=>openMonitoredSetupPopup(t));
+    footer.append(openRecommendation,openChart);card.append(footer);
     return card;
   }));
 }
