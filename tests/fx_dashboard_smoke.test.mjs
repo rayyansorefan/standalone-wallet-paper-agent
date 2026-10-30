@@ -366,8 +366,8 @@ test('monitored directional cards expose honest prospective trigger, stop, TP1, 
   assert.match(page, /action\.append\(open\)/);
   for(const field of ['TRIGGER','INDICATIVE ENTRY','STOP / INVALIDATION','NEAREST TP1','NET REWARD / RISK','EXPIRES'])
     assert.ok(page.includes(field), 'missing visible setup field '+field);
-  assert.match(page, /Reference levels recalculated from completed OANDA candles/);
-  assert.match(page, /NOT an immutable admitted plan or confirmed entry/);
+  assert.match(page, /illustrative OANDA price levels calculated from completed historical candles/);
+  assert.match(page, /not an approved plan or confirmed entry/);
   assert.match(page, /gross 1\.50 \/ conservative net 1\.35/);
   assert.match(page, /\.monitored-setup-dialog \.monitored-setup-panel/);
 });
@@ -401,7 +401,7 @@ test('stretched EUR/SEK-like short shows pullback reference but rejects wide-spr
   assert.ok(s.reasons.some(r=>r.includes('spread exceeds 10-pip')));
   assert.ok(s.reasons.some(r=>r.includes('reward:risk floors')));
   assert.ok(s.reasons.some(r=>r.includes('wait for a NEW completed M15')));
-  assert.equal(s.note.includes('NOT an immutable admitted plan'),true);
+  assert.equal(s.note.includes('not an approved plan or confirmed entry'),true);
 });
 
 test('incomplete watched pair cannot fabricate a priced setup', () => {
@@ -430,7 +430,7 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /dialog\.addEventListener\("close",\(\)=>dialog\.remove\(\)/);
   assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
   assert.match(page, /\.monitored-setup-dialog::backdrop/);
-  assert.match(page, /WATCH ONLY: Technical scenario, not a confirmed trigger/);
+  assert.match(page, /VIEW SIMPLE TRADE RECOMMENDATION/);\n  assert.match(page, /WATCH .*WAIT FOR TRIGGER/);\n  assert.match(page, /SKIP .*NO ENTRY/);
 });
 
 test('extended GBP/USD BUY is a non-chasing retest watch with frozen source levels', () => {
@@ -484,7 +484,7 @@ test('single FX desk decision shows green only for a fresh canonical confirmed t
     const ctx={el,make,stale,visiblePair:p=>p!=='GBP_ZAR',money:x=>String(x),uk:x=>x,n:x=>String(x),
       feed:{fast_entry_monitor:{freshness,checked_at:iso(-age),
         observations:eventRow?[eventRow]:[]},
-        signals:planRow?[planRow]:[],pairs:{GBP_USD:{quote}}}};
+        signals:planRow?[planRow]:[],news_status:'OK',pairs:{GBP_USD:{quote}}}};
     new Script(helper+';this.render=renderFastEntry;').runInNewContext(ctx);
     ctx.render();
     return {headline:nodes.fastEntryHeadline.textContent,cards:nodes.fastEntryCards.children};
