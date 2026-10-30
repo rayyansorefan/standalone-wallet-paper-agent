@@ -20,7 +20,9 @@ test('public payload fits monitoring budget and retains authorised conditional s
     'hourly','sources','headlines','calendar','learning','public_compaction','fast_entry_monitor']);
   assert.ok(Object.keys(feed).every(k => allowed.has(k)), 'no unexpected fields');
   for (const item of feed.research_setups) {
-    assert.equal(item.status, 'CONDITIONAL_RESEARCH_NOT_TRIGGERED');
+    assert.ok(['CONDITIONAL_RESEARCH_NOT_TRIGGERED',
+      'EXTENDED_RETEST_PAPER_NOT_TRIGGERED'].includes(item.status),
+      'paper retest is not an approved signal');
     assert.equal(item.approved_entry, false);
   }
 });
