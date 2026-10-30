@@ -438,7 +438,7 @@ test('extended GBP/USD BUY is a non-chasing retest watch with frozen source leve
   assert.match(page, /BREAKOUT_OBSERVED_REVIEW:"🟡 BREAKOUT SEEN · REVIEW"/);
   assert.match(page, /NEXT ACTION:/);
   assert.match(page, /scout_phase:item.entry_phase/);
-  const helper=page.match(/function buildMonitoredScenario\\(t\\)\\{[\\s\\S]*?(?=function monitoredSetupPanel)/)?.[0];
+  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
   assert.ok(helper);
   const now=Date.now();
   const context={feed:{pairs:{GBP_USD:{quote:{
