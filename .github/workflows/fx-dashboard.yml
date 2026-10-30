@@ -39,7 +39,8 @@ jobs:
           assert isinstance(d['research_setups'],list)
           assert "GBP_ZAR" not in json.dumps(d), "Excluded GBP/ZAR still present in public feed"
           assert all(s.get('approved_entry') is False and
-                     s.get('status') == 'CONDITIONAL_RESEARCH_NOT_TRIGGERED'
+                     s.get('status') in {'CONDITIONAL_RESEARCH_NOT_TRIGGERED',
+                                          'EXTENDED_RETEST_PAPER_NOT_TRIGGERED'}
                      for s in d['research_setups'])
           print('Validated FX feed')
           PY
