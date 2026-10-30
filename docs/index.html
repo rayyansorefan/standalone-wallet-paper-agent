@@ -186,6 +186,8 @@ body{background:#07111f;color:#edf5ff}
 .monitored-setup-close{border:1px solid #78a9bb;border-radius:7px;background:#244259;color:#fff;padding:9px 12px;font-weight:800;cursor:pointer;touch-action:manipulation}
 .monitored-setup-dialog .monitored-setup-panel{margin:14px 0 8px}
 .monitored-setup-verdict{margin-top:12px;padding:14px 16px;border:1px solid #a65d68;border-radius:10px;background:#36212d;color:#ffe6e9}
+.monitored-setup-verdict.watch{background:#302b25;border-color:#9f8453;color:#ffefd0}
+.monitored-setup-verdict.watch p{color:#fbe8c9}
 .monitored-setup-verdict strong{display:block;font-size:19px;font-weight:900;letter-spacing:.2px}
 .monitored-setup-verdict p{margin:6px 0 0;font-size:14px;line-height:1.5;color:#ffe1e5}
 .monitored-setup-next{padding:11px 13px;margin:12px 0;border:1px solid #45687d;background:#132c40;border-radius:8px;font-size:13px;line-height:1.5;color:#e0f1fa}
@@ -584,7 +586,7 @@ function renderCurrentScouts(){
         "PAPER-ONLY LEVELS · reward/risk below 1.35 · DO NOT ENTER.") :
       "INCOMPLETE · "+(scenario?.reason||"No complete structural target / verified trigger")+
       " · DO NOT ENTER."));
-    const open=make("button","⤢ OPEN SETUP","monitored-setup-open");
+    const open=make("button","VIEW SIMPLE TRADE RECOMMENDATION","monitored-setup-open");
     open.type="button";
     open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
     open.addEventListener("click",()=>openMonitoredSetupPopup(scoutContext));
@@ -1033,9 +1035,9 @@ function openMonitoredSetupPopup(t){
   if(existing){existing.close();existing.remove();}
   const dialog=make("dialog",undefined,"monitored-setup-dialog");
   const pair=t.instrument.replace("_","/");
-  dialog.setAttribute("aria-label",pair+" research trade setup details");
+  dialog.setAttribute("aria-label",pair+" conditional research trade recommendation");
   const bar=make("div",undefined,"monitored-setup-dialog-bar");
-  bar.append(make("strong",pair+" · RESEARCH WATCH (NOT A TRADE)"));
+  bar.append(make("strong",pair+" · CONDITIONAL TRADE RECOMMENDATION"));
   const close=make("button","✕ Close","monitored-setup-close");
   close.type="button";close.setAttribute("aria-label","Close trade setup");
   close.addEventListener("click",()=>dialog.close());
@@ -1051,50 +1053,59 @@ function openMonitoredSetupPopup(t){
   else {dialog.setAttribute("open","");close.focus();}
 }
 function monitoredSetupPanel(t){
-  // Research scenario, not canonical entry approval: always make the next action explicit.
+  // Decision-first conditional research recommendation, never a broker order
+  // and never a false GREEN admission.
   const s=buildMonitoredScenario(t),panel=make("section",undefined,"monitored-setup-panel");
   const reasons=(s.reasons||[s.reason]).filter(Boolean).map(String);
-  const newsRisk=(feed?.news_status!=="OK")||reasons.some(x=>/news|official|release|event|calendar/i.test(x));
-  const expiryRisk=s.expiry&&Date.parse(s.expiry)<=Date.now();
-  const sourceRisk=stale||s.route==="NONE"||!Number.isFinite(Date.parse(s.asOf))||
-    Math.abs(Date.now()-Date.parse(s.asOf))>70*60000;
-  const costRisk=reasons.some(x=>/spread|reward|risk|target|stop|ATR/i.test(x))||
-    (s.netRR!=null&&s.netRR<1.35);
-  const primary=sourceRisk?"The price or completed-candle data needed for a current setup is unavailable.":
-    expiryRisk?"The research price levels have expired.":
-    newsRisk?"Official economic news and event risks have not been fully checked.":
-    costRisk?"The proposed entry, stop or target has not passed the required cost and risk checks.":
-    "No canonical plan or independently confirmed entry trigger exists for this research watch.";
-  const next=sourceRisk?"Wait for the engine's next successful collection and recheck.":
-    expiryRisk?"Wait for a new plan; expired reference levels cannot be reused.":
-    newsRisk?"The engine must complete its news review and verify a new completed M15 trigger before approval.":
-    "The engine must verify a new completed trigger and publish an approved plan before showing GREEN.";
-  const verdict=make("div",undefined,"monitored-setup-verdict");
-  verdict.append(make("strong","🔴 NO TRADE — DO NOT ENTER"),
-    make("p",primary+" Any prices below are illustrative research references, not an instruction to buy or sell."));
-  panel.append(verdict);
+  const quoteOK=!stale&&s.route!=="NONE"&&Number.isFinite(Date.parse(s.asOf))&&
+    Math.abs(Date.now()-Date.parse(s.asOf))<=70*60000;
+  const priced=s.stop!=null&&s.tp1!=null&&(s.entry!=null||s.entryZoneLow!=null);
+  const expiryOK=!s.expiry||Date.parse(s.expiry)>Date.now();
+  const economicsOK=priced&&s.netRR!=null&&s.netRR>=1.35&&s.grossRR!=null&&s.grossRR>=1.5&&
+    !reasons.some(x=>/spread exceeds|spread is over|stop outside|no independent structure target/i.test(x));
+  const eventClear=feed?.news_status==="OK"&&!reasons.some(x=>/high-impact event window/i.test(x));
+  const candidate=quoteOK&&priced&&expiryOK&&economicsOK&&eventClear;
+  const side=t.direction==="SHORT"?"SELL":"BUY";
+  const condition=s.triggerText||t.scout_action||(s.trigger!=null?
+    "NEW completed M15 close beyond "+money(s.trigger):"NEW completed M15 confirmation and plan admission");
+  const primary=!quoteOK?"Price data are unavailable or too old.":
+    !priced?"No complete entry, stop and target could be calculated.":
+    !expiryOK?"These reference prices have expired.":
+    !economicsOK?"The estimated reward versus risk or spread is unacceptable.":
+    !eventClear?"Official news and economic event checks are incomplete.":
+    "A future completed price trigger and canonical plan approval are still required.";
+  const banner=make("div",undefined,"monitored-setup-verdict");
+  banner.classList.add(candidate?"watch":"");
+  banner.append(make("strong",candidate?"🟡 WATCH "+side+" — WAIT FOR TRIGGER":"🔴 SKIP "+side+" — NO ENTRY"),
+    make("p",candidate?"A priced conditional research idea, not a confirmed entry.":"Not suitable for entry at this review. "+primary));
+  panel.append(banner);
   const action=make("p",undefined,"monitored-setup-next");
-  action.append(make("b","WHAT TO DO: WAIT. "),document.createTextNode(next));
+  action.append(make("b","WHAT TO DO: "+(candidate?"WAIT — ":"DO NOT ENTER — ")),
+    document.createTextNode(candidate?
+      "Watch for "+condition+". The engine must confirm the completed trigger, clear news/cost checks and admit the plan before GREEN.":
+      "The engine will reassess on its next snapshot; you do not need to interpret the indicators."));
   panel.append(action);
   const heading=make("div",undefined,"monitored-setup-head");
-  heading.append(make("b","RESEARCH LEVELS ONLY · "+(s.route==="NONE"?"UNAVAILABLE":s.route)),
-    make("span","NOT APPROVED","monitored-setup-status"));
+  heading.append(make("b",side+" SCENARIO · "+(s.route==="NONE"?"NO COMPLETE PLAN":s.route)),
+    make("span",candidate?"RESEARCH · PENDING":"NOT APPROVED","monitored-setup-status"));
   panel.append(heading);
-  const grid=make("div",undefined,"monitored-setup-levels"),fmt=v=>v==null?"—":money(v);
+  const fmt=v=>v==null?"—":money(v);
+  const grid=make("div",undefined,"monitored-setup-levels");
   const fields=[
-    ["FUTURE RESEARCH TRIGGER",s.triggerText||fmt(s.trigger)],
-    ["REFERENCE ENTRY — NOT ACTIVE",s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry)],
-    ["HYPOTHETICAL STOP",fmt(s.stop)],["HYPOTHETICAL TARGET",fmt(s.tp1)],
-    ["EST. NET REWARD/RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"+(s.netRR<1.35?" · BELOW MINIMUM":"")],
-    ["REFERENCE LEVELS EXPIRE",s.expiry?uk(s.expiry):"—"]
+    ["ENTRY CONDITION",condition],
+    ["INDICATIVE ENTRY · NOT ACTIVE",s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry)],
+    ["STOP / INVALIDATION",fmt(s.stop)],
+    ["NEAREST TP1",fmt(s.tp1)],
+    ["NET REWARD / RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"],
+    ["EXPIRES",s.expiry?uk(s.expiry):"—"]
   ];
   for(const [label,value] of fields){const cell=make("div");
     cell.append(make("small",label),make("strong",value));grid.append(cell);}
   panel.append(grid);
-  if(s.asOf)panel.append(make("small","OANDA quote: "+uk(s.asOf)+" · not an executable Pepperstone price."));
-  if(reasons.length)panel.append(make("p","Other research checks: "+reasons.slice(0,2).join(" · "),
+  if(s.asOf)panel.append(make("small","OANDA "+uk(s.asOf)+" · indicative prices, NOT Pepperstone bid/ask."));
+  if(!candidate&&reasons.length)panel.append(make("p","Main checks: "+reasons.slice(0,2).join(" · "),
     "monitored-setup-reason"));
-  panel.append(make("p","Do not trade these reference levels. Only the separate canonical Decision Desk can show a qualified entry.",
+  panel.append(make("p","Research preview only. No approved fill or automatic order; never enter from this watch without fresh confirmation and your Pepperstone quote, spread and risk check.",
     "monitored-setup-reason"));
   return panel;
 }
