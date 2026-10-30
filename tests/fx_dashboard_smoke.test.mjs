@@ -358,22 +358,22 @@ test('best tracked move sort uses the same frozen baseline and current exit-side
 });
 
 
-test('monitored directional cards expose honest prospective trigger, stop, TP1, net RR and expiry', () => {
+test('monitored popups present a decision, not generated entry prices', () => {
   assert.match(page, /function buildMonitoredScenario\(t\)/);
+  assert.match(page, /function monitoredDecision\(t\)/);
   assert.match(page, /function monitoredSetupPanel\(t\)/);
-  assert.match(page, /card\.append\(head,watchPotentialLine\(t\)\)/);
-  assert.doesNotMatch(page, /card\.append\(head,watchPotentialLine\(t\),monitoredSetupPanel\(t\)\)/);
-  assert.match(page, /action\.append\(open\)/);
-  for(const field of ['TRIGGER','INDICATIVE ENTRY','STOP / INVALIDATION','NEAREST TP1','NET REWARD / RISK','EXPIRES'])
-    assert.ok(page.includes(field), 'missing visible setup field '+field);
-  assert.match(page, /illustrative OANDA price levels calculated from completed historical candles/);
-  assert.match(page, /not an approved plan or confirmed entry/);
-  assert.match(page, /gross 1\.50 \/ conservative net 1\.35/);
+  assert.match(page, /No original priced entry\/stop\/target plan was admitted/);
+  assert.match(page, /No trade on this pair/);
+  assert.match(page, /YOUR ACTION:/);
+  assert.match(page, /ENTRY.*PROVISIONAL/);
+  assert.match(page, /STOP/);
+  assert.match(page, /TARGET/);
   assert.match(page, /\.monitored-setup-dialog \.monitored-setup-panel/);
+  assert.match(page, /grossRR>=1\.50&&s\.netRR>=1\.35/);
 });
 
-test('stretched EUR/SEK-like short shows pullback reference but rejects wide-spread uneconomic chase', () => {
-  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
+test('a short directional watch with no frozen plan cannot invent entry, stop or TP', () => {
+  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function openMonitoredSetupPopup)/)?.[0];
   assert.ok(helper);
   const now=Date.now(),floor=Math.floor(now/900000)*900000;
   const bars=[60,45,30].map((mins,i)=>({
@@ -384,24 +384,17 @@ test('stretched EUR/SEK-like short shows pullback reference but rejects wide-spr
   const context={feed:{news_status:'PARTIAL',calendar:[],pairs:{EUR_SEK:{
     quote:{time:new Date(now).toISOString(),bid:11.0235,ask:11.0267,
       pip_size:.0001,spread_pips:32,tradeable:true},
-    frames:{
-      M15:{indicators:{ema20:11.04352,atr14:.00483,support20:11.03029,resistance20:11.05264},candles:bars},
-      H1:{indicators:{adx14:52,support20:11.03811,resistance20:11.06578}},
-      H4:{indicators:{support20:11.03811,resistance20:11.1485}},
-      D:{indicators:{support20:11.04252,resistance20:11.36626}}
-    }
-  }}}};
+    frames:{M15:{indicators:{ema20:11.04352,atr14:.00483},candles:bars},
+      H1:{indicators:{adx14:52}}}
+  }}}}};
   new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
-  const s=context.scenario({instrument:'EUR_SEK',direction:'SHORT',created_at:new Date(now).toISOString()});
-  assert.match(s.status,/WATCH ONLY/);
-  assert.equal(s.route,'EMA20 PULLBACK / RETEST');
-  assert.ok(s.entry>s.tp1);
-  assert.ok(s.stop>s.entry);
-  assert.ok(s.netRR<1.35);
-  assert.ok(s.reasons.some(r=>r.includes('spread exceeds 10-pip')));
-  assert.ok(s.reasons.some(r=>r.includes('reward:risk floors')));
-  assert.ok(s.reasons.some(r=>r.includes('wait for a NEW completed M15')));
-  assert.equal(s.note.includes('not an approved plan or confirmed entry'),true);
+  const scenario=context.scenario({instrument:'EUR_SEK',direction:'SHORT',created_at:new Date(now).toISOString()});
+  assert.equal(scenario.status,'NO PRICED SIGNAL');
+  assert.equal(scenario.route,'NONE');
+  assert.equal(scenario.entry,null);
+  assert.equal(scenario.stop,null);
+  assert.equal(scenario.tp1,null);
+  assert.equal(scenario.spreadPips,32);
 });
 
 test('incomplete watched pair cannot fabricate a priced setup', () => {
@@ -431,8 +424,8 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
   assert.match(page, /\.monitored-setup-dialog::backdrop/);
   assert.match(page, /VIEW SIMPLE TRADE RECOMMENDATION/);
-  assert.match(page, /WATCH .*WAIT FOR TRIGGER/);
-  assert.match(page, /SKIP .*NO ENTRY/);
+  assert.match(page, /WATCH — WAIT/);
+  assert.match(page, /SKIP .*NO TRADE/);
 });
 
 test('extended GBP/USD BUY is a non-chasing retest watch with frozen source levels', () => {
