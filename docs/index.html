@@ -188,6 +188,13 @@ body{background:#07111f;color:#edf5ff}
 .monitored-setup-verdict{margin-top:12px;padding:14px 16px;border:1px solid #a65d68;border-radius:10px;background:#36212d;color:#ffe6e9}
 .monitored-setup-verdict.watch{background:#302b25;border-color:#9f8453;color:#ffefd0}
 .monitored-setup-verdict.watch p{color:#fbe8c9}
+.monitored-setup-verdict.green{background:#123e30;border-color:#56a98a;color:#c8ffe7}
+.monitored-setup-verdict.green p{color:#caf9e7}
+.monitored-simple-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.monitored-simple-prices>div{background:#132b3b;border:1px solid #47637a;border-radius:9px;padding:10px;min-width:0}
+.monitored-simple-prices small{display:block;font-size:10px;letter-spacing:.5px;color:#adc9df}
+.monitored-simple-prices b{display:block;font-size:19px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+@media(max-width:520px){.monitored-simple-prices{grid-template-columns:1fr}.monitored-simple-prices>div{display:flex;justify-content:space-between;gap:12px}}
 .monitored-setup-verdict strong{display:block;font-size:19px;font-weight:900;letter-spacing:.2px}
 .monitored-setup-verdict p{margin:6px 0 0;font-size:14px;line-height:1.5;color:#ffe1e5}
 .monitored-setup-next{padding:11px 13px;margin:12px 0;border:1px solid #45687d;background:#132c40;border-radius:8px;font-size:13px;line-height:1.5;color:#e0f1fa}
@@ -935,8 +942,10 @@ function buildMonitoredScenario(t){
   const pip=Number(q.pip_size),spread=Number(q.spread_pips)*pip,
     atr=Number(m.atr14),ema=Number(m.ema20),bid=Number(q.bid),ask=Number(q.ask);
   const short=t.direction==="SHORT",sign=short?-1:1;
-  const invalid=(reason)=>({status:"UNPRICED · NO DEFENSIBLE SETUP",route:"NONE",
-    reason,trigger:null,entry:null,stop:null,tp1:null,netRR:null,grossRR:null,expiry:null});
+  const invalid=(reason)=>({status:"NO PRICED SIGNAL",route:"NONE",
+    reason,direction:t.direction,trigger:null,entry:null,entryZoneLow:null,entryZoneHigh:null,
+    stop:null,tp1:null,netRR:null,grossRR:null,expiry:null,asOf:q.time,
+    spreadPips:Number(q.spread_pips),triggerText:t.scout_reference_rule||null});
   if(!["LONG","SHORT"].includes(t.direction)||q.tradeable!==true||
     ![pip,spread,atr,ema,bid,ask].every(Number.isFinite)||
     !(pip>0&&spread>0&&atr>0&&ema>0&&bid>0&&ask>bid))
@@ -970,63 +979,12 @@ function buildMonitoredScenario(t){
         ...blockers,"This is a provisional research preview, not an approved or filled signal."],
       note:"OANDA indicative levels; 90-minute research validity, subject to a fresh snapshot, new completed candle, event coverage and live Pepperstone spread."};
   }
-  const completed=(frames.M15?.candles||[]).filter(b=>
-    Number.isFinite(Date.parse(b.t))&&Date.parse(b.t)+15*60000<=asOf&&
-    [b.o,b.h,b.l,b.c].every(v=>Number.isFinite(Number(v)))&&
-    Number(b.l)<=Math.min(Number(b.o),Number(b.c))&&
-    Math.max(Number(b.o),Number(b.c))<=Number(b.h))
-    .sort((a,b)=>Date.parse(a.t)-Date.parse(b.t)).slice(-3);
-  if(completed.length<3)return invalid("At least three independently completed M15 price candles are required.");
-  const swingHigh=Math.max(...completed.map(b=>Number(b.h))),
-    swingLow=Math.min(...completed.map(b=>Number(b.l)));
-  const mid=(bid+ask)/2,extension=sign*(mid-ema)/atr,
-    pullback=extension>1.55;
-  const route=pullback?"EMA20 PULLBACK / RETEST":"NEW M15 BREAKOUT";
-  const trigger=pullback?ema:(short?swingLow-pip:swingHigh+pip);
-  const entry=short?trigger-spread:trigger+spread;
-  const stop=short?Math.max(swingHigh+.12*atr,entry+1.05*atr):
-    Math.min(swingLow-.12*atr,entry-1.05*atr);
-  const structures=["M15","H1","H4","D"].map(tf=>frames[tf]?.indicators||{});
-  const targets=structures.map(i=>Number(short?i.support20:i.resistance20))
-    .filter(v=>Number.isFinite(v)&&v>0&&(short?v<entry:v>entry))
-    .sort((a,b)=>short?b-a:a-b);
-  const tp1=targets.length?targets[0]:null;
-  const risk=Math.abs(entry-stop),reward=tp1==null?null:Math.abs(tp1-entry);
-  const conservativeSpread=Number(q.spread_pips)*1.15*pip;
-  const grossRR=reward!=null&&risk>0?reward/risk:null,
-    netRR=reward!=null&&risk>0?(reward-conservativeSpread)/(risk+conservativeSpread):null;
-  const reasons=[];
-  if(Number(q.spread_pips)>10)reasons.push("spread exceeds 10-pip research cap");
-  if(spread>.5*atr)reasons.push("spread is over half M15 volatility");
-  if(!Number.isFinite(Number(h.adx14)))reasons.push("H1 trend strength is unavailable");
-  if(!pullback&&(short?bid<=trigger:ask>=trigger))
-    reasons.push("breakout level has already passed; do not chase");
-  if(pullback)reasons.push("move is extended: wait for a NEW completed M15 pullback confirmation");
-  if(!tp1)reasons.push("no independent structure target remains");
-  else if(grossRR<1.5||netRR<1.35)
-    reasons.push("structure TP1 fails gross 1.50 / conservative net 1.35 reward:risk floors");
-  if(!(risk>=.75*atr&&risk<=3.5*atr))reasons.push("structural stop outside 0.75–3.5 ATR");
-  const news=feed?.news_status||"UNVERIFIED";
-  const relevant=(feed?.calendar||[]).filter(ev=>{
-    const at=Date.parse(ev.time);
-    return String(ev.impact||"").toLowerCase().includes("high")&&
-      t.instrument.split("_").includes(ev.currency)&&Number.isFinite(at)&&
-      at>=asOf-45*60000&&at<=asOf+135*60000;
-  });
-  if(relevant.length)reasons.push("high-impact event window: "+relevant[0].title);
-  if(news!=="OK")reasons.push("Official economic-release and news checks are incomplete; no trade clearance.");
-  if(!Number.isFinite(Date.parse(t.created_at)))
-    reasons.push("original research observation time missing");
-  const expiry=new Date(asOf+90*60000).toISOString();
-  const decimals=Math.min(6,Math.max(2,Math.round(-Math.log10(pip))+1));
-  const round=v=>v==null?null:Number(v.toFixed(decimals));
-  return {status:reasons.length?"WATCH ONLY · NOT APPROVED":"WATCH ONLY · M15 TRIGGER PENDING",
-    route,direction:t.direction,trigger:round(trigger),entry:round(entry),
-    entryZoneLow:pullback?round(ema-.2*atr):null,
-    entryZoneHigh:pullback?round(ema+.2*atr):null,
-    stop:round(stop),tp1:round(tp1),grossRR,netRR,expiry,
-    news,spreadPips:Number(q.spread_pips),reasons,asOf:q.time,
-    note:"These are illustrative OANDA price levels calculated from completed historical candles, not an approved plan or confirmed entry."};
+  // Never mint an entry, stop or target from a directional watch.
+  // Only retain the original frozen prospective scout_plan supplied by the
+  // collector, or the canonical signals.json plan. This prevents the
+  // dashboard from inventing apparently executable numbers for high scores.
+  return invalid("No original priced entry/stop/target plan was admitted for this watch.");
+
 }
 function openMonitoredSetupPopup(t){
   // Rebuild on tap so a previously visible scenario cannot remain actionable
@@ -1037,14 +995,14 @@ function openMonitoredSetupPopup(t){
   const pair=t.instrument.replace("_","/");
   dialog.setAttribute("aria-label",pair+" conditional research trade recommendation");
   const bar=make("div",undefined,"monitored-setup-dialog-bar");
-  bar.append(make("strong",pair+" · CONDITIONAL TRADE RECOMMENDATION"));
+  bar.append(make("strong",pair+" · TRADE DECISION"));
   const close=make("button","✕ Close","monitored-setup-close");
   close.type="button";close.setAttribute("aria-label","Close trade setup");
   close.addEventListener("click",()=>dialog.close());
   bar.append(close);
   const detail=monitoredSetupPanel(t);
   dialog.append(bar,detail,make("p",
-    "No shortlist assessment is required from you. Wait until the Decision Desk displays a new GREEN conditional manual trade. Only then verify the live Pepperstone bid/ask, spread, capital at risk and decide whether to place an order.",
+    "Monitored prices are research only; a GREEN conditional research trigger is not a broker fill or an automatic order. Pepperstone price, spread, risk and final execution remain yours.",
     "monitored-setup-dialog-note"));
   dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close();});
   dialog.addEventListener("close",()=>dialog.remove(),{once:true});
@@ -1052,62 +1010,103 @@ function openMonitoredSetupPopup(t){
   if(typeof dialog.showModal==="function"){dialog.showModal();close.focus();}
   else {dialog.setAttribute("open","");close.focus();}
 }
-function monitoredSetupPanel(t){
-  // Decision-first conditional research recommendation, never a broker order
-  // and never a false GREEN admission.
-  const s=buildMonitoredScenario(t),panel=make("section",undefined,"monitored-setup-panel");
+function monitoredDecision(t){
+  const s=buildMonitoredScenario(t),q=feed?.pairs?.[t.instrument]?.quote||{};
+  const side=t.direction==="SHORT"?"SELL":"BUY",now=Date.now();
   const reasons=(s.reasons||[s.reason]).filter(Boolean).map(String);
-  const quoteOK=!stale&&s.route!=="NONE"&&Number.isFinite(Date.parse(s.asOf))&&
-    Math.abs(Date.now()-Date.parse(s.asOf))<=70*60000;
-  const priced=s.stop!=null&&s.tp1!=null&&(s.entry!=null||s.entryZoneLow!=null);
-  const expiryOK=!s.expiry||Date.parse(s.expiry)>Date.now();
-  const economicsOK=priced&&s.netRR!=null&&s.netRR>=1.35&&s.grossRR!=null&&s.grossRR>=1.5&&
+  const quoteAt=Date.parse(q.time),fresh=!stale&&Number.isFinite(quoteAt)&&
+    quoteAt<=now+60000&&now-quoteAt<=70*60000;
+  const sourceAt=Date.parse(s.asOf),validSource=fresh&&Number.isFinite(sourceAt)&&
+    sourceAt<=now+60000&&now-sourceAt<=70*60000;
+  const blackout=(feed?.calendar||[]).some(ev=>{
+    const at=Date.parse(ev.time);
+    return Number.isFinite(at)&&String(ev.impact||"").toLowerCase().includes("high")&&
+      t.instrument.split("_").includes(ev.currency)&&Math.abs(now-at)<=45*60000;
+  });
+  const eventClear=feed?.news_status==="OK"&&!blackout;
+  const plan=(feed?.signals||[]).find(x=>x.instrument===t.instrument&&x.direction===t.direction&&
+    Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>now&&
+    Number(x.planned_entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0);
+  const fast=feed?.fast_entry_monitor||feed?.hourly?.fast_entry_monitor||{};
+  const checked=Date.parse(fast.checked_at),fastFresh=fast.freshness==="CURRENT"&&
+    Number.isFinite(checked)&&checked<=now+60000&&now-checked<=20*60000;
+  const ready=plan&&eventClear&&fresh&&now-quoteAt<=5*60000&&fastFresh&&
+    (fast.observations||[]).some(x=>x.id===plan.id&&x.pair===t.instrument&&
+      x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+      Number.isFinite(Date.parse(x.alert_detected_at))&&
+      now-Date.parse(x.alert_detected_at)>=0&&now-Date.parse(x.alert_detected_at)<=15*60000&&
+      Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>now)&&
+    Number(q.spread_pips)>0&&Number(q.spread_pips)<=Number(plan.max_oanda_spread_pips)&&
+    Number(q.pip_size)>0&&
+    (()=>{
+      const entry=Number(plan.planned_entry),stop=Number(plan.stop),tp=Number(plan.tp1);
+      const risk=Math.abs(entry-stop),reward=Math.abs(tp-entry),spread=Number(q.spread_pips)*Number(q.pip_size);
+      return risk>0&&reward/risk>=1.50&&(reward-spread)/(risk+spread)>=1.35&&
+        (t.direction==="SHORT"?stop>entry&&tp<entry:stop<entry&&tp>entry)&&
+        !(plan.event_blackouts_utc||[]).some(w=>Date.parse(w.start)<=now&&now<=Date.parse(w.end));
+    })();
+  if(ready)return {status:"GREEN",side,scenario:s,plan,
+    reason:"A new completed entry trigger passed the canonical checks.",
+    next:"Check the live Pepperstone symbol, executable bid/ask, spread and account risk before deciding whether to place the order."};
+  const spreadPips=Number(q.spread_pips),spreadHigh=Number.isFinite(spreadPips)&&spreadPips>10;
+  const complete=s.route!=="NONE"&&(s.entry!=null||s.entryZoneLow!=null)&&s.stop!=null&&s.tp1!=null;
+  const economics=complete&&Number.isFinite(s.grossRR)&&Number.isFinite(s.netRR)&&
+    s.grossRR>=1.50&&s.netRR>=1.35&&
     !reasons.some(x=>/spread exceeds|spread is over|stop outside|no independent structure target/i.test(x));
-  const eventClear=feed?.news_status==="OK"&&!reasons.some(x=>/high-impact event window/i.test(x));
-  const candidate=quoteOK&&priced&&expiryOK&&economicsOK; // news may remain pending for WATCH, never for GREEN
-  const side=t.direction==="SHORT"?"SELL":"BUY";
-  const condition=s.triggerText||t.scout_action||(s.trigger!=null?
-    "NEW completed M15 close beyond "+money(s.trigger):"NEW completed M15 confirmation and plan admission");
-  const primary=!quoteOK?"Price data are unavailable or too old.":
-    !priced?"No complete entry, stop and target could be calculated.":
-    !expiryOK?"These reference prices have expired.":
-    !economicsOK?"The estimated reward versus risk or spread is unacceptable.":
-    !eventClear?"Official news and economic event checks are incomplete.":
-    "A future completed price trigger and canonical plan approval are still required.";
+  const unexpired=!s.expiry||Date.parse(s.expiry)>now;
+  const usable=validSource&&economics&&unexpired&&!spreadHigh&&!blackout;
+  const reason=!fresh?"The market quote is stale.":
+    !complete?(spreadHigh?
+      "No valid trade plan was supplied; OANDA spread is "+spreadPips.toFixed(1)+" pips (over the 10-pip watch limit).":
+      "This ranked direction has no approved entry, stop and target."):
+    !unexpired?"The proposed plan has expired.":
+    spreadHigh?"OANDA spread "+spreadPips.toFixed(1)+" pips exceeds the 10-pip watch limit.":
+    !economics?"The proposed stop, target or spread fails the strategy's risk/reward checks.":
+    blackout?"A high-impact economic announcement blocks this pair.":
+    !eventClear?"Official news checks are incomplete.":
+    "The next completed M15 trigger has not been confirmed.";
+  const condition=s.triggerText||
+    (s.trigger!=null?"Wait for a NEW completed 15-minute candle "+(side==="SELL"?"below ":"above ")+money(s.trigger):
+      t.scout_reference_rule||"Wait for a new confirmed 15-minute entry trigger");
+  return {status:usable?"WATCH":"SKIP",side,scenario:s,plan:null,condition,
+    reason:usable&&!eventClear?"News verification and a confirmed trigger are outstanding.":reason,
+    next:usable?"The research engine must verify the next completed candle, news and admission gates. Do not enter until GREEN.":
+      "No trade on this pair. The engine will re-evaluate it at the next fresh snapshot.",
+    quoteAt:q.time,spreadPips};
+}
+function monitoredSetupPanel(t){
+  const d=monitoredDecision(t),s=d.scenario,p=d.plan,holder=make("section",undefined,"monitored-setup-panel");
+  const pair=t.instrument.replace("_","/"),label=d.status==="GREEN"?
+    "🟢 CONDITIONAL "+d.side+" — CHECK PEPPERSTONE":
+    d.status==="WATCH"?"🟡 "+d.side+" WATCH — WAIT":"🔴 SKIP "+pair+" — NO TRADE";
   const banner=make("div",undefined,"monitored-setup-verdict");
-  banner.classList.add(candidate?"watch":"");
-  banner.append(make("strong",candidate?"🟡 WATCH "+side+" — "+(eventClear?"WAIT FOR TRIGGER":"NEWS + TRIGGER PENDING"):"🔴 SKIP "+side+" — NO ENTRY"),
-    make("p",candidate?"A priced conditional research idea, not a confirmed entry.":"Not suitable for entry at this review. "+primary));
-  panel.append(banner);
-  const action=make("p",undefined,"monitored-setup-next");
-  action.append(make("b","WHAT TO DO: "+(candidate?"WAIT — ":"DO NOT ENTER — ")),
-    document.createTextNode(candidate?
-      "Watch for "+condition+". "+(eventClear?"":"Official news clearance is still pending. ")+"The engine must confirm the completed trigger and admit the plan before GREEN.":
-      "The engine will reassess on its next snapshot; you do not need to interpret the indicators."));
-  panel.append(action);
-  const heading=make("div",undefined,"monitored-setup-head");
-  heading.append(make("b",side+" SCENARIO · "+(s.route==="NONE"?"NO COMPLETE PLAN":s.route)),
-    make("span",candidate?"RESEARCH · PENDING":"NOT APPROVED","monitored-setup-status"));
-  panel.append(heading);
+  if(d.status==="WATCH")banner.classList.add("watch");
+  if(d.status==="GREEN")banner.classList.add("green");
+  banner.append(make("strong",label),make("p",d.reason));
+  holder.append(banner);
   const fmt=v=>v==null?"—":money(v);
-  const grid=make("div",undefined,"monitored-setup-levels");
-  const fields=[
-    ["ENTRY CONDITION",condition],
-    ["INDICATIVE ENTRY · NOT ACTIVE",s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry)],
-    ["STOP / INVALIDATION",fmt(s.stop)],
-    ["NEAREST TP1",fmt(s.tp1)],
-    ["NET REWARD / RISK",s.netRR==null?"—":s.netRR.toFixed(2)+":1"],
-    ["EXPIRES",s.expiry?uk(s.expiry):"—"]
-  ];
-  for(const [label,value] of fields){const cell=make("div");
-    cell.append(make("small",label),make("strong",value));grid.append(cell);}
-  panel.append(grid);
-  if(s.asOf)panel.append(make("small","OANDA "+uk(s.asOf)+" · indicative prices, NOT Pepperstone bid/ask."));
-  if(!candidate&&reasons.length)panel.append(make("p","Main checks: "+reasons.slice(0,2).join(" · "),
-    "monitored-setup-reason"));
-  panel.append(make("p","Research preview only. No approved fill or automatic order; never enter from this watch without fresh confirmation and your Pepperstone quote, spread and risk check.",
-    "monitored-setup-reason"));
-  return panel;
+  const complete=p||d.status==="WATCH";
+  if(complete){
+    const entry=p?fmt(p.planned_entry):s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry);
+    const stop=fmt(p?p.stop:s.stop),tp=fmt(p?p.tp1:s.tp1);
+    const prices=make("div",undefined,"monitored-simple-prices");
+    for(const [title,value] of [["ENTRY"+(p?"":" · PROVISIONAL"),entry],
+      ["STOP",stop],["TARGET",tp]]){
+      const cell=make("div");cell.append(make("small",title),make("b",value));prices.append(cell);
+    }
+    holder.append(prices);
+    const condition=p?"Recorded new completed M15 entry trigger; broker verification remains.":d.condition;
+    holder.append(make("p",(p?"TRIGGER CONFIRMED · ":"TRIGGER STILL PENDING · ")+condition,"monitored-setup-next"));
+    const expiry=p?p.expires_at:s.expiry;
+    if(expiry)holder.append(make("small","Plan expiry: "+uk(expiry)+(p?" · canonical research plan":" · research preview, not an approved trade")));
+  }
+  const action=make("p",undefined,"monitored-setup-next");
+  action.append(make("b","YOUR ACTION: "+(d.status==="GREEN"?"BROKER CHECK":"DO NOT ENTER")+". "),
+    document.createTextNode(d.next));
+  holder.append(action);
+  if(d.quoteAt||s.asOf)holder.append(make("small",
+    "Last OANDA quote "+uk(d.quoteAt||s.asOf)+" · not an executable Pepperstone price."));
+  return holder;
 }
 function renderHourlyCohorts(){
   const holder=el("hourlyCohortCards"),summary=el("hourlyCohortSummary"),scope=el("hourlyCohortScope"),sort=el("hourlyCohortSort");
