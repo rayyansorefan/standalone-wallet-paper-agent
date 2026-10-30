@@ -430,7 +430,9 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /dialog\.addEventListener\("close",\(\)=>dialog\.remove\(\)/);
   assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
   assert.match(page, /\.monitored-setup-dialog::backdrop/);
-  assert.match(page, /VIEW SIMPLE TRADE RECOMMENDATION/);\n  assert.match(page, /WATCH .*WAIT FOR TRIGGER/);\n  assert.match(page, /SKIP .*NO ENTRY/);
+  assert.match(page, /VIEW SIMPLE TRADE RECOMMENDATION/);
+  assert.match(page, /WATCH .*WAIT FOR TRIGGER/);
+  assert.match(page, /SKIP .*NO ENTRY/);
 });
 
 test('extended GBP/USD BUY is a non-chasing retest watch with frozen source levels', () => {
