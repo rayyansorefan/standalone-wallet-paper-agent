@@ -386,7 +386,7 @@ test('a short directional watch with no frozen plan cannot invent entry, stop or
       pip_size:.0001,spread_pips:32,tradeable:true},
     frames:{M15:{indicators:{ema20:11.04352,atr14:.00483},candles:bars},
       H1:{indicators:{adx14:52}}}
-  }}}}};
+  }}}};
   new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
   const scenario=context.scenario({instrument:'EUR_SEK',direction:'SHORT',created_at:new Date(now).toISOString()});
   assert.equal(scenario.status,'NO PRICED SIGNAL');
