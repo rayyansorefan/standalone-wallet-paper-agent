@@ -463,7 +463,7 @@ test('extended GBP/USD BUY is a non-chasing retest watch with frozen source leve
 });
 
 test('single FX desk decision shows green only for a fresh canonical confirmed trigger', () => {
-  const helper=page.match(/function renderFastEntry\\(\\)\\{[\\s\\S]*?(?=function renderPlans)/)?.[0];
+  const helper=page.match(/function renderFastEntry\(\)\{[\s\S]*?(?=function renderPlans)/)?.[0];
   assert.ok(helper,'decision renderer present');
   const now=Date.now(),iso=m=>new Date(now+m*60000).toISOString();
   const plan={id:'CANONICAL',instrument:'GBP_USD',direction:'LONG',
