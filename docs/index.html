@@ -787,8 +787,8 @@ stamp.textContent=Number.isFinite(time)?("LAST CHECK "+new Date(time).toLocaleTi
 headline.classList.remove("ready");
 if(!current){
 headline.textContent="WAIT · NO CURRENT FAST CHECK";
-note.textContent=f.checked_at?"Last fast scan is stale or unavailable. Do not use old entries.":"The faster scheduled checks have not produced their first result. No entry is verified.";
-const d=make("div",undefined,"panel");d.append(make("b","NO ACTIONABLE ENTRY"),make("p","Await a fresh completed scan. Hourly research and existing watches continue."));holder.append(d);return}
+note.textContent="Fast scan needs refreshing; no green trigger can be inferred.";
+}
 const isReady=x=>x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
   Number.isFinite(Date.parse(x.alert_detected_at))&&Date.now()-Date.parse(x.alert_detected_at)<=15*60000&&
   Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>Date.now()&&
