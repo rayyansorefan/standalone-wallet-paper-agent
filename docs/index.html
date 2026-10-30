@@ -789,12 +789,15 @@ if(!current){
 headline.textContent="WAIT · NO CURRENT FAST CHECK";
 note.textContent="Fast scan needs refreshing; no green trigger can be inferred.";
 }
-const isReady=x=>x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+const isReady=x=>current&&!stale&&x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
   Number.isFinite(Date.parse(x.alert_detected_at))&&Date.now()-Date.parse(x.alert_detected_at)<=15*60000&&
   Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>Date.now()&&
   (feed.signals||[]).some(p=>p.id===x.id&&p.instrument===x.pair)&&
   Number.isFinite(Date.parse(feed.pairs?.[x.pair]?.quote?.time))&&
-  Date.now()-Date.parse(feed.pairs[x.pair].quote.time)<=5*60000;
+  Date.now()-Date.parse(feed.pairs[x.pair].quote.time)<=5*60000&&
+  feed.pairs[x.pair].quote.tradeable===true&&
+  Number(feed.pairs[x.pair].quote.spread_pips)>0&&
+  Number(x.entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0;
 const rows=(Array.isArray(f.observations)?f.observations:[])
   .sort((a,b)=>Number(isReady(b))-Number(isReady(a))).slice(0,3);
 const live=rows.find(isReady);
