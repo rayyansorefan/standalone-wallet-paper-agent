@@ -431,6 +431,35 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /WATCH ONLY: Technical scenario, not a confirmed trigger/);
 });
 
+test('extended GBP/USD BUY is a non-chasing retest watch with frozen source levels', () => {
+  assert.match(page, /EXTENDED_WAIT_RETEST:"🟠 RETEST ONLY · NOT APPROVED"/);
+  assert.match(page, /BREAKOUT_OBSERVED_REVIEW:"🟡 BREAKOUT SEEN · REVIEW"/);
+  assert.match(page, /NEXT ACTION:/);
+  assert.match(page, /scout_phase:item.entry_phase/);
+  const helper=page.match(/function buildMonitoredScenario\\(t\\)\\{[\\s\\S]*?(?=function monitoredSetupPanel)/)?.[0];
+  assert.ok(helper);
+  const now=Date.now();
+  const context={feed:{pairs:{GBP_USD:{quote:{
+    tradeable:true,bid:1.34051,ask:1.34065,time:new Date(now).toISOString(),
+    pip_size:.0001,spread_pips:1.4},frames:{M15:{indicators:{atr14:.00068,ema20:1.33939}}}}}}};
+  new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
+  const s=context.scenario({instrument:'GBP_USD',direction:'LONG',
+    created_at:new Date(now).toISOString(),
+    scout_action:'WAIT FOR NEW M15 EMA20 RETEST',
+    scout_plan:{requires_future_retest:true,source_quote_at:new Date(now).toISOString(),
+      entry_zone_low:1.33929,entry_zone_high:1.33949,
+      stop:1.33883,tp1:1.34074,net_rr_estimate:1.39,
+      trigger_rule:'A FUTURE completed M15 bullish retest is required'}});
+  assert.equal(s.status,'RETEST PENDING · NOT APPROVED');
+  assert.equal(s.route,'M15 EMA20 RETEST · PAPER');
+  assert.equal(s.entryZoneLow,1.33929);
+  assert.equal(s.stop,1.33883);
+  assert.equal(s.tp1,1.34074);
+  assert.equal(s.netRR,1.39);
+  assert.ok(s.reasons.some(x=>/WAIT FOR NEW M15/.test(x)));
+  assert.equal(s.trigger,null);
+});
+
 test('scout setup popup uses the original priced paper preview instead of silently repricing it', () => {
   const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
   assert.ok(helper);
