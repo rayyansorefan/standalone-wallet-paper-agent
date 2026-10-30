@@ -782,22 +782,29 @@ function renderFastEntry(){
 const holder=el("fastEntryCards"),stamp=el("fastEntryTime"),headline=el("fastEntryHeadline"),note=el("fastEntrySummary");
 holder.replaceChildren();
 const f=feed?.fast_entry_monitor||{},time=Date.parse(f.checked_at||"");
-const current=f.freshness==="CURRENT"&&Number.isFinite(time)&&Date.now()-time<=40*60000&&Date.now()>=time-60000;
+const current=f.freshness==="CURRENT"&&Number.isFinite(time)&&Date.now()-time<=20*60000&&Date.now()>=time-60000;
 stamp.textContent=Number.isFinite(time)?("LAST CHECK "+new Date(time).toLocaleTimeString("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit"})+" UK"):"FAST SCAN NOT RUN";
 headline.classList.remove("ready");
 if(!current){
 headline.textContent="WAIT · NO CURRENT FAST CHECK";
 note.textContent=f.checked_at?"Last fast scan is stale or unavailable. Do not use old entries.":"The faster scheduled checks have not produced their first result. No entry is verified.";
 const d=make("div",undefined,"panel");d.append(make("b","NO ACTIONABLE ENTRY"),make("p","Await a fresh completed scan. Hourly research and existing watches continue."));holder.append(d);return}
-const rows=(Array.isArray(f.observations)?f.observations:[]).slice(0,3);
-const live=rows.find(x=>x.status==="PRICE_REASSESSMENT_ALERT_READY");
-if(live){headline.textContent="TRIGGER DETECTED · CHECK BROKER";headline.classList.add("ready");note.textContent="A completed M15 research trigger was recorded. Verify Pepperstone spread, news and risk before any manual entry; delivery to you is not independently confirmed."}
-else{headline.textContent="WAIT · NO APPROVED ENTRY";note.textContent="The shortlisted pairs were checked, but no confirmed entry trigger has passed every required check."}
+const isReady=x=>x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+  Number.isFinite(Date.parse(x.alert_detected_at))&&Date.now()-Date.parse(x.alert_detected_at)<=15*60000&&
+  Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>Date.now()&&
+  (feed.signals||[]).some(p=>p.id===x.id&&p.instrument===x.pair)&&
+  Number.isFinite(Date.parse(feed.pairs?.[x.pair]?.quote?.time))&&
+  Date.now()-Date.parse(feed.pairs[x.pair].quote.time)<=5*60000;
+const rows=(Array.isArray(f.observations)?f.observations:[])
+  .sort((a,b)=>Number(isReady(b))-Number(isReady(a))).slice(0,3);
+const live=rows.find(isReady);
+if(live){headline.textContent="🟢 GREEN · CONFIRMED CONDITIONAL TRIGGER";headline.classList.add("ready");note.textContent="A completed M15 research trigger was recorded. Verify Pepperstone spread, news and risk before any manual entry; delivery to you is not independently confirmed."}
+else{headline.textContent="🔴 RED · NO CONFIRMED ENTRY";note.textContent="No fully checked entry trigger exists. Do not enter a technical watch.";}
 if(!rows.length){const d=make("div",undefined,"panel");d.append(make("b","NO QUALIFIED TRIGGERS"),make("p","The next complete entry plan will appear here when independently confirmed."));holder.append(d);return}
-for(const x of rows){
-const ready=x.status==="PRICE_REASSESSMENT_ALERT_READY",card=make("article",undefined,"pick");
+for(const x of (live?[live]:rows.slice(0,1))){
+const ready=isReady(x),card=make("article",undefined,"pick");
 card.style.borderColor=ready?"#327b68":"#6d5960";
-card.append(make("div",ready?"TRIGGER · VERIFY MANUALLY":"WATCH · NO ENTRY","rank"),make("b",String(x.pair||"").replace("_","/")+" · "+String(x.direction||"")));
+card.append(make("div",ready?"🟢 ENTRY TRIGGER PASSED · CHECK BROKER":"🔴 NO TRADE","rank"),make("b",String(x.pair||"").replace("_","/")+" · "+String(x.direction||"")));
 const levels=(x.entry!=null&&x.stop!=null&&x.tp1!=null)?("Entry "+x.entry+" · Stop "+x.stop+" · TP "+x.tp1):"No approved entry levels";
 card.append(make("p",levels),make("div",String(x.status||"NO SIGNAL").replaceAll("_"," "),"small"));
 if(ready)card.append(make("small","Alert delivery and broker execution NOT verified.","gold"));
