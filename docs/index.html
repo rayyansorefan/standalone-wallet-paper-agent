@@ -517,7 +517,7 @@ function renderCurrentScouts(){
     .map(s=>[s.instrument,s]));
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
     .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
-  const scouts=(supplied.length?supplied:fallback).slice(0,10);
+  const scouts=(supplied.length?supplied:fallback).slice(0,3);
   const latestHourly=new Map();
   for(const watch of feed.learning?.paper_audit?.candidates||[]){
     if(watch.source!=="AUTOMATED_RESEARCH_PRIORITY"||!visiblePair(watch.instrument)||
@@ -564,6 +564,7 @@ function renderCurrentScouts(){
       scout_blockers:item.blockers||diag.blockers||[],
       scout_phase:item.entry_phase||"UNPRICED_WATCH",scout_action:item.next_action||""};
     const scenario=fresh?buildMonitoredScenario(scoutContext):null;
+    const recommendation=monitoredDecision(scoutContext);
     const displayLevel=v=>v==null||!Number.isFinite(Number(v))?"—":money(v);
     const showZone=scenario?.entryZoneLow!=null?
       displayLevel(scenario.entryZoneLow)+"–"+displayLevel(scenario.entryZoneHigh):
@@ -572,42 +573,36 @@ function renderCurrentScouts(){
     const fullyPriced=haveEntry&&scenario.stop!=null&&scenario.tp1!=null&&scenario.netRR!=null;
     const card=make("article",undefined,"early-card");
     const head=make("div",undefined,"early-head");
-    const phaseLabels={
-      EXTENDED_WAIT_RETEST:"🟠 RETEST ONLY · NOT APPROVED",
-      BREAKOUT_OBSERVED_REVIEW:"🟡 BREAKOUT SEEN · REVIEW",
-      EARLY_CONDITIONAL_WATCH:"🟡 EARLY SETUP · WAIT TRIGGER",
-      DATA_OR_COST_BLOCKED:"🔴 PRICE/COST BLOCKED",
-      UNPRICED_WATCH:"🟠 UNPRICED · NO ENTRY"
-    };
-    head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+(side==="LONG"?"BUY BIAS":side==="SHORT"?"SELL BIAS":"MIXED BIAS")),
-      make("span",fresh?(phaseLabels[item.entry_phase]||"🟠 WATCH · NOT APPROVED"):"🔴 STALE · NO ENTRY","early-state"));
+    head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+
+      (side==="LONG"?"BUY":side==="SHORT"?"SELL":"NO DIRECTION")),
+      make("span",recommendation.status==="GREEN"?"🟢 GREEN · CHECK PEPPERSTONE":
+        recommendation.status==="WATCH"?"🟡 WATCH · ENTRY PENDING":
+        "🔴 SKIP · NO TRADE","early-state"));
     card.append(head);
     const scoreline=make("div",undefined,"early-scoreline"+(!scored||score<50?" weak":""));
     scoreline.append(make("b",scored?"TECHNICAL WATCH · "+score+"/100":"POTENTIAL UNRATED"),
       make("span",(Number.isFinite(screening)?"Screening priority "+screening.toFixed(1)+" · ":"")+
         "Same technical scoring as Today's watches · NOT entry probability"));card.append(scoreline);
     card.append(make("p","OANDA bid "+money(q.bid)+" · ask "+money(q.ask)+" · "+(quoteAt?uk(quoteAt):"quote unavailable"),"early-times"));
-    const levels=make("div",undefined,"early-levels");
-    const fields=[
-      ["M15 reference",reference==null?"NOT CALCULATED":money(reference),""],
-      ["Entry zone",haveEntry?showZone:"NOT PRICED",""],
-      ["Stop / target",scenario?.stop!=null?displayLevel(scenario.stop)+" / "+displayLevel(scenario.tp1):"NOT PRICED",""],
-      ["Net reward / risk",scenario?.netRR!=null?scenario.netRR.toFixed(2)+":1":"NOT CALCULABLE",""]
-    ];
-    for(const [label,value,cls] of fields){const cell=make("div",undefined,"early-level "+cls);
-      cell.append(make("small",label),make("b",value));levels.append(cell)}
-    card.append(levels);
-    card.append(make("p","NEXT ACTION: "+(fresh?(item.next_action||"WAIT · next completed candle and broker/news check"):"NO ENTRY · source stale"),"early-caption"));
-    card.append(make("p","Trigger research: "+(plan?.trigger_rule||rule)+" · "+(item.next_m15_check_at||diag.next_m15_check_at?"Next M15 check "+uk(item.next_m15_check_at||diag.next_m15_check_at):"No confirmed next check"),"early-caption"));
-    const reasons=blockers.slice(0,3).map(x=>x.detail||x.code);
-    card.append(make("p",reasons.length?"Why WAIT: "+reasons.join(" · "):"Why WAIT: no completed and broker-verified entry confirmation; news and Pepperstone spread require review.","early-caption"));
+    if(recommendation.status!=="SKIP"&&fullyPriced){
+      const levels=make("div",undefined,"early-levels");
+      for(const [label,value] of [
+        ["ENTRY · PROVISIONAL",showZone],
+        ["STOP",displayLevel(scenario.stop)],
+        ["TARGET",displayLevel(scenario.tp1)]
+      ]){
+        const cell=make("div",undefined,"early-level");
+        cell.append(make("small",label),make("b",value));levels.append(cell);
+      }
+      card.append(levels);
+      card.append(make("p","TRIGGER: "+recommendation.condition,"early-caption"));
+    }
+    card.append(make("p",recommendation.reason,"early-caption"));
+    if(recommendation.status==="SKIP"&&Number.isFinite(Number(q.spread_pips))&&Number(q.spread_pips)>10)
+      card.append(make("small","OANDA spread "+Number(q.spread_pips).toFixed(1)+" pips — not cleared for entry."));
     const action=make("div",undefined,"early-action");
-    action.append(make("small",fullyPriced?
-      (scenario.netRR>=1.35?"PAPER-ONLY PRICE LEVELS · Trigger and risk gates not approved.":
-        "PAPER-ONLY LEVELS · reward/risk below 1.35 · DO NOT ENTER.") :
-      "INCOMPLETE · "+(scenario?.reason||"No complete structural target / verified trigger")+
-      " · DO NOT ENTER."));
-    const open=make("button","VIEW SIMPLE TRADE RECOMMENDATION","monitored-setup-open");
+    action.append(make("small",recommendation.next));
+    const open=make("button",recommendation.status==="SKIP"?"WHY SKIP?":"ENTRY · STOP · TARGET","monitored-setup-open");
     open.type="button";
     open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
     open.addEventListener("click",()=>openMonitoredSetupPopup(scoutContext));
