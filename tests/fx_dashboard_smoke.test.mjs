@@ -423,13 +423,13 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /dialog\.addEventListener\("close",\(\)=>dialog\.remove\(\)/);
   assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
   assert.match(page, /\.monitored-setup-dialog::backdrop/);
-  assert.match(page, /WHY SKIP\\?/);
+  assert.match(page, /WHY SKIP\?/);
   assert.match(page, /WATCH — WAIT/);
   assert.match(page, /SKIP .*NO TRADE/);
 });
 
 test('extended GBP/USD BUY is a non-chasing retest watch with frozen source levels', () => {
-  assert.match(page, /const recommendation=monitoredDecision\\(scoutContext\\)/);
+  assert.match(page, /const recommendation=monitoredDecision\(scoutContext\)/);
   assert.match(page, /recommendation.status==="WATCH"/);
   assert.match(page, /TRIGGER:/);
   assert.match(page, /scout_phase:item.entry_phase/);
