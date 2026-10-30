@@ -712,19 +712,27 @@ function health(){if(!feed)return;stale=!fresher();
 const highPotential=!stale&&(feed.learning?.opportunity_audit?.recent||[])
   .some(t=>visiblePair(t.instrument)&&Date.parse(t.expires_at)>Date.now()&&
     rankEarlyWatch(t).score>=70);
+const f=feed.fast_entry_monitor||{},now=Date.now(),ft=Date.parse(f.checked_at||"");
+const green=!stale&&f.freshness==="CURRENT"&&Number.isFinite(ft)&&ft<=now+60000&&now-ft<=20*60000?
+ (f.observations||[]).find(x=>x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+   Number.isFinite(Date.parse(x.alert_detected_at))&&now-Date.parse(x.alert_detected_at)<=15*60000&&
+   Date.parse(x.expires_at)>now&&approved().some(p=>p.id===x.id&&p.instrument===x.pair)&&
+   feed.pairs?.[x.pair]?.quote?.tradeable===true&&
+   now-Date.parse(feed.pairs[x.pair].quote.time)<=5*60000&&
+   Number(x.entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0):null;
 const a=approved().length,minutes=Math.max(0,Math.round((Date.now()-Date.parse(feed.snapshot_at))/60000));el("clock").textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date())+" UK";el("sourceTime").textContent="Quote snapshot "+uk(feed.snapshot_at);el("publishedTime").textContent="Published "+uk(feed.published_at);el("screened").textContent=String(Object.keys(feed.pairs).filter(visiblePair).length);el("deep").textContent=String(Object.entries(feed.pairs).filter(([k,v])=>visiblePair(k)&&v.deep).length);el("approved").textContent=a;el("age").textContent=minutes+"m";el("ageHelp").textContent=stale?"STALE · no entry":"70m maximum";
-el("verdict").textContent=stale?"NO DATA":a?"REVIEW":highPotential?"EARLY WATCH":"WAIT";
-el("verdictHelp").textContent=stale?"Source too old":a?"Conditional plans only":highPotential?
+el("verdict").textContent=stale?"NO DATA":green?"🟢 GREEN":a?"TRIGGER PENDING":highPotential?"EARLY WATCH":"NO TRADE";
+el("verdictHelp").textContent=stale?"Source too old":green?"Confirmed M15 research trigger · broker check":a?"Conditional plans only":highPotential?
   "High potential · trigger not confirmed":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?"DATA RECENT":"NEWS PARTIAL";
 const gateData=el("gateData"),gateEntry=el("gateEntry"),gateBroker=el("gateBroker");
 gateData.className="gate "+(stale?"gate-red":"gate-green");el("gateDataValue").textContent=stale?"STALE SOURCE":"FRESH SNAPSHOT";el("gateDataHelp").textContent=stale?"No live price verification possible":"Within 70-minute research cutoff";
-gateEntry.className="gate "+(stale?"gate-red":"gate-amber");el("gateEntryValue").textContent=stale?"BLOCKED":a?"REVIEW PLANS":highPotential?"EARLY WATCH":"NO ENTRY";
-el("gateEntryHelp").textContent=stale?"Await new published quotes":a?"Conditional — inspect confirmations":
+gateEntry.className="gate "+(stale?"gate-red":green?"gate-green":"gate-amber");el("gateEntryValue").textContent=stale?"BLOCKED":green?"🟢 TRIGGER READY":a?"WAIT FOR TRIGGER":highPotential?"EARLY WATCH":"NO ENTRY";
+el("gateEntryHelp").textContent=stale?"Await new published quotes":green?"Research trigger checked · verify broker only":a?"Future confirmation pending":
   highPotential?"Potential only · full trigger pending":"No approved trade setup";
 gateBroker.className="gate gate-amber";
-el("alert").className="alert "+(stale?"":"good");el("alert").replaceChildren(make("b",stale?"NO LIVE ENTRY · SNAPSHOT STALE":a?"APPROVED IDEAS REQUIRE BROKER VERIFICATION":highPotential?"HIGH-POTENTIAL EARLY WATCH · NOT APPROVED":"NO CONFIRMED FX BUY / SELL RIGHT NOW"),make("small",stale?"OANDA source at "+uk(feed.snapshot_at)+". Page refresh does not imply new market collection. Do not trade historical quotes.":a?"Review completed M15 trigger, news blackouts, actual Pepperstone price and spread before placing any manual order.":highPotential?"A ranked direction may move before M15 confirmation, but an early-watch ranking is NOT entry approval. Check a completed M5 trigger, broker spread and news first.":"Technical candidates are being screened, but there are zero approved setups. No trade is forced."));
+el("alert").className="alert "+(stale?"":"good");el("alert").replaceChildren(make("b",stale?"NO LIVE ENTRY · SNAPSHOT STALE":green?"🟢 CONFIRMED CONDITIONAL ENTRY · PEPPERSTONE CHECK":a?"CONDITIONAL PLAN · TRIGGER PENDING":highPotential?"HIGH-POTENTIAL EARLY WATCH · NOT APPROVED":"NO CONFIRMED FX BUY / SELL RIGHT NOW"),make("small",stale?"OANDA source at "+uk(feed.snapshot_at)+". Page refresh does not imply new market collection. Do not trade historical quotes.":green?"Completed entry trigger recorded. Check Pepperstone quote, spread, account risk and any new news before manually executing.":a?"The engine is monitoring the original entry levels and the NEXT completed candle. Do not enter while trigger is pending.":highPotential?"A ranked direction may move before M15 confirmation, but an early-watch ranking is NOT entry approval. Check a completed M5 trigger, broker spread and news first.":"Technical candidates are being screened, but there are zero approved setups. No trade is forced."));
 const earlySelected=!stale&&earlyCandidate(pair)&&rankEarlyWatch(earlyCandidate(pair)).score>=70;
-el("entryState").textContent=stale?"NO ENTRY":signalFor(pair)?"REVIEW":earlySelected?"EARLY WATCH":"WAIT";el("entryDetail").textContent=stale?"The last collection is too old to validate entry prices.":signalFor(pair)?"Approved conditional thesis, not an immediate order: check completed M15, stop/TP, blackout and executable Pepperstone spread.":earlySelected?"High-potential directional research only. A completed M5 trigger and broker/news checks are needed; not approved.":"No validated conditional trade for this instrument.";
+el("entryState").textContent=stale?"NO ENTRY":green?.pair===pair?"🟢 GREEN":signalFor(pair)?"WAIT FOR TRIGGER":earlySelected?"EARLY WATCH":"WAIT";el("entryDetail").textContent=stale?"The last collection is too old to validate entry prices.":green?.pair===pair?"Entry trigger confirmed; verify your broker quote, risk and fresh news before manual action.":signalFor(pair)?"Approved conditional thesis, not an immediate order: check completed M15, stop/TP, blackout and executable Pepperstone spread.":earlySelected?"High-potential directional research only. A completed M5 trigger and broker/news checks are needed; not approved.":"No validated conditional trade for this instrument.";
 }
 
 function setupDiagnostics(s,p){
