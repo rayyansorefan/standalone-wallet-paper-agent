@@ -80,13 +80,13 @@ assert.ok(!$("rows").children.some(row=>row.children.some(c=>c.textContent==="GB
 assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes("GBP/ZAR")),"Excluded pair must not be a priority card");
 assert.ok($("chart").children.length>30,"Completed candlesticks should render");
 assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
-assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=3,
-  "Only the top three decision-first scouts should be visible");
+assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
+  "Only the top five decision-first scouts should be visible");
 const firstScout=$("scoutGrid").children[0];
 const scoutView=JSON.stringify(firstScout.children);
 assert.match(scoutView,/TECHNICAL WATCH|POTENTIAL UNRATED/);
 assert.match(scoutView,/SKIP|WATCH|GREEN/,"Every scout must lead with a clear decision");
-assert.match(scoutView,/WHY SKIP|ENTRY · STOP · TARGET/,
+assert.match(scoutView,/WHY NO ENTRY|VIEW ENTRY · STOP · TARGET/,
   "Each scout opens a concise decision instead of raw technical research");
 assert.doesNotMatch(scoutView,/20\\.005|20\\.040/,
   "Unadmitted scout cards must not surface invented entry or stop prices");
@@ -214,8 +214,19 @@ feed.learning.opportunity_audit.recent.forEach(t=>{
 $("earlyScope").listeners.change({target:{value:"ACTIVE"}});
 assert.equal($("earlyGrid").children.length,1);
 assert.match($("earlyGrid").children[0].textContent,/No active priced watches/);
-assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=3,
+assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
   "Expired registered watches must not hide current unpriced scouts");
+// Global PARTIAL must not override the canonical pair-specific news gate.
+const savedNow=at.now;
+at.now=Date.parse(feed.news_at)+5*60000;
+feed.news_status="PARTIAL";
+feed.news_clearance={EUR_USD:{status:"CLEAR",reason:null}};
+assert.equal(vm.runInNewContext("pairNewsClear('EUR_USD')",ctx),true,
+  "Unrelated failed optional news feeds do not block cleared pairs");
+feed.news_clearance.EUR_USD={status:"BLOCKED",reason:"PRIMARY_NEWS_SOURCE_MISSING"};
+assert.equal(vm.runInNewContext("pairNewsClear('EUR_USD')",ctx),false,
+  "A missing required primary source still blocks GREEN");
+at.now=savedNow;
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
