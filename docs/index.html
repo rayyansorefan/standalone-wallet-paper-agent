@@ -517,7 +517,11 @@ function renderCurrentScouts(){
     .map(s=>[s.instrument,s]));
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
     .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
-  const scouts=(supplied.length?supplied:fallback).slice(0,3);
+  const scouts=(supplied.length?supplied:fallback).slice().sort((a,b)=>
+    Number(!!(feed.signals||[]).find(x=>x.instrument===b.instrument))-
+    Number(!!(feed.signals||[]).find(x=>x.instrument===a.instrument))||
+    Number(b.priority_score??b.priority??0)-Number(a.priority_score??a.priority??0)
+  ).slice(0,5);
   const latestHourly=new Map();
   for(const watch of feed.learning?.paper_audit?.candidates||[]){
     if(watch.source!=="AUTOMATED_RESEARCH_PRIORITY"||!visiblePair(watch.instrument)||
@@ -576,13 +580,13 @@ function renderCurrentScouts(){
     head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+
       (side==="LONG"?"BUY":side==="SHORT"?"SELL":"NO DIRECTION")),
       make("span",recommendation.status==="GREEN"?"🟢 GREEN · CHECK PEPPERSTONE":
-        recommendation.status==="WATCH"?"🟡 WATCH · ENTRY PENDING":
+        recommendation.status==="WATCH"?"🟡 CONDITIONAL · WAIT":
         "🔴 SKIP · NO TRADE","early-state"));
     card.append(head);
     const scoreline=make("div",undefined,"early-scoreline"+(!scored||score<50?" weak":""));
     scoreline.append(make("b",scored?"TECHNICAL WATCH · "+score+"/100":"POTENTIAL UNRATED"),
       make("span",(Number.isFinite(screening)?"Screening priority "+screening.toFixed(1)+" · ":"")+
-        "Same technical scoring as Today's watches · NOT entry probability"));card.append(scoreline);
+        "Technical score, not an approved entry"));card.append(scoreline);
     card.append(make("p","OANDA bid "+money(q.bid)+" · ask "+money(q.ask)+" · "+(quoteAt?uk(quoteAt):"quote unavailable"),"early-times"));
     if(recommendation.status!=="SKIP"&&fullyPriced){
       const levels=make("div",undefined,"early-levels");
@@ -602,7 +606,7 @@ function renderCurrentScouts(){
       card.append(make("small","OANDA spread "+Number(q.spread_pips).toFixed(1)+" pips — not cleared for entry."));
     const action=make("div",undefined,"early-action");
     action.append(make("small",recommendation.next));
-    const open=make("button",recommendation.status==="SKIP"?"WHY SKIP?":"ENTRY · STOP · TARGET","monitored-setup-open");
+    const open=make("button",recommendation.status==="SKIP"?"WHY NO ENTRY?":"VIEW ENTRY · STOP · TARGET","monitored-setup-open");
     open.type="button";
     open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
     open.addEventListener("click",()=>openMonitoredSetupPopup(scoutContext));
@@ -736,8 +740,8 @@ const highPotential=!stale&&(feed.learning?.opportunity_audit?.recent||[])
   .some(t=>visiblePair(t.instrument)&&Date.parse(t.expires_at)>Date.now()&&
     rankEarlyWatch(t).score>=70);
 const f=feed.fast_entry_monitor||{},now=Date.now(),ft=Date.parse(f.checked_at||"");
-const green=!stale&&feed.news_status==="OK"&&f.freshness==="CURRENT"&&Number.isFinite(ft)&&ft<=now+60000&&now-ft<=20*60000?
- (f.observations||[]).find(x=>x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+const green=!stale&&f.freshness==="CURRENT"&&Number.isFinite(ft)&&ft<=now+60000&&now-ft<=20*60000?
+ (f.observations||[]).find(x=>pairNewsClear(x.pair)&&x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
    Number.isFinite(Date.parse(x.alert_detected_at))&&now-Date.parse(x.alert_detected_at)<=15*60000&&
    Date.parse(x.expires_at)>now&&approved().some(p=>p.id===x.id&&p.instrument===x.pair)&&
    feed.pairs?.[x.pair]?.quote?.tradeable===true&&
@@ -745,7 +749,7 @@ const green=!stale&&feed.news_status==="OK"&&f.freshness==="CURRENT"&&Number.isF
    Number(x.entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0):null;
 const a=approved().length,minutes=Math.max(0,Math.round((Date.now()-Date.parse(feed.snapshot_at))/60000));el("clock").textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date())+" UK";el("sourceTime").textContent="Quote snapshot "+uk(feed.snapshot_at);el("publishedTime").textContent="Published "+uk(feed.published_at);el("screened").textContent=String(Object.keys(feed.pairs).filter(visiblePair).length);el("deep").textContent=String(Object.entries(feed.pairs).filter(([k,v])=>visiblePair(k)&&v.deep).length);el("approved").textContent=a;el("age").textContent=minutes+"m";el("ageHelp").textContent=stale?"STALE · no entry":"70m maximum";
 el("verdict").textContent=stale?"🔴 NO TRADE":green?"🟢 GREEN":a?"🟡 WAIT":"🔴 NO TRADE";
-el("verdictHelp").textContent=stale?"Source too old":green?"Approved M15 trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?"DATA RECENT":"NEWS PARTIAL";
+el("verdictHelp").textContent=stale?"Source too old":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?"DATA RECENT":"NEWS PARTIAL";
 const gateData=el("gateData"),gateEntry=el("gateEntry"),gateBroker=el("gateBroker");
 gateData.className="gate "+(stale?"gate-red":"gate-green");el("gateDataValue").textContent=stale?"STALE SOURCE":"FRESH SNAPSHOT";el("gateDataHelp").textContent=stale?"No live price verification possible":"Within 70-minute research cutoff";
 gateEntry.className="gate "+(stale?"gate-red":green?"gate-green":"gate-amber");el("gateEntryValue").textContent=stale?"BLOCKED":green?"🟢 TRIGGER READY":a?"WAIT FOR TRIGGER":highPotential?"NO APPROVED ENTRY":"NO ENTRY";
@@ -754,7 +758,7 @@ el("gateEntryHelp").textContent=stale?"Await new published quotes":green?"Resear
 gateBroker.className="gate gate-amber";
 el("alert").className="alert "+(stale?"":"good");el("alert").replaceChildren(make("b",stale?"NO LIVE ENTRY · SNAPSHOT STALE":green?"🟢 CONFIRMED CONDITIONAL ENTRY · PEPPERSTONE CHECK":a?"🟡 WAIT · PLAN EXISTS, TRIGGER PENDING":highPotential?"🔴 NO TRADE · RESEARCH WATCH ONLY":"🔴 NO TRADE · NO APPROVED BUY OR SELL"),make("small",stale?"OANDA source at "+uk(feed.snapshot_at)+". Page refresh does not imply new market collection. Do not trade historical quotes.":green?"Completed entry trigger recorded. Check Pepperstone quote, spread, account risk and any new news before manually executing.":a?"The engine is monitoring the original entry levels and the NEXT completed candle. Do not enter while trigger is pending.":highPotential?"DO NOT ENTER. A high-scoring research watch is not an approved signal; the engine must check its next candle, news and risk itself.":"DO NOT ENTER. There is no approved signal; the engine continues research. You do not need to assess the shortlist."));
 const earlySelected=!stale&&earlyCandidate(pair)&&rankEarlyWatch(earlyCandidate(pair)).score>=70;
-el("entryState").textContent=stale?"NO ENTRY":green?.pair===pair?"🟢 GREEN":signalFor(pair)?"WAIT FOR TRIGGER":earlySelected?"EARLY WATCH":"WAIT";el("entryDetail").textContent=stale?"The last collection is too old to validate entry prices.":green?.pair===pair?"Entry trigger confirmed; verify your broker quote, risk and fresh news before manual action.":signalFor(pair)?"Approved conditional thesis, not an immediate order: check completed M15, stop/TP, blackout and executable Pepperstone spread.":earlySelected?"NO ENTRY. The engine has not admitted this watch; wait for a new GREEN confirmed trade decision.":"No validated conditional trade for this instrument.";
+el("entryState").textContent=stale?"NO ENTRY":green?.pair===pair?"🟢 GREEN":signalFor(pair)?"WAIT FOR TRIGGER":earlySelected?"EARLY WATCH":"WAIT";el("entryDetail").textContent=stale?"The last collection is too old to validate entry prices.":green?.pair===pair?"Entry trigger confirmed; verify your broker quote, risk and fresh news before manual action.":signalFor(pair)?"Complete conditional plan: await completed M5/M15 trigger and check Pepperstone spread.":earlySelected?"NO ENTRY. The engine has not admitted this watch; wait for a new GREEN confirmed trade decision.":"No validated conditional trade for this instrument.";
 }
 
 function setupDiagnostics(s,p){
@@ -819,7 +823,7 @@ if(!current){
 headline.textContent="WAIT · NO CURRENT FAST CHECK";
 note.textContent="Fast scan needs refreshing; no green trigger can be inferred.";
 }
-const isReady=x=>current&&!stale&&feed.news_status==="OK"&&x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+const isReady=x=>current&&!stale&&pairNewsClear(x.pair)&&x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
   Number.isFinite(Date.parse(x.alert_detected_at))&&Date.now()-Date.parse(x.alert_detected_at)<=15*60000&&
   Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>Date.now()&&
   (feed.signals||[]).some(p=>p.id===x.id&&p.instrument===x.pair)&&
@@ -831,7 +835,7 @@ const isReady=x=>current&&!stale&&feed.news_status==="OK"&&x.status==="PRICE_REA
 const rows=(Array.isArray(f.observations)?f.observations:[])
   .sort((a,b)=>Number(isReady(b))-Number(isReady(a))).slice(0,3);
 const live=rows.find(isReady);
-if(live){headline.textContent="🟢 GREEN · CONFIRMED CONDITIONAL TRIGGER";headline.classList.add("ready");note.textContent="A completed M15 research trigger was recorded. Verify Pepperstone spread, news and risk before any manual entry; delivery to you is not independently confirmed."}
+if(live){headline.textContent="🟢 GREEN · CONFIRMED CONDITIONAL TRIGGER";headline.classList.add("ready");note.textContent="Trigger confirmed. Check Pepperstone bid/ask, spread, risk and any new events before entering manually."}
 else{headline.textContent="🔴 RED · NO CONFIRMED ENTRY";note.textContent="No fully checked entry trigger exists. Do not enter a technical watch.";}
 if(!live){
  const now=Date.now();
@@ -842,7 +846,7 @@ if(!live){
    .sort((a,b)=>(Number(b.net_rr_at_spread_cap)||0)-(Number(a.net_rr_at_spread_cap)||0))[0];
  if(conditional){
    headline.textContent="🟡 AMBER · COMPLETE PLAN, TRIGGER PENDING";
-   note.textContent="Analysis, entry, stop and target are supplied. The engine is waiting for its next confirmed M15 price trigger; do not enter yet.";
+   note.textContent="Entry, stop and target supplied. Await a completed "+(conditional.trigger_timeframe||"M15")+" trigger; do not enter yet.";
    const d=make("article",undefined,"pick");
    d.append(make("div","🟡 WAIT FOR AUTOMATED TRIGGER","rank"),
      make("b",conditional.instrument.replace("_","/")+" · "+(conditional.direction==="LONG"?"BUY":"SELL")),
@@ -1011,13 +1015,31 @@ function openMonitoredSetupPopup(t){
   bar.append(close);
   const detail=monitoredSetupPanel(t);
   dialog.append(bar,detail,make("p",
-    "Monitored prices are research only; a GREEN conditional research trigger is not a broker fill or an automatic order. Pepperstone price, spread, risk and final execution remain yours.",
+    "OANDA reference levels, not Pepperstone execution prices. Check broker bid/ask, spread and risk before ordering.",
     "monitored-setup-dialog-note"));
   dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close();});
   dialog.addEventListener("close",()=>dialog.remove(),{once:true});
   document.body.append(dialog);
   if(typeof dialog.showModal==="function"){dialog.showModal();close.focus();}
   else {dialog.setAttribute("open","");close.focus();}
+}
+function pairNewsClear(pair){
+  const clearance=feed?.news_clearance?.[pair];
+  const checked=Date.parse(feed?.news_at||"");
+  const age=Date.now()-checked;
+  return clearance?.status==="CLEAR"&&Number.isFinite(age)&&
+    age>=-60000&&age<=25*60000;
+}
+function pairNewsReason(pair){
+  const code=feed?.news_clearance?.[pair]?.reason;
+  const reasons={
+    PRIMARY_NEWS_SOURCE_MISSING:"Required official news coverage is missing for this pair.",
+    EVENT_CALENDAR_OR_BLACKOUT:"A relevant high-impact release or calendar gap blocks this pair.",
+    RECENT_MATERIAL_HEADLINE_REVIEW:"A recent material headline needs review.",
+    NEWS_STALE:"News check is out of date.",
+    NEWS_COVERAGE_NOT_VERIFIED:"Required news coverage is incomplete."
+  };
+  return reasons[code]||"Pair-specific news clearance is not verified.";
 }
 function monitoredDecision(t){
   const s=buildMonitoredScenario(t),q=feed?.pairs?.[t.instrument]?.quote||{};
@@ -1032,32 +1054,53 @@ function monitoredDecision(t){
     return Number.isFinite(at)&&String(ev.impact||"").toLowerCase().includes("high")&&
       t.instrument.split("_").includes(ev.currency)&&Math.abs(now-at)<=45*60000;
   });
-  const eventClear=feed?.news_status==="OK"&&!blackout;
+  const eventClear=pairNewsClear(t.instrument)&&!blackout;
   const plan=(feed?.signals||[]).find(x=>x.instrument===t.instrument&&x.direction===t.direction&&
     Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>now&&
     Number(x.planned_entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0);
   const fast=feed?.fast_entry_monitor||feed?.hourly?.fast_entry_monitor||{};
   const checked=Date.parse(fast.checked_at),fastFresh=fast.freshness==="CURRENT"&&
     Number.isFinite(checked)&&checked<=now+60000&&now-checked<=20*60000;
-  const ready=plan&&eventClear&&fresh&&now-quoteAt<=5*60000&&fastFresh&&
-    (fast.observations||[]).some(x=>x.id===plan.id&&x.pair===t.instrument&&
-      x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
-      Number.isFinite(Date.parse(x.alert_detected_at))&&
-      now-Date.parse(x.alert_detected_at)>=0&&now-Date.parse(x.alert_detected_at)<=15*60000&&
-      Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>now)&&
+  const detectedFast=fastFresh&&(fast.observations||[]).some(x=>
+    x.id===plan?.id&&x.pair===t.instrument&&
+    x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+    Number.isFinite(Date.parse(x.alert_detected_at))&&
+    now-Date.parse(x.alert_detected_at)>=0&&now-Date.parse(x.alert_detected_at)<=15*60000&&
+    Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>now);
+  const detectedHourly=(feed?.hourly?.signals||[]).some(x=>
+    x.id===plan?.id&&x.pair===t.instrument&&
+    x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+    Number.isFinite(Date.parse(feed.hourly.at))&&
+    now-Date.parse(feed.hourly.at)>=0&&now-Date.parse(feed.hourly.at)<=15*60000);
+  const ready=plan&&eventClear&&fresh&&now-quoteAt<=5*60000&&
+    (detectedFast||detectedHourly)&&
     Number(q.spread_pips)>0&&Number(q.spread_pips)<=Number(plan.max_oanda_spread_pips)&&
     Number(q.pip_size)>0&&
     (()=>{
       const entry=Number(plan.planned_entry),stop=Number(plan.stop),tp=Number(plan.tp1);
       const risk=Math.abs(entry-stop),reward=Math.abs(tp-entry),spread=Number(q.spread_pips)*Number(q.pip_size);
+      const price=Number(t.direction==="SHORT"?q.bid:q.ask),
+        liveRisk=Math.abs(price-stop),liveReward=Math.abs(tp-price);
       return risk>0&&reward/risk>=1.50&&(reward-spread)/(risk+spread)>=1.35&&
-        (t.direction==="SHORT"?stop>entry&&tp<entry:stop<entry&&tp>entry)&&
+        (t.direction==="SHORT"?stop>entry&&tp<entry&&stop>price&&price>tp:
+          stop<entry&&tp>entry&&stop<price&&price<tp)&&
+        liveRisk>0&&liveReward/liveRisk>=1.50&&
+        (liveReward-spread)/(liveRisk+spread)>=1.35&&
         !(plan.event_blackouts_utc||[]).some(w=>Date.parse(w.start)<=now&&now<=Date.parse(w.end));
     })();
   if(ready)return {status:"GREEN",side,scenario:s,plan,
     reason:"A new completed entry trigger passed the canonical checks.",
     next:"Check the live Pepperstone symbol, executable bid/ask, spread and account risk before deciding whether to place the order."};
   const spreadPips=Number(q.spread_pips),spreadHigh=Number.isFinite(spreadPips)&&spreadPips>10;
+  if(plan&&validSource&&eventClear&&Number(q.spread_pips)>0&&
+      Number(q.spread_pips)<=Number(plan.max_oanda_spread_pips)){
+    return {status:"WATCH",side,scenario:s,plan,
+      condition:"Await NEW completed "+(plan.trigger_timeframe||"M15")+
+        " candle at the frozen trigger.",
+      reason:"Complete entry, stop and target; confirmation pending.",
+      next:"WAIT. The monitor must confirm a future candle and check remaining reward.",
+      quoteAt:q.time,spreadPips};
+  }
   const complete=s.route!=="NONE"&&(s.entry!=null||s.entryZoneLow!=null)&&s.stop!=null&&s.tp1!=null;
   const economics=complete&&Number.isFinite(s.grossRR)&&Number.isFinite(s.netRR)&&
     s.grossRR>=1.50&&s.netRR>=1.35&&
@@ -1072,7 +1115,7 @@ function monitoredDecision(t){
     spreadHigh?"OANDA spread "+spreadPips.toFixed(1)+" pips exceeds the 10-pip watch limit.":
     !economics?"The proposed stop, target or spread fails the strategy's risk/reward checks.":
     blackout?"A high-impact economic announcement blocks this pair.":
-    !eventClear?"Official news checks are incomplete.":
+    !eventClear?pairNewsReason(t.instrument):
     "The next completed M15 trigger has not been confirmed.";
   const condition=s.triggerText||
     (s.trigger!=null?"Wait for a NEW completed 15-minute candle "+(side==="SELL"?"below ":"above ")+money(s.trigger):
@@ -1104,8 +1147,11 @@ function monitoredSetupPanel(t){
       const cell=make("div");cell.append(make("small",title),make("b",value));prices.append(cell);
     }
     holder.append(prices);
-    const condition=p?"Recorded new completed M15 entry trigger; broker verification remains.":d.condition;
-    holder.append(make("p",(p?"TRIGGER CONFIRMED · ":"TRIGGER STILL PENDING · ")+condition,"monitored-setup-next"));
+    const confirmed=d.status==="GREEN";
+    const condition=p&&confirmed?"Completed "+(p.trigger_timeframe||"M15")+
+      " confirmation recorded; check broker quote.":d.condition;
+    holder.append(make("p",(confirmed?"TRIGGER CONFIRMED · ":"TRIGGER PENDING · ")+condition,
+      "monitored-setup-next"));
     const expiry=p?p.expires_at:s.expiry;
     if(expiry)holder.append(make("small","Plan expiry: "+uk(expiry)+(p?" · canonical research plan":" · research preview, not an approved trade")));
   }
