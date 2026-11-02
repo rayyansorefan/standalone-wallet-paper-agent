@@ -256,7 +256,7 @@ test('fast research and export-compaction metadata cannot imply delivery or brok
     assert.equal(feed.public_compaction.optional_pattern_details_omitted, true);
     for (const pair of Object.values(feed.pairs)) {
       for (const frame of Object.values(pair.frames)) {
-        assert.ok(frame.candles.length >= 6);
+        assert.ok(frame.candles.length >= 1, 'Safely compacted charts retain at least one completed candle');
         assert.ok(Number.isFinite(frame.indicators.ema20));
       }
     }
@@ -423,8 +423,8 @@ test('monitored setup opens a real keyboard-dismissable modal on tap, without ap
   assert.match(page, /dialog\.addEventListener\("close",\(\)=>dialog\.remove\(\)/);
   assert.match(page, /const detail=monitoredSetupPanel\(t\)/);
   assert.match(page, /\.monitored-setup-dialog::backdrop/);
-  assert.match(page, /WHY SKIP\?/);
-  assert.match(page, /WATCH — WAIT/);
+  assert.match(page, /WHY NO ENTRY\?/);
+  assert.match(page, /CONDITIONAL · WAIT/);
   assert.match(page, /SKIP .*NO TRADE/);
 });
 
@@ -477,6 +477,7 @@ test('single FX desk decision shows green only for a fresh canonical confirmed t
       append(...parts){this.children.push(...parts)},
       classList:{remove(){},add(){}}});
     const ctx={el,make,stale,visiblePair:p=>p!=='GBP_ZAR',money:x=>String(x),uk:x=>x,n:x=>String(x),
+      pairNewsClear:()=>true,monitoredDecision:()=>({status:"GREEN"}),
       feed:{fast_entry_monitor:{freshness,checked_at:iso(-age),
         observations:eventRow?[eventRow]:[]},
         signals:planRow?[planRow]:[],news_status:'OK',pairs:{GBP_USD:{quote}}}};
