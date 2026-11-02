@@ -155,7 +155,9 @@ if(cad){
   const londonDay=t=>new Intl.DateTimeFormat("en-GB",{
     timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"
   }).format(new Date(t));
-  const direction=cad.children[0].children.some(n=>String(n.textContent).includes("SELL BIAS"))?"SHORT":"LONG";
+  const direction=cad.children.some(head=>
+    String(head.className).includes("current-watch-head")&&
+    head.children.some(n=>String(n.textContent).includes("SELL BIAS")))?"SHORT":"LONG";
   const retained=feed.learning.paper_audit.candidates.filter(x=>
     x.source==="AUTOMATED_RESEARCH_PRIORITY"&&x.instrument==="CAD_CHF"&&x.direction===direction)
     .sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
