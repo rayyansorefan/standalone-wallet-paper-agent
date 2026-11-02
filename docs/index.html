@@ -741,15 +741,21 @@ const highPotential=!stale&&(feed.learning?.opportunity_audit?.recent||[])
     rankEarlyWatch(t).score>=70);
 const f=feed.fast_entry_monitor||{},now=Date.now(),ft=Date.parse(f.checked_at||"");
 const green=!stale&&f.freshness==="CURRENT"&&Number.isFinite(ft)&&ft<=now+60000&&now-ft<=20*60000?
- (f.observations||[]).find(x=>pairNewsClear(x.pair)&&x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+ (f.observations||[]).find(x=>pairNewsClear(x.pair)&&
+   monitoredDecision({instrument:x.pair,direction:x.direction}).status==="GREEN"&&
+   x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
    Number.isFinite(Date.parse(x.alert_detected_at))&&now-Date.parse(x.alert_detected_at)<=15*60000&&
    Date.parse(x.expires_at)>now&&approved().some(p=>p.id===x.id&&p.instrument===x.pair)&&
    feed.pairs?.[x.pair]?.quote?.tradeable===true&&
    now-Date.parse(feed.pairs[x.pair].quote.time)<=5*60000&&
-   Number(x.entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0):null;
+   Number(x.entry)>0&&Number(x.stop)>0&&Number(x.tp1)>0):
+ (feed?.hourly?.signals||[]).find(x=>x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+   pairNewsClear(x.pair)&&
+   monitoredDecision({instrument:x.pair,direction:x.direction}).status==="GREEN")||null;
 const a=approved().length,minutes=Math.max(0,Math.round((Date.now()-Date.parse(feed.snapshot_at))/60000));el("clock").textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date())+" UK";el("sourceTime").textContent="Quote snapshot "+uk(feed.snapshot_at);el("publishedTime").textContent="Published "+uk(feed.published_at);el("screened").textContent=String(Object.keys(feed.pairs).filter(visiblePair).length);el("deep").textContent=String(Object.entries(feed.pairs).filter(([k,v])=>visiblePair(k)&&v.deep).length);el("approved").textContent=a;el("age").textContent=minutes+"m";el("ageHelp").textContent=stale?"STALE · no entry":"70m maximum";
 el("verdict").textContent=stale?"🔴 NO TRADE":green?"🟢 GREEN":a?"🟡 WAIT":"🔴 NO TRADE";
-el("verdictHelp").textContent=stale?"Source too old":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?"DATA RECENT":"NEWS PARTIAL";
+el("verdictHelp").textContent=stale?"Source too old":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?
+  "DATA RECENT":"DATA RECENT · NEWS GAPS";
 const gateData=el("gateData"),gateEntry=el("gateEntry"),gateBroker=el("gateBroker");
 gateData.className="gate "+(stale?"gate-red":"gate-green");el("gateDataValue").textContent=stale?"STALE SOURCE":"FRESH SNAPSHOT";el("gateDataHelp").textContent=stale?"No live price verification possible":"Within 70-minute research cutoff";
 gateEntry.className="gate "+(stale?"gate-red":green?"gate-green":"gate-amber");el("gateEntryValue").textContent=stale?"BLOCKED":green?"🟢 TRIGGER READY":a?"WAIT FOR TRIGGER":highPotential?"NO APPROVED ENTRY":"NO ENTRY";
@@ -824,6 +830,7 @@ headline.textContent="WAIT · NO CURRENT FAST CHECK";
 note.textContent="Fast scan needs refreshing; no green trigger can be inferred.";
 }
 const isReady=x=>current&&!stale&&pairNewsClear(x.pair)&&x.status==="PRICE_REASSESSMENT_ALERT_READY"&&
+  monitoredDecision({instrument:x.pair,direction:x.direction}).status==="GREEN"&&
   Number.isFinite(Date.parse(x.alert_detected_at))&&Date.now()-Date.parse(x.alert_detected_at)<=15*60000&&
   Number.isFinite(Date.parse(x.expires_at))&&Date.parse(x.expires_at)>Date.now()&&
   (feed.signals||[]).some(p=>p.id===x.id&&p.instrument===x.pair)&&
@@ -1088,7 +1095,7 @@ function monitoredDecision(t){
         (liveReward-spread)/(liveRisk+spread)>=1.35&&
         !(plan.event_blackouts_utc||[]).some(w=>Date.parse(w.start)<=now&&now<=Date.parse(w.end));
     })();
-  if(ready)return {status:"GREEN",side,scenario:s,plan,
+  if(ready)return {status:"GREEN",side,scenario:s,plan,quoteAt:q.time,
     reason:"A new completed entry trigger passed the canonical checks.",
     next:"Check the live Pepperstone symbol, executable bid/ask, spread and account risk before deciding whether to place the order."};
   const spreadPips=Number(q.spread_pips),spreadHigh=Number.isFinite(spreadPips)&&spreadPips>10;
