@@ -517,9 +517,25 @@ function renderCurrentScouts(){
     .map(s=>[s.instrument,s]));
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
     .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
+  // Screen the published candidates by actual proximity to admissibility,
+  // not simply by the highest raw directional research score. A pair whose
+  // spread/structure/trend fails several gates should not crowd out the
+  // nearest technically viable pair. Never equate this order with a GREEN.
+  const riskPenalty=x=>{
+    const codes=(x.blockers||diagnostics.get(x.instrument)?.blockers||[])
+      .map(b=>b.code);
+    const hard=new Set(["STALE_QUOTE","QUOTE_UNUSABLE","COST_HIGH_OR_UNKNOWN",
+      "FOUNDATION_CONFLICT","HIGHER_FRAME_CONFLICT","HIGHER_FRAME_MISSING",
+      "TREND_STRENGTH","DMI_CONFLICT","OVEREXTENDED_OR_REVERSING",
+      "M15_BAR_STALE","M15_BAR_TIME","M15_HISTORY","PRICE_LEVEL_UNAVAILABLE",
+      "STRUCTURAL_REWARD","NEWS_REQUIRED_SOURCE_MISSING","NEWS_MATERIAL_REVIEW",
+      "NEWS_EVENT_BLACKOUT"]);
+    return codes.reduce((sum,code)=>sum+(hard.has(code)?1:0),0);
+  };
   const scouts=(supplied.length?supplied:fallback).slice().sort((a,b)=>
     Number(!!(feed.signals||[]).find(x=>x.instrument===b.instrument))-
     Number(!!(feed.signals||[]).find(x=>x.instrument===a.instrument))||
+    riskPenalty(a)-riskPenalty(b)||
     Number(b.priority_score??b.priority??0)-Number(a.priority_score??a.priority??0)
   ).slice(0,5);
   const latestHourly=new Map();
@@ -853,7 +869,10 @@ if(!live){
    .sort((a,b)=>(Number(b.net_rr_at_spread_cap)||0)-(Number(a.net_rr_at_spread_cap)||0))[0];
  if(conditional){
    headline.textContent="🟡 AMBER · COMPLETE PLAN, TRIGGER PENDING";
-   note.textContent="Entry, stop and target supplied. Await a completed "+(conditional.trigger_timeframe||"M15")+" trigger; do not enter yet.";
+   note.textContent="Entry, stop and target supplied. Await a completed "+
+    (conditional.trigger_timeframe||
+      (conditional.entry_route==="MOMENTUM_CONTINUATION"?"M5":"M15"))+
+    " trigger; do not enter yet.";
    const d=make("article",undefined,"pick");
    d.append(make("div","🟡 WAIT FOR AUTOMATED TRIGGER","rank"),
      make("b",conditional.instrument.replace("_","/")+" · "+(conditional.direction==="LONG"?"BUY":"SELL")),
@@ -1102,7 +1121,8 @@ function monitoredDecision(t){
   if(plan&&validSource&&eventClear&&Number(q.spread_pips)>0&&
       Number(q.spread_pips)<=Number(plan.max_oanda_spread_pips)){
     return {status:"WATCH",side,scenario:s,plan,
-      condition:"Await NEW completed "+(plan.trigger_timeframe||"M15")+
+      condition:"Await NEW completed "+(plan.trigger_timeframe||
+        (plan.entry_route==="MOMENTUM_CONTINUATION"?"M5":"M15"))+
         " candle at the frozen trigger.",
       reason:"Complete entry, stop and target; confirmation pending.",
       next:"WAIT. The monitor must confirm a future candle and check remaining reward.",
@@ -1155,7 +1175,8 @@ function monitoredSetupPanel(t){
     }
     holder.append(prices);
     const confirmed=d.status==="GREEN";
-    const condition=p&&confirmed?"Completed "+(p.trigger_timeframe||"M15")+
+    const condition=p&&confirmed?"Completed "+(p.trigger_timeframe||
+        (p.entry_route==="MOMENTUM_CONTINUATION"?"M5":"M15"))+
       " confirmation recorded; check broker quote.":d.condition;
     holder.append(make("p",(confirmed?"TRIGGER CONFIRMED · ":"TRIGGER PENDING · ")+condition,
       "monitored-setup-next"));
