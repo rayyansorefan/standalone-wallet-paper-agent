@@ -80,13 +80,13 @@ assert.ok(!$("rows").children.some(row=>row.children.some(c=>c.textContent==="GB
 assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes("GBP/ZAR")),"Excluded pair must not be a priority card");
 assert.ok($("chart").children.length>30,"Completed candlesticks should render");
 assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
-assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=3,
-  "Only the top three decision-first scouts should be visible");
+assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
+  "Only the top five decision-first scouts should be visible");
 const firstScout=$("scoutGrid").children[0];
 const scoutView=JSON.stringify(firstScout.children);
 assert.match(scoutView,/TECHNICAL WATCH|POTENTIAL UNRATED/);
 assert.match(scoutView,/SKIP|WATCH|GREEN/,"Every scout must lead with a clear decision");
-assert.match(scoutView,/WHY SKIP|ENTRY · STOP · TARGET/,
+assert.match(scoutView,/WHY NO ENTRY|VIEW ENTRY · STOP · TARGET/,
   "Each scout opens a concise decision instead of raw technical research");
 assert.doesNotMatch(scoutView,/20\\.005|20\\.040/,
   "Unadmitted scout cards must not surface invented entry or stop prices");
