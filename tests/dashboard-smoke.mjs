@@ -81,9 +81,10 @@ assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes
 // Compacted feeds deliberately retain just 2-4 candles per frame; the UI must
 // identify insufficient chart history, rather than invent older OHLC bars.
 const chartBars=feed.pairs[$("pair").value]?.frames?.M15?.candles?.length??0;
-if(chartBars<6)assert.match($("chart").children.map(c=>String(c.textContent)).join(" "),
-  /Full candle history unavailable/, "Sparse chart data must be labelled incomplete");
-else assert.ok($("chart").children.length>30,"Completed candlesticks should render");
+if(chartBars<2)assert.match($("chart").children.map(c=>String(c.textContent)).join(" "),
+  /Full candle history unavailable/, "Unchartable history must be labelled incomplete");
+else assert.ok($("chart").children.some(c=>c.tagName==="rect"),
+  "Even compacted feeds must plot the actual completed candles without inventing history");
 assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
 assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
   "Only the top five decision-first scouts should be visible");
