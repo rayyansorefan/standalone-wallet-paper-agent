@@ -517,10 +517,9 @@ function renderCurrentScouts(){
     .map(s=>[s.instrument,s]));
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
     .map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
-  // Screen the published candidates by actual proximity to admissibility,
-  // not simply by the highest raw directional research score. A pair whose
-  // spread/structure/trend fails several gates should not crowd out the
-  // nearest technically viable pair. Never equate this order with a GREEN.
+  // Retain risk blockers as secondary information, but never let them reorder
+  // scouts ahead of the displayed technical-watch /100 score. A higher score
+  // is NOT a GREEN entry approval or evidence of tradable profitability.
   const riskPenalty=x=>{
     const codes=(x.blockers||diagnostics.get(x.instrument)?.blockers||[])
       .map(b=>b.code);
