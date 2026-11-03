@@ -94,7 +94,7 @@ const expectedOrder=(feed.learning.current_scouts||[]).filter(c=>c.instrument!==
   .slice().sort((a,b)=>Number(b.priority_score)-Number(a.priority_score))
   .slice(0,5).map(c=>c.instrument);
 const displayedOrder=shownScouts.map(c=>String(c.children[0].children[0].textContent)
-  .match(/#[0-9]+ · ([A-Z]+\\/[A-Z]+)/)?.[1]?.replace("/","_"));
+  .split(" · ")[1]?.replace("/","_"));
 assert.deepEqual(displayedOrder,expectedOrder,
   "Current market scouts must display strictly highest-to-lowest screening priority");
 const displayedPriorities=shownScouts.map(c=>Number(String(c.children[1].children[0].textContent)
