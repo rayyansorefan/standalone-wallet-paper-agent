@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "as_of": "2026-10-28T09:10:52Z",
+  "as_of": "2026-11-03T00:43:54Z",
   "account_type": "PEPPERSTONE_SPREAD_BET_SCREENSHOT_EVIDENCE",
-  "evidence": "User-supplied Pepperstone demo closed-position history screenshots through 28 Oct 09:39 UK, earlier historical closures, and a separate 28 Oct 08:22 open-portfolio snapshot. A prior user report supplied GBP/USD entry/exit prices; they are not displayed in latest screenshot. A later 11:22 UK Pepperstone Demo #1 home screenshot shows £1,174.53 and no open orders or positions.",
-  "signal_linkage": "All nine closed demo results remain PENDING independent linkage to a frozen earlier approved signal, completed confirmation, actual fill and costs. Profit provides a positive research hypothesis to test; a loss triggers a process/risk review. Neither automatically changes strategy weighting, approval or win probabilities.",
-  "notes": "Nine closed demo trades: seven realised gains and two losses, cumulative +£153.50. 28 Oct NZD/JPY SHORT +£22.90 closed 08:11:36, GBP/USD SHORT −£5.61 stopped out 09:10:52; daily realised +£17.29. NZD/CAD +£4.92 and NZD/SGD +£7.44 were OPEN at 08:22 only and are not counted in realised results. All Pepperstone demo; no broker API access. Latest 11:22 account card displays £1,174.53 with zero open orders or positions. Earlier NZD/CAD and NZD/SGD floating P/L cannot be converted into closed P/L without close records.",
+  "evidence": "User-supplied Pepperstone demo closed-position history screenshots through 28 Oct 09:39 UK, earlier historical closures, and a separate 28 Oct 08:22 open-portfolio snapshot. A prior user report supplied GBP/USD entry/exit prices; they are not displayed in latest screenshot. A later 11:22 UK Pepperstone Demo #1 home screenshot shows £1,174.53 and no open orders or positions. New 3 Nov screenshot evidences a GBP/USD BUY closed at a net £13.45 loss; account mode is not visible.",
+  "signal_linkage": "All ten evidenced CLOSED trade results remain pending independent match to a timely approved frozen signal, confirmation, broker fills and costs. An unapproved watch execution does not validate or invalidate an entry strategy by itself.",
+  "notes": "Ten evidenced closed broker positions: seven gains, three losses, cumulative +£140.05 after adding the 3 Nov GBP/USD net loss of £13.45. The earlier nine positions were described as demo in their evidence; the 3 Nov screenshot does not establish whether its account was demo or live. User recalls approximately £9 maximum floating profit and a £16 expected target; neither figure is independently verified. The related 12:05 research preview expired at 13:35 on 2 Nov and was not an approved entry; its 16:05 forward tracking window is not a trade-plan extension. No automatic Pepperstone position access or execution exists.",
   "account_snapshot": {
     "observed_at": "2026-10-28T08:22:00Z",
     "equity_gbp": 1171.86,
@@ -248,14 +248,59 @@
         "risk_above_target": true,
         "lesson": "Preserve the stop-loss outcome and require completed M15 confirmation and risk ≤0.25% of verified equity before considering a discretionary short."
       }
+    },
+    {
+      "key": "2026-11-02-gbpusd-buy-stop-20261103-004354",
+      "instrument": "GBP_USD",
+      "direction": "LONG",
+      "status": "CLOSED",
+      "opened_at": "2026-11-02T12:12:15Z",
+      "closed_at": "2026-11-03T00:43:54Z",
+      "entry_price": 1.3415,
+      "exit_price": 1.34004,
+      "exit_reason": "STOP_LOSS",
+      "realised_pnl_gbp": -13.45,
+      "net_pnl_gbp": -13.45,
+      "gross_pnl_gbp": -13.14,
+      "size_gbp_per_point": 0.9,
+      "commission_gbp": 0,
+      "swap_fees_gbp": -0.31,
+      "total_fees_gbp": -0.31,
+      "account_mode": "NOT_VISIBLE_IN_SCREENSHOT",
+      "signal_id": null,
+      "signal_match": "PENDING",
+      "entry_classification": "UNAPPROVED_RESEARCH_WATCH_EXECUTED_BEFORE_RECORDED_PATTERN",
+      "related_research_watch_id": "202611021145-GBPUSD-LONG-EMA20_PULLBACK",
+      "source": "USER_SUPPLIED_PEPPERSTONE_CLOSED_POSITION_SCREENSHOT_2026-11-03",
+      "max_unrealised_pnl_gbp_approx": 9,
+      "stated_target_profit_gbp_approx": 16,
+      "peak_and_target_source": "USER_RECALL_NOT_BROKER_VERIFIED_PEAK",
+      "execution_review": {
+        "research_plan_observed_at": "2026-11-02T12:05:36.663963Z",
+        "original_entry_window_expires_at": "2026-11-02T13:35:36.663963Z",
+        "separate_forward_tracking_expires_at": "2026-11-02T16:05:43.719202Z",
+        "original_research_zone": [
+          1.34133,
+          1.34156
+        ],
+        "original_research_stop": 1.34047,
+        "original_research_tp1": 1.3434,
+        "original_research_tp2": 1.34482,
+        "original_plan_approval": false,
+        "unconfirmed_at_entry": "Future completed M15 bullish rejection not yet observed; D1 higher timeframe conflict and material headline review blocked formal approval",
+        "observed_paper_candle_at": "2026-11-02T12:30:00Z",
+        "broker_stop_value": "NOT_SHOWN_ONLY_STOP_CLOSURE_AND_EXIT_PRICE",
+        "finding": "Entry was inside a preliminary watch zone, but lacked confirmed research approval. The original 13:35 research-entry expiry was long before the 00:43 broker stop. Research expiry was not an automatic broker close instruction.",
+        "study_next": "Prospectively compare explicit time-based thesis reassessment and validated partial-profit or trailing-stop rules with fixed TP/SL, costs and all winners and losers; do not retrofit strategy profitability from one loss."
+      }
     }
   ],
   "execution_review": {
-    "as_of": "2026-10-28T09:10:52Z",
-    "focus_trade_key": "2026-10-28-gbpusd-stop-0910",
-    "status": "DISCRETIONARY_EARLY_ENTRY_STOPPED_OUT",
-    "finding": "GBP/USD short 1.32920 → 1.32971 lost £5.61 and was stopped out. The entry was made before completed bearish M15 confirmation, and its loss represented about 0.48% of previously reported £1,174.10 equity versus the 0.25% per-trade risk guideline.",
-    "action": "Respect the broker stop, require confirmed bearish M15 and current Pepperstone spread/news checks before the next short, and size the planned stop exposure at no more than 0.25% of verified current equity. Do not turn an unapproved watch into a trade signal.",
+    "as_of": "2026-11-03T00:43:54Z",
+    "focus_trade_key": "2026-11-02-gbpusd-buy-stop-20261103-004354",
+    "status": "UNAPPROVED_WATCH_HELD_BEYOND_RESEARCH_EXPIRY",
+    "finding": "GBP/USD BUY at 1.34150 closed by broker stop at 1.34004 with £13.45 net loss including £0.31 swap fees. The matching provisional research entry plan expired at 13:35 on 2 Nov and was never an approved signal; the trade remained open until 00:43 on 3 Nov.",
+    "action": "Display original entry-plan expiry prominently, distinguish it from a broker exit instruction, require confirmed fresh entry before any new order, and prospectively test time-based reassessment and partial-profit alternatives rather than hindsight-fitting one trade.",
     "signal_match": "PENDING"
   },
   "early_entry_study": {
@@ -317,6 +362,14 @@
       "finding": "Your AUD/NZD buy was 3 pips above the suggested entry zone. The possible profit was too small once the spread was included, and the longer-term trend did not support the buy.",
       "action": "The dashboard will flag opportunities with limited upside or conflicting trends. This one loss is not enough to change the model's trading rules.",
       "signal_match": "PENDING"
+    },
+    {
+      "as_of": "2026-10-28T09:10:52Z",
+      "focus_trade_key": "2026-10-28-gbpusd-stop-0910",
+      "status": "DISCRETIONARY_EARLY_ENTRY_STOPPED_OUT",
+      "finding": "GBP/USD short 1.32920 → 1.32971 lost £5.61 and was stopped out. The entry was made before completed bearish M15 confirmation, and its loss represented about 0.48% of previously reported £1,174.10 equity versus the 0.25% per-trade risk guideline.",
+      "action": "Respect the broker stop, require confirmed bearish M15 and current Pepperstone spread/news checks before the next short, and size the planned stop exposure at no more than 0.25% of verified current equity. Do not turn an unapproved watch into a trade signal.",
+      "signal_match": "PENDING"
     }
   ],
   "learning_feedback": {
@@ -341,6 +394,16 @@
         "realised_pnl_gbp": -5.61,
         "observation": "Stopped out after an unconfirmed discretionary short; risk about 0.48% of previous equity, above 0.25% guidance.",
         "next_test": "Require verified current equity, pre-entry stop distance/stake check, completed M15 trigger and positive cost-adjusted R:R; compare the avoided trade path with fills, no-fills and losses.",
+        "strategy_weight_change": 0,
+        "signal_match": "PENDING"
+      },
+      {
+        "trade_key": "2026-11-02-gbpusd-buy-stop-20261103-004354",
+        "instrument": "GBP_USD",
+        "direction": "LONG",
+        "realised_pnl_gbp": -13.45,
+        "observation": "Unapproved preliminary long held beyond original research-plan expiry; approximately £9 floating profit was reported but not captured; £0.31 overnight fees.",
+        "next_test": "Prospectively compare entry-trigger confirmation, expiry reassessment, partial-profit, trailing-stop and time-exit variants on full forward samples after costs.",
         "strategy_weight_change": 0,
         "signal_match": "PENDING"
       }
