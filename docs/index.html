@@ -317,7 +317,7 @@ body{background:#07111f;color:#edf5ff}
     <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>One current primary watch per currency pair, ranked against other pairs. Older signals remain in each pair’s audit history, not competing entry plans. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
     <div class="early-toolbar"><span id="earlyCount">Ranking watches…</span><select id="earlyScope" aria-label="Watch cohort"><option value="ACTIVE">Active watches</option><option value="EXPIRED">Expired &amp; missed</option><option value="ALL">All tracked</option></select><select id="earlySort" aria-label="Ranking method"><option value="POTENTIAL">Highest potential</option><option value="PERFORMANCE">Best past move</option><option value="NEWEST">Newest first</option></select><button id="earlyToggle" type="button">Show all ranked</button></div>
     <div id="earlyGrid" class="early-grid"></div>
-    <div class="early-scout-heading"><h3>Current market scouts · updated each snapshot</h3><p>Top research candidates remain visible even when no full entry plan qualifies. A directional bias or reference level is NOT an entry signal.</p></div>
+    <div class="early-scout-heading"><h3>Current market scouts · updated each snapshot</h3><p>Ranked by displayed technical-watch score, highest to lowest (ties use signal status, blockers and screening priority). A directional bias or reference level is NOT an entry signal.</p></div>
     <p id="scoutSummary" class="early-times">Awaiting current research.</p>
     <div id="scoutGrid" class="early-grid"></div>
     <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Ranking scores are heuristic, not winning probabilities. Past favourable movement is not a filled trade or permission to chase.</p>
@@ -516,7 +516,7 @@ function renderCurrentScouts(){
     .filter(s=>visiblePair(s.instrument)&&s.approved_entry===false)
     .map(s=>[s.instrument,s]));
   const fallback=(feed.priorities||[]).filter(x=>visiblePair(x.pair)&&feed.pairs?.[x.pair])
-    .slice(0,10).map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
+    .map(x=>({instrument:x.pair,priority_score:x.priority,source_quote_at:feed.pairs[x.pair]?.quote?.time}));
   // Screen the published candidates by actual proximity to admissibility,
   // not simply by the highest raw directional research score. A pair whose
   // spread/structure/trend fails several gates should not crowd out the
@@ -532,12 +532,6 @@ function renderCurrentScouts(){
       "NEWS_EVENT_BLACKOUT"]);
     return codes.reduce((sum,code)=>sum+(hard.has(code)?1:0),0);
   };
-  const scouts=(supplied.length?supplied:fallback).slice().sort((a,b)=>
-    Number(!!(feed.signals||[]).find(x=>x.instrument===b.instrument))-
-    Number(!!(feed.signals||[]).find(x=>x.instrument===a.instrument))||
-    riskPenalty(a)-riskPenalty(b)||
-    Number(b.priority_score??b.priority??0)-Number(a.priority_score??a.priority??0)
-  ).slice(0,5);
   const latestHourly=new Map();
   for(const watch of feed.learning?.paper_audit?.candidates||[]){
     if(watch.source!=="AUTOMATED_RESEARCH_PRIORITY"||!visiblePair(watch.instrument)||
@@ -546,23 +540,43 @@ function renderCurrentScouts(){
     if(!previous||Date.parse(watch.created_at)>Date.parse(previous.created_at))
       latestHourly.set(watch.instrument,watch);
   }
-  const current=scouts.filter(x=>{const at=Date.parse(feed.pairs?.[x.instrument]?.quote?.time||x.source_quote_at);
+  const scoutBias=frame=>{
+    const i=frame?.indicators||{},a=Number(i.ema20),b=Number(i.ema50);
+    return i.ema20!=null&&i.ema50!=null&&Number.isFinite(a)&&Number.isFinite(b)?
+      (a>b?"LONG":a<b?"SHORT":"MIXED"):"MIXED";
+  };
+  const scoutDirection=item=>{
+    const p=feed.pairs?.[item.instrument]||{};
+    const m15=scoutBias(p.frames?.M15),h1=scoutBias(p.frames?.H1);
+    return item.direction||latestHourly.get(item.instrument)?.direction||
+      diagnostics.get(item.instrument)?.direction||(m15===h1?m15:"MIXED");
+  };
+  // Rank by the SAME /100 score shown on each card, before limiting to five.
+  // Screening priority and risk gates are tie-breakers, not competing rankings.
+  const scouts=(supplied.length?supplied:fallback).map(item=>{
+    const side=scoutDirection(item);
+    const context=["LONG","SHORT"].includes(side)?
+      directionalTechnicalPotential({instrument:item.instrument,direction:side}):
+      {score:null,label:"POTENTIAL UNRATED",reason:"M15/H1 directional conflict"};
+    return {item,side,context};
+  }).sort((a,b)=>
+    (b.context.score??-1)-(a.context.score??-1)||
+    Number(!!(feed.signals||[]).find(x=>x.instrument===b.item.instrument))-
+    Number(!!(feed.signals||[]).find(x=>x.instrument===a.item.instrument))||
+    riskPenalty(a.item)-riskPenalty(b.item)||
+    Number(b.item.priority_score??b.item.priority??0)-Number(a.item.priority_score??a.item.priority??0)||
+    a.item.instrument.localeCompare(b.item.instrument)
+  ).slice(0,5);
+  const current=scouts.filter(({item})=>{const at=Date.parse(feed.pairs?.[item.instrument]?.quote?.time||item.source_quote_at);
     return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
   status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
     " SHOWN · "+(stale?"SOURCE STALE — NO LIVE ENTRY":"SOURCE "+uk(feed.snapshot_at))+
     " · NOT BROKER TRADES";
   if(!scouts.length){holder.replaceChildren(make("p","No current research candidates published. This is a research coverage gap, not evidence of no market movement.","early-empty"));return}
-  holder.replaceChildren(...scouts.map((item,index)=>{
+  holder.replaceChildren(...scouts.map(({item,side,context},index)=>{
     const name=item.instrument,p=feed.pairs?.[name]||{},q=p.quote||{},diag=diagnostics.get(name)||{};
-    const bias=(frame)=>{const i=frame?.indicators||{},a=Number(i.ema20),b=Number(i.ema50);
-      return i.ema20!=null&&i.ema50!=null&&Number.isFinite(a)&&Number.isFinite(b)?(a>b?"LONG":a<b?"SHORT":"MIXED"):"MIXED"};
-    const m15=bias(p.frames?.M15),h1=bias(p.frames?.H1);
-    const side=item.direction||latestHourly.get(name)?.direction||diag.direction||(m15===h1?m15:"MIXED");
     const quoteAt=q.time||item.source_quote_at;
     const fresh=!stale&&Number.isFinite(Date.parse(quoteAt))&&Date.parse(quoteAt)<=Date.now()+300000&&Date.now()-Date.parse(quoteAt)<4200000;
-    const context=["LONG","SHORT"].includes(side)?
-      directionalTechnicalPotential({instrument:name,direction:side}):
-      {score:null,label:"POTENTIAL UNRATED",reason:"M15/H1 directional conflict"};
     const score=context.score,scored=score!=null&&Number.isFinite(score);
     const screening=Number(item.priority_score??item.priority);
     const blockers=(item.blockers||diag.blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER");
