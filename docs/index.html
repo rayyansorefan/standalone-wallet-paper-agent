@@ -317,7 +317,7 @@ body{background:#07111f;color:#edf5ff}
     <div class="heading"><div><div class="eyebrow">EARLY PRICE MOVES · FORWARD TRACKED</div><h2>Early opportunities &amp; missed moves</h2><p>One current primary watch per currency pair, ranked against other pairs. Older signals remain in each pair’s audit history, not competing entry plans. A favourable move is not a fill or realised profit.</p></div><span class="label" id="earlyAsOf">AWAITING SOURCE</span></div>
     <div class="early-toolbar"><span id="earlyCount">Ranking watches…</span><select id="earlyScope" aria-label="Watch cohort"><option value="ACTIVE">Active watches</option><option value="EXPIRED">Expired &amp; missed</option><option value="ALL">All tracked</option></select><select id="earlySort" aria-label="Ranking method"><option value="POTENTIAL">Highest potential</option><option value="PERFORMANCE">Best past move</option><option value="NEWEST">Newest first</option></select><button id="earlyToggle" type="button">Show all ranked</button></div>
     <div id="earlyGrid" class="early-grid"></div>
-    <div class="early-scout-heading"><h3>Current market scouts · updated each snapshot</h3><p>Ranked by displayed technical-watch score, highest to lowest (ties use signal status, blockers and screening priority). A directional bias or reference level is NOT an entry signal.</p></div>
+    <div class="early-scout-heading"><h3>Current market scouts · updated each snapshot</h3><p>Ranked by published research priority, highest to lowest. Technical-watch scores are shown separately and do not authorise entry.</p></div>
     <p id="scoutSummary" class="early-times">Awaiting current research.</p>
     <div id="scoutGrid" class="early-grid"></div>
     <p class="small">🟠 EARLY WATCH = paper-only, not approved. 🟢 MOVE OBSERVED = price moved favourably without a confirmed entry. Broker spread, events and actual fills are not verified. Ranking scores are heuristic, not winning probabilities. Past favourable movement is not a filled trade or permission to chase.</p>
@@ -550,8 +550,8 @@ function renderCurrentScouts(){
     return item.direction||latestHourly.get(item.instrument)?.direction||
       diagnostics.get(item.instrument)?.direction||(m15===h1?m15:"MIXED");
   };
-  // Rank by the SAME /100 score shown on each card, before limiting to five.
-  // Screening priority and risk gates are tie-breakers, not competing rankings.
+  // Published screening priority is the requested primary rank, not the
+  // separately-calculated technical watch score. Do not conflate these.
   const scouts=(supplied.length?supplied:fallback).map(item=>{
     const side=scoutDirection(item);
     const context=["LONG","SHORT"].includes(side)?
@@ -559,11 +559,10 @@ function renderCurrentScouts(){
       {score:null,label:"POTENTIAL UNRATED",reason:"M15/H1 directional conflict"};
     return {item,side,context};
   }).sort((a,b)=>
+    (Number(b.item.priority_score??b.item.priority??-1)-
+     Number(a.item.priority_score??a.item.priority??-1))||
     (b.context.score??-1)-(a.context.score??-1)||
-    Number(!!(feed.signals||[]).find(x=>x.instrument===b.item.instrument))-
-    Number(!!(feed.signals||[]).find(x=>x.instrument===a.item.instrument))||
     riskPenalty(a.item)-riskPenalty(b.item)||
-    Number(b.item.priority_score??b.item.priority??0)-Number(a.item.priority_score??a.item.priority??0)||
     a.item.instrument.localeCompare(b.item.instrument)
   ).slice(0,5);
   const current=scouts.filter(({item})=>{const at=Date.parse(feed.pairs?.[item.instrument]?.quote?.time||item.source_quote_at);
@@ -613,9 +612,10 @@ function renderCurrentScouts(){
         "🔴 SKIP · NO TRADE","early-state"));
     card.append(head);
     const scoreline=make("div",undefined,"early-scoreline"+(!scored||score<50?" weak":""));
-    scoreline.append(make("b",scored?"TECHNICAL WATCH · "+score+"/100":"POTENTIAL UNRATED"),
-      make("span",(Number.isFinite(screening)?"Screening priority "+screening.toFixed(1)+" · ":"")+
-        "Technical score, not an approved entry"));card.append(scoreline);
+    scoreline.append(make("b",Number.isFinite(screening)?
+        "RESEARCH PRIORITY · "+screening.toFixed(2)+"/100":"RESEARCH PRIORITY · UNRATED"),
+      make("span",(scored?"Technical watch "+score+"/100 · ":"Technical watch unrated · ")+
+        "Priority is a screening rank, NOT entry approval"));card.append(scoreline);
     card.append(make("p","OANDA bid "+money(q.bid)+" · ask "+money(q.ask)+" · "+(quoteAt?uk(quoteAt):"quote unavailable"),"early-times"));
     const planExpiry=plan?.expires_at||scenario?.expiry;
     if(planExpiry&&Number.isFinite(Date.parse(planExpiry))){
