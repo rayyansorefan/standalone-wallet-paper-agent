@@ -617,6 +617,13 @@ function renderCurrentScouts(){
       make("span",(Number.isFinite(screening)?"Screening priority "+screening.toFixed(1)+" · ":"")+
         "Technical score, not an approved entry"));card.append(scoreline);
     card.append(make("p","OANDA bid "+money(q.bid)+" · ask "+money(q.ask)+" · "+(quoteAt?uk(quoteAt):"quote unavailable"),"early-times"));
+    const planExpiry=plan?.expires_at||scenario?.expiry;
+    if(planExpiry&&Number.isFinite(Date.parse(planExpiry))){
+      const expired=Date.parse(planExpiry)<=Date.now();
+      card.append(make("p",(expired?"🔴 PLAN EXPIRED · ":"⏱ PLAN ENTRY DEADLINE · ")+
+        uk(planExpiry)+(expired?" · No new entry from this plan.":" · Reassess any open position separately."),
+        "early-caption"));
+    }
     if(recommendation.status!=="SKIP"&&fullyPriced){
       const levels=make("div",undefined,"early-levels");
       for(const [label,value] of [
