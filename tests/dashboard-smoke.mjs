@@ -78,13 +78,32 @@ assert.ok(!$("pair").options.some(o=>o.value==="GBP_ZAR"),"Excluded pair must no
 assert.ok(!$("journalPair").options.some(o=>o.value==="GBP_ZAR"),"Excluded pair must not be in personal journal selector");
 assert.ok(!$("rows").children.some(row=>row.children.some(c=>c.textContent==="GBP/ZAR")),"Excluded pair must not be in scanner");
 assert.ok(!$("picks").children.some(card=>JSON.stringify(card.children).includes("GBP/ZAR")),"Excluded pair must not be a priority card");
-assert.ok($("chart").children.length>30,"Completed candlesticks should render");
+// Compacted feeds deliberately retain just 2-4 candles per frame; the UI must
+// identify insufficient chart history, rather than invent older OHLC bars.
+const chartBars=feed.pairs[$("pair").value]?.frames?.M15?.candles?.length??0;
+if(chartBars<6)assert.match($("chart").children.map(c=>String(c.textContent)).join(" "),
+  /Full candle history unavailable/, "Sparse chart data must be labelled incomplete");
+else assert.ok($("chart").children.length>30,"Completed candlesticks should render");
 assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
 assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
   "Only the top five decision-first scouts should be visible");
+// Regression: the actual cards, not merely the source array, must be ranked
+// by the very same published numeric priority that their labels show.
+const shownScouts=$("scoutGrid").children;
+const expectedOrder=(feed.learning.current_scouts||[]).filter(c=>c.instrument!=="GBP_ZAR")
+  .slice().sort((a,b)=>Number(b.priority_score)-Number(a.priority_score))
+  .slice(0,5).map(c=>c.instrument);
+const displayedOrder=shownScouts.map(c=>String(c.children[0].children[0].textContent)
+  .match(/#[0-9]+ · ([A-Z]+\\/[A-Z]+)/)?.[1]?.replace("/","_"));
+assert.deepEqual(displayedOrder,expectedOrder,
+  "Current market scouts must display strictly highest-to-lowest screening priority");
+const displayedPriorities=shownScouts.map(c=>Number(String(c.children[1].children[0].textContent)
+  .match(/RESEARCH PRIORITY · ([0-9.]+)/)?.[1]));
+assert.ok(displayedPriorities.every((v,i)=>Number.isFinite(v)&&
+  (!i||displayedPriorities[i-1]>=v)), "Priority values on actual cards must descend");
 const firstScout=$("scoutGrid").children[0];
 const scoutView=JSON.stringify(firstScout.children);
-assert.match(scoutView,/TECHNICAL WATCH|POTENTIAL UNRATED/);
+assert.match(scoutView,/RESEARCH PRIORITY|TECHNICAL WATCH|POTENTIAL UNRATED/);
 assert.match(scoutView,/SKIP|WATCH|GREEN/,"Every scout must lead with a clear decision");
 assert.match(scoutView,/WHY NO ENTRY|VIEW ENTRY · STOP · TARGET/,
   "Each scout opens a concise decision instead of raw technical research");
