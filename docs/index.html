@@ -1220,8 +1220,13 @@ function monitoredSetupPanel(t){
       " confirmation recorded; check broker quote.":d.condition;
     holder.append(make("p",(confirmed?"TRIGGER CONFIRMED · ":"TRIGGER PENDING · ")+condition,
       "monitored-setup-next"));
-    const expiry=p?p.expires_at:s.expiry;
-    if(expiry)holder.append(make("small","Plan expiry: "+uk(expiry)+(p?" · canonical research plan":" · research preview, not an approved trade")));
+  }
+  const expiry=p?.expires_at||s.expiry||t.scout_plan?.expires_at;
+  if(expiry&&Number.isFinite(Date.parse(expiry))){
+    const expired=Date.parse(expiry)<=Date.now();
+    holder.append(make("p",(expired?"🔴 ENTRY RESEARCH EXPIRED · ":"⏱ ENTRY RESEARCH EXPIRES · ")+uk(expiry),
+      "monitored-setup-next"));
+    holder.append(make("small","The deadline is for research-plan entry validity, not an automatic broker position closure. Reassess open positions separately using current prices, risk and evidence."));
   }
   const action=make("p",undefined,"monitored-setup-next");
   action.append(make("b","YOUR ACTION: "+(d.status==="GREEN"?"BROKER CHECK":"DO NOT ENTER")+". "),
