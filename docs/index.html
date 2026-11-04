@@ -1272,7 +1272,7 @@ function renderHourlyCohorts(){
   const window=feed?.learning?.paper_audit?.public_window||{};
   const latestCount=dayRows.filter(t=>Date.parse(t.created_at)===latestTime).length;
   const freshFeed=!stale;
-  const currentPlans=(feed?.learning?.paper_audit?.candidates||[]).filter(t=>
+  const currentPlans=(assessmentAvailable()?feed?.learning?.paper_audit?.candidates||[]:[]).filter(t=>
     ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source)&&
     Number(t.entry)>0&&Number(t.stop)>0&&Number(t.tp1)>0&&
     londonDate(t.created_at)===today&&(!t.expires_at||Date.parse(t.expires_at)>Date.now())).length;
