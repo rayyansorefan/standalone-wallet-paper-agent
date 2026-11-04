@@ -401,7 +401,7 @@ let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true,earlyExpanded=fal
 const pricePct=(side,entry,exit)=>{const e=Number(entry),x=Number(exit);if(!(e>0)||!Number.isFinite(x))return "—";const value=(side==="SHORT"?e-x:x-e)/e*100;return (value>=0?"+":"")+value.toFixed(4)+"%"};
 const HIDDEN_PAIRS=new Set(["GBP_ZAR"]); // User-confirmed unavailable on Pepperstone; retain raw OANDA feed.
 const visiblePair=k=>!HIDDEN_PAIRS.has(k);
-const fresher=()=>feed&&["OK","PARTIAL"].includes(feed.status)&&feed.learning?.assessment_health?.status!=="ASSESSMENT_UNAVAILABLE"&&Date.now()-Date.parse(feed.snapshot_at)<4200000&&Date.now()>=Date.parse(feed.snapshot_at)-300000,approved=()=>feed.signals.filter(s=>visiblePair(s.instrument)&&Date.parse(s.expires_at)>Date.now()),signalFor=k=>approved().find(s=>s.instrument===k),align=p=>{const m=p?.frames?.M15?.indicators,h=p?.frames?.H1?.indicators;if(!m||!h)return"UNKNOWN";return m.ema20>m.ema50&&h.ema20>h.ema50?"UP":m.ema20<m.ema50&&h.ema20<h.ema50?"DOWN":"MIXED"};
+const fresher=()=>feed&&["OK","PARTIAL"].includes(feed.status)&&feed.assessment_status!=="ASSESSMENT_UNAVAILABLE"&&feed.learning?.assessment_health?.status!=="ASSESSMENT_UNAVAILABLE"&&Date.now()-Date.parse(feed.snapshot_at)<4200000&&Date.now()>=Date.parse(feed.snapshot_at)-300000,approved=()=>feed.signals.filter(s=>visiblePair(s.instrument)&&Date.parse(s.expires_at)>Date.now()),signalFor=k=>approved().find(s=>s.instrument===k),align=p=>{const m=p?.frames?.M15?.indicators,h=p?.frames?.H1?.indicators;if(!m||!h)return"UNKNOWN";return m.ema20>m.ema50&&h.ema20>h.ema50?"UP":m.ema20<m.ema50&&h.ema20<h.ema50?"DOWN":"MIXED"};
 
 function earlyCandidate(instrument){
   const rows=feed?.learning?.opportunity_audit?.recent||[];
