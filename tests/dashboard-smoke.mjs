@@ -264,4 +264,16 @@ assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audi
   "Only todays priced assessment plans are shown; stale quotes must not be treated as current");
 assert.match($("researchCards").children[0].className,/setupstale|setupempty/,"Stale research cannot be presented as an actionable current setup");
 assert.match($("alert").children[0].textContent,/NO LIVE ENTRY/);
+// Backend test failure with a fresh quote must never be displayed as market NO TRADE.
+at.now=Date.parse(feed.snapshot_at)+30*60*1000;
+feed.assessment_status="ASSESSMENT_UNAVAILABLE";
+feed.unavailable_reason="SAFETY_VALIDATION_FAILED";
+vm.runInNewContext("health();renderCurrentScouts()",ctx);
+assert.equal($("verdict").textContent,"⚪ ASSESSMENT UNAVAILABLE");
+assert.match($("health").textContent,/ASSESSMENT UNAVAILABLE/);
+assert.match($("alert").children[0].textContent,/ASSESSMENT UNAVAILABLE/);
+assert.equal(vm.runInNewContext("approved().length",ctx),0,
+  "Prior registered plans cannot survive failed integrity checks as approvals");
+assert.equal(vm.runInNewContext("monitoredDecision({instrument:'EUR_USD',direction:'LONG'}).status",ctx),"UNAVAILABLE");
+assert.match(JSON.stringify($("scoutGrid").children),/ASSESSMENT UNAVAILABLE/);
 console.log("FX dashboard passed: full-universe chart selector, 10 indicators, shortlist, scanner, news, local journal, stale fail-closed.");
