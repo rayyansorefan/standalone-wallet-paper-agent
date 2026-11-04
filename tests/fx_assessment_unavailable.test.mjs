@@ -11,6 +11,7 @@ test('stale data and failed assessment cannot be portrayed as no market trades',
   assert.doesNotThrow(() => new Script(script));
   assert.match(script, /\["OK","PARTIAL"\]\.includes\(feed\.status\)/);
   assert.match(script, /assessment_health\?\.status!==["']ASSESSMENT_UNAVAILABLE["']/);
+  assert.match(script, /feed\.assessment_status!==["']ASSESSMENT_UNAVAILABLE["']/);
   assert.match(script, /verdict["']\)\.textContent=stale\?["']⚪ ASSESSMENT UNAVAILABLE["']/);
   assert.match(script, /This is not evidence the market offered no trades/);
   assert.match(script, /ASSESSMENT UNAVAILABLE · NO ENTRY/);
