@@ -5,6 +5,7 @@ import vm from "node:vm";
 
 const html=fs.readFileSync("docs/index.html","utf8");
 const feed=JSON.parse(fs.readFileSync("docs/fx-feed.json","utf8"));
+feed.assessment_status="ASSESSMENT_AVAILABLE"; // Explicitly simulate a healthy backend for success-path rendering.
 const evidence=JSON.parse(fs.readFileSync("docs/trade-outcomes.json","utf8"));
 assert.equal(feed.schema,1);
 feed.research_setups=[{instrument:"EUR_JPY",direction:"SHORT",status:"CONDITIONAL_RESEARCH_NOT_TRIGGERED",entry_low:175.86,entry_high:175.94,stop:176.28,tp1:175.25,tp2:175.03,net_rr_estimate:1.47,source_quote_at:feed.snapshot_at,technical_checks_agree:5,timeframes_aligned:["M15","H1","H4","D"],trigger:"Wait for a completed M15 bearish rejection."}];
