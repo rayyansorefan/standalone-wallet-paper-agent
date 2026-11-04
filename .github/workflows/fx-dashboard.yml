@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify chart rendering inputs, source freshness gate and JS syntax
-        run: node --test tests/fx_dashboard_smoke.test.mjs
+        run: node --test tests/fx_dashboard_smoke.test.mjs tests/fx_assessment_unavailable.test.mjs
       - name: Exercise FX charts, technical panels, trade journal and stale-price guards
         run: node tests/dashboard-smoke.mjs
       - name: Validate public feed
