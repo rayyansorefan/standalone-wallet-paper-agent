@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
     paths: ['docs/**','tests/**','.github/workflows/fx-dashboard.yml']
+  pull_request:
+    branches: [main]
+    paths: ['docs/**','tests/**','.github/workflows/fx-dashboard.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,7 +15,19 @@ concurrency:
   group: fx-pages
   cancel-in-progress: true
 jobs:
+  pr-test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/fx_dashboard_smoke.test.mjs
+      - run: node tests/dashboard-smoke.mjs
   publish:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: github-pages
     steps:
