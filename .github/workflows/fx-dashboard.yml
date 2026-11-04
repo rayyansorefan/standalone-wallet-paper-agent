@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
     paths: ['docs/**','tests/**','.github/workflows/fx-dashboard.yml']
+  pull_request:
+    branches: [main]
+    paths: ['docs/**','tests/**','.github/workflows/fx-dashboard.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,7 +15,19 @@ concurrency:
   group: fx-pages
   cancel-in-progress: true
 jobs:
+  pr-test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/fx_dashboard_smoke.test.mjs
+      - run: node tests/dashboard-smoke.mjs
   publish:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: github-pages
     steps:
@@ -32,7 +47,7 @@ jobs:
           allowed = {'schema','snapshot_at','news_at','published_at','status',
                      'news_status','coverage','priorities','pairs','signals',
                      'research_setups','hourly','sources','headlines','calendar','news_clearance','learning',
-                     'public_compaction','fast_entry_monitor'}
+                     'public_compaction','fast_entry_monitor','assessment_status','health_checked_at','unavailable_reason'}
           assert set(d) <= allowed, f'Unknown public fields: {set(d)-allowed}'
           assert d['schema']==1 and d['snapshot_at'] and d['pairs']
           assert isinstance(d['signals'],list)
