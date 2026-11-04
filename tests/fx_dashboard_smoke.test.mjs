@@ -516,3 +516,12 @@ test('scout setup popup uses the original priced paper preview instead of silent
   assert.ok(Number.isFinite(Date.parse(s.expiry)),'priced scout must show expiry');
   assert.match(s.reasons.join(' '),/New M15 close required/);
 });
+
+
+test('stale market source is assessment unavailable, not a valid no-trade rejection', () => {
+  assert.match(page, /stale\?"⚪ ASSESSMENT UNAVAILABLE":green/);
+  assert.match(page, /stale\?"Source stale — no live assessment":green/);
+  assert.match(page, /ASSESSMENT UNAVAILABLE · SOURCE STALE/);
+  assert.match(page, /this is not evidence that the market offered no trades/);
+  assert.match(page, /ASSESSMENT UNAVAILABLE · NO LIVE ENTRY · SNAPSHOT STALE/);
+});

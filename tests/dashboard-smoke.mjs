@@ -253,9 +253,9 @@ at.now=savedNow;
 // Simulate delayed source collection: all entry-ready UI must fail closed.
 at.now=Date.parse(feed.snapshot_at)+110*60*1000;
 for(const fn of timers)fn();
-assert.equal($("verdict").textContent,"🔴 NO TRADE");
+assert.equal($("verdict").textContent,"⚪ ASSESSMENT UNAVAILABLE");
 assert.equal($("entryState").textContent,"NO ENTRY");
-assert.match($("health").textContent,/STALE DATA/);
+assert.match($("health").textContent,/ASSESSMENT UNAVAILABLE/);
 assert.equal($("paperTodayCount").textContent, "0 / " + feed.learning.paper_audit.candidates.filter(t=>
     ["LIVE_SIGNAL","GITHUB_FORMAL_SIGNAL","SCHEDULED_MAIN_ASSESSMENT"].includes(t.source) &&
     t.created_at.slice(0,10)===feed.snapshot_at.slice(0,10) &&
