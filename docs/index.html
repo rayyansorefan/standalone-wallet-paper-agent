@@ -401,7 +401,7 @@ let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true,earlyExpanded=fal
 const pricePct=(side,entry,exit)=>{const e=Number(entry),x=Number(exit);if(!(e>0)||!Number.isFinite(x))return "—";const value=(side==="SHORT"?e-x:x-e)/e*100;return (value>=0?"+":"")+value.toFixed(4)+"%"};
 const HIDDEN_PAIRS=new Set(["GBP_ZAR"]); // User-confirmed unavailable on Pepperstone; retain raw OANDA feed.
 const visiblePair=k=>!HIDDEN_PAIRS.has(k);
-const fresher=()=>feed&&Date.now()-Date.parse(feed.snapshot_at)<4200000&&Date.now()>=Date.parse(feed.snapshot_at)-300000,approved=()=>feed.signals.filter(s=>visiblePair(s.instrument)&&Date.parse(s.expires_at)>Date.now()),signalFor=k=>approved().find(s=>s.instrument===k),align=p=>{const m=p?.frames?.M15?.indicators,h=p?.frames?.H1?.indicators;if(!m||!h)return"UNKNOWN";return m.ema20>m.ema50&&h.ema20>h.ema50?"UP":m.ema20<m.ema50&&h.ema20<h.ema50?"DOWN":"MIXED"};
+const fresher=()=>feed&&["OK","PARTIAL"].includes(feed.status)&&feed.learning?.assessment_health?.status!=="ASSESSMENT_UNAVAILABLE"&&Date.now()-Date.parse(feed.snapshot_at)<4200000&&Date.now()>=Date.parse(feed.snapshot_at)-300000,approved=()=>feed.signals.filter(s=>visiblePair(s.instrument)&&Date.parse(s.expires_at)>Date.now()),signalFor=k=>approved().find(s=>s.instrument===k),align=p=>{const m=p?.frames?.M15?.indicators,h=p?.frames?.H1?.indicators;if(!m||!h)return"UNKNOWN";return m.ema20>m.ema50&&h.ema20>h.ema50?"UP":m.ema20<m.ema50&&h.ema20<h.ema50?"DOWN":"MIXED"};
 
 function earlyCandidate(instrument){
   const rows=feed?.learning?.opportunity_audit?.recent||[];
@@ -568,7 +568,7 @@ function renderCurrentScouts(){
   const current=scouts.filter(({item})=>{const at=Date.parse(feed.pairs?.[item.instrument]?.quote?.time||item.source_quote_at);
     return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
   status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
-    " SHOWN · "+(stale?"SOURCE STALE — NO LIVE ENTRY":"SOURCE "+uk(feed.snapshot_at))+
+    " SHOWN · "+(stale?"ASSESSMENT UNAVAILABLE — NO ENTRY":"SOURCE "+uk(feed.snapshot_at))+
     " · NOT BROKER TRADES";
   if(!scouts.length){holder.replaceChildren(make("p","No current research candidates published. This is a research coverage gap, not evidence of no market movement.","early-empty"));return}
   holder.replaceChildren(...scouts.map(({item,side,context},index)=>{
@@ -790,8 +790,8 @@ const green=!stale&&f.freshness==="CURRENT"&&Number.isFinite(ft)&&ft<=now+60000&
    pairNewsClear(x.pair)&&
    monitoredDecision({instrument:x.pair,direction:x.direction}).status==="GREEN")||null;
 const a=approved().length,minutes=Math.max(0,Math.round((Date.now()-Date.parse(feed.snapshot_at))/60000));el("clock").textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date())+" UK";el("sourceTime").textContent="Quote snapshot "+uk(feed.snapshot_at);el("publishedTime").textContent="Published "+uk(feed.published_at);el("screened").textContent=String(Object.keys(feed.pairs).filter(visiblePair).length);el("deep").textContent=String(Object.entries(feed.pairs).filter(([k,v])=>visiblePair(k)&&v.deep).length);el("approved").textContent=a;el("age").textContent=minutes+"m";el("ageHelp").textContent=stale?"STALE · no entry":"70m maximum";
-el("verdict").textContent=stale?"🔴 NO TRADE":green?"🟢 GREEN":a?"🟡 WAIT":"🔴 NO TRADE";
-el("verdictHelp").textContent=stale?"Source too old":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?
+el("verdict").textContent=stale?"⚪ ASSESSMENT UNAVAILABLE":green?"🟢 GREEN":a?"🟡 WAIT":"🔴 NO TRADE";
+el("verdictHelp").textContent=stale?"Source stale or assessment failed":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"ASSESSMENT UNAVAILABLE · NO ENTRY":feed.news_status==="OK"?
   "DATA RECENT":"DATA RECENT · NEWS GAPS";
 const gateData=el("gateData"),gateEntry=el("gateEntry"),gateBroker=el("gateBroker");
 gateData.className="gate "+(stale?"gate-red":"gate-green");el("gateDataValue").textContent=stale?"STALE SOURCE":"FRESH SNAPSHOT";el("gateDataHelp").textContent=stale?"No live price verification possible":"Within 70-minute research cutoff";
@@ -801,7 +801,7 @@ el("gateEntryHelp").textContent=stale?"Await new published quotes":green?"Resear
 gateBroker.className="gate gate-amber";
 el("alert").className="alert"+(green?" good":"");
 const alertPanel=el("alert");
-alertPanel.replaceChildren(make("b",stale?"NO LIVE ENTRY · SNAPSHOT STALE":green?"🟢 CONFIRMED CONDITIONAL ENTRY · PEPPERSTONE CHECK":a?"🟡 WAIT · PLAN EXISTS, TRIGGER PENDING":highPotential?"🔴 NO TRADE · RESEARCH WATCH ONLY":"🔴 NO TRADE · NO APPROVED BUY OR SELL"),make("small",stale?"OANDA source at "+uk(feed.snapshot_at)+". Page refresh does not imply new market collection. Do not trade historical quotes.":green?"Completed entry trigger recorded. Check Pepperstone quote, spread, account risk and any new news before manually executing.":a?"The following original conditional research plan is UNTRIGGERED. The next completed candle must confirm it; DO NOT ENTER NOW.":highPotential?"DO NOT ENTER. A high-scoring research watch is not an approved signal; the engine must check its next candle, news and risk itself.":"DO NOT ENTER. There is no approved signal; the engine continues research. You do not need to assess the shortlist."));
+alertPanel.replaceChildren(make("b",stale?"⚪ ASSESSMENT UNAVAILABLE · NO LIVE ENTRY":green?"🟢 CONFIRMED CONDITIONAL ENTRY · PEPPERSTONE CHECK":a?"🟡 WAIT · PLAN EXISTS, TRIGGER PENDING":highPotential?"🔴 NO TRADE · RESEARCH WATCH ONLY":"🔴 NO TRADE · NO APPROVED BUY OR SELL"),make("small",stale?"Assessment unavailable. Last OANDA source: "+uk(feed.snapshot_at)+". This is not evidence the market offered no trades. Page refresh does not imply new market collection; do not trade historical quotes.":green?"Completed entry trigger recorded. Check Pepperstone quote, spread, account risk and any new news before manually executing.":a?"The following original conditional research plan is UNTRIGGERED. The next completed candle must confirm it; DO NOT ENTER NOW.":highPotential?"DO NOT ENTER. A high-scoring research watch is not an approved signal; the engine must check its next candle, news and risk itself.":"DO NOT ENTER. There is no approved signal; the engine continues research. You do not need to assess the shortlist."));
 if(!stale&&!green&&a){
   const pendingPlans=approved().filter(s=>Number(s.planned_entry)>0&&Number(s.stop)>0&&Number(s.tp1)>0).slice(0,3);
   for(const plan of pendingPlans){
