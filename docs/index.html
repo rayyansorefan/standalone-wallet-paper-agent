@@ -382,7 +382,7 @@ body{background:#07111f;color:#edf5ff}
 <footer class="footer">RESEARCH ONLY · This site does not execute trades, connect to Pepperstone, or guarantee a daily trade count. OANDA practice quotes are indicative. The private OANDA research collector and ChatGPT's hourly notifications are separate from this static site. Public sanitized snapshots may be stale; the page blocks entry labels after 70 minutes. This site cannot issue ChatGPT push alerts. © FX Intelligence.</footer>
 </main></div></div><script>
 "use strict";
-const FX_UI_BUILD="fx-decision-v3-20261030";
+const FX_UI_BUILD="fx-health-fail-closed-20261104";
 async function checkUiVersion(){
   // An open tab otherwise keeps running its old inline JavaScript even if
   // fx-feed.json refreshes. Lightweight version endpoint prevents that.
@@ -401,7 +401,13 @@ let feed=null,outcomeEvidence=null,pair="",tf="M15",stale=true,earlyExpanded=fal
 const pricePct=(side,entry,exit)=>{const e=Number(entry),x=Number(exit);if(!(e>0)||!Number.isFinite(x))return "—";const value=(side==="SHORT"?e-x:x-e)/e*100;return (value>=0?"+":"")+value.toFixed(4)+"%"};
 const HIDDEN_PAIRS=new Set(["GBP_ZAR"]); // User-confirmed unavailable on Pepperstone; retain raw OANDA feed.
 const visiblePair=k=>!HIDDEN_PAIRS.has(k);
-const fresher=()=>feed&&Date.now()-Date.parse(feed.snapshot_at)<4200000&&Date.now()>=Date.parse(feed.snapshot_at)-300000,approved=()=>feed.signals.filter(s=>visiblePair(s.instrument)&&Date.parse(s.expires_at)>Date.now()),signalFor=k=>approved().find(s=>s.instrument===k),align=p=>{const m=p?.frames?.M15?.indicators,h=p?.frames?.H1?.indicators;if(!m||!h)return"UNKNOWN";return m.ema20>m.ema50&&h.ema20>h.ema50?"UP":m.ema20<m.ema50&&h.ema20<h.ema50?"DOWN":"MIXED"};
+const assessmentAvailable=()=>!!feed&&feed.assessment_status!=="ASSESSMENT_UNAVAILABLE"&&
+  feed.learning?.assessment_health?.status!=="ASSESSMENT_UNAVAILABLE"&&
+  (feed.assessment_status==="ASSESSMENT_AVAILABLE"||feed.learning?.assessment_health?.status==="AVAILABLE");
+const assessmentFailure=()=>feed?.unavailable_reason||
+  (feed?.learning?.assessment_health?.reason_codes||[]).join(", ")||
+  "No independently verified assessment health";
+const fresher=()=>feed&&Date.now()-Date.parse(feed.snapshot_at)<4200000&&Date.now()>=Date.parse(feed.snapshot_at)-300000,approved=()=>assessmentAvailable()?feed.signals.filter(s=>visiblePair(s.instrument)&&Date.parse(s.expires_at)>Date.now()):[],signalFor=k=>approved().find(s=>s.instrument===k),align=p=>{const m=p?.frames?.M15?.indicators,h=p?.frames?.H1?.indicators;if(!m||!h)return"UNKNOWN";return m.ema20>m.ema50&&h.ema20>h.ema50?"UP":m.ema20<m.ema50&&h.ema20<h.ema50?"DOWN":"MIXED"};
 
 function earlyCandidate(instrument){
   const rows=feed?.learning?.opportunity_audit?.recent||[];
@@ -550,8 +556,9 @@ function renderCurrentScouts(){
     return item.direction||latestHourly.get(item.instrument)?.direction||
       diagnostics.get(item.instrument)?.direction||(m15===h1?m15:"MIXED");
   };
-  // Published screening priority is the requested primary rank, not the
-  // separately-calculated technical watch score. Do not conflate these.
+  // Stable, descending numeric ranking. Non-numeric scores rank last and ties
+  // break by instrument, NEVER by hidden watch heuristics or object insertion.
+  const numericPriority=x=>{const n=Number(x.priority_score??x.priority);return Number.isFinite(n)?n:-Infinity;};
   const scouts=(supplied.length?supplied:fallback).map(item=>{
     const side=scoutDirection(item);
     const context=["LONG","SHORT"].includes(side)?
@@ -559,16 +566,13 @@ function renderCurrentScouts(){
       {score:null,label:"POTENTIAL UNRATED",reason:"M15/H1 directional conflict"};
     return {item,side,context};
   }).sort((a,b)=>
-    (Number(b.item.priority_score??b.item.priority??-1)-
-     Number(a.item.priority_score??a.item.priority??-1))||
-    (b.context.score??-1)-(a.context.score??-1)||
-    riskPenalty(a.item)-riskPenalty(b.item)||
+    (numericPriority(b.item)-numericPriority(a.item))||
     a.item.instrument.localeCompare(b.item.instrument)
   ).slice(0,5);
   const current=scouts.filter(({item})=>{const at=Date.parse(feed.pairs?.[item.instrument]?.quote?.time||item.source_quote_at);
     return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
   status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
-    " SHOWN · "+(stale?"SOURCE STALE — NO LIVE ENTRY":"SOURCE "+uk(feed.snapshot_at))+
+    " SHOWN · "+(!assessmentAvailable()?"ASSESSMENT UNAVAILABLE — NO ENTRY":stale?"SOURCE STALE — NO LIVE ENTRY":"SOURCE "+uk(feed.snapshot_at))+
     " · NOT BROKER TRADES";
   if(!scouts.length){holder.replaceChildren(make("p","No current research candidates published. This is a research coverage gap, not evidence of no market movement.","early-empty"));return}
   holder.replaceChildren(...scouts.map(({item,side,context},index)=>{
@@ -607,7 +611,8 @@ function renderCurrentScouts(){
     const head=make("div",undefined,"early-head");
     head.append(make("strong","#"+(index+1)+" · "+name.replace("_","/")+" · "+
       (side==="LONG"?"BUY":side==="SHORT"?"SELL":"NO DIRECTION")),
-      make("span",recommendation.status==="GREEN"?"🟢 GREEN · CHECK PEPPERSTONE":
+      make("span",recommendation.status==="UNAVAILABLE"?"⚪ ASSESSMENT UNAVAILABLE":
+        recommendation.status==="GREEN"?"🟢 GREEN · CHECK PEPPERSTONE":
         recommendation.status==="WATCH"?"🟡 CONDITIONAL · WAIT":
         "🔴 SKIP · NO TRADE","early-state"));
     card.append(head);
@@ -642,7 +647,8 @@ function renderCurrentScouts(){
       card.append(make("small","OANDA spread "+Number(q.spread_pips).toFixed(1)+" pips — not cleared for entry."));
     const action=make("div",undefined,"early-action");
     action.append(make("small",recommendation.next));
-    const open=make("button",recommendation.status==="SKIP"?"WHY NO ENTRY?":"VIEW ENTRY · STOP · TARGET","monitored-setup-open");
+    const open=make("button",recommendation.status==="UNAVAILABLE"?"VIEW UNAVAILABLE REASON":
+      recommendation.status==="SKIP"?"WHY NO ENTRY?":"VIEW ENTRY · STOP · TARGET","monitored-setup-open");
     open.type="button";
     open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
     open.addEventListener("click",()=>openMonitoredSetupPopup(scoutContext));
@@ -790,18 +796,18 @@ const green=!stale&&f.freshness==="CURRENT"&&Number.isFinite(ft)&&ft<=now+60000&
    pairNewsClear(x.pair)&&
    monitoredDecision({instrument:x.pair,direction:x.direction}).status==="GREEN")||null;
 const a=approved().length,minutes=Math.max(0,Math.round((Date.now()-Date.parse(feed.snapshot_at))/60000));el("clock").textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date())+" UK";el("sourceTime").textContent="Quote snapshot "+uk(feed.snapshot_at);el("publishedTime").textContent="Published "+uk(feed.published_at);el("screened").textContent=String(Object.keys(feed.pairs).filter(visiblePair).length);el("deep").textContent=String(Object.entries(feed.pairs).filter(([k,v])=>visiblePair(k)&&v.deep).length);el("approved").textContent=a;el("age").textContent=minutes+"m";el("ageHelp").textContent=stale?"STALE · no entry":"70m maximum";
-el("verdict").textContent=stale?"🔴 NO TRADE":green?"🟢 GREEN":a?"🟡 WAIT":"🔴 NO TRADE";
-el("verdictHelp").textContent=stale?"Source too old":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?
+el("verdict").textContent=!assessmentAvailable()?"⚪ ASSESSMENT UNAVAILABLE":stale?"🔴 NO TRADE":green?"🟢 GREEN":a?"🟡 WAIT":"🔴 NO TRADE";
+el("verdictHelp").textContent=!assessmentAvailable()?assessmentFailure():stale?"Source too old":green?"Completed trigger · broker check":a?"Approved plan, trigger pending":highPotential?"Research watch only · no approved entry":"Zero approved entries";const badge=el("health");badge.className="status "+(stale?"bad":feed.news_status==="OK"?"good":"");badge.textContent=!assessmentAvailable()?"ASSESSMENT UNAVAILABLE":stale?"STALE DATA · NO ENTRY":feed.news_status==="OK"?
   "DATA RECENT":"DATA RECENT · NEWS GAPS";
 const gateData=el("gateData"),gateEntry=el("gateEntry"),gateBroker=el("gateBroker");
 gateData.className="gate "+(stale?"gate-red":"gate-green");el("gateDataValue").textContent=stale?"STALE SOURCE":"FRESH SNAPSHOT";el("gateDataHelp").textContent=stale?"No live price verification possible":"Within 70-minute research cutoff";
-gateEntry.className="gate "+(stale?"gate-red":green?"gate-green":"gate-amber");el("gateEntryValue").textContent=stale?"BLOCKED":green?"🟢 TRIGGER READY":a?"WAIT FOR TRIGGER":highPotential?"NO APPROVED ENTRY":"NO ENTRY";
-el("gateEntryHelp").textContent=stale?"Await new published quotes":green?"Research trigger checked · verify broker only":a?"Future confirmation pending":
+gateEntry.className="gate "+(!assessmentAvailable()||stale?"gate-red":green?"gate-green":"gate-amber");el("gateEntryValue").textContent=!assessmentAvailable()?"ASSESSMENT UNAVAILABLE":stale?"BLOCKED":green?"🟢 TRIGGER READY":a?"WAIT FOR TRIGGER":highPotential?"NO APPROVED ENTRY":"NO ENTRY";
+el("gateEntryHelp").textContent=!assessmentAvailable()?assessmentFailure():stale?"Await new published quotes":green?"Research trigger checked · verify broker only":a?"Future confirmation pending":
   highPotential?"Research watch only · not admitted":"No approved trade setup";
 gateBroker.className="gate gate-amber";
 el("alert").className="alert"+(green?" good":"");
 const alertPanel=el("alert");
-alertPanel.replaceChildren(make("b",stale?"NO LIVE ENTRY · SNAPSHOT STALE":green?"🟢 CONFIRMED CONDITIONAL ENTRY · PEPPERSTONE CHECK":a?"🟡 WAIT · PLAN EXISTS, TRIGGER PENDING":highPotential?"🔴 NO TRADE · RESEARCH WATCH ONLY":"🔴 NO TRADE · NO APPROVED BUY OR SELL"),make("small",stale?"OANDA source at "+uk(feed.snapshot_at)+". Page refresh does not imply new market collection. Do not trade historical quotes.":green?"Completed entry trigger recorded. Check Pepperstone quote, spread, account risk and any new news before manually executing.":a?"The following original conditional research plan is UNTRIGGERED. The next completed candle must confirm it; DO NOT ENTER NOW.":highPotential?"DO NOT ENTER. A high-scoring research watch is not an approved signal; the engine must check its next candle, news and risk itself.":"DO NOT ENTER. There is no approved signal; the engine continues research. You do not need to assess the shortlist."));
+alertPanel.replaceChildren(make("b",!assessmentAvailable()?"⚪ ASSESSMENT UNAVAILABLE · NO ENTRY":stale?"NO LIVE ENTRY · SNAPSHOT STALE":green?"🟢 CONFIRMED CONDITIONAL ENTRY · PEPPERSTONE CHECK":a?"🟡 WAIT · PLAN EXISTS, TRIGGER PENDING":highPotential?"🔴 NO TRADE · RESEARCH WATCH ONLY":"🔴 NO TRADE · NO APPROVED BUY OR SELL"),make("small",!assessmentAvailable()?"Research stage failure or missing integrity evidence: "+assessmentFailure()+". The market may have offered opportunities, but no safe assessment was available.":stale?"OANDA source at "+uk(feed.snapshot_at)+". Page refresh does not imply new market collection. Do not trade historical quotes.":green?"Completed entry trigger recorded. Check Pepperstone quote, spread, account risk and any new news before manually executing.":a?"The following original conditional research plan is UNTRIGGERED. The next completed candle must confirm it; DO NOT ENTER NOW.":highPotential?"DO NOT ENTER. A high-scoring research watch is not an approved signal; the engine must check its next candle, news and risk itself.":"DO NOT ENTER. There is no approved signal; the engine continues research. You do not need to assess the shortlist."));
 if(!stale&&!green&&a){
   const pendingPlans=approved().filter(s=>Number(s.planned_entry)>0&&Number(s.stop)>0&&Number(s.tp1)>0).slice(0,3);
   for(const plan of pendingPlans){
@@ -1118,6 +1124,9 @@ function pairNewsReason(pair){
 function monitoredDecision(t){
   const s=buildMonitoredScenario(t),q=feed?.pairs?.[t.instrument]?.quote||{};
   const side=t.direction==="SHORT"?"SELL":"BUY",now=Date.now();
+  if(!assessmentAvailable())return {status:"UNAVAILABLE",side,scenario:s,plan:null,
+    reason:"Assessment unavailable: "+assessmentFailure()+". Market observations are not approved entries.",
+    next:"Await a newly verified research assessment and completed prospective trigger. Do not enter."};
   const reasons=(s.reasons||[s.reason]).filter(Boolean).map(String);
   const quoteAt=Date.parse(q.time),fresh=!stale&&Number.isFinite(quoteAt)&&
     quoteAt<=now+60000&&now-quoteAt<=70*60000;
@@ -1203,7 +1212,8 @@ function monitoredDecision(t){
 }
 function monitoredSetupPanel(t){
   const d=monitoredDecision(t),s=d.scenario,p=d.plan,holder=make("section",undefined,"monitored-setup-panel");
-  const pair=t.instrument.replace("_","/"),label=d.status==="GREEN"?
+  const pair=t.instrument.replace("_","/"),label=d.status==="UNAVAILABLE"?
+    "⚪ ASSESSMENT UNAVAILABLE — NO ENTRY":d.status==="GREEN"?
     "🟢 CONDITIONAL "+d.side+" — CHECK PEPPERSTONE":
     d.status==="WATCH"?"🟡 "+d.side+" WATCH — WAIT":"🔴 SKIP "+pair+" — NO TRADE";
   const banner=make("div",undefined,"monitored-setup-verdict");
