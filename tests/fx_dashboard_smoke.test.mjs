@@ -17,7 +17,7 @@ test('public payload fits monitoring budget and retains authorised conditional s
   assert.ok(Array.isArray(feed.research_setups));
   const allowed = new Set(['schema','snapshot_at','news_at','published_at','status',
     'news_status','coverage','priorities','pairs','signals','research_setups',
-    'hourly','sources','headlines','calendar','news_clearance','learning','public_compaction','fast_entry_monitor','assessment_status','health_checked_at','unavailable_reason']);
+    'hourly','sources','headlines','calendar','news_clearance','learning','public_compaction','fast_entry_monitor','monitoring_health','assessment_status','health_checked_at','unavailable_reason']);
   assert.ok(Object.keys(feed).every(k => allowed.has(k)), 'no unexpected fields');
   for (const item of feed.research_setups) {
     assert.ok(['CONDITIONAL_RESEARCH_NOT_TRIGGERED',
