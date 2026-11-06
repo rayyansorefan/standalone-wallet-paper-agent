@@ -382,7 +382,7 @@ body{background:#07111f;color:#edf5ff}
 <footer class="footer">RESEARCH ONLY · This site does not execute trades, connect to Pepperstone, or guarantee a daily trade count. OANDA practice quotes are indicative. The private OANDA research collector and ChatGPT's hourly notifications are separate from this static site. Public sanitized snapshots may be stale; the page blocks entry labels after 70 minutes. This site cannot issue ChatGPT push alerts. © FX Intelligence.</footer>
 </main></div></div><script>
 "use strict";
-const FX_UI_BUILD="fx-health-fail-closed-20261104";
+const FX_UI_BUILD="fx-scout-study-20261106a";
 async function checkUiVersion(){
   // An open tab otherwise keeps running its old inline JavaScript even if
   // fx-feed.json refreshes. Lightweight version endpoint prevents that.
@@ -629,10 +629,10 @@ function renderCurrentScouts(){
         uk(planExpiry)+(expired?" · No new entry from this plan.":" · Reassess any open position separately."),
         "early-caption"));
     }
-    if(recommendation.status!=="SKIP"&&fullyPriced){
+    if(fullyPriced){
       const levels=make("div",undefined,"early-levels");
       for(const [label,value] of [
-        ["ENTRY · PROVISIONAL",showZone],
+        [scenario.paperIllustration?"PAPER STUDY ZONE · NO ENTRY":"ENTRY · PROVISIONAL",showZone],
         ["STOP",displayLevel(scenario.stop)],
         ["TARGET",displayLevel(scenario.tp1)]
       ]){
@@ -640,7 +640,7 @@ function renderCurrentScouts(){
         cell.append(make("small",label),make("b",value));levels.append(cell);
       }
       card.append(levels);
-      card.append(make("p","TRIGGER: "+recommendation.condition,"early-caption"));
+      card.append(make("p",scenario.paperIllustration?"🔴 ILLUSTRATIVE ONLY · NOT MONITORED · "+scenario.triggerText:"TRIGGER: "+recommendation.condition,"early-caption"));
     }
     card.append(make("p",recommendation.reason,"early-caption"));
     if(recommendation.status==="SKIP"&&Number.isFinite(Number(q.spread_pips))&&Number(q.spread_pips)>10)
@@ -648,7 +648,7 @@ function renderCurrentScouts(){
     const action=make("div",undefined,"early-action");
     action.append(make("small",recommendation.next));
     const open=make("button",recommendation.status==="UNAVAILABLE"?"VIEW UNAVAILABLE REASON":
-      recommendation.status==="SKIP"?"WHY NO ENTRY?":"VIEW ENTRY · STOP · TARGET","monitored-setup-open");
+      recommendation.status==="SKIP"?(fullyPriced?"VIEW PAPER STUDY · NO ENTRY":"WHY NO ENTRY?"):"VIEW ENTRY · STOP · TARGET","monitored-setup-open");
     open.type="button";
     open.setAttribute("aria-label","Open "+name.replace("_","/")+" scout trade setup");
     open.addEventListener("click",()=>openMonitoredSetupPopup(scoutContext));
@@ -1027,6 +1027,75 @@ function compareMonitored(a,b,sort){
   return Date.parse(b.created_at)-Date.parse(a.created_at);
 }
 
+function modelScoutStudy(t, source, q, frames, pip, spread, atr, ema, bid, ask){
+  // DISPLAY-ONLY hypothesis from contemporaneous completed OANDA M15 candles.
+  // This is neither a frozen prospective plan nor an alert, signal or fill.
+  const invalid=reason=>({status:"NO PRICED RESEARCH SCENARIO",route:"NONE",reason,
+    direction:t.direction,entry:null,entryZoneLow:null,entryZoneHigh:null,
+    stop:null,tp1:null,netRR:null,grossRR:null,expiry:null,asOf:q.time});
+  const m=frames.M15?.indicators||{},h=frames.H1?.indicators||{},
+    bars=frames.M15?.candles||[];
+  const last=bars.at(-1),side=t.direction,short=side==="SHORT";
+  if(!["LONG","SHORT"].includes(side)||q.tradeable!==true||bars.length<3||
+     !last||![last.o,last.h,last.l,last.c].every(v=>Number.isFinite(Number(v)))||
+     !Number.isFinite(Date.parse(last.t))||
+     ![pip,spread,atr,ema,bid,ask].every(Number.isFinite)||
+     !(pip>0&&spread>0&&atr>pip&&ema>0&&ask>bid&&bid>0))
+    return invalid("Completed M15 market structure, volatility or tradeable quote unavailable.");
+  const qTime=Date.parse(q.time),barTime=Date.parse(last.t),now=Date.now();
+  if(!Number.isFinite(qTime)||qTime>now+60000||now-qTime>70*60000||
+     barTime>qTime||qTime-barTime>45*60000)
+    return invalid("Source quote or last completed M15 candle is stale; do not calculate a current scenario.");
+  // Require a meaningful two-timeframe trend before sketching a direction.
+  const sign=short?-1:1;
+  if(![m.ema20,m.ema50,h.ema20,h.ema50,m.atr14,m.support20,m.resistance20]
+      .every(x=>x!=null&&Number.isFinite(Number(x))&&Number(x)>0)||
+     (Number(m.ema20)-Number(m.ema50))*sign<=0||
+     (Number(h.ema20)-Number(h.ema50))*sign<=0)
+    return invalid("M15/H1 directional evidence is insufficient for a priced structural hypothesis.");
+  // Future pullback to the observed M15 EMA20, then a NEW completed rejection.
+  // The stop uses three actual completed swing-bar extremes plus 0.25 ATR;
+  // the first target is the observed 20-bar horizontal support/resistance.
+  const extremes=bars.slice(-3);
+  const zoneLow=ema-0.12*atr,zoneHigh=ema+0.12*atr;
+  const observedExtreme=short?
+    Math.max(...extremes.map(x=>Number(x.h))):
+    Math.min(...extremes.map(x=>Number(x.l)));
+  const stop=short?
+    Math.max(observedExtreme,zoneHigh)+0.25*atr:
+    Math.min(observedExtreme,zoneLow)-0.25*atr;
+  const tp1=short?Number(m.support20):Number(m.resistance20);
+  const worst=short?zoneLow:zoneHigh, risk=(stop-worst)*-sign,
+    reward=(tp1-worst)*sign;
+  // The stop and target must be independently grounded, geometrically sane
+  // and sufficiently far apart. Never add ATR multiples as fictitious S/R.
+  if(!(stop>0&&tp1>0&&risk>0&&reward>0)||
+     (short?!(tp1<Math.min(zoneLow,bid)&&stop>zoneHigh):
+            !(tp1>Math.max(zoneHigh,ask)&&stop<zoneLow)))
+    return invalid("No valid observed support/resistance target beyond price; cannot price a structural setup.");
+  const decimals=pip>=0.01?3:5;
+  const round=x=>Number(x.toFixed(decimals));
+  const blockers=(t.scout_blockers||[]).filter(x=>x.code!=="NO_APPROVED_TRIGGER")
+    .slice(0,3).map(x=>x.detail||x.code);
+  const gross=reward/risk,net=(reward-spread)/(risk+spread);
+  const pricedGood=gross>=1.50&&net>=1.35;
+  return {status:"ILLUSTRATIVE PAPER HYPOTHESIS · NOT APPROVED",
+    route:"FUTURE EMA20 PULLBACK / M15 REJECTION · UNREGISTERED",
+    entry:null,entryZoneLow:round(zoneLow),entryZoneHigh:round(zoneHigh),
+    stop:round(stop),tp1:round(tp1),grossRR:gross,netRR:net,
+    expiry:new Date(qTime+70*60000).toISOString(),asOf:q.time,
+    sourceCandleAt:last.t,spreadPips:Number(q.spread_pips),
+    triggerText:"Only a FUTURE pullback into the displayed EMA20 zone followed by a NEW completed "+(short?"bearish":"bullish")+" M15 rejection; reprice, verify news and costs before any separate plan approval.",
+    paperIllustration:true,
+    reasons:[
+      "Illustrative levels are computed from the source snapshot, NOT saved in signals.json or monitored as orders.",
+      pricedGood?"Reward geometry is only a hypothetical screen, NOT entry approval.":
+        "The displayed stop/target/spread geometry fails the original entry reward/cost gates.",
+      ...blockers,
+      "No completed future rejection, broker quote, or executable entry is verified."
+    ],
+    note:"Snapshot-based research study only. Invalid when the displayed quote expires; not a frozen or admitted alert. Await independently issued canonical entry terms."};
+}
 function buildMonitoredScenario(t){
   // OBSERVATION-TIME technical reference only. No strategy approval, broker
   // quote, immutable plan or historical fill is created from these levels.
@@ -1072,11 +1141,10 @@ function buildMonitoredScenario(t){
         ...blockers,"This is a provisional research preview, not an approved or filled signal."],
       note:"OANDA indicative levels; 90-minute research validity, subject to a fresh snapshot, new completed candle, event coverage and live Pepperstone spread."};
   }
-  // Never mint an entry, stop or target from a directional watch.
-  // Only retain the original frozen prospective scout_plan supplied by the
-  // collector, or the canonical signals.json plan. This prevents the
-  // dashboard from inventing apparently executable numbers for high scores.
-  return invalid("No original priced entry/stop/target plan was admitted for this watch.");
+  // Current scouts may display a clearly NON-EXECUTABLE observational study
+  // when canonical admission yields no entry. Its numbers are not saved as
+  // plans, and must never be used by the watcher or scored as fills.
+  return modelScoutStudy(t,source,q,frames,pip,spread,atr,ema,bid,ask);
 
 }
 function openMonitoredSetupPopup(t){
@@ -1222,12 +1290,12 @@ function monitoredSetupPanel(t){
   banner.append(make("strong",label),make("p",d.reason));
   holder.append(banner);
   const fmt=v=>v==null?"—":money(v);
-  const complete=p||d.status==="WATCH";
+  const complete=!!p||(s.entryZoneLow!=null&&s.stop!=null&&s.tp1!=null)||(s.entry!=null&&s.stop!=null&&s.tp1!=null);
   if(complete){
     const entry=p?fmt(p.planned_entry):s.entryZoneLow!=null?fmt(s.entryZoneLow)+"–"+fmt(s.entryZoneHigh):fmt(s.entry);
     const stop=fmt(p?p.stop:s.stop),tp=fmt(p?p.tp1:s.tp1);
     const prices=make("div",undefined,"monitored-simple-prices");
-    for(const [title,value] of [["ENTRY"+(p?"":" · PROVISIONAL"),entry],
+    for(const [title,value] of [["ENTRY"+(p?"":s.paperIllustration?" · PAPER HYPOTHESIS":" · PROVISIONAL"),entry],
       ["STOP",stop],["TARGET",tp]]){
       const cell=make("div");cell.append(make("small",title),make("b",value));prices.append(cell);
     }
@@ -1236,13 +1304,23 @@ function monitoredSetupPanel(t){
     const condition=p&&confirmed?"Completed "+(p.trigger_timeframe||
         (p.entry_route==="MOMENTUM_CONTINUATION"?"M5":"M15"))+
       " confirmation recorded; check broker quote.":d.condition;
-    holder.append(make("p",(confirmed?"TRIGGER CONFIRMED · ":"TRIGGER PENDING · ")+condition,
+    holder.append(make("p",(confirmed?"TRIGGER CONFIRMED · ":s.paperIllustration?"NOT A LIVE TRIGGER · ":"TRIGGER PENDING · ")+(s.paperIllustration?s.triggerText:condition),
       "monitored-setup-next"));
+  }
+  if(s.paperIllustration){
+    holder.append(make("p","🔴 PAPER-ONLY RESEARCH STUDY · Not an original plan, monitored alert or approved entry. Do not place any trade at these levels.","monitored-setup-next"));
+    for(const message of (s.reasons||[]).slice(0,5))holder.append(make("small","• "+message,"monitored-setup-next"));
+    if(s.entryZoneLow!=null&&s.tp1!=null&&s.stop!=null){
+      const paperEntry=t.direction==="SHORT"?s.entryZoneLow:s.entryZoneHigh;
+      holder.append(make("p","Pair price movement from study entry: TP1 "+
+        pricePct(t.direction,paperEntry,s.tp1)+" · Stop "+
+        pricePct(t.direction,paperEntry,s.stop)+" (hypothetical, no fill).","monitored-setup-next"));
+    }
   }
   const expiry=p?.expires_at||s.expiry||t.scout_plan?.expires_at;
   if(expiry&&Number.isFinite(Date.parse(expiry))){
     const expired=Date.parse(expiry)<=Date.now();
-    holder.append(make("p",(expired?"🔴 ENTRY RESEARCH EXPIRED · ":"⏱ ENTRY RESEARCH EXPIRES · ")+uk(expiry),
+    holder.append(make("p",(expired?"🔴 SOURCE RESEARCH EXPIRED · ":s.paperIllustration?"⏱ ILLUSTRATION VALID THROUGH · ":"⏱ ENTRY RESEARCH EXPIRES · ")+uk(expiry),
       "monitored-setup-next"));
     holder.append(make("small","The deadline is for research-plan entry validity, not an automatic broker position closure. Reassess open positions separately using current prices, risk and evidence."));
   }
