@@ -362,7 +362,8 @@ test('monitored popups present a decision, not generated entry prices', () => {
   assert.match(page, /function buildMonitoredScenario\(t\)/);
   assert.match(page, /function monitoredDecision\(t\)/);
   assert.match(page, /function monitoredSetupPanel\(t\)/);
-  assert.match(page, /No original priced entry\/stop\/target plan was admitted/);
+  assert.match(page, /ILLUSTRATIVE PAPER HYPOTHESIS/);
+  assert.match(page, /NOT saved in signals\.json/);
   assert.match(page, /No trade on this pair/);
   assert.match(page, /YOUR ACTION:/);
   assert.match(page, /ENTRY.*PROVISIONAL/);
@@ -373,7 +374,7 @@ test('monitored popups present a decision, not generated entry prices', () => {
 });
 
 test('a short directional watch with no frozen plan cannot invent entry, stop or TP', () => {
-  const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function openMonitoredSetupPopup)/)?.[0];
+  const helper=page.match(/function modelScoutStudy\(t,[\s\S]*?(?=function openMonitoredSetupPopup)/)?.[0];
   assert.ok(helper);
   const now=Date.now(),floor=Math.floor(now/900000)*900000;
   const bars=[60,45,30].map((mins,i)=>({
@@ -389,14 +390,43 @@ test('a short directional watch with no frozen plan cannot invent entry, stop or
   }}}};
   new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
   const scenario=context.scenario({instrument:'EUR_SEK',direction:'SHORT',created_at:new Date(now).toISOString()});
-  assert.equal(scenario.status,'NO PRICED SIGNAL');
+  assert.equal(scenario.status,'NO PRICED RESEARCH SCENARIO');
   assert.equal(scenario.route,'NONE');
   assert.equal(scenario.entry,null);
   assert.equal(scenario.stop,null);
   assert.equal(scenario.tp1,null);
-  assert.equal(scenario.spreadPips,32);
+  assert.equal(scenario.paperIllustration,undefined);
 });
 
+test('completed source M15/H1 technical scout displays honest paper levels, never a live signal', () => {
+  const helper=page.match(/function modelScoutStudy\(t,[\s\S]*?(?=function openMonitoredSetupPopup)/)?.[0];
+  assert.ok(helper,'The study and normal scout functions must both be present');
+  const now=Date.now(), floor=Math.floor(now/900000)*900000;
+  const bars=[45,30,15].map((minutes,i)=>({
+    t:new Date(floor-minutes*60000).toISOString(),
+    o:87.93-i*.02,h:[87.935,88,87.937][i],
+    l:[87.81,87.869,87.824][i],c:87.932-i*.04
+  }));
+  const context={feed:{pairs:{NZD_JPY:{
+    quote:{time:new Date(now).toISOString(),tradeable:true,bid:87.838,ask:87.865,pip_size:.01,spread_pips:2.7},
+    frames:{
+      M15:{indicators:{ema20:87.905,ema50:88.12,atr14:.098,support20:87.70,resistance20:88.242},candles:bars},
+      H1:{indicators:{ema20:88.30,ema50:88.61}}
+    }
+  }}}};
+  new Script(helper+';this.scenario=buildMonitoredScenario;').runInNewContext(context);
+  const study=context.scenario({instrument:'NZD_JPY',direction:'SHORT',scout_blockers:[
+    {code:'NEWS_REQUIRED_SOURCE_MISSING',detail:'Required news incomplete'}
+  ]});
+  assert.equal(study.paperIllustration,true);
+  assert.equal(study.entry,null,'No executable entry is inferred');
+  assert.ok(study.entryZoneLow<study.entryZoneHigh);
+  assert.ok(study.stop>study.entryZoneHigh);
+  assert.ok(study.tp1<study.entryZoneLow);
+  assert.ok(study.reasons.some(x=>x.includes('NOT saved in signals.json')));
+  assert.ok(study.reasons.some(x=>x.includes('Required news incomplete')));
+  assert.match(study.triggerText,/FUTURE pullback/);
+});
 test('incomplete watched pair cannot fabricate a priced setup', () => {
   const helper=page.match(/function buildMonitoredScenario\(t\)\{[\s\S]*?(?=function monitoredSetupPanel)/)?.[0];
   assert.ok(helper);
