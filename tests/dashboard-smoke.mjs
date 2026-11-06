@@ -87,14 +87,14 @@ if(chartBars<2)assert.match($("chart").children.map(c=>String(c.textContent)).jo
 else assert.ok($("chart").children.some(c=>c.tagName==="rect"),
   "Even compacted feeds must plot the actual completed candles without inventing history");
 assert.equal($("earlyGrid").children.length,1,"Early opportunity card must render from prospective feed data");
-assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
-  "Only the top five decision-first scouts should be visible");
+assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=12,
+  "Show every current shortlisted scout, up to twelve");
 // Regression: the actual cards, not merely the source array, must be ranked
 // by the very same published numeric priority that their labels show.
 const shownScouts=$("scoutGrid").children;
 const expectedOrder=(feed.learning.current_scouts||[]).filter(c=>c.instrument!=="GBP_ZAR")
   .slice().sort((a,b)=>Number(b.priority_score)-Number(a.priority_score))
-  .slice(0,5).map(c=>c.instrument);
+  .slice(0,12).map(c=>c.instrument);
 const displayedOrder=shownScouts.map(c=>String(c.children[0].children[0].textContent)
   .split(" · ")[1]?.replace("/","_"));
 assert.deepEqual(displayedOrder,expectedOrder,
@@ -237,7 +237,7 @@ feed.learning.opportunity_audit.recent.forEach(t=>{
 $("earlyScope").listeners.change({target:{value:"ACTIVE"}});
 assert.equal($("earlyGrid").children.length,1);
 assert.match($("earlyGrid").children[0].textContent,/No active priced watches/);
-assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=5,
+assert.ok($("scoutGrid").children.length>=1&&$("scoutGrid").children.length<=12,
   "Expired registered watches must not hide current unpriced scouts");
 // Global PARTIAL must not override the canonical pair-specific news gate.
 const savedNow=at.now;
