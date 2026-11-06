@@ -107,7 +107,7 @@ const firstScout=$("scoutGrid").children[0];
 const scoutView=JSON.stringify(firstScout.children);
 assert.match(scoutView,/RESEARCH PRIORITY|TECHNICAL WATCH|POTENTIAL UNRATED/);
 assert.match(scoutView,/SKIP|WATCH|GREEN/,"Every scout must lead with a clear decision");
-assert.match(scoutView,/WHY NO ENTRY|VIEW ENTRY · STOP · TARGET/,
+assert.match(scoutView,/WHY NO ENTRY|VIEW ENTRY · STOP · TARGET|VIEW PAPER STUDY · NO ENTRY/,
   "Each scout opens a concise decision instead of raw technical research");
 assert.doesNotMatch(scoutView,/20\\.005|20\\.040/,
   "Unadmitted scout cards must not surface invented entry or stop prices");
