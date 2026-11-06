@@ -382,7 +382,7 @@ body{background:#07111f;color:#edf5ff}
 <footer class="footer">RESEARCH ONLY · This site does not execute trades, connect to Pepperstone, or guarantee a daily trade count. OANDA practice quotes are indicative. The private OANDA research collector and ChatGPT's hourly notifications are separate from this static site. Public sanitized snapshots may be stale; the page blocks entry labels after 70 minutes. This site cannot issue ChatGPT push alerts. © FX Intelligence.</footer>
 </main></div></div><script>
 "use strict";
-const FX_UI_BUILD="fx-scout-study-20261106a";
+const FX_UI_BUILD="fx-scout-study-20261106b";
 async function checkUiVersion(){
   // An open tab otherwise keeps running its old inline JavaScript even if
   // fx-feed.json refreshes. Lightweight version endpoint prevents that.
@@ -568,7 +568,7 @@ function renderCurrentScouts(){
   }).sort((a,b)=>
     (numericPriority(b.item)-numericPriority(a.item))||
     a.item.instrument.localeCompare(b.item.instrument)
-  ).slice(0,5);
+  ).slice(0,12);
   const current=scouts.filter(({item})=>{const at=Date.parse(feed.pairs?.[item.instrument]?.quote?.time||item.source_quote_at);
     return !stale&&Number.isFinite(at)&&at<=Date.now()+300000&&Date.now()-at<4200000});
   status.textContent=current.length+" CURRENT RESEARCH SCOUTS · "+scouts.length+
@@ -625,7 +625,8 @@ function renderCurrentScouts(){
     const planExpiry=plan?.expires_at||scenario?.expiry;
     if(planExpiry&&Number.isFinite(Date.parse(planExpiry))){
       const expired=Date.parse(planExpiry)<=Date.now();
-      card.append(make("p",(expired?"🔴 PLAN EXPIRED · ":"⏱ PLAN ENTRY DEADLINE · ")+
+      card.append(make("p",(expired?(scenario?.paperIllustration?"🔴 PAPER STUDY SOURCE EXPIRED · ":"🔴 PLAN EXPIRED · "):
+        scenario?.paperIllustration?"⏱ PAPER STUDY SOURCE VALID THROUGH · ":"⏱ PLAN ENTRY DEADLINE · ")+
         uk(planExpiry)+(expired?" · No new entry from this plan.":" · Reassess any open position separately."),
         "early-caption"));
     }
